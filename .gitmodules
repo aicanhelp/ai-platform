@@ -1,0 +1,3 @@
+[submodule "resources/predictionio"]
+	path = resources/predictionio
+	url = https://github.com/apache/predictionio.git
