@@ -7,3 +7,9 @@
 [submodule "resources/plaidml"]
 	path = resources/plaidml
 	url = https://github.com/plaidml/plaidml.git
+[submodule "resources/acme"]
+	path = resources/acme
+	url = https://github.com/deepmind/acme.git
+[submodule "resources/onnxruntime"]
+	path = resources/onnxruntime
+	url = https://github.com/microsoft/onnxruntime.git
