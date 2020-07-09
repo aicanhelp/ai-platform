@@ -19,3 +19,9 @@
 [submodule "resources/pytorch-ignite"]
 	path = resources/pytorch-ignite
 	url = https://github.com/pytorch/ignite.git
+[submodule "resources/trax"]
+	path = resources/trax
+	url = https://github.com/google/trax.git
+[submodule "resources/polyaxon"]
+	path = resources/polyaxon
+	url = https://github.com/polyaxon/polyaxon.git
