@@ -25,3 +25,9 @@
 [submodule "resources/polyaxon"]
 	path = resources/polyaxon
 	url = https://github.com/polyaxon/polyaxon.git
+[submodule "resources/ml-workspace"]
+	path = resources/ml-workspace
+	url = https://github.com/ml-tooling/ml-workspace.git
+[submodule "resources/ml-hub"]
+	path = resources/ml-hub
+	url = https://github.com/ml-tooling/ml-hub.git
