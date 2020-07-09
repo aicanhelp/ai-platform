@@ -13,3 +13,9 @@
 [submodule "resources/onnxruntime"]
 	path = resources/onnxruntime
 	url = https://github.com/microsoft/onnxruntime.git
+[submodule "resources/pytorch-lightning"]
+	path = resources/pytorch-lightning
+	url = https://github.com/PyTorchLightning/pytorch-lightning.git
+[submodule "resources/pytorch-ignite"]
+	path = resources/pytorch-ignite
+	url = https://github.com/pytorch/ignite.git
