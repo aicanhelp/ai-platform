@@ -31,3 +31,6 @@
 [submodule "resources/ml-hub"]
 	path = resources/ml-hub
 	url = https://github.com/ml-tooling/ml-hub.git
+[submodule "resources/DeepSpeed"]
+	path = resources/DeepSpeed
+	url = https://github.com/microsoft/DeepSpeed.git
