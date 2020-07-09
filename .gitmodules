@@ -4,3 +4,6 @@
 [submodule "resources/mlflow"]
 	path = resources/mlflow
 	url = https://github.com/mlflow/mlflow.git
+[submodule "resources/plaidml"]
+	path = resources/plaidml
+	url = https://github.com/plaidml/plaidml.git
