@@ -34,3 +34,6 @@
 [submodule "resources/DeepSpeed"]
 	path = resources/DeepSpeed
 	url = https://github.com/microsoft/DeepSpeed.git
+[submodule "resources/cortex"]
+	path = resources/cortex
+	url = https://github.com/cortexlabs/cortex.git
