@@ -1,6 +1,3 @@
-[submodule "resources/predictionio"]
-	path = resources/predictionio
-	url = https://github.com/apache/predictionio.git
 [submodule "resources/mlflow"]
 	path = resources/mlflow
 	url = https://github.com/mlflow/mlflow.git
