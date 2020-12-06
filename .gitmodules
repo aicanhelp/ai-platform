@@ -34,3 +34,15 @@
 [submodule "resources/cortex"]
 	path = resources/cortex
 	url = https://github.com/cortexlabs/cortex.git
+[submodule "resources/predictionio"]
+	path = resources/predictionio
+	url = https://github.com/apache/predictionio.git
+[submodule "resources/dagli"]
+	path = resources/dagli
+	url = https://github.com/linkedin/dagli.git
+[submodule "resources/kubeflow-pipelines"]
+	path = resources/kubeflow-pipelines
+	url = https://github.com/kubeflow/pipelines.git
+[submodule "resources/kubeflow-kfserving"]
+	path = resources/kubeflow-kfserving
+	url = https://github.com/kubeflow/kfserving.git

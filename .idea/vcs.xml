@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="VcsDirectoryMappings">
+    <mapping directory="" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/DeepSpeed" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/acme" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/cortex" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/ml-hub" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/ml-workspace" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/mlflow" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/onnxruntime" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/plaidml" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/polyaxon" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/predictionio" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/pytorch-ignite" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/pytorch-lightning" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/resources/trax" vcs="Git" />
+  </component>
+</project>
