@@ -103,3 +103,6 @@
 [submodule "resources/kubeflow-kfp-tekton"]
 	path = resources/kubeflow-kfp-tekton
 	url = https://gitee.com/aimo-mlframework/kubeflow-kfp-tekton.git
+[submodule "resources/ray"]
+	path = resources/ray
+	url = https://github.com/ray-project/ray.git
