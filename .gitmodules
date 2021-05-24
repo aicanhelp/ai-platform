@@ -106,3 +106,6 @@
 [submodule "resources/ray"]
 	path = resources/ray
 	url = https://github.com/ray-project/ray.git
+[submodule "resources/facebook-faiss"]
+	path = resources/facebook-faiss
+	url = https://github.com.cnpmjs.org/facebookresearch/faiss.git
