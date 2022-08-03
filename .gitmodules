@@ -51,55 +51,43 @@
 	url = https://github.com/alteryx/featuretools.git
 [submodule "resources/pytorch-kaldi"]
 	path = resources/pytorch-kaldi
-	url = https://gitee.com/aimo-mlframework/pytorch-kaldi.git
+	url = https://github.com/mravanelli/pytorch-kaldi.git
 [submodule "resources/espnet"]
 	path = resources/espnet
-	url = https://gitee.com/aimo-mlframework/espnet.git
+	url = https://github.com/espnet/espnet.git
 [submodule "resources/kubeflow"]
 	path = resources/kubeflow
-	url = https://gitee.com/aimo-mlframework/kubeflow.git
+	url = https://github.com/kubeflow/kubeflow.git
 [submodule "resources/kubeflow-katlib"]
 	path = resources/kubeflow-katlib
-	url = https://gitee.com/aimo-mlframework/kubeflow-katib.git
-[submodule "resources/kubeflow-operator"]
-	path = resources/kubeflow-operator
-	url = https://gitee.com/aimo-mlframework/kubeflow-tf-operator.git
+	url = https://github.com/kubeflow/katib.git
 [submodule "resources/kubeflow-examples"]
 	path = resources/kubeflow-examples
-	url = https://gitee.com/aimo-mlframework/kubeflow-examples.git
-[submodule "resources/kubeflow-mpi-operator"]
-	path = resources/kubeflow-mpi-operator
-	url = https://gitee.com/aimo-mlframework/kubeflow-mpi-operator.git
-[submodule "resources/kubeflow-frontend"]
-	path = resources/kubeflow-frontend
-	url = https://gitee.com/aimo-mlframework/kubeflow-frontend.git
+	url = https://github.com/kubeflow/examples.git
+[submodule "resources/kubeflow-pipelines"]
+	path = resources/kubeflow-pipelines
+	url = https://github.com/kubeflow/pipelines.git
 [submodule "resources/kubeflow-kfctl"]
 	path = resources/kubeflow-kfctl
-	url = https://gitee.com/aimo-mlframework/kubeflow-kfctl.git
+	url = https://github.com/kubeflow/kfctl.git
 [submodule "resources/kubeflow-manifests"]
 	path = resources/kubeflow-manifests
-	url = https://gitee.com/aimo-mlframework/kubeflow-manifests.git
+	url = https://github.com/kubeflow/manifests.git
 [submodule "resources/kubeflow-arena"]
 	path = resources/kubeflow-arena
-	url = https://gitee.com/aimo-mlframework/kubeflow-arena.git
-[submodule "resources/kubeflow-pytorch-operator"]
-	path = resources/kubeflow-pytorch-operator
-	url = https://gitee.com/aimo-mlframework/kubeflow-pytorch-operator.git
+	url = https://github.com/kubeflow/arena.git
 [submodule "resources/kubeflow-fairing"]
 	path = resources/kubeflow-fairing
-	url = https://gitee.com/aimo-mlframework/kubeflow-fairing.git
-[submodule "resources/kubeflow-metadata"]
-	path = resources/kubeflow-metadata
-	url = https://gitee.com/aimo-mlframework/kubeflow-metadata.git
+	url = https://github.com/kubeflow/fairing.git
 [submodule "resources/kubeflow-common"]
 	path = resources/kubeflow-common
-	url = https://gitee.com/aimo-mlframework/kubeflow-common.git
+	url = https://github.com/kubeflow/common.git
 [submodule "resources/kubeflow-kubebench"]
 	path = resources/kubeflow-kubebench
-	url = https://gitee.com/aimo-mlframework/kubeflow-kubebench.git
-[submodule "resources/kubeflow-xgboost-operator"]
-	path = resources/kubeflow-xgboost-operator
-	url = https://gitee.com/aimo-mlframework/kubeflow-xgboost-operator.git
+	url = https://github.com/kubeflow/kubebench.git
 [submodule "resources/kubeflow-kfp-tekton"]
 	path = resources/kubeflow-kfp-tekton
-	url = https://gitee.com/aimo-mlframework/kubeflow-kfp-tekton.git
+	url = https://github.com/kubeflow/kfp-tekton.git
+[submodule "resources/kubeflow-training-operator"]
+	path = resources/kubeflow-training-operator
+	url = https://github.com/kubeflow/training-operator.git
