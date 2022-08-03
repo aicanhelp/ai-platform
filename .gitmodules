@@ -106,3 +106,6 @@
 [submodule "resources/kubeflow-operator"]
 	path = resources/kubeflow-operator
 	url = https://github.com/kubeflow/operator.git
+[submodule "resources/kubeflow-metadata"]
+	path = resources/kubeflow-metadata
+	url = https://github.com/kubeflow/metadata.git
