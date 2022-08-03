@@ -89,5 +89,17 @@
 	path = resources/kubeflow-kfp-tekton
 	url = https://github.com/kubeflow/kfp-tekton.git
 [submodule "resources/kubeflow-training-operator"]
+	path = resources/kubeflow-frontend
+	url = https://github.com/kubeflow/frontent.git
+[submodule "resources/kubeflow-training-operator"]
 	path = resources/kubeflow-training-operator
 	url = https://github.com/kubeflow/training-operator.git
+[submodule "resources/kubeflow-pytorch-operator"]
+	path = resources/kubeflow-pytorch-operator
+	url = https://github.com/kubeflow/pytorch-operator.git
+[submodule "resources/kubeflow-xgboost-operator"]
+	path = resources/kubeflow-xgboost-operator
+	url = https://github.com/kubeflow/xgboost-operator.git
+[submodule "resources/kubeflow-mpi-operator"]
+	path = resources/kubeflow-mpi-operator
+	url = https://github.com/kubeflow/mpi-operator.git
