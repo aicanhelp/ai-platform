@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "resources/DeepSpeed"
+		},
+		{
+			"path": "resources/cuda-samples"
+		}
+	]
+}

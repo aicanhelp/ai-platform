@@ -109,3 +109,24 @@
 [submodule "resources/facebook-faiss"]
 	path = resources/facebook-faiss
 	url = https://github.com.cnpmjs.org/facebookresearch/faiss.git
+[submodule "resources/ray-tutorial"]
+	path = resources/ray-tutorial
+	url = https://github.com/ray-project/tutorial.git
+[submodule "resources/anyscale-academy"]
+	path = resources/anyscale-academy
+	url = https://github.com/anyscale/academy
+[submodule "resources/openvino"]
+	path = resources/openvino
+	url = https://github.com/openvinotoolkit/openvino.git
+[submodule "resources/openvino_notebooks"]
+	path = resources/openvino_notebooks
+	url = https://github.com/openvinotoolkit/openvino_notebooks.git
+[submodule "resources/tensorrtx"]
+	path = resources/tensorrtx
+	url = https://github.com/wang-xinyu/tensorrtx.git
+[submodule "resources/cvat"]
+	path = resources/cvat
+	url = https://github.com/openvinotoolkit/cvat.git
+[submodule "resources/cuda-samples"]
+	path = resources/cuda-samples
+	url = https://github.com/NVIDIA/cuda-samples.git
