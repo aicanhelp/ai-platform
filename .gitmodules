@@ -101,10 +101,10 @@
 	path = resources/anyscale-academy
 	url = https://github.com/anyscale/academy
 [submodule "resources/openvino"]
-	path = resources/openvino
+	path = resources/openvino_projects
 	url = https://github.com/openvinotoolkit/openvino.git
 [submodule "resources/openvino_notebooks"]
-	path = resources/openvino_notebooks
+	path = resources/openvino/notebooks
 	url = https://github.com/openvinotoolkit/openvino_notebooks.git
 [submodule "resources/tensorrtx"]
 	path = resources/tensorrtx
@@ -136,3 +136,18 @@
 [submodule "resources/kubeflow-metadata"]
 	path = resources/kubeflow-metadata
 	url = https://github.com/kubeflow/metadata.git
+[submodule "resources/openvino/model_zoo"]
+	path = resources/openvino/model_zoo
+	url = https://github.com/openvinotoolkit/open_model_zoo.git
+[submodule "resources/mds-openvino/notebooks"]
+	path = resources/mds-openvino/notebooks
+	url = git@github.com:aicanhelp/openvino_notebooks.git
+[submodule "resources/mds-openvino/model_zoo"]
+	path = resources/mds-openvino/model_zoo
+	url = git@github.com:aicanhelp/open_model_zoo.git
+[submodule "resources/mds-cuda-sample"]
+	path = resources/mds-cuda-sample
+	url = git@github.com:aicanhelp/cuda-samples.git
+[submodule "resources/cuda_by_example"]
+	path = resources/cuda_by_example
+	url = https://github.com/Yannnnnnnnnnnn/cuda_by_example.git
