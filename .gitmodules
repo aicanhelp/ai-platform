@@ -148,6 +148,27 @@
 [submodule "resources/mds-cuda-sample"]
 	path = resources/mds-cuda-sample
 	url = git@github.com:aicanhelp/cuda-samples.git
-[submodule "resources/cuda_by_example"]
-	path = resources/cuda_by_example
-	url = https://github.com/Yannnnnnnnnnnn/cuda_by_example.git
+[submodule "resources/mds_cuda_by_example"]
+	path = resources/mds_cuda_by_example
+	url = git@github.com:aicanhelp/cuda_by_example.git
+[submodule "resources/numpy-ml"]
+	path = resources/numpy-ml
+	url = https://github.com/ddbourgin/numpy-ml.git
+[submodule "resources/numpy-100"]
+	path = resources/numpy-100
+	url = https://github.com/rougier/numpy-100.git
+[submodule "resources/cupy"]
+	path = resources/cupy
+	url = https://github.com/cupy/cupy.git
+[submodule "resources/numba"]
+	path = resources/numba
+	url = https://github.com/numba/numba.git
+[submodule "resources/glfw"]
+	path = resources/glfw
+	url = https://github.com/glfw/glfw.git
+[submodule "resources/deepstream_reference_apps"]
+	path = resources/deepstream_reference_apps
+	url = https://github.com/NVIDIA-AI-IOT/deepstream_reference_apps.git
+[submodule "resources/deepstream_python_apps"]
+	path = resources/deepstream_python_apps
+	url = https://github.com/NVIDIA-AI-IOT/deepstream_python_apps.git
