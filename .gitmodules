@@ -88,9 +88,6 @@
 [submodule "resources/kubeflow-kfp-tekton"]
 	path = resources/kubeflow-kfp-tekton
         url = https://github.com/kubeflow/kfp-tekton.git
-[submodule "resources/ray"]
-	path = resources/ray
-	url = https://github.com/ray-project/ray.git
 [submodule "resources/facebook-faiss"]
 	path = resources/facebook-faiss
 	url = https://github.com.cnpmjs.org/facebookresearch/faiss.git
@@ -172,3 +169,6 @@
 [submodule "resources/deepstream_python_apps"]
 	path = resources/deepstream_python_apps
 	url = https://github.com/NVIDIA-AI-IOT/deepstream_python_apps.git
+[submodule "resources/ray"]
+	path = resources/ray
+	url = git@github.com:aicanhelp/ray.git
