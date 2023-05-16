@@ -172,3 +172,6 @@
 [submodule "resources/ray"]
 	path = resources/ray
 	url = git@github.com:aicanhelp/ray.git
+[submodule "resources/cuda-thrust"]
+	path = resources/cuda-thrust
+	url = https://github.com/NVIDIA/thrust.git

@@ -1,0 +1,4 @@
+CMAKE_MINIMUM_REQUIRED(VERSION 3.17)
+
+CUDA_ADD_EXECUTABLE(sum_reduction ch5__sum_reduction.cu)
+SET_PROPERTY(TARGET sum_reduction  PROPERTY FOLDER chapter_05)
