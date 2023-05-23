@@ -175,3 +175,12 @@
 [submodule "resources/cuda-thrust"]
 	path = resources/cuda-thrust
 	url = https://github.com/NVIDIA/thrust.git
+[submodule "resources/VideoProcessingFramework"]
+	path = resources/VideoProcessingFramework
+	url = https://github.com/NVIDIA/VideoProcessingFramework.git
+[submodule "resources/learning_ray"]
+	path = resources/learning_ray
+	url = https://github.com/maxpumperla/learning_ray.git
+[submodule "resources/ray-tutorial-academy"]
+	path = resources/ray-tutorial-academy
+	url = https://github.com/anyscale/academy.git

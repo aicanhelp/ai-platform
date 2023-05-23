@@ -1,6 +1,8 @@
 #include <omp.h>
 #include <iostream>
+
 using namespace std;
+
 #include <cmath>
 
 //create storage on the device in gmem
@@ -30,35 +32,35 @@ __global__ void kernel(float a, float b, float c)
 #else
 // test thread level parallelism
 #define OP_COUNT 1*2*NUM_ITERATIONS
-__global__ void kernel(float a, float b, float c)
-{
+
+__global__ void kernel(float a, float b, float c) {
 #pragma unroll 16
-  for(int i=0; i < NUM_ITERATIONS; i++) {
-    a = a * b + c;
-  }
-  
-  // write to gmem so the work is not optimized out by the compiler
-  d_a[threadIdx.x] = a; 
+    for (int i = 0; i < NUM_ITERATIONS; i++) {
+        a = a * b + c;
+    }
+
+    // write to gmem so the work is not optimized out by the compiler
+    d_a[threadIdx.x] = a;
 }
+
 #endif
 
-int main()
-{
-  // iterate over number of threads in a block
-  for(int nThreads=32; nThreads <= 1024; nThreads += 32) {
-    double start=omp_get_wtime();
+int main() {
+    // iterate over number of threads in a block
+    for (int nThreads = 32; nThreads <= 1024; nThreads += 32) {
+        double start = omp_get_wtime();
 
-    kernel<<<1, nThreads>>>(1., 2., 3.); // async kernel launch
-    if(cudaGetLastError() != cudaSuccess) {
-      cerr << "Launch error " << endl;
-      return(1);
+        kernel<<<1, nThreads>>>(1., 2., 3.); // async kernel launch
+        if (cudaGetLastError() != cudaSuccess) {
+            cerr << "Launch error " << endl;
+            return (1);
+        }
+        cudaThreadSynchronize(); // need to wait for the kernel to complete
+
+        double end = omp_get_wtime();
+        cout << "warps " << ceil(nThreads / 32) << " "
+             << nThreads << " " << (nThreads * (OP_COUNT / 1.e9) / (end - start))
+             << " Gflops " << endl;
     }
-    cudaThreadSynchronize(); // need to wait for the kernel to complete
-
-    double end=omp_get_wtime();
-    cout << "warps " << ceil(nThreads/32) << " " 
-    	  << nThreads << " " << (nThreads*(OP_COUNT/1.e9)/(end - start)) 
-	 <<  " Gflops " << endl;
-  }
-  return(0);
+    return (0);
 }
