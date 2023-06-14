@@ -184,3 +184,6 @@
 [submodule "resources/ray-tutorial-academy"]
 	path = resources/ray-tutorial-academy
 	url = https://github.com/anyscale/academy.git
+[submodule "resources/kuberay"]
+	path = resources/kuberay
+	url = https://github.com/ray-project/kuberay.git
