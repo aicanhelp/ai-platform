@@ -187,3 +187,27 @@
 [submodule "resources/kuberay"]
 	path = resources/kuberay
 	url = https://github.com/ray-project/kuberay.git
+[submodule "resources/transformer-engine"]
+	path = resources/transformer-engine
+	url = https://github.com/NVIDIA/TransformerEngine.git
+[submodule "resources/cuba-lib-samples"]
+	path = resources/cuba-lib-samples
+	url = https://github.com/NVIDIA/CUDALibrarySamples.git
+[submodule "resources/pytorchx"]
+	path = resources/pytorchx
+	url = https://github.com/wang-xinyu/pytorchx
+[submodule "resources/deepspeed-example"]
+	path = resources/deepspeed-example
+	url = https://github.com/microsoft/DeepSpeedExamples.git
+[submodule "resources/FasterTransformer"]
+	path = resources/FasterTransformer
+	url = https://github.com/NVIDIA/FasterTransformer.git
+[submodule "resources/tensorrt"]
+	path = resources/tensorrt
+	url = https://github.com/NVIDIA/TensorRT.git
+[submodule "resources/trt-samples-for-hackathon-cn"]
+	path = resources/trt-samples-for-hackathon-cn
+	url = https://github.com/NVIDIA/trt-samples-for-hackathon-cn.git
+[submodule "resources/nemo"]
+	path = resources/nemo
+	url = https://github.com/NVIDIA/NeMo.git

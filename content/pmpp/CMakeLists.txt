@@ -56,3 +56,4 @@ if (CUDA_FOUND)
 else ()
     message("CUDA not found!")
 endif ()
+
