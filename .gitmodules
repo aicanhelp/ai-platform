@@ -11,13 +11,13 @@
 	path = resources/onnxruntime
 	url = https://github.com/microsoft/onnxruntime.git
 [submodule "resources/pytorch-lightning"]
-	path = resources/pytorch-lightning
+	path = pytorch-projects/pytorch-lightning
 	url = https://github.com/PyTorchLightning/pytorch-lightning.git
 [submodule "resources/pytorch-ignite"]
-	path = resources/pytorch-ignite
+	path = pytorch-projects/pytorch-ignite
 	url = https://github.com/pytorch/ignite.git
 [submodule "resources/trax"]
-	path = resources/trax
+	path = others-projects/trax
 	url = https://github.com/google/trax.git
 [submodule "resources/polyaxon"]
 	path = resources/polyaxon
@@ -44,13 +44,13 @@
 	path = resources/kubeflow-pipelines
 	url = https://github.com/kubeflow/pipelines.git
 [submodule "resources/kubeflow-kfserving"]
-	path = resources/kubeflow-projects/kubeflow-kfserving
+	path = kubeflow-projects/kubeflow-kfserving
 	url = https://github.com/kubeflow/kfserving.git
 [submodule "resources/featuretools"]
 	path = resources/featuretools
 	url = https://github.com/alteryx/featuretools.git
 [submodule "resources/pytorch-kaldi"]
-	path = resources/pytorch-kaldi
+	path = pytorch-projects/pytorch-kaldi
 	url = https://github.com/mravanelli/pytorch-kaldi.git
 [submodule "resources/espnet"]
 	path = resources/espnet
@@ -59,43 +59,43 @@
 	path = resources/kubeflow
 	url = https://github.com/kubeflow/kubeflow.git
 [submodule "resources/kubeflow-katlib"]
-	path = resources/kubeflow-projects/kubeflow-katlib
+	path = kubeflow-projects/kubeflow-katlib
 	url = https://github.com/kubeflow/katib.git
 [submodule "resources/kubeflow-examples"]
-	path = resources/kubeflow-projects/kubeflow-examples
+	path = kubeflow-projects/kubeflow-examples
 	url = https://github.com/kubeflow/examples.git
 [submodule "resources/kubeflow-pipelines"]
 	path = resources/kubeflow-pipelines
 	url = https://github.com/kubeflow/pipelines.git
 [submodule "resources/kubeflow-kfctl"]
-	path = resources/kubeflow-projects/kubeflow-kfctl
+	path = kubeflow-projects/kubeflow-kfctl
 	url = https://github.com/kubeflow/kfctl.git
 [submodule "resources/kubeflow-manifests"]
-	path = resources/kubeflow-projects/kubeflow-manifests
+	path = kubeflow-projects/kubeflow-manifests
 	url = https://github.com/kubeflow/manifests.git
 [submodule "resources/kubeflow-arena"]
-	path = resources/kubeflow-projects/kubeflow-arena
+	path = kubeflow-projects/kubeflow-arena
 	url = https://github.com/kubeflow/arena.git
 [submodule "resources/kubeflow-fairing"]
-	path = resources/kubeflow-projects/kubeflow-fairing
+	path = kubeflow-projects/kubeflow-fairing
 	url = https://github.com/kubeflow/fairing.git
 [submodule "resources/kubeflow-common"]
-	path = resources/kubeflow-projects/kubeflow-common
+	path = kubeflow-projects/kubeflow-common
 	url = https://github.com/kubeflow/common.git
 [submodule "resources/kubeflow-kubebench"]
-	path = resources/kubeflow-projects/kubeflow-kubebench
+	path = kubeflow-projects/kubeflow-kubebench
 	url = https://github.com/kubeflow/kubebench.git
 [submodule "resources/kubeflow-kfp-tekton"]
-	path = resources/kubeflow-projects/kubeflow-kfp-tekton
+	path = kubeflow-projects/kubeflow-kfp-tekton
         url = https://github.com/kubeflow/kfp-tekton.git
 [submodule "resources/facebook-faiss"]
 	path = resources/facebook-faiss
 	url = https://github.com.cnpmjs.org/facebookresearch/faiss.git
 [submodule "resources/ray-tutorial"]
-	path = resources/ray-projects/ray-tutorial
+	path = ray-projects/ray-tutorial
 	url = https://github.com/ray-project/tutorial.git
 [submodule "resources/anyscale-academy"]
-	path = resources/anyscale-academy
+	path = ray-projects/anyscale-academy
 	url = https://github.com/anyscale/academy
 [submodule "resources/openvino"]
 	path = resources/openvino_projects
@@ -104,16 +104,16 @@
 	path = resources/openvino/notebooks
 	url = https://github.com/openvinotoolkit/openvino_notebooks.git
 [submodule "resources/tensorrtx"]
-	path = resources/tensorrtx
+	path = nvidia-projects/tensorrtx
 	url = https://github.com/wang-xinyu/tensorrtx.git
 [submodule "resources/cvat"]
 	path = resources/cvat
 	url = https://github.com/openvinotoolkit/cvat.git
 [submodule "resources/cuda-samples"]
-	path = resources/cuda-samples
+	path = nvidia-projects/cuda-samples
 	url = https://github.com/NVIDIA/cuda-samples.git
 [submodule "resources/kubeflow-frontend"]
-	path = resources/kubeflow-projects/kubeflow-frontend
+	path = kubeflow-projects/kubeflow-frontend
 	url = https://github.com/kubeflow/frontent.git
 [submodule "resources/kubeflow-training-operator"]
 	path = resources/kubeflow-training-operator
@@ -125,25 +125,25 @@
 	path = resources/kubeflow-xgboost-operator
 	url = https://github.com/kubeflow/xgboost-operator.git
 [submodule "resources/kubeflow-mpi-operator"]
-	path = resources/kubeflow-projects/kubeflow-mpi-operator
+	path = kubeflow-projects/kubeflow-mpi-operator
 	url = https://github.com/kubeflow/mpi-operator.git
 [submodule "resources/kubeflow-operator"]
-	path = resources/kubeflow-projects/kubeflow-operator
+	path = kubeflow-projects/kubeflow-operator
 	url = https://github.com/kubeflow/operator.git
 [submodule "resources/kubeflow-metadata"]
-	path = resources/kubeflow-projects/kubeflow-metadata
+	path = kubeflow-projects/kubeflow-metadata
 	url = https://github.com/kubeflow/metadata.git
 [submodule "resources/openvino/model_zoo"]
 	path = resources/openvino/model_zoo
 	url = https://github.com/openvinotoolkit/open_model_zoo.git
 [submodule "resources/mds-openvino/notebooks"]
-	path = resources/mds-openvino/notebooks
+	path = mds-projects/openvino-notebooks
 	url = git@github.com:aicanhelp/openvino_notebooks.git
 [submodule "resources/mds-openvino/model_zoo"]
-	path = resources/mds-openvino/model_zoo
+	path = mds-projects/openvino-model_zoo
 	url = git@github.com:aicanhelp/open_model_zoo.git
 [submodule "resources/mds-cuda-sample"]
-	path = resources/mds-cuda-sample
+	path = mds-projects/mds-cuda-sample
 	url = git@github.com:aicanhelp/cuda-samples.git
 [submodule "resources/mds_cuda_by_example"]
 	path = resources/mds_cuda_by_example
@@ -170,58 +170,58 @@
 	path = resources/deepstream_python_apps
 	url = https://github.com/NVIDIA-AI-IOT/deepstream_python_apps.git
 [submodule "resources/ray"]
-	path = resources/ray-projects/ray
+	path = ray-projects/ray
 	url = git@github.com:aicanhelp/ray.git
 [submodule "resources/cuda-thrust"]
-	path = resources/cuda-thrust
+	path = nvidia-projects/cuda-thrust
 	url = https://github.com/NVIDIA/thrust.git
 [submodule "resources/VideoProcessingFramework"]
 	path = resources/VideoProcessingFramework
 	url = https://github.com/NVIDIA/VideoProcessingFramework.git
 [submodule "resources/learning_ray"]
-	path = resources/ray-projects/learning_ray
+	path = ray-projects/learning_ray
 	url = https://github.com/maxpumperla/learning_ray.git
 [submodule "resources/ray-tutorial-academy"]
-	path = resources/ray-projects/ray-tutorial-academy
+	path = ray-projects/ray-tutorial-academy
 	url = https://github.com/anyscale/academy.git
 [submodule "resources/kuberay"]
-	path = resources/ray-projects/kuberay
+	path = ray-projects/kuberay
 	url = https://github.com/ray-project/kuberay.git
 [submodule "resources/transformer-engine"]
-	path = resources/transformer-engine
+	path = nvidia-projects/transformer-engine
 	url = https://github.com/NVIDIA/TransformerEngine.git
 [submodule "resources/cuba-lib-samples"]
-	path = resources/cuba-lib-samples
+	path = nvidia-projects/cuba-lib-samples
 	url = https://github.com/NVIDIA/CUDALibrarySamples.git
 [submodule "resources/pytorchx"]
-	path = resources/pytorch-projects/pytorchx
+	path = pytorch-projects/pytorchx
 	url = https://github.com/wang-xinyu/pytorchx
 [submodule "resources/deepspeed-example"]
 	path = resources/deepspeed-example
 	url = https://github.com/microsoft/DeepSpeedExamples.git
 [submodule "resources/FasterTransformer"]
-	path = resources/FasterTransformer
+	path = nvidia-projects/FasterTransformer
 	url = https://github.com/NVIDIA/FasterTransformer.git
 [submodule "resources/tensorrt"]
-	path = resources/tensorrt
+	path = nvidia-projects/tensorrt
 	url = https://github.com/NVIDIA/TensorRT.git
 [submodule "resources/trt-samples-for-hackathon-cn"]
 	path = resources/trt-samples-for-hackathon-cn
 	url = https://github.com/NVIDIA/trt-samples-for-hackathon-cn.git
 [submodule "resources/nemo"]
-	path = resources/nemo
+	path = nvidia-projects/nemo
 	url = https://github.com/NVIDIA/NeMo.git
 [submodule "resources/gpt-neox"]
 	path = resources/gpt-neox
 	url = https://github.com/EleutherAI/gpt-neox.git
 [submodule "resources/nccl"]
-	path = resources/nccl
+	path = nvidia-projects/nccl
 	url = https://github.com/NVIDIA/nccl.git
 [submodule "resources/llama"]
-	path = resources/llama
+	path = facebook-projects/llama
 	url = https://github.com/facebookresearch/llama.git
 [submodule "resources/megatron-lm"]
-	path = resources/megatron-lm
+	path = nvidia-projects/megatron-lm
 	url = https://github.com/NVIDIA/Megatron-LM.git
 [submodule "resources/flash-attention"]
 	path = resources/flash-attention
