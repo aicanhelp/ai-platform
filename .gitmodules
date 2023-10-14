@@ -44,7 +44,7 @@
 	path = resources/kubeflow-pipelines
 	url = https://github.com/kubeflow/pipelines.git
 [submodule "resources/kubeflow-kfserving"]
-	path = resources/kubeflow-kfserving
+	path = resources/kubeflow-projects/kubeflow-kfserving
 	url = https://github.com/kubeflow/kfserving.git
 [submodule "resources/featuretools"]
 	path = resources/featuretools
@@ -59,34 +59,34 @@
 	path = resources/kubeflow
 	url = https://github.com/kubeflow/kubeflow.git
 [submodule "resources/kubeflow-katlib"]
-	path = resources/kubeflow-katlib
+	path = resources/kubeflow-projects/kubeflow-katlib
 	url = https://github.com/kubeflow/katib.git
 [submodule "resources/kubeflow-examples"]
-	path = resources/kubeflow-examples
+	path = resources/kubeflow-projects/kubeflow-examples
 	url = https://github.com/kubeflow/examples.git
 [submodule "resources/kubeflow-pipelines"]
 	path = resources/kubeflow-pipelines
 	url = https://github.com/kubeflow/pipelines.git
 [submodule "resources/kubeflow-kfctl"]
-	path = resources/kubeflow-kfctl
+	path = resources/kubeflow-projects/kubeflow-kfctl
 	url = https://github.com/kubeflow/kfctl.git
 [submodule "resources/kubeflow-manifests"]
-	path = resources/kubeflow-manifests
+	path = resources/kubeflow-projects/kubeflow-manifests
 	url = https://github.com/kubeflow/manifests.git
 [submodule "resources/kubeflow-arena"]
 	path = resources/kubeflow-projects/kubeflow-arena
 	url = https://github.com/kubeflow/arena.git
 [submodule "resources/kubeflow-fairing"]
-	path = resources/kubeflow-fairing
+	path = resources/kubeflow-projects/kubeflow-fairing
 	url = https://github.com/kubeflow/fairing.git
 [submodule "resources/kubeflow-common"]
 	path = resources/kubeflow-projects/kubeflow-common
 	url = https://github.com/kubeflow/common.git
 [submodule "resources/kubeflow-kubebench"]
-	path = resources/kubeflow-kubebench
+	path = resources/kubeflow-projects/kubeflow-kubebench
 	url = https://github.com/kubeflow/kubebench.git
 [submodule "resources/kubeflow-kfp-tekton"]
-	path = resources/kubeflow-kfp-tekton
+	path = resources/kubeflow-projects/kubeflow-kfp-tekton
         url = https://github.com/kubeflow/kfp-tekton.git
 [submodule "resources/facebook-faiss"]
 	path = resources/facebook-faiss
@@ -113,7 +113,7 @@
 	path = resources/cuda-samples
 	url = https://github.com/NVIDIA/cuda-samples.git
 [submodule "resources/kubeflow-frontend"]
-	path = resources/kubeflow-frontend
+	path = resources/kubeflow-projects/kubeflow-frontend
 	url = https://github.com/kubeflow/frontent.git
 [submodule "resources/kubeflow-training-operator"]
 	path = resources/kubeflow-training-operator
@@ -125,13 +125,13 @@
 	path = resources/kubeflow-xgboost-operator
 	url = https://github.com/kubeflow/xgboost-operator.git
 [submodule "resources/kubeflow-mpi-operator"]
-	path = resources/kubeflow-mpi-operator
+	path = resources/kubeflow-projects/kubeflow-mpi-operator
 	url = https://github.com/kubeflow/mpi-operator.git
 [submodule "resources/kubeflow-operator"]
 	path = resources/kubeflow-projects/kubeflow-operator
 	url = https://github.com/kubeflow/operator.git
 [submodule "resources/kubeflow-metadata"]
-	path = resources/kubeflow-metadata
+	path = resources/kubeflow-projects/kubeflow-metadata
 	url = https://github.com/kubeflow/metadata.git
 [submodule "resources/openvino/model_zoo"]
 	path = resources/openvino/model_zoo
