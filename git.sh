@@ -40,6 +40,7 @@ function do_update_all(){
 }
 
 function do_mv(){
+  mkdir -p resources/$2
   git mv resources/$1 resources/$2/$1
 }
 

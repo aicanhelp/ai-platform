@@ -92,7 +92,7 @@
 	path = resources/facebook-faiss
 	url = https://github.com.cnpmjs.org/facebookresearch/faiss.git
 [submodule "resources/ray-tutorial"]
-	path = resources/ray-tutorial
+	path = resources/ray-projects/ray-tutorial
 	url = https://github.com/ray-project/tutorial.git
 [submodule "resources/anyscale-academy"]
 	path = resources/anyscale-academy
@@ -170,7 +170,7 @@
 	path = resources/deepstream_python_apps
 	url = https://github.com/NVIDIA-AI-IOT/deepstream_python_apps.git
 [submodule "resources/ray"]
-	path = resources/ray
+	path = resources/ray-projects/ray
 	url = git@github.com:aicanhelp/ray.git
 [submodule "resources/cuda-thrust"]
 	path = resources/cuda-thrust
@@ -179,13 +179,13 @@
 	path = resources/VideoProcessingFramework
 	url = https://github.com/NVIDIA/VideoProcessingFramework.git
 [submodule "resources/learning_ray"]
-	path = resources/learning_ray
+	path = resources/ray-projects/learning_ray
 	url = https://github.com/maxpumperla/learning_ray.git
 [submodule "resources/ray-tutorial-academy"]
-	path = resources/ray-tutorial-academy
+	path = resources/ray-projects/ray-tutorial-academy
 	url = https://github.com/anyscale/academy.git
 [submodule "resources/kuberay"]
-	path = resources/kuberay
+	path = resources/ray-projects/kuberay
 	url = https://github.com/ray-project/kuberay.git
 [submodule "resources/transformer-engine"]
 	path = resources/transformer-engine
@@ -194,7 +194,7 @@
 	path = resources/cuba-lib-samples
 	url = https://github.com/NVIDIA/CUDALibrarySamples.git
 [submodule "resources/pytorchx"]
-	path = resources/pytorchx
+	path = resources/pytorch-projects/pytorchx
 	url = https://github.com/wang-xinyu/pytorchx
 [submodule "resources/deepspeed-example"]
 	path = resources/deepspeed-example
