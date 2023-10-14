@@ -1,8 +1,8 @@
 [submodule "resources/mlflow"]
-	path = resources/mlflow
+	path = others-projects/mlflow
 	url = https://github.com/mlflow/mlflow.git
 [submodule "resources/plaidml"]
-	path = resources/plaidml
+	path = others-projects/plaidml
 	url = https://github.com/plaidml/plaidml.git
 [submodule "resources/acme"]
 	path = others-projects/acme
@@ -20,13 +20,13 @@
 	path = others-projects/trax
 	url = https://github.com/google/trax.git
 [submodule "resources/polyaxon"]
-	path = resources/polyaxon
+	path = others-projects/polyaxon
 	url = https://github.com/polyaxon/polyaxon.git
 [submodule "resources/ml-workspace"]
-	path = resources/ml-workspace
+	path = others-projects/ml-workspace
 	url = https://github.com/ml-tooling/ml-workspace.git
 [submodule "resources/ml-hub"]
-	path = resources/ml-hub
+	path = others-projects/ml-hub
 	url = https://github.com/ml-tooling/ml-hub.git
 [submodule "resources/DeepSpeed"]
 	path = microsoft-projects/DeepSpeed
@@ -149,16 +149,16 @@
 	path = resources/mds_cuda_by_example
 	url = git@github.com:aicanhelp/cuda_by_example.git
 [submodule "resources/numpy-ml"]
-	path = resources/numpy-ml
+	path = others-projects/numpy-ml
 	url = https://github.com/ddbourgin/numpy-ml.git
 [submodule "resources/numpy-100"]
-	path = resources/numpy-100
+	path = others-projects/numpy-100
 	url = https://github.com/rougier/numpy-100.git
 [submodule "resources/cupy"]
 	path = others-projects/cupy
 	url = https://github.com/cupy/cupy.git
 [submodule "resources/numba"]
-	path = resources/numba
+	path = others-projects/numba
 	url = https://github.com/numba/numba.git
 [submodule "resources/glfw"]
 	path = others-projects/glfw
@@ -230,5 +230,5 @@
 	path = others-projects/langchain
 	url = https://github.com/langchain-ai/langchain.git
 [submodule "resources/openllama2"]
-	path = resources/openllama2
+	path = others-projects/openllama2
 	url = https://github.com/OpenLLMAI/OpenLLaMA2.git
