@@ -217,3 +217,18 @@
 [submodule "resources/nccl"]
 	path = resources/nccl
 	url = https://github.com/NVIDIA/nccl.git
+[submodule "resources/llama"]
+	path = resources/llama
+	url = https://github.com/facebookresearch/llama.git
+[submodule "resources/megatron-lm"]
+	path = resources/megatron-lm
+	url = https://github.com/NVIDIA/Megatron-LM.git
+[submodule "resources/flash-attention"]
+	path = resources/flash-attention
+	url = https://github.com/Dao-AILab/flash-attention.git
+[submodule "resources/langchain"]
+	path = resources/langchain
+	url = https://github.com/langchain-ai/langchain.git
+[submodule "resources/openllama2"]
+	path = resources/openllama2
+	url = https://github.com/OpenLLMAI/OpenLLaMA2.git
