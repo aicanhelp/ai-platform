@@ -74,13 +74,13 @@
 	path = resources/kubeflow-manifests
 	url = https://github.com/kubeflow/manifests.git
 [submodule "resources/kubeflow-arena"]
-	path = resources/kubeflow-arena
+	path = resources/kubeflow-projects/kubeflow-arena
 	url = https://github.com/kubeflow/arena.git
 [submodule "resources/kubeflow-fairing"]
 	path = resources/kubeflow-fairing
 	url = https://github.com/kubeflow/fairing.git
 [submodule "resources/kubeflow-common"]
-	path = resources/kubeflow-common
+	path = resources/kubeflow-projects/kubeflow-common
 	url = https://github.com/kubeflow/common.git
 [submodule "resources/kubeflow-kubebench"]
 	path = resources/kubeflow-kubebench
@@ -128,7 +128,7 @@
 	path = resources/kubeflow-mpi-operator
 	url = https://github.com/kubeflow/mpi-operator.git
 [submodule "resources/kubeflow-operator"]
-	path = resources/kubeflow-operator
+	path = resources/kubeflow-projects/kubeflow-operator
 	url = https://github.com/kubeflow/operator.git
 [submodule "resources/kubeflow-metadata"]
 	path = resources/kubeflow-metadata
