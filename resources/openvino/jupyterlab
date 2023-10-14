@@ -1,2 +1,0 @@
-export LD_LIBRARY_PATH=/home/modongsong/.pyenv/versions/miniconda3-4.7.12/envs/openvino/lib:$LD_LIBRARY_PATH
-jupyter lab
