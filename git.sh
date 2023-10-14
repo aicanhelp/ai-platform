@@ -54,7 +54,7 @@ function do_mv(){
   local name=`echo ${src} | sed 's/.*\///'`
 
   MOD_NAME=$type-projects/${name}
-  mkdir -p ${type}-projects1
+  mkdir -p ${type}-projects
   git mv ${src} ${MOD_NAME}
 }
 
