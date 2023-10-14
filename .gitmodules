@@ -232,3 +232,6 @@
 [submodule "resources/openllama2"]
 	path = others-projects/openllama2
 	url = https://github.com/OpenLLMAI/OpenLLaMA2.git
+[submodule "others-projects/gpt-neox-deeperspeed"]
+	path = others-projects/gpt-neox-deeperspeed
+	url = https://github.com/EleutherAI/DeeperSpeed.git

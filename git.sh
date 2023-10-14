@@ -24,8 +24,9 @@ function do_del() {
 function do_add() {
    local repo=${1:?'[ERROR]argument repo required!'}
    local type=${2:?'[ERROR]argument type required!'}
+   local name=$3
 
-   local name=`echo ${repo} | sed 's/.*\///' | sed 's/\..*//'`
+   test -z $name && name=`echo ${repo} | sed 's/.*\///' | sed 's/\..*//'`
    git submodule add ${repo} ${type}-projects/$name
 }
 
@@ -58,4 +59,4 @@ function do_mv(){
   git mv ${src} ${MOD_NAME}
 }
 
-do_$1 $2 $3 $4
+do_$1 $2 $3 $4 $5
