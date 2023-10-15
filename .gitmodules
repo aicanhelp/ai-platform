@@ -235,3 +235,6 @@
 [submodule "others-projects/gpt-neox-deeperspeed"]
 	path = others-projects/gpt-neox-deeperspeed
 	url = https://github.com/EleutherAI/DeeperSpeed.git
+[submodule "others-projects/lm_dataformat"]
+	path = others-projects/lm_dataformat
+	url = https://github.com/EleutherAI/lm_dataformat.git
