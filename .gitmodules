@@ -238,3 +238,18 @@
 [submodule "others-projects/lm_dataformat"]
 	path = others-projects/lm_dataformat
 	url = https://github.com/EleutherAI/lm_dataformat.git
+[submodule "nvidia-projects/NeMo-Megatron-Launcher"]
+	path = nvidia-projects/NeMo-Megatron-Launcher
+	url = https://github.com/NVIDIA/NeMo-Megatron-Launcher.git
+[submodule "nvidia-projects/apex"]
+	path = nvidia-projects/apex
+	url = https://github.com/NVIDIA/apex.git
+[submodule "huggingface-projects/accelerate"]
+	path = huggingface-projects/accelerate
+	url = https://github.com/huggingface/accelerate.git
+[submodule "huggingface-projects/datasets"]
+	path = huggingface-projects/datasets
+	url = https://github.com/huggingface/datasets.git
+[submodule "agent-projects-projects/llama_index"]
+	path = agent-projects/llama_index
+	url = https://github.com/run-llama/llama_index.git
