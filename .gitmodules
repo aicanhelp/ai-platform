@@ -253,3 +253,6 @@
 [submodule "agent-projects-projects/llama_index"]
 	path = agent-projects/llama_index
 	url = https://github.com/run-llama/llama_index.git
+[submodule "agent-projects/langchain"]
+	path = agent-projects/langchain
+	url = https://github.com/langchain-ai/langchain.git
