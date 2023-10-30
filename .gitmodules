@@ -256,3 +256,33 @@
 [submodule "agent-projects/langchain"]
 	path = agent-projects/langchain
 	url = https://github.com/langchain-ai/langchain.git
+[submodule "agent-projects/text-generation-webui"]
+	path = agent-projects/text-generation-webui
+	url = https://github.com/oobabooga/text-generation-webui.git
+[submodule "others-projects/koboldcpp"]
+	path = others-projects/koboldcpp
+	url = https://github.com/LostRuins/koboldcpp.git
+[submodule "others-projects/ggml"]
+	path = others-projects/ggml
+	url = https://github.com/ggerganov/ggml.git
+[submodule "ray-projects/ray-educational-materials"]
+	path = ray-projects/ray-educational-materials
+	url = https://github.com/ray-project/ray-educational-materials.git
+[submodule "ray-projects/llm-applications"]
+	path = ray-projects/llm-applications
+	url = https://github.com/ray-project/llm-applications.git
+[submodule "ray-projects/ray-llm"]
+	path = ray-projects/ray-llm
+	url = https://github.com/ray-project/ray-llm.git
+[submodule "llm-projects/alpa"]
+	path = llm-projects/alpa
+	url = https://github.com/alpa-projects/alpa.git
+[submodule "llm-projects/vllm"]
+	path = llm-projects/vllm
+	url = https://github.com/vllm-project/vllm.git
+[submodule "ray-projects/ColossalAI"]
+	path = ray-projects/ColossalAI
+	url = https://github.com/hpcaitech/ColossalAI.git
+[submodule "ray-projects/trlx"]
+	path = ray-projects/trlx
+	url = https://github.com/CarperAI/trlx.git
