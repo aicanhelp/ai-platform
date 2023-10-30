@@ -397,3 +397,45 @@
 [submodule "ascend-projects/mindinsight"]
 	path = ascend-projects/mindinsight
 	url = https://gitee.com/mindspore/mindinsight.git
+[submodule "ascend-projects/models"]
+	path = ascend-projects/models
+	url = https://gitee.com/mindspore/models.git
+[submodule "ascend-projects/mindcv"]
+	path = ascend-projects/mindcv
+	url = https://github.com/mindspore-lab/mindcv.git
+[submodule "ascend-projects/mindnlp"]
+	path = ascend-projects/mindnlp
+	url = https://github.com/mindspore-lab/mindnlp.git
+[submodule "ascend-projects/mindaudio"]
+	path = ascend-projects/mindaudio
+	url = https://github.com/mindspore-lab/mindaudio.git
+[submodule "ascend-projects/mind-golden-stick"]
+	path = ascend-projects/mind-golden-stick
+	url = https://gitee.com/mindspore/golden-stick.git
+[submodule "ascend-projects/mindarmour"]
+	path = ascend-projects/mindarmour
+	url = https://gitee.com/mindspore/mindarmour.git
+[submodule "ascend-projects/federated"]
+	path = ascend-projects/federated
+	url = https://gitee.com/mindspore/federated.git
+[submodule "ascend-projects/mindspore"]
+	path = ascend-projects/mindspore
+	url = https://gitee.com/mindspore/mindspore.git
+[submodule "ascend-projects/mind-akkg"]
+	path = ascend-projects/mind-akkg
+	url = https://gitee.com/mindspore/akg.git
+[submodule "ascend-projects/mind-graph"]
+	path = ascend-projects/mind-graph
+	url = https://gitee.com/mindspore/graphlearning.git
+[submodule "ascend-projects/mindrl"]
+	path = ascend-projects/mindrl
+	url = https://github.com/mindspore-lab/mindrl.git
+[submodule "huggingface-projects/tokenizers"]
+	path = huggingface-projects/tokenizers
+	url = https://github.com/huggingface/tokenizers.git
+[submodule "ascend-projects/mindocr"]
+	path = ascend-projects/mindocr
+	url = https://github.com/mindspore-lab/mindocr.git
+[submodule "huggingface-projects/autotrain-advanced"]
+	path = huggingface-projects/autotrain-advanced
+	url = https://github.com/huggingface/autotrain-advanced.git
