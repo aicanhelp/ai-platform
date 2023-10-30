@@ -286,3 +286,21 @@
 [submodule "ray-projects/trlx"]
 	path = ray-projects/trlx
 	url = https://github.com/CarperAI/trlx.git
+[submodule "flag-open-projects/FlagAI"]
+	path = flag-open-projects/FlagAI
+	url = https://github.com/FlagAI-Open/FlagAI.git
+[submodule "huggingface-projects/transformers"]
+	path = huggingface-projects/transformers
+	url = https://github.com/huggingface/transformers.git
+[submodule "huggingface-projects/peft"]
+	path = huggingface-projects/peft
+	url = https://github.com/huggingface/peft.git
+[submodule "huggingface-projects/optimum"]
+	path = huggingface-projects/optimum
+	url = https://github.com/huggingface/optimum.git
+[submodule "huggingface-projects/diffusers"]
+	path = huggingface-projects/diffusers
+	url = https://github.com/huggingface/diffusers.git
+[submodule "huggingface-projects/candle"]
+	path = huggingface-projects/candle
+	url = https://github.com/huggingface/candle.git
