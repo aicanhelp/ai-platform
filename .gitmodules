@@ -304,3 +304,81 @@
 [submodule "huggingface-projects/candle"]
 	path = huggingface-projects/candle
 	url = https://github.com/huggingface/candle.git
+[submodule "huggingface-projects/blog"]
+	path = huggingface-projects/blog
+	url = https://github.com/huggingface/blog.git
+[submodule "huggingface-projects/pytorch-image-models"]
+	path = huggingface-projects/pytorch-image-models
+	url = https://github.com/huggingface/pytorch-image-models.git
+[submodule "huggingface-projects/optimum-intel"]
+	path = huggingface-projects/optimum-intel
+	url = https://github.com/huggingface/optimum-intel.git
+[submodule "ascend-projects/pytorch"]
+	path = ascend-projects/pytorch
+	url = https://gitee.com/ascend/pytorch.git
+[submodule "ascend-projects/modelzoo"]
+	path = ascend-projects/modelzoo
+	url = https://gitee.com/ascend/modelzoo.git
+[submodule "ascend-projects/samples"]
+	path = ascend-projects/samples
+	url = https://gitee.com/ascend/samples.git
+[submodule "ascend-projects/att"]
+	path = ascend-projects/att
+	url = https://gitee.com/ascend/att.git
+[submodule "ascend-projects/ait"]
+	path = ascend-projects/ait
+	url = https://gitee.com/ascend/ait.git
+[submodule "ascend-projects/AscendSpeed"]
+	path = ascend-projects/AscendSpeed
+	url = https://gitee.com/ascend/AscendSpeed.git
+[submodule "ascend-projects/ascend-docker-runtime"]
+	path = ascend-projects/ascend-docker-runtime
+	url = https://gitee.com/ascend/ascend-docker-runtime.git
+[submodule "ascend-projects/ascend-hccl-controller"]
+	path = ascend-projects/ascend-hccl-controller
+	url = https://gitee.com/ascend/ascend-hccl-controller.git
+[submodule "ascend-projects/ascend-device-plugin"]
+	path = ascend-projects/ascend-device-plugin
+	url = https://gitee.com/ascend/ascend-device-plugin.git
+[submodule "ascend-projects/Megatron-LM"]
+	path = ascend-projects/Megatron-LM
+	url = https://gitee.com/ascend/Megatron-LM.git
+[submodule "ascend-projects/ascend-npu-exporter"]
+	path = ascend-projects/ascend-npu-exporter
+	url = https://gitee.com/ascend/ascend-npu-exporter.git
+[submodule "ascend-projects/tools"]
+	path = ascend-projects/tools
+	url = https://gitee.com/ascend/tools.git
+[submodule "ascend-projects/ascend-for-volcano"]
+	path = ascend-projects/ascend-for-volcano
+	url = https://gitee.com/ascend/ascend-for-volcano.git
+[submodule "ascend-projects/transformers"]
+	path = ascend-projects/transformers
+	url = https://gitee.com/ascend/transformers.git
+[submodule "ascend-projects/DeepSpeed"]
+	path = ascend-projects/DeepSpeed
+	url = https://gitee.com/ascend/DeepSpeed.git
+[submodule "ascend-projects/apex"]
+	path = ascend-projects/apex
+	url = https://gitee.com/ascend/apex.git
+[submodule "ascend-projects/ascend-docker-image"]
+	path = ascend-projects/ascend-docker-image
+	url = https://gitee.com/ascend/ascend-docker-image.git
+[submodule "ascend-projects/ascend_community_projects"]
+	path = ascend-projects/ascend_community_projects
+	url = https://gitee.com/ascend/ascend_community_projects.git
+[submodule "ascend-projects/mindformers"]
+	path = ascend-projects/mindformers
+	url = https://gitee.com/mindspore/mindformers.git
+[submodule "ascend-projects/ringmo-framework"]
+	path = ascend-projects/ringmo-framework
+	url = https://gitee.com/mindspore/ringmo-framework.git
+[submodule "ascend-projects/serving"]
+	path = ascend-projects/serving
+	url = https://gitee.com/mindspore/serving.git
+[submodule "ascend-projects/op-plugin"]
+	path = ascend-projects/op-plugin
+	url = https://gitee.com/ascend/op-plugin.git
+[submodule "ascend-projects/parser"]
+	path = ascend-projects/parser
+	url = https://gitee.com/ascend/parser.git
