@@ -382,3 +382,18 @@
 [submodule "ascend-projects/parser"]
 	path = ascend-projects/parser
 	url = https://gitee.com/ascend/parser.git
+[submodule "ascend-projects/mindpandas"]
+	path = ascend-projects/mindpandas
+	url = https://gitee.com/mindspore/mindpandas.git
+[submodule "ascend-projects/hub"]
+	path = ascend-projects/hub
+	url = https://gitee.com/mindspore/hub.git
+[submodule "ascend-projects/mindpet"]
+	path = ascend-projects/mindpet
+	url = https://github.com/mindspore-lab/mindpet.git
+[submodule "ascend-projects/mindone"]
+	path = ascend-projects/mindone
+	url = https://github.com/mindspore-lab/mindone.git
+[submodule "ascend-projects/mindinsight"]
+	path = ascend-projects/mindinsight
+	url = https://gitee.com/mindspore/mindinsight.git
