@@ -439,3 +439,21 @@
 [submodule "huggingface-projects/autotrain-advanced"]
 	path = huggingface-projects/autotrain-advanced
 	url = https://github.com/huggingface/autotrain-advanced.git
+[submodule "nvidia-projects/TensorRT-LLM"]
+	path = nvidia-projects/TensorRT-LLM
+	url = https://github.com/NVIDIA/TensorRT-LLM.git
+[submodule "nvidia-projects/triton-server"]
+	path = nvidia-projects/triton-server
+	url = https://github.com/triton-inference-server/server.git
+[submodule "nvidia-projects/triton-tutorials"]
+	path = nvidia-projects/triton-tutorials
+	url = https://github.com/triton-inference-server/tutorials.git
+[submodule "others-projects/onnx"]
+	path = others-projects/onnx
+	url = https://github.com/onnx/onnx.git
+[submodule "others-projects/Yi"]
+	path = others-projects/Yi
+	url = https://github.com/01-ai/Yi.git
+[submodule "others-projects/ascend-docker-image"]
+	path = ascend-projects/ascend-docker-image/ascend-docker-image
+	url = https://gitee.com/ascend/ascend-docker-image.git
