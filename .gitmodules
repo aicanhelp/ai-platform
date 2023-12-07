@@ -457,3 +457,69 @@
 [submodule "others-projects/ascend-docker-image"]
 	path = ascend-projects/ascend-docker-image/ascend-docker-image
 	url = https://gitee.com/ascend/ascend-docker-image.git
+[submodule "mlflow-projects/mlflow"]
+	path = mlflow-projects/mlflow
+	url = https://github.com/mlflow/mlflow.git
+[submodule "others-projects/modeldb"]
+	path = others-projects/modeldb
+	url = https://github.com/VertaAI/modeldb.git
+[submodule "openBMB-projects/ChatDev"]
+	path = openBMB-projects/ChatDev
+	url = https://github.com/OpenBMB/ChatDev.git
+[submodule "openBMB-projects/BMTrain"]
+	path = openBMB-projects/BMTrain
+	url = https://github.com/OpenBMB/BMTrain.git
+[submodule "openBMB-projects/ModelCenter"]
+	path = openBMB-projects/ModelCenter
+	url = https://github.com/OpenBMB/ModelCenter.git
+[submodule "openBMB-projects/XAgent"]
+	path = openBMB-projects/XAgent
+	url = https://github.com/OpenBMB/XAgent.git
+[submodule "openBMB-projects/AgentVerse"]
+	path = openBMB-projects/AgentVerse
+	url = https://github.com/OpenBMB/AgentVerse.git
+[submodule "openBMB-projects/UltraEval"]
+	path = openBMB-projects/UltraEval
+	url = https://github.com/OpenBMB/UltraEval.git
+[submodule "openBMB-projects/ToolBench"]
+	path = openBMB-projects/ToolBench
+	url = https://github.com/OpenBMB/ToolBench.git
+[submodule "openBMB-projects/BMCook"]
+	path = openBMB-projects/BMCook
+	url = https://github.com/OpenBMB/BMCook.git
+[submodule "openBMB-projects/BMInf"]
+	path = openBMB-projects/BMInf
+	url = https://github.com/OpenBMB/BMInf.git
+[submodule "zenml-projects/zenml"]
+	path = zenml-projects/zenml
+	url = https://github.com/zenml-io/zenml.git
+[submodule "zenml-projects/mlstacks"]
+	path = zenml-projects/mlstacks
+	url = https://github.com/zenml-io/mlstacks.git
+[submodule "zenml-projects/zenml-dashboard"]
+	path = zenml-projects/zenml-dashboard
+	url = https://github.com/zenml-io/zenml-dashboard.git
+[submodule "kserve-projects/kserve"]
+	path = kserve-projects/kserve
+	url = https://github.com/kserve/kserve.git
+[submodule "modelmesh-projects/modelmesh"]
+	path = kserve-projects/modelmesh
+	url = https://github.com/kserve/modelmesh.git
+[submodule "kserve-projects/modelmesh-serving"]
+	path = kserve-projects/modelmesh-serving
+	url = https://github.com/kserve/modelmesh-serving.git
+[submodule "fluid-projects/fluid"]
+	path = fluid-projects/fluid
+	url = https://github.com/fluid-cloudnative/fluid.git
+[submodule "llm-projects/haystack"]
+	path = llm-projects/haystack
+	url = https://github.com/deepset-ai/haystack.git
+[submodule "llm-projects/xtuner"]
+	path = llm-projects/xtuner
+	url = https://github.com/InternLM/xtuner.git
+[submodule "llm-projects/llama_index"]
+	path = llm-projects/llama_index
+	url = https://github.com/run-llama/llama_index.git
+[submodule "llm-projects/dify"]
+	path = llm-projects/dify
+	url = https://github.com/langgenius/dify.git
