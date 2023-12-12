@@ -227,10 +227,10 @@
 	path = others-projects/flash-attention
 	url = https://github.com/Dao-AILab/flash-attention.git
 [submodule "resources/langchain"]
-	path = others-projects/langchain
+	path = llm-projects/langchain
 	url = https://github.com/langchain-ai/langchain.git
 [submodule "resources/openllama2"]
-	path = others-projects/openllama2
+	path = llm-projects/openllama2
 	url = https://github.com/OpenLLMAI/OpenLLaMA2.git
 [submodule "others-projects/gpt-neox-deeperspeed"]
 	path = others-projects/gpt-neox-deeperspeed
@@ -523,3 +523,21 @@
 [submodule "llm-projects/dify"]
 	path = llm-projects/dify
 	url = https://github.com/langgenius/dify.git
+[submodule "tuning-projects/bitsandbytes"]
+	path = tuning-projects/bitsandbytes
+	url = https://github.com/TimDettmers/bitsandbytes.git
+[submodule "tuning-projects/peft"]
+	path = tuning-projects/peft
+	url = https://github.com/huggingface/peft.git
+[submodule "tuning-projects/accelerate"]
+	path = tuning-projects/accelerate
+	url = https://github.com/huggingface/accelerate.git
+[submodule "tuning-projects/LLM-Adapters"]
+	path = tuning-projects/LLM-Adapters
+	url = https://github.com/AGI-Edgerunners/LLM-Adapters
+[submodule "tuning-projects/Alpaca-CoT"]
+	path = tuning-projects/Alpaca-CoT
+	url = https://github.com/PhoebusSi/Alpaca-CoT.git
+[submodule "tuning-projects/AutoGPTQ"]
+	path = tuning-projects/AutoGPTQ
+	url = https://github.com/PanQiWei/AutoGPTQ.git

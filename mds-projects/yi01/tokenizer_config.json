@@ -1,0 +1,9 @@
+{
+  "auto_map": {
+    "AutoTokenizer": ["tokenization_yi.YiTokenizer", null]
+  },
+  "add_bos_token": false,
+  "add_eos_token": false,
+  "model_max_length": 4096,
+  "tokenizer_class": "YiTokenizer"
+}
