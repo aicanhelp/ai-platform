@@ -541,3 +541,69 @@
 [submodule "tuning-projects/AutoGPTQ"]
 	path = tuning-projects/AutoGPTQ
 	url = https://github.com/PanQiWei/AutoGPTQ.git
+[submodule "llm-projects/text-generation-webui"]
+	path = llm-projects/text-generation-webui
+	url = https://github.com/oobabooga/text-generation-webui.git
+[submodule "tuning-projects/AutoAWQ"]
+	path = tuning-projects/AutoAWQ
+	url = https://github.com/casper-hansen/AutoAWQ.git
+[submodule "tuning-projects/exllamav2"]
+	path = tuning-projects/exllamav2
+	url = https://github.com/turboderp/exllamav2.git
+[submodule "llm-projects/Langchain-Chatchat"]
+	path = llm-projects/Langchain-Chatchat
+	url = https://github.com/chatchat-space/Langchain-Chatchat.git
+[submodule "llm-projects/FastChat"]
+	path = llm-projects/FastChat
+	url = https://github.com/lm-sys/FastChat.git
+[submodule "llm-projects/llama"]
+	path = llm-projects/llama
+	url = https://github.com/ggerganov/llama.cpp.git
+[submodule "llm-projects/mlc-llm"]
+	path = llm-projects/mlc-llm
+	url = https://github.com/mlc-ai/mlc-llm.git
+[submodule "llm-projects/mlc-zh"]
+	path = llm-projects/mlc-zh
+	url = https://github.com/mlc-ai/mlc-zh.git
+[submodule "llm-projects/LocalAI"]
+	path = llm-projects/LocalAI
+	url = https://github.com/mudler/LocalAI.git
+[submodule "xorbitsai-projects/inference"]
+	path = xorbitsai-projects/inference
+	url = https://github.com/xorbitsai/inference.git
+[submodule "llm-projects/ollama"]
+	path = llm-projects/ollama
+	url = https://github.com/jmorganca/ollama.git
+[submodule "dagster-projects/dagster"]
+	path = dagster-projects/dagster
+	url = https://github.com/dagster-io/dagster.git
+[submodule "llm-data-projects/stanford_alpaca"]
+	path = llm-data-projects/stanford_alpaca
+	url = https://github.com/tatsu-lab/stanford_alpaca.git
+[submodule "llm-data-projects/self-instruct"]
+	path = llm-data-projects/self-instruct
+	url = https://github.com/yizhongw/self-instruct
+[submodule "llm-data-projects/alpaca-lora"]
+	path = llm-data-projects/alpaca-lora
+	url = https://github.com/tloen/alpaca-lora
+[submodule "llm-data-projects/AlpacaDataCleaned"]
+	path = llm-data-projects/AlpacaDataCleaned
+	url = https://github.com/gururise/AlpacaDataCleaned
+[submodule "llm-data-projects/BELLE"]
+	path = llm-data-projects/BELLE
+	url = https://github.com/LianjiaTech/BELLE
+[submodule "dask-projects/dask"]
+	path = dask-projects/dask
+	url = https://github.com/dask/dask.git
+[submodule "ludwig-projects/ludwig"]
+	path = ludwig-projects/ludwig
+	url = https://github.com/ludwig-ai/ludwig.git
+[submodule "dask-projects/distributed"]
+	path = dask-projects/distributed
+	url = https://github.com/dask/distributed.git
+[submodule "llm-projects/self-instruct"]
+	path = llm-projects/self-instruct
+	url = https://github.com/yizhongw/self-instruct.git
+[submodule "llm-projects/RedPajama-Data"]
+	path = llm-projects/RedPajama-Data
+	url = https://github.com/togethercomputer/RedPajama-Data.git

@@ -2,7 +2,28 @@
 <module type="JAVA_MODULE" version="4">
   <component name="NewModuleRootManager" inherit-compiler-output="true">
     <exclude-output />
-    <content url="file://$MODULE_DIR$" />
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/agent-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/ascend-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/facebook-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/flag-open-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/fluid-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/huggingface-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/intel-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/kserve-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/kubeflow-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/llm-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/mds-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/microsoft-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/mlflow-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/nvidia-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/openBMB-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/others-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/pytorch-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/ray-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/tuning-projects" />
+      <excludeFolder url="file://$MODULE_DIR$/zenml-projects" />
+    </content>
     <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
   </component>

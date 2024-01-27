@@ -59,4 +59,6 @@ function do_mv(){
   git mv ${src} ${MOD_NAME}
 }
 
+test -z $1 && echo "Please input action: add list update mv upate_all" && exit 0
+
 do_$1 $2 $3 $4 $5
