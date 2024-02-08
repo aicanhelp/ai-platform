@@ -607,3 +607,42 @@
 [submodule "llm-projects/RedPajama-Data"]
 	path = llm-projects/RedPajama-Data
 	url = https://github.com/togethercomputer/RedPajama-Data.git
+[submodule "ray-projects/ray"]
+	path = ray-projects/ray
+	url = https://github.com/ray-project/ray.git
+[submodule "flyte-projects/flyte"]
+	path = flyte-projects/flyte
+	url = https://github.com/flyteorg/flyte.git
+[submodule "llm-projects/llm-fine-tuning"]
+	path = llm-projects/llm-fine-tuning
+	url = https://github.com/unionai-oss/llm-fine-tuning.git
+[submodule "flyte-projects/flytekit-java"]
+	path = flyte-projects/flytekit-java
+	url = https://github.com/flyteorg/flytekit-java.git
+[submodule "flyte-projects/flytesnacks"]
+	path = flyte-projects/flytesnacks
+	url = https://github.com/flyteorg/flytesnacks.git
+[submodule "flyte-projects/flytekit"]
+	path = flyte-projects/flytekit
+	url = https://github.com/flyteorg/flytekit.git
+[submodule "flyte-projects/flyteconsole"]
+	path = flyte-projects/flyteconsole
+	url = https://github.com/flyteorg/flyteconsole.git
+[submodule "flyte-projects/flytectl"]
+	path = flyte-projects/flytectl
+	url = https://github.com/flyteorg/flytectl.git
+[submodule "flyte-projects/flytetools"]
+	path = flyte-projects/flytetools
+	url = https://github.com/flyteorg/flytetools.git
+[submodule "ray-projects/Made-With-ML"]
+	path = ray-projects/Made-With-ML
+	url = https://github.com/GokuMohandas/Made-With-ML.git
+[submodule "modelscope-projects/modelscope"]
+	path = modelscope-projects/modelscope
+	url = https://github.com/modelscope/modelscope.git
+[submodule "fluid-projects/alluxio"]
+	path = fluid-projects/alluxio
+	url = https://github.com/Alluxio/alluxio.git
+[submodule "modelscope-projects/swift"]
+	path = modelscope-projects/swift
+	url = https://github.com/modelscope/swift.git
