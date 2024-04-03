@@ -646,3 +646,9 @@
 [submodule "modelscope-projects/swift"]
 	path = modelscope-projects/swift
 	url = https://github.com/modelscope/swift.git
+[submodule "huggingface-projects/huggingface_hub"]
+	path = huggingface-projects/huggingface_hub
+	url = https://github.com/huggingface/huggingface_hub.git
+[submodule "huggingface-projects/hub-docs"]
+	path = huggingface-projects/hub-docs
+	url = https://github.com/huggingface/hub-docs.git
