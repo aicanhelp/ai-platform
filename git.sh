@@ -36,12 +36,18 @@ function do_list() {
 
 function do_update(){
   local type=${1:?'[ERROR]argument type required!'}
-  local name=${2:?'[ERROR]argument name required!'}
+  local name=${2}
 
-  MOD_NAME=$1-projects/$2
-  cd ${MOD_NAME}
-  git pull
-  cd ${cur_dir}
+  local dirs="${name}"
+  test -z $dirs && dirs=`ls ${type}-projects`
+  
+  for dir in $dirs
+  do
+      MOD_NAME=$1-projects/${dir}
+      cd ${MOD_NAME}
+      git pull
+      cd ${cur_dir}
+  done
 }
 
 function do_update_all(){

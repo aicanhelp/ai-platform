@@ -655,3 +655,42 @@
 [submodule "llm-projects/one-api"]
 	path = llm-projects/one-api
 	url = https://github.com/songquanpeng/one-api.git
+[submodule "ray-projects/mobius"]
+	path = ray-projects/mobius
+	url = https://github.com/ray-project/mobius.git
+[submodule "ray-projects/deltacat"]
+	path = ray-projects/deltacat
+	url = https://github.com/ray-project/deltacat.git
+[submodule "ray-projects/rayfed"]
+	path = ray-projects/rayfed
+	url = https://github.com/ray-project/rayfed.git
+[submodule "nvidia-projects/NeMo-Guardrails"]
+	path = nvidia-projects/NeMo-Guardrails
+	url = https://github.com/NVIDIA/NeMo-Guardrails.git
+[submodule "nvidia-projects/NeMo-Curator"]
+	path = nvidia-projects/NeMo-Curator
+	url = https://github.com/NVIDIA/NeMo-Curator.git
+[submodule "volcano-projects/volcano"]
+	path = volcano-projects/volcano
+	url = https://github.com/volcano-sh/volcano.git
+[submodule "volcano-projects/apis"]
+	path = volcano-projects/apis
+	url = https://github.com/volcano-sh/apis.git
+[submodule "volcano-projects/devices"]
+	path = volcano-projects/devices
+	url = https://github.com/volcano-sh/devices.git
+[submodule "others-projects/cube-studio"]
+	path = others-projects/cube-studio
+	url = https://github.com/data-infra/cube-studio.git
+[submodule "llm-projects/bisheng"]
+	path = llm-projects/bisheng
+	url = https://github.com/dataelement/bisheng.git
+[submodule "milvus-io-projects/milvus"]
+	path = milvus-io-projects/milvus
+	url = https://github.com/milvus-io/milvus.git
+[submodule "milvus-io-projects/milvus-operator"]
+	path = milvus-io-projects/milvus-operator
+	url = https://github.com/zilliztech/milvus-operator.git
+[submodule "llm-projects/ragflow"]
+	path = llm-projects/ragflow
+	url = https://github.com/infiniflow/ragflow.git
