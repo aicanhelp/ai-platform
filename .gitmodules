@@ -694,3 +694,51 @@
 [submodule "llm-projects/ragflow"]
 	path = llm-projects/ragflow
 	url = https://github.com/infiniflow/ragflow.git
+[submodule "llm-projects/langgraph"]
+	path = llm-projects/langgraph
+	url = https://github.com/langchain-ai/langgraph.git
+[submodule "llm-projects/inference"]
+	path = llm-projects/inference
+	url = https://github.com/xorbitsai/inference.git
+[submodule "jina-projects/jina"]
+	path = jina-projects/jina
+	url = https://github.com/jina-ai/jina.git
+[submodule "jina-projects/clip-as-service"]
+	path = jina-projects/clip-as-service
+	url = https://github.com/jina-ai/clip-as-service.git
+[submodule "llm-projects/bisheng-rt"]
+	path = llm-projects/bisheng-rt
+	url = https://github.com/dataelement/bisheng-rt.git
+[submodule "llm-projects/bisheng-unstructured"]
+	path = llm-projects/bisheng-unstructured
+	url = https://github.com/dataelement/bisheng-unstructured.git
+[submodule "llm-projects/bisheng-ft"]
+	path = llm-projects/bisheng-ft
+	url = https://github.com/dataelement/bisheng-ft.git
+[submodule "agent-projects/open-webui"]
+	path = agent-projects/open-webui
+	url = https://github.com/open-webui/open-webui.git
+[submodule "llm-projects/mindsdb"]
+	path = llm-projects/mindsdb
+	url = https://github.com/mindsdb/mindsdb.git
+[submodule "agent-projects/chainlit"]
+	path = agent-projects/chainlit
+	url = https://github.com/Chainlit/chainlit.git
+[submodule "agent-projects/opik"]
+	path = agent-projects/opik
+	url = https://github.com/comet-ml/opik.git
+[submodule "agent-projects/openllmetry"]
+	path = agent-projects/openllmetry
+	url = https://github.com/traceloop/openllmetry.git
+[submodule "agent-projects/langfuse"]
+	path = agent-projects/langfuse
+	url = https://github.com/langfuse/langfuse.git
+[submodule "chainlit-cookbook-projects/cookbook"]
+	path = chainlit-cookbook-projects/cookbook
+	url = https://github.com/Chainlit/cookbook.git
+[submodule "agent-projects/litellm"]
+	path = agent-projects/litellm
+	url = https://github.com/BerriAI/litellm.git
+[submodule "agent-projects/ADAS"]
+	path = agent-projects/ADAS
+	url = https://github.com/ShengranHu/ADAS.git
