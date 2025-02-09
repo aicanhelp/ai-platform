@@ -90,7 +90,7 @@
         url = https://github.com/kubeflow/kfp-tekton.git
 [submodule "resources/facebook-faiss"]
 	path = facebook-projects/facebook-faiss
-	url = https://github.com.cnpmjs.org/facebookresearch/faiss.git
+	url = https://github.com/facebookresearch/faiss.git
 [submodule "resources/ray-tutorial"]
 	path = ray-projects/ray-tutorial
 	url = https://github.com/ray-project/tutorial.git
@@ -138,16 +138,16 @@
 	url = https://github.com/openvinotoolkit/open_model_zoo.git
 [submodule "resources/mds-openvino/notebooks"]
 	path = mds-projects/openvino-notebooks
-	url = git@github.com:aicanhelp/openvino_notebooks.git
+	url = https://github.com/openvinotoolkit/openvino_notebooks.git
 [submodule "resources/mds-openvino/model_zoo"]
 	path = mds-projects/openvino-model_zoo
-	url = git@github.com:aicanhelp/open_model_zoo.git
+	url = https://github.com/openvinotoolkit/open_model_zoo.git
 [submodule "resources/mds-cuda-sample"]
 	path = mds-projects/mds-cuda-sample
-	url = git@github.com:aicanhelp/cuda-samples.git
+	url = https://github.com/NVIDIA/cuda-samples.git
 [submodule "resources/mds_cuda_by_example"]
 	path = resources/mds_cuda_by_example
-	url = git@github.com:aicanhelp/cuda_by_example.git
+	url = https://github.com/aicanhelp/cuda_by_example.git
 [submodule "resources/numpy-ml"]
 	path = others-projects/numpy-ml
 	url = https://github.com/ddbourgin/numpy-ml.git
@@ -315,79 +315,79 @@
 	url = https://github.com/huggingface/optimum-intel.git
 [submodule "ascend-projects/pytorch"]
 	path = ascend-projects/pytorch
-	url = https://gitee.com/ascend/pytorch.git
+	url = https://github.com/ascend/pytorch.git
 [submodule "ascend-projects/modelzoo"]
 	path = ascend-projects/modelzoo
-	url = https://gitee.com/ascend/modelzoo.git
+	url = https://github.com/ascend/modelzoo.git
 [submodule "ascend-projects/samples"]
 	path = ascend-projects/samples
-	url = https://gitee.com/ascend/samples.git
+	url = https://github.com/ascend/samples.git
 [submodule "ascend-projects/att"]
 	path = ascend-projects/att
-	url = https://gitee.com/ascend/att.git
+	url = https://github.com/ascend/att.git
 [submodule "ascend-projects/ait"]
 	path = ascend-projects/ait
-	url = https://gitee.com/ascend/ait.git
+	url = https://github.com/ascend/ait.git
 [submodule "ascend-projects/AscendSpeed"]
 	path = ascend-projects/AscendSpeed
-	url = https://gitee.com/ascend/AscendSpeed.git
+	url = https://github.com/ascend/AscendSpeed.git
 [submodule "ascend-projects/ascend-docker-runtime"]
 	path = ascend-projects/ascend-docker-runtime
-	url = https://gitee.com/ascend/ascend-docker-runtime.git
+	url = https://github.com/ascend/ascend-docker-runtime.git
 [submodule "ascend-projects/ascend-hccl-controller"]
 	path = ascend-projects/ascend-hccl-controller
-	url = https://gitee.com/ascend/ascend-hccl-controller.git
+	url = https://github.com/ascend/ascend-hccl-controller.git
 [submodule "ascend-projects/ascend-device-plugin"]
 	path = ascend-projects/ascend-device-plugin
-	url = https://gitee.com/ascend/ascend-device-plugin.git
+	url = https://github.com/ascend/ascend-device-plugin.git
 [submodule "ascend-projects/Megatron-LM"]
 	path = ascend-projects/Megatron-LM
-	url = https://gitee.com/ascend/Megatron-LM.git
+	url = https://github.com/ascend/Megatron-LM.git
 [submodule "ascend-projects/ascend-npu-exporter"]
 	path = ascend-projects/ascend-npu-exporter
-	url = https://gitee.com/ascend/ascend-npu-exporter.git
+	url = https://github.com/ascend/ascend-npu-exporter.git
 [submodule "ascend-projects/tools"]
 	path = ascend-projects/tools
-	url = https://gitee.com/ascend/tools.git
+	url = https://github.com/ascend/tools.git
 [submodule "ascend-projects/ascend-for-volcano"]
 	path = ascend-projects/ascend-for-volcano
-	url = https://gitee.com/ascend/ascend-for-volcano.git
+	url = https://github.com/ascend/ascend-for-volcano.git
 [submodule "ascend-projects/transformers"]
 	path = ascend-projects/transformers
-	url = https://gitee.com/ascend/transformers.git
+	url = https://github.com/ascend/transformers.git
 [submodule "ascend-projects/DeepSpeed"]
 	path = ascend-projects/DeepSpeed
-	url = https://gitee.com/ascend/DeepSpeed.git
+	url = https://github.com/ascend/DeepSpeed.git
 [submodule "ascend-projects/apex"]
 	path = ascend-projects/apex
-	url = https://gitee.com/ascend/apex.git
+	url = https://github.com/ascend/apex.git
 [submodule "ascend-projects/ascend-docker-image"]
 	path = ascend-projects/ascend-docker-image
-	url = https://gitee.com/ascend/ascend-docker-image.git
+	url = https://github.com/ascend/ascend-docker-image.git
 [submodule "ascend-projects/ascend_community_projects"]
 	path = ascend-projects/ascend_community_projects
-	url = https://gitee.com/ascend/ascend_community_projects.git
+	url = https://github.com/ascend/ascend_community_projects.git
 [submodule "ascend-projects/mindformers"]
 	path = ascend-projects/mindformers
-	url = https://gitee.com/mindspore/mindformers.git
+	url = https://github.com/mindspore/mindformers.git
 [submodule "ascend-projects/ringmo-framework"]
 	path = ascend-projects/ringmo-framework
-	url = https://gitee.com/mindspore/ringmo-framework.git
+	url = https://github.com/mindspore/ringmo-framework.git
 [submodule "ascend-projects/serving"]
 	path = ascend-projects/serving
-	url = https://gitee.com/mindspore/serving.git
+	url = https://github.com/mindspore/serving.git
 [submodule "ascend-projects/op-plugin"]
 	path = ascend-projects/op-plugin
-	url = https://gitee.com/ascend/op-plugin.git
+	url = https://github.com/ascend/op-plugin.git
 [submodule "ascend-projects/parser"]
 	path = ascend-projects/parser
-	url = https://gitee.com/ascend/parser.git
+	url = https://github.com/ascend/parser.git
 [submodule "ascend-projects/mindpandas"]
 	path = ascend-projects/mindpandas
-	url = https://gitee.com/mindspore/mindpandas.git
+	url = https://github.com/mindspore/mindpandas.git
 [submodule "ascend-projects/hub"]
 	path = ascend-projects/hub
-	url = https://gitee.com/mindspore/hub.git
+	url = https://github.com/mindspore/hub.git
 [submodule "ascend-projects/mindpet"]
 	path = ascend-projects/mindpet
 	url = https://github.com/mindspore-lab/mindpet.git
