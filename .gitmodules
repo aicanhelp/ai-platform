@@ -742,3 +742,24 @@
 [submodule "agent-projects/ADAS"]
 	path = agent-projects/ADAS
 	url = https://github.com/ShengranHu/ADAS.git
+[submodule "agent-projects/crewAI"]
+	path = agent-projects/crewAI
+	url = https://github.com/crewAIInc/crewAI.git
+[submodule "kubeflow-projects/kubeflow"]
+	path = kubeflow-projects/kubeflow
+	url = https://github.com/kubeflow/kubeflow.git
+[submodule "kubeflow-projects/pipelines"]
+	path = kubeflow-projects/pipelines
+	url = https://github.com/kubeflow/pipelines.git
+[submodule "kubeflow-projects/training-operator"]
+	path = kubeflow-projects/training-operator
+	url = https://github.com/kubeflow/training-operator.git
+[submodule "kubeflow-projects/manifests"]
+	path = kubeflow-projects/manifests
+	url = https://github.com/kubeflow/manifests.git
+[submodule "agent-projects/TinyTroupe"]
+	path = agent-projects/TinyTroupe
+	url = https://github.com/microsoft/TinyTroupe.git
+[submodule "agent-projects/spring-ai"]
+	path = agent-projects/spring-ai
+	url = https://github.com/spring-projects/spring-ai.git
