@@ -315,58 +315,58 @@
 	url = https://github.com/huggingface/optimum-intel.git
 [submodule "ascend-projects/pytorch"]
 	path = ascend-projects/pytorch
-	url = https://github.com/ascend/pytorch.git
+	url = https://github.com/Ascend/pytorch.git
 [submodule "ascend-projects/modelzoo"]
 	path = ascend-projects/modelzoo
-	url = https://github.com/ascend/modelzoo.git
+	url = https://github.com/Ascend/modelzoo.git
 [submodule "ascend-projects/samples"]
 	path = ascend-projects/samples
-	url = https://github.com/ascend/samples.git
+	url = https://github.com/Ascend/samples.git
 [submodule "ascend-projects/att"]
 	path = ascend-projects/att
-	url = https://github.com/ascend/att.git
+	url = https://github.com/Ascend/att.git
 [submodule "ascend-projects/ait"]
 	path = ascend-projects/ait
-	url = https://github.com/ascend/ait.git
+	url = https://github.com/Ascend/ait.git
 [submodule "ascend-projects/AscendSpeed"]
 	path = ascend-projects/AscendSpeed
-	url = https://github.com/ascend/AscendSpeed.git
+	url = https://github.com/Ascend/AscendSpeed.git
 [submodule "ascend-projects/ascend-docker-runtime"]
 	path = ascend-projects/ascend-docker-runtime
-	url = https://github.com/ascend/ascend-docker-runtime.git
+	url = https://github.com/Ascend/ascend-docker-runtime.git
 [submodule "ascend-projects/ascend-hccl-controller"]
 	path = ascend-projects/ascend-hccl-controller
-	url = https://github.com/ascend/ascend-hccl-controller.git
+	url = https://github.com/Ascend/ascend-hccl-controller.git
 [submodule "ascend-projects/ascend-device-plugin"]
-	path = ascend-projects/ascend-device-plugin
-	url = https://github.com/ascend/ascend-device-plugin.git
+	path = ascend-projects/Ascend-device-plugin
+	url = https://github.com/Ascend/ascend-device-plugin.git
 [submodule "ascend-projects/Megatron-LM"]
 	path = ascend-projects/Megatron-LM
-	url = https://github.com/ascend/Megatron-LM.git
+	url = https://github.com/Ascend/Megatron-LM.git
 [submodule "ascend-projects/ascend-npu-exporter"]
 	path = ascend-projects/ascend-npu-exporter
-	url = https://github.com/ascend/ascend-npu-exporter.git
+	url = https://github.com/Ascend/ascend-npu-exporter.git
 [submodule "ascend-projects/tools"]
 	path = ascend-projects/tools
-	url = https://github.com/ascend/tools.git
+	url = https://github.com/Ascend/tools.git
 [submodule "ascend-projects/ascend-for-volcano"]
 	path = ascend-projects/ascend-for-volcano
-	url = https://github.com/ascend/ascend-for-volcano.git
+	url = https://github.com/Ascend/ascend-for-volcano.git
 [submodule "ascend-projects/transformers"]
 	path = ascend-projects/transformers
-	url = https://github.com/ascend/transformers.git
+	url = https://github.com/Ascend/transformers.git
 [submodule "ascend-projects/DeepSpeed"]
 	path = ascend-projects/DeepSpeed
-	url = https://github.com/ascend/DeepSpeed.git
+	url = https://github.com/Ascend/DeepSpeed.git
 [submodule "ascend-projects/apex"]
 	path = ascend-projects/apex
-	url = https://github.com/ascend/apex.git
+	url = https://github.com/Ascend/apex.git
 [submodule "ascend-projects/ascend-docker-image"]
 	path = ascend-projects/ascend-docker-image
-	url = https://github.com/ascend/ascend-docker-image.git
+	url = https://github.com/Ascend/ascend-docker-image.git
 [submodule "ascend-projects/ascend_community_projects"]
 	path = ascend-projects/ascend_community_projects
-	url = https://github.com/ascend/ascend_community_projects.git
+	url = https://github.com/Ascend/ascend_community_projects.git
 [submodule "ascend-projects/mindformers"]
 	path = ascend-projects/mindformers
 	url = https://github.com/mindspore/mindformers.git
@@ -396,10 +396,10 @@
 	url = https://github.com/mindspore-lab/mindone.git
 [submodule "ascend-projects/mindinsight"]
 	path = ascend-projects/mindinsight
-	url = https://gitee.com/mindspore/mindinsight.git
+	url = https://github.com/mindspore/mindinsight.git
 [submodule "ascend-projects/models"]
 	path = ascend-projects/models
-	url = https://gitee.com/mindspore/models.git
+	url = https://github.com/mindspore/models.git
 [submodule "ascend-projects/mindcv"]
 	path = ascend-projects/mindcv
 	url = https://github.com/mindspore-lab/mindcv.git
@@ -411,22 +411,22 @@
 	url = https://github.com/mindspore-lab/mindaudio.git
 [submodule "ascend-projects/mind-golden-stick"]
 	path = ascend-projects/mind-golden-stick
-	url = https://gitee.com/mindspore/golden-stick.git
+	url = https://github.com/mindspore/golden-stick.git
 [submodule "ascend-projects/mindarmour"]
 	path = ascend-projects/mindarmour
-	url = https://gitee.com/mindspore/mindarmour.git
+	url = https://github.com/mindspore/mindarmour.git
 [submodule "ascend-projects/federated"]
 	path = ascend-projects/federated
-	url = https://gitee.com/mindspore/federated.git
+	url = https://github.com/mindspore/federated.git
 [submodule "ascend-projects/mindspore"]
 	path = ascend-projects/mindspore
-	url = https://gitee.com/mindspore/mindspore.git
+	url = https://github.com/mindspore/mindspore.git
 [submodule "ascend-projects/mind-akkg"]
 	path = ascend-projects/mind-akkg
-	url = https://gitee.com/mindspore/akg.git
+	url = https://github.com/mindspore/akg.git
 [submodule "ascend-projects/mind-graph"]
 	path = ascend-projects/mind-graph
-	url = https://gitee.com/mindspore/graphlearning.git
+	url = https://github.com/mindspore/graphlearning.git
 [submodule "ascend-projects/mindrl"]
 	path = ascend-projects/mindrl
 	url = https://github.com/mindspore-lab/mindrl.git
@@ -456,7 +456,7 @@
 	url = https://github.com/01-ai/Yi.git
 [submodule "others-projects/ascend-docker-image"]
 	path = ascend-projects/ascend-docker-image/ascend-docker-image
-	url = https://gitee.com/ascend/ascend-docker-image.git
+	url = https://github.com/ascend/ascend-docker-image.git
 [submodule "mlflow-projects/mlflow"]
 	path = mlflow-projects/mlflow
 	url = https://github.com/mlflow/mlflow.git
