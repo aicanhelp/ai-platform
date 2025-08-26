@@ -34,7 +34,7 @@ function do_add() {
 
    MOD_NAME=${project_dir}/${name}
    mkdir -p ${project_dir}
-   git submodule add ${repo} ${type}-projects/$name
+   git -c protocol.version=2 submodule add --depth 2 ${repo} ${type}-projects/$name
 }
 
 function do_list() {
