@@ -12,7 +12,7 @@ function do_del() {
 
   echo "remove ${MOD_NAME}"
   # 删除.gitmodules中记录的模块信息（--cached选项清除.git/modules中的缓存）
-  git config -f .gitmodules --remove-section submodule.submodule_path
+  git config -f .gitmodules --remove-section ${MOD_NAME}
   git rm -f --cached ${MOD_NAME}
 
   rm -rf .git/modules/${MOD_NAME}
