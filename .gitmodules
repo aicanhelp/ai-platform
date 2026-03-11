@@ -529,3 +529,261 @@
 [submodule "agent-projects/spring-ai"]
 	path = agent-projects/spring-ai
 	url = https://github.com/spring-projects/spring-ai.git
+[submodule "openfuyao-projects/bkeadm"]
+	path = openfuyao-projects/bkeadm
+	url = https://gitcode.com/openFuyao/bkeadm.git
+[submodule "openfuyao-projects/bkecommon"]
+	path = openfuyao-projects/bkecommon
+	url = https://gitcode.com/openFuyao/bkecommon.git
+[submodule "openfuyao-projects/sig-installation"]
+	path = openfuyao-projects/sig-installation
+	url = https://gitcode.com/openFuyao/sig-installation.git
+[submodule "openfuyao-projects/sig-large-scale-cluster"]
+	path = openfuyao-projects/sig-large-scale-cluster
+	url = https://gitcode.com/openFuyao/sig-large-scale-cluster.git
+[submodule "openfuyao-projects/monitoring-service"]
+	path = openfuyao-projects/monitoring-service
+	url = https://gitcode.com/openFuyao/monitoring-service.git
+[submodule "openfuyao-projects/cluster-api-provider-bke"]
+	path = openfuyao-projects/cluster-api-provider-bke
+	url = https://gitcode.com/openFuyao/cluster-api-provider-bke.git
+[submodule "openfuyao-projects/installer-service"]
+	path = openfuyao-projects/installer-service
+	url = https://gitcode.com/openFuyao/installer-service.git
+[submodule "openfuyao-projects/e2e-auto-test"]
+	path = openfuyao-projects/e2e-auto-test
+	url = https://gitcode.com/openFuyao/e2e-auto-test.git
+[submodule "openfuyao-projects/console-website"]
+	path = openfuyao-projects/console-website
+	url = https://gitcode.com/openFuyao/console-website.git
+[submodule "openfuyao-projects/kubernetes"]
+	path = openfuyao-projects/kubernetes
+	url = https://gitcode.com/openFuyao/kubernetes.git
+[submodule "openfuyao-projects/ofep"]
+	path = openfuyao-projects/ofep
+	url = https://gitcode.com/openFuyao/ofep.git
+[submodule "openfuyao-projects/sig-orchestration-engine"]
+	path = openfuyao-projects/sig-orchestration-engine
+	url = https://gitcode.com/openFuyao/sig-orchestration-engine.git
+[submodule "openfuyao-projects/vNPU"]
+	path = openfuyao-projects/vNPU
+	url = https://gitcode.com/openFuyao/vNPU.git
+[submodule "openfuyao-projects/installer-website"]
+	path = openfuyao-projects/installer-website
+	url = https://gitcode.com/openFuyao/installer-website.git
+[submodule "openfuyao-projects/bke-manifests"]
+	path = openfuyao-projects/bke-manifests
+	url = https://gitcode.com/openFuyao/bke-manifests.git
+[submodule "openfuyao-projects/ub-network-bandwidth-operator"]
+	path = openfuyao-projects/ub-network-bandwidth-operator
+	url = https://gitcode.com/openFuyao/ub-network-bandwidth-operator.git
+[submodule "openfuyao-projects/coredns"]
+	path = openfuyao-projects/coredns
+	url = https://gitcode.com/openFuyao/coredns.git
+[submodule "openfuyao-projects/sig-qa"]
+	path = openfuyao-projects/sig-qa
+	url = https://gitcode.com/openFuyao/sig-qa.git
+[submodule "openfuyao-projects/volcano-ext"]
+	path = openfuyao-projects/volcano-ext
+	url = https://gitcode.com/openFuyao/volcano-ext.git
+[submodule "openfuyao-projects/victoriametrics-controller"]
+	path = openfuyao-projects/victoriametrics-controller
+	url = https://gitcode.com/openFuyao/victoriametrics-controller.git
+[submodule "openfuyao-projects/community"]
+	path = openfuyao-projects/community
+	url = https://gitcode.com/openFuyao/community.git
+[submodule "openfuyao-projects/npu-operator"]
+	path = openfuyao-projects/npu-operator
+	url = https://gitcode.com/openFuyao/npu-operator.git
+[submodule "openfuyao-projects/env-check"]
+	path = openfuyao-projects/env-check
+	url = https://gitcode.com/openFuyao/env-check.git
+[submodule "openfuyao-projects/oauth-server"]
+	path = openfuyao-projects/oauth-server
+	url = https://gitcode.com/openFuyao/oauth-server.git
+[submodule "openfuyao-projects/sig-container-platform"]
+	path = openfuyao-projects/sig-container-platform
+	url = https://gitcode.com/openFuyao/sig-container-platform.git
+[submodule "openfuyao-projects/monitoring-dashboard-service"]
+	path = openfuyao-projects/monitoring-dashboard-service
+	url = https://gitcode.com/openFuyao/monitoring-dashboard-service.git
+[submodule "openfuyao-projects/docs"]
+	path = openfuyao-projects/docs
+	url = https://gitcode.com/openFuyao/docs.git
+[submodule "openfuyao-projects/ub-network-device-plugin"]
+	path = openfuyao-projects/ub-network-device-plugin
+	url = https://gitcode.com/openFuyao/ub-network-device-plugin.git
+[submodule "openfuyao-projects/sig-ai-inference"]
+	path = openfuyao-projects/sig-ai-inference
+	url = https://gitcode.com/openFuyao/sig-ai-inference.git
+[submodule "openfuyao-projects/hermes-router"]
+	path = openfuyao-projects/hermes-router
+	url = https://gitcode.com/openFuyao/hermes-router.git
+[submodule "openfuyao-projects/bke-console-website"]
+	path = openfuyao-projects/bke-console-website
+	url = https://gitcode.com/openFuyao/bke-console-website.git
+[submodule "openfuyao-projects/bkeagent"]
+	path = openfuyao-projects/bkeagent
+	url = https://gitcode.com/openFuyao/bkeagent.git
+[submodule "openfuyao-projects/eagle-eye"]
+	path = openfuyao-projects/eagle-eye
+	url = https://gitcode.com/openFuyao/eagle-eye.git
+[submodule "openfuyao-projects/ub-enable-quickstart"]
+	path = openfuyao-projects/ub-enable-quickstart
+	url = https://gitcode.com/openFuyao/ub-enable-quickstart.git
+[submodule "openfuyao-projects/security-committee"]
+	path = openfuyao-projects/security-committee
+	url = https://gitcode.com/openFuyao/security-committee.git
+[submodule "openfuyao-projects/InferNex"]
+	path = openfuyao-projects/InferNex
+	url = https://gitcode.com/openFuyao/InferNex.git
+[submodule "openfuyao-projects/release-management"]
+	path = openfuyao-projects/release-management
+	url = https://gitcode.com/openFuyao/release-management.git
+[submodule "openfuyao-projects/sig-numa-affinity"]
+	path = openfuyao-projects/sig-numa-affinity
+	url = https://gitcode.com/openFuyao/sig-numa-affinity.git
+[submodule "openfuyao-projects/etcd"]
+	path = openfuyao-projects/etcd
+	url = https://gitcode.com/openFuyao/etcd.git
+[submodule "openfuyao-projects/tc"]
+	path = openfuyao-projects/tc
+	url = https://gitcode.com/openFuyao/tc.git
+[submodule "openfuyao-projects/cache-indexer"]
+	path = openfuyao-projects/cache-indexer
+	url = https://gitcode.com/openFuyao/cache-indexer.git
+[submodule "openfuyao-projects/qa-tool"]
+	path = openfuyao-projects/qa-tool
+	url = https://gitcode.com/openFuyao/qa-tool.git
+[submodule "openfuyao-projects/ray"]
+	path = openfuyao-projects/ray
+	url = https://gitcode.com/openFuyao/ray.git
+[submodule "openfuyao-projects/openfuyao-system-controller"]
+	path = openfuyao-projects/openfuyao-system-controller
+	url = https://gitcode.com/openFuyao/openfuyao-system-controller.git
+[submodule "openfuyao-projects/volcano-config-service"]
+	path = openfuyao-projects/volcano-config-service
+	url = https://gitcode.com/openFuyao/volcano-config-service.git
+[submodule "openfuyao-projects/sig-colocation"]
+	path = openfuyao-projects/sig-colocation
+	url = https://gitcode.com/openFuyao/sig-colocation.git
+[submodule "openfuyao-projects/vllm-ascend"]
+	path = openfuyao-projects/vllm-ascend
+	url = https://gitcode.com/openFuyao/vllm-ascend.git
+[submodule "openfuyao-projects/console-service"]
+	path = openfuyao-projects/console-service
+	url = https://gitcode.com/openFuyao/console-service.git
+[submodule "openfuyao-projects/npu-node-provision"]
+	path = openfuyao-projects/npu-node-provision
+	url = https://gitcode.com/openFuyao/npu-node-provision.git
+[submodule "openfuyao-projects/npu-feature-discovery"]
+	path = openfuyao-projects/npu-feature-discovery
+	url = https://gitcode.com/openFuyao/npu-feature-discovery.git
+[submodule "openfuyao-projects/npu-driver-installer"]
+	path = openfuyao-projects/npu-driver-installer
+	url = https://gitcode.com/openFuyao/npu-driver-installer.git
+[submodule "openfuyao-projects/npu-container-toolkit"]
+	path = openfuyao-projects/npu-container-toolkit
+	url = https://gitcode.com/openFuyao/npu-container-toolkit.git
+[submodule "openfuyao-projects/kae-operator"]
+	path = openfuyao-projects/kae-operator
+	url = https://gitcode.com/openFuyao/kae-operator.git
+[submodule "openfuyao-projects/npu-dra-plugin"]
+	path = openfuyao-projects/npu-dra-plugin
+	url = https://gitcode.com/openFuyao/npu-dra-plugin.git
+[submodule "openfuyao-projects/application-management-service"]
+	path = openfuyao-projects/application-management-service
+	url = https://gitcode.com/openFuyao/application-management-service.git
+[submodule "openfuyao-projects/node-checker"]
+	path = openfuyao-projects/node-checker
+	url = https://gitcode.com/openFuyao/node-checker.git
+[submodule "openfuyao-projects/marketplace-service"]
+	path = openfuyao-projects/marketplace-service
+	url = https://gitcode.com/openFuyao/marketplace-service.git
+[submodule "openfuyao-projects/runc"]
+	path = openfuyao-projects/runc
+	url = https://gitcode.com/openFuyao/runc.git
+[submodule "openfuyao-projects/containerd"]
+	path = openfuyao-projects/containerd
+	url = https://gitcode.com/openFuyao/containerd.git
+[submodule "openfuyao-projects/mooncake"]
+	path = openfuyao-projects/mooncake
+	url = https://gitcode.com/openFuyao/mooncake.git
+[submodule "openfuyao-projects/ray-website"]
+	path = openfuyao-projects/ray-website
+	url = https://gitcode.com/openFuyao/ray-website.git
+[submodule "openfuyao-projects/ray-service"]
+	path = openfuyao-projects/ray-service
+	url = https://gitcode.com/openFuyao/ray-service.git
+[submodule "openfuyao-projects/kae-driver-installer"]
+	path = openfuyao-projects/kae-driver-installer
+	url = https://gitcode.com/openFuyao/kae-driver-installer.git
+[submodule "openfuyao-projects/kae-device-plugin"]
+	path = openfuyao-projects/kae-device-plugin
+	url = https://gitcode.com/openFuyao/kae-device-plugin.git
+[submodule "openfuyao-projects/colocation-management"]
+	path = openfuyao-projects/colocation-management
+	url = https://gitcode.com/openFuyao/colocation-management.git
+[submodule "openfuyao-projects/colocation-website"]
+	path = openfuyao-projects/colocation-website
+	url = https://gitcode.com/openFuyao/colocation-website.git
+[submodule "openfuyao-projects/colocation-service"]
+	path = openfuyao-projects/colocation-service
+	url = https://gitcode.com/openFuyao/colocation-service.git
+[submodule "openfuyao-projects/monitoring-dashboard-website"]
+	path = openfuyao-projects/monitoring-dashboard-website
+	url = https://gitcode.com/openFuyao/monitoring-dashboard-website.git
+[submodule "openfuyao-projects/volcano-config-website"]
+	path = openfuyao-projects/volcano-config-website
+	url = https://gitcode.com/openFuyao/volcano-config-website.git
+[submodule "openfuyao-projects/multi-cluster-website"]
+	path = openfuyao-projects/multi-cluster-website
+	url = https://gitcode.com/openFuyao/multi-cluster-website.git
+[submodule "openfuyao-projects/multi-cluster-service"]
+	path = openfuyao-projects/multi-cluster-service
+	url = https://gitcode.com/openFuyao/multi-cluster-service.git
+[submodule "openfuyao-projects/logging-website"]
+	path = openfuyao-projects/logging-website
+	url = https://gitcode.com/openFuyao/logging-website.git
+[submodule "openfuyao-projects/logging-operator"]
+	path = openfuyao-projects/logging-operator
+	url = https://gitcode.com/openFuyao/logging-operator.git
+[submodule "openfuyao-projects/web-terminal-service"]
+	path = openfuyao-projects/web-terminal-service
+	url = https://gitcode.com/openFuyao/web-terminal-service.git
+[submodule "openfuyao-projects/plugin-management-service"]
+	path = openfuyao-projects/plugin-management-service
+	url = https://gitcode.com/openFuyao/plugin-management-service.git
+[submodule "openfuyao-projects/oauth-webhook"]
+	path = openfuyao-projects/oauth-webhook
+	url = https://gitcode.com/openFuyao/oauth-webhook.git
+[submodule "openfuyao-projects/oauth-proxy"]
+	path = openfuyao-projects/oauth-proxy
+	url = https://gitcode.com/openFuyao/oauth-proxy.git
+[submodule "openfuyao-projects/sig-distributed-framework"]
+	path = openfuyao-projects/sig-distributed-framework
+	url = https://gitcode.com/openFuyao/sig-distributed-framework.git
+[submodule "openfuyao-projects/sig-ub-enable"]
+	path = openfuyao-projects/sig-ub-enable
+	url = https://gitcode.com/openFuyao/sig-ub-enable.git
+[submodule "openfuyao-projects/installer"]
+	path = openfuyao-projects/installer
+	url = https://gitcode.com/openFuyao/installer.git
+[submodule "openfuyao-projects/dependency-database"]
+	path = openfuyao-projects/dependency-database
+	url = https://gitcode.com/openFuyao/dependency-database.git
+[submodule "openfuyao-projects/kwok"]
+	path = openfuyao-projects/kwok
+	url = https://gitcode.com/openFuyao/kwok.git
+[submodule "openfuyao-projects/confidential-containers-deployment"]
+	path = openfuyao-projects/confidential-containers-deployment
+	url = https://gitcode.com/openFuyao/confidential-containers-deployment.git
+[submodule "openfuyao-projects/developer-experience"]
+	path = openfuyao-projects/developer-experience
+	url = https://gitcode.com/openFuyao/developer-experience.git
+[submodule "openfuyao-projects/node-feature-discovery"]
+	path = openfuyao-projects/node-feature-discovery
+	url = https://gitcode.com/openFuyao/node-feature-discovery.git
+[submodule "openfuyao-projects/clusters-computing-operator"]
+	path = openfuyao-projects/clusters-computing-operator
+	url = https://gitcode.com/openFuyao/clusters-computing-operator.git

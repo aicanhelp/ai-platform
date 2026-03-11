@@ -23,6 +23,7 @@
       <excludeFolder url="file://$MODULE_DIR$/ray-projects" />
       <excludeFolder url="file://$MODULE_DIR$/tuning-projects" />
       <excludeFolder url="file://$MODULE_DIR$/zenml-projects" />
+      <excludeFolder url="file://$MODULE_DIR$" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
