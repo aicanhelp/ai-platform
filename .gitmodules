@@ -787,3 +787,27 @@
 [submodule "openfuyao-projects/clusters-computing-operator"]
 	path = openfuyao-projects/clusters-computing-operator
 	url = https://gitcode.com/openFuyao/clusters-computing-operator.git
+[submodule "mindspore-projects/docs"]
+	path = mindspore-projects/docs
+	url = https://gitcode.com/mindspore/docs.git
+[submodule "mindspore-projects/hyper-parallel"]
+	path = mindspore-projects/hyper-parallel
+	url = https://gitcode.com/mindspore/hyper-parallel.git
+[submodule "mindspore-projects/vllm-mindspore"]
+	path = mindspore-projects/vllm-mindspore
+	url = https://gitcode.com/mindspore/vllm-mindspore.git
+[submodule "mindspore-projects/dvm"]
+	path = mindspore-projects/dvm
+	url = https://gitcode.com/mindspore/dvm.git
+[submodule "mindspore-projects/mindquantum"]
+	path = mindspore-projects/mindquantum
+	url = https://gitcode.com/mindspore/mindquantum.git
+[submodule "mindspore-projects/akg"]
+	path = mindspore-projects/akg
+	url = https://gitcode.com/mindspore/akg.git
+[submodule "mindspore-projects/mindspore"]
+	path = mindspore-projects/mindspore
+	url = https://gitcode.com/mindspore/mindspore.git
+[submodule "mindspore-projects/golden-stick"]
+	path = mindspore-projects/golden-stick
+	url = https://gitcode.com/mindspore/golden-stick.git
