@@ -81,7 +81,7 @@
 	url = https://github.com/huggingface/optimum-intel.git
 [submodule "ascend-projects/pytorch"]
 	path = ascend-projects/pytorch
-	url = https://github.com/Ascend/pytorch.git
+	url = https://gitcode.com/Ascend/pytorch.git
 [submodule "ascend-projects/modelzoo"]
 	path = ascend-projects/modelzoo
 	url = https://github.com/Ascend/modelzoo.git
@@ -811,3 +811,72 @@
 [submodule "mindspore-projects/golden-stick"]
 	path = mindspore-projects/golden-stick
 	url = https://gitcode.com/mindspore/golden-stick.git
+[submodule "mindspore-projects/mindformers"]
+	path = mindspore-projects/mindformers
+	url = https://gitcode.com/mindspore/mindformers.git
+[submodule "ascend-projects/AscendNPU-IR"]
+	path = ascend-projects/AscendNPU-IR
+	url = https://gitcode.com/Ascend/AscendNPU-IR.git
+[submodule "ascend-projects/torchair"]
+	path = ascend-projects/torchair
+	url = https://gitcode.com/Ascend/torchair.git
+[submodule "mindspore-projects/mindspore_op_plugin"]
+	path = mindspore-projects/mindspore_op_plugin
+	url = https://gitcode.com/mindspore/mindspore_op_plugin.git
+[submodule "ascend-projects/MindIE-SD"]
+	path = ascend-projects/MindIE-SD
+	url = https://gitcode.com/Ascend/MindIE-SD.git
+[submodule "ascend-projects/MindIE-LLM"]
+	path = ascend-projects/MindIE-LLM
+	url = https://gitcode.com/Ascend/MindIE-LLM.git
+[submodule "ascend-projects/MindIE-Motor"]
+	path = ascend-projects/MindIE-Motor
+	url = https://gitcode.com/Ascend/MindIE-Motor.git
+[submodule "ascend-projects/MindIE-Turbo"]
+	path = ascend-projects/MindIE-Turbo
+	url = https://gitcode.com/Ascend/MindIE-Turbo.git
+[submodule "ascend-projects/MindSpeed"]
+	path = ascend-projects/MindSpeed
+	url = https://gitcode.com/Ascend/MindSpeed.git
+[submodule "ascend-projects/MindSpeed-LLM"]
+	path = ascend-projects/MindSpeed-LLM
+	url = https://gitcode.com/Ascend/MindSpeed-LLM.git
+[submodule "ascend-projects/MindSpeed-MM"]
+	path = ascend-projects/MindSpeed-MM
+	url = https://gitcode.com/Ascend/MindSpeed-MM.git
+[submodule "ascend-projects/MindSpeed-RL"]
+	path = ascend-projects/MindSpeed-RL
+	url = https://gitcode.com/Ascend/MindSpeed-RL.git
+[submodule "ascend-projects/MindSpeed-Core-MS"]
+	path = ascend-projects/MindSpeed-Core-MS
+	url = https://gitcode.com/Ascend/MindSpeed-Core-MS.git
+[submodule "ascend-projects/RecSDK"]
+	path = ascend-projects/RecSDK
+	url = https://gitcode.com/Ascend/RecSDK.git
+[submodule "ascend-projects/IndexSDK"]
+	path = ascend-projects/IndexSDK
+	url = https://gitcode.com/Ascend/IndexSDK.git
+[submodule "ascend-projects/DrivingSDK"]
+	path = ascend-projects/DrivingSDK
+	url = https://gitcode.com/Ascend/DrivingSDK.git
+[submodule "ascend-projects/AgentSDK"]
+	path = ascend-projects/AgentSDK
+	url = https://gitcode.com/Ascend/AgentSDK.git
+[submodule "ascend-projects/MultimodalSDK"]
+	path = ascend-projects/MultimodalSDK
+	url = https://gitcode.com/Ascend/MultimodalSDK.git
+[submodule "ascend-projects/VisionSDK"]
+	path = ascend-projects/VisionSDK
+	url = https://gitcode.com/Ascend/VisionSDK.git
+[submodule "ascend-projects/RAGSDK"]
+	path = ascend-projects/RAGSDK
+	url = https://gitcode.com/Ascend/RAGSDK.git
+[submodule "ascend-projects/MindInferenceService"]
+	path = ascend-projects/MindInferenceService
+	url = https://gitcode.com/Ascend/MindInferenceService.git
+[submodule "ascend-projects/mstt"]
+	path = ascend-projects/mstt
+	url = https://gitcode.com/Ascend/mstt.git
+[submodule "ascend-projects/msit"]
+	path = ascend-projects/msit
+	url = https://gitcode.com/Ascend/msit.git
