@@ -84,7 +84,7 @@
 	url = https://gitcode.com/Ascend/pytorch.git
 [submodule "ascend-projects/modelzoo"]
 	path = ascend-projects/modelzoo
-	url = https://github.com/Ascend/modelzoo.git
+	url = https://gitcode.com/Ascend/modelzoo.git
 [submodule "ascend-projects/samples"]
 	path = ascend-projects/samples
 	url = https://github.com/Ascend/samples.git
@@ -880,3 +880,72 @@
 [submodule "ascend-projects/msit"]
 	path = ascend-projects/msit
 	url = https://gitcode.com/Ascend/msit.git
+[submodule "ascend-projects/msot"]
+	path = ascend-projects/msot
+	url = https://gitcode.com/Ascend/msot.git
+[submodule "ascend-projects/mind-cluster"]
+	path = ascend-projects/mind-cluster
+	url = https://gitcode.com/Ascend/mind-cluster.git
+[submodule "ascend-projects/MEF"]
+	path = ascend-projects/MEF
+	url = https://gitcode.com/Ascend/MEF.git
+[submodule "ascend-projects/memcache"]
+	path = ascend-projects/memcache
+	url = https://gitcode.com/Ascend/memcache.git
+[submodule "ascend-projects/OMSDK"]
+	path = ascend-projects/OMSDK
+	url = https://gitcode.com/Ascend/OMSDK.git
+[submodule "ascend-projects/memfabric_hybrid"]
+	path = ascend-projects/memfabric_hybrid
+	url = https://gitcode.com/Ascend/memfabric_hybrid.git
+[submodule "ascend-projects/ascend-deployer"]
+	path = ascend-projects/ascend-deployer
+	url = https://gitcode.com/Ascend/ascend-deployer.git
+[submodule "hami-projects/HAMi"]
+	path = hami-projects/HAMi
+	url = https://github.com/Project-HAMi/HAMi.git
+[submodule "hami-projects/biren-device-plugin"]
+	path = hami-projects/biren-device-plugin
+	url = https://github.com/Project-HAMi/biren-device-plugin.git
+[submodule "hami-projects/HAMi-DRA"]
+	path = hami-projects/HAMi-DRA
+	url = https://github.com/Project-HAMi/HAMi-DRA.git
+[submodule "hami-projects/volcano-vgpu-device-plugin"]
+	path = hami-projects/volcano-vgpu-device-plugin
+	url = https://github.com/Project-HAMi/volcano-vgpu-device-plugin.git
+[submodule "hami-projects/HAMi-WebUI"]
+	path = hami-projects/HAMi-WebUI
+	url = https://github.com/Project-HAMi/HAMi-WebUI.git
+[submodule "hami-projects/HAMi-core"]
+	path = hami-projects/HAMi-core
+	url = https://github.com/Project-HAMi/HAMi-core.git
+[submodule "hami-projects/ascend-device-plugin"]
+	path = hami-projects/ascend-device-plugin
+	url = https://github.com/Project-HAMi/ascend-device-plugin.git
+[submodule "hami-projects/k8s-dra-driver"]
+	path = hami-projects/k8s-dra-driver
+	url = https://github.com/Project-HAMi/k8s-dra-driver.git
+[submodule "hami-projects/mock-device-plugin"]
+	path = hami-projects/mock-device-plugin
+	url = https://github.com/Project-HAMi/mock-device-plugin.git
+[submodule "hami-projects/dcu-vgpu-device-plugin"]
+	path = hami-projects/dcu-vgpu-device-plugin
+	url = https://github.com/Project-HAMi/dcu-vgpu-device-plugin.git
+[submodule "hami-projects/dcu-dcgm"]
+	path = hami-projects/dcu-dcgm
+	url = https://github.com/Project-HAMi/dcu-dcgm.git
+[submodule "hami-projects/dcu-exporter"]
+	path = hami-projects/dcu-exporter
+	url = https://github.com/Project-HAMi/dcu-exporter.git
+[submodule "hami-projects/ai-benchmark"]
+	path = hami-projects/ai-benchmark
+	url = https://github.com/Project-HAMi/ai-benchmark.git
+[submodule "cann-projects/cann-recipes-infer"]
+	path = cann-projects/cann-recipes-infer
+	url = https://gitcode.com/cann/cann-recipes-infer.git
+[submodule "cann-projects/metadef"]
+	path = cann-projects/metadef
+	url = https://gitcode.com/cann/metadef.git
+[submodule "cann-projects/cann-recipes-train"]
+	path = cann-projects/cann-recipes-train
+	url = https://gitcode.com/cann/cann-recipes-train.git

@@ -34,7 +34,9 @@ function do_add() {
 
    MOD_NAME=${project_dir}/${name}
    mkdir -p ${project_dir}
-   git -c protocol.version=2 submodule add --depth 2 ${repo} ${type}-projects/$name
+
+   git -c protocol.version=2 clone --depth 1 --no-single-branch ${repo} ${project_dir}/$name
+   git -c protocol.version=2 submodule add ${repo} ${project_dir}/$name
 }
 
 function do_list() {
@@ -74,6 +76,10 @@ function do_update(){
 
 }
 
+function do_size() {
+    type=$1
+    du -sh ${type}-projects/${2:-*}
+}
 
 function do_update_all(){
    git submodule update --recursive
@@ -93,6 +99,6 @@ function do_mv(){
   git mv ${src} ${MOD_NAME}
 }
 
-test -z $1 && echo "Please input action: del add list update mv upate_all" && exit 0
+test -z $1 && echo "Please input action: del add list update mv upate_all size" && exit 0
 
 do_$1 $2 $3 $4 $5
