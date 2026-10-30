@@ -9,7 +9,6 @@ function do_del() {
   # 逆初始化模块，其中{MOD_NAME}为模块目录，执行后可发现模块目录被清空
   git submodule deinit -f ${MOD_NAME}
 
-
   echo "remove ${MOD_NAME}"
   # 删除.gitmodules中记录的模块信息（--cached选项清除.git/modules中的缓存）
   git config -f .gitmodules --remove-section ${MOD_NAME}
@@ -34,9 +33,7 @@ function do_add() {
 
    MOD_NAME=${project_dir}/${name}
    mkdir -p ${project_dir}
-
-   git -c protocol.version=2 clone --depth 1 --no-single-branch ${repo} ${project_dir}/$name
-   git -c protocol.version=2 submodule add ${repo} ${project_dir}/$name
+   git -c protocol.version=2 submodule add --depth 1  https://gh-proxy.org/${repo} ${type}-projects/$name
 }
 
 function do_list() {
@@ -76,11 +73,6 @@ function do_update(){
 
 }
 
-function do_size() {
-    type=$1
-    du -sh ${type}-projects/${2:-*}
-}
-
 function do_update_all(){
    git submodule update --recursive
 }
@@ -99,6 +91,6 @@ function do_mv(){
   git mv ${src} ${MOD_NAME}
 }
 
-test -z $1 && echo "Please input action: del add list update mv upate_all size" && exit 0
+test -z $1 && echo "Please input action: del add list update mv upate_all" && exit 0
 
 do_$1 $2 $3 $4 $5

@@ -375,7 +375,7 @@
 	url = https://github.com/togethercomputer/RedPajama-Data.git
 [submodule "ray-projects/ray"]
 	path = ray-projects/ray
-	url = https://github.com/ray-project/ray.git
+	url = https://gh-proxy.org/https://github.com/ray-project/ray.git
 [submodule "flyte-projects/flyte"]
 	path = flyte-projects/flyte
 	url = https://github.com/flyteorg/flyte.git
@@ -949,3 +949,15 @@
 [submodule "cann-projects/cann-recipes-train"]
 	path = cann-projects/cann-recipes-train
 	url = https://gitcode.com/cann/cann-recipes-train.git
+[submodule "ray-projects/kuberay"]
+	path = ray-projects/kuberay
+	url = https://gh-proxy.org/https://github.com/ray-project/kuberay.git
+[submodule "agent-projects/multica"]
+	path = agent-projects/multica
+	url = https://gh-proxy.org/https://github.com/multica-ai/multica.git
+[submodule "gpustack-projects/gpustack"]
+	path = gpustack-projects/gpustack
+	url = https://gh-proxy.org/https://github.com/gpustack/gpustack.git
+[submodule "agent-projects/cordis"]
+	path = agent-projects/cordis
+	url = https://gh-proxy.org/https://github.com/cordiverse/cordis.git
