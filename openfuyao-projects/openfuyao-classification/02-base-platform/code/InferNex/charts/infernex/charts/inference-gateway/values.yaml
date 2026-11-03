@@ -1,0 +1,32 @@
+enabled: true
+name: "inference-gateway" # Gateway 资源名称
+className: "istio" # 开源网关名称
+enable_http10: false # 是否允许 HTTP/1.0（及 HTTP/0.9）客户端访问网关。Envoy 默认拒绝无 Host 头的 HTTP/1.0 请求；开启后会注入一个 EnvoyFilter 设置 accept_http_10 + default_host_for_http_10
+listeners:
+  - name: http # 监听器名称
+    port: 80 # 请求监听端口
+    protocol: HTTP # 协议类型（HTTP/HTTPS 等）
+
+# Gateway 数据面 Service 暴露方式（由 Istio 根据 annotation + ConfigMap 创建）。
+# type：NodePort 或 LoadBalancer。nodePorts：type=NodePort 时按 listener name 固定端口（30000-32767）。
+service:
+  type: NodePort
+  nodePorts:
+    http: 30088
+
+# Istio 控制平面：enabled 控制是否安装 istiod/base 子 chart。
+# 当 enabled: true 且存在 istio 字段时，会安装 istio
+istio:
+  enabled: true  # 如果存在 istio 字段，默认启用
+  namespace: istio-system
+  base:
+    global:
+      istioNamespace: istio-system
+
+  # 传递给 istiod 子 chart
+  istiod:
+    global:
+      istioNamespace: istio-system
+    pilot:
+      env:
+        ENABLE_GATEWAY_API_INFERENCE_EXTENSION: "true"

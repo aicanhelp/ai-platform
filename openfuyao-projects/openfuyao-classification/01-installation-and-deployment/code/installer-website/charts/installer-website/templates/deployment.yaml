@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: installer-website
+  namespace: openfuyao-system
+  labels:
+    app.kubernetes.io/name:  installer-website
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name:  installer-website
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name:  installer-website
+    spec:
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+        - command: ["nginx", "-g", "daemon off;"]
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          name: installer-website
+          ports:
+            - containerPort: 8080
+              name: https
+          terminationMessagePolicy: FallbackToLogsOnError

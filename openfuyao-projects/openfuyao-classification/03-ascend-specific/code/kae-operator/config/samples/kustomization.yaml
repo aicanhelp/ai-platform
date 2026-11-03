@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- device_v1_kaepolicy.yaml
+#+kubebuilder:scaffold:manifestskustomizesamples

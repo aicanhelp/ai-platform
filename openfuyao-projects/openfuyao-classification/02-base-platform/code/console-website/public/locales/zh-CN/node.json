@@ -1,0 +1,90 @@
+{
+  "module": {
+    "title": "节点",
+    "description": "管理集群节点资源",
+    "detail": "节点详情"
+  },
+  "list": {
+    "total": "共{{total}}条"
+  },
+  "table": {
+    "name": "节点名称",
+    "ip": "IP地址",
+    "type": "类型",
+    "status": "状态",
+    "isBusy": "是否繁忙",
+    "os": "操作系统"
+  },
+  "header": {
+    "abnormalNode": "异常节点/总节点",
+    "manageNode": "管理节点",
+    "workerNode": "工作节点"
+  },
+  "type": {
+    "manageNode": "管理节点",
+    "workerNode": "工作节点"
+  },
+  "status": {
+    "normal": "正常",
+    "abnormal": "异常",
+    "unknown": "未知"
+  },
+  "busyStatus": {
+    "yes": "是",
+    "no": "否"
+  },
+  "info": {
+    "basicInfo": "基本信息",
+    "healthStatus": "健康状态",
+    "resourceQuota": "资源配额详情",
+    "labels": "标签：",
+    "annotations": "注解：",
+    "countZero": "0个"
+  },
+  "fields": {
+    "nodeName": "节点名称：",
+    "nodeSpec": "节点规格：",
+    "nodeStatus": "节点状态：",
+    "nodeIpAddress": "节点IP地址：",
+    "os": "操作系统：",
+    "nodeId": "节点ID：",
+    "createdAt": "创建时间：",
+    "isBusy": "是否繁忙："
+  },
+  "health": {
+    "networkAvailability": "网络可用性",
+    "memoryPressure": "内存压力",
+    "diskPressure": "磁盘压力",
+    "acceptPods": "是否接收Pod",
+    "healthy": "健康",
+    "abnormal": "异常",
+    "diskPressureStatus": "磁盘压力"
+  },
+  "resource": {
+    "cpu": "CPU",
+    "memory": "内存",
+    "pods": "Pods",
+    "usage": "使用量",
+    "max": "最大值"
+  },
+  "pod": {
+    "createdAt": "创建时间：",
+    "podIpAddress": "Pod IP地址",
+    "cpuCore": "CPU(core)",
+    "memoryMB": "内存(MB)",
+    "containerName": "容器名称",
+    "image": "镜像",
+    "status": "状态",
+    "port": "端口"
+  },
+  "detail": {
+    "tabDetail": "详情",
+    "tabPod": "Pod"
+  },
+  "messages": {
+    "fetchPodResourceFailed": "获取Pod的内存&CPU失败!"
+  },
+  "unit": {
+    "cores": "核"
+  }
+}

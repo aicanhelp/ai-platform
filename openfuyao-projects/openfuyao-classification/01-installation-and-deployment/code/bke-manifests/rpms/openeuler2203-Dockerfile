@@ -1,0 +1,7 @@
+FROM openeuler/openeuler:22.03
+
+RUN curl -o /etc/yum.repos.d/CentOS-Base.repo https://repo.huaweicloud.com/repository/conf/CentOS-8-reg.repo \
+    && curl -o /etc/yum.repos.d/docker-ce.repo https://repo.huaweicloud.com/docker-ce/linux/centos/docker-ce.repo \
+    && sed -i 's/\$releasever/8/g' /etc/yum.repos.d/docker-ce.repo \
+    && yum clean all && yum makecache \
+    && yum -y install yum-utils createrepo

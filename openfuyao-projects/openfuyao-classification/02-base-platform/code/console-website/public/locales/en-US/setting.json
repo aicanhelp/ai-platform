@@ -1,0 +1,95 @@
+{
+  "module": {
+    "userSettings": "User Settings",
+    "userManage": "User Management",
+    "userDetail": "User Detail",
+    "roleManage": "Role Management"
+  },
+  "title": {
+    "basicInfo": "Basic Information",
+    "passwordSettings": "Password Settings",
+    "userInfo": "User Information",
+    "belongedClusters": "Belonged Clusters"
+  },
+  "table": {
+    "userName": "Username",
+    "platformRole": "Platform Role",
+    "description": "Description",
+    "operation": "Operation",
+    "roleName": "Role Name",
+    "clusterName": "Cluster Name",
+    "clusterRole": "Cluster Role"
+  },
+  "label": {
+    "currentPassword": "Current Password",
+    "newPassword": "New Password",
+    "confirmPassword": "Confirm Password",
+    "username": "Username",
+    "initialPassword": "Initial Password",
+    "platformRole": "Platform Role",
+    "userDescription": "User Description"
+  },
+  "placeholder": {
+    "inputPassword": "Please enter password",
+    "inputNewPassword": "Please enter new password",
+    "inputConfirmPassword": "Please confirm password",
+    "inputUserName": "Please enter username"
+  },
+  "actions": {
+    "create": "Create",
+    "createUser": "Create User",
+    "edit": "Edit",
+    "modify": "Modify",
+    "delete": "Delete",
+    "confirm": "OK",
+    "cancel": "Cancel",
+    "uploadFile": "Upload File"
+  },
+  "validation": {
+    "passwordLength": "Password length: 8-32 characters",
+    "passwordComplexity": "Must contain letters, numbers, and special characters `~!@#$%^&*()-_=+\\|[{ }];:'\",<.>/?",
+    "passwordNotSameAsAccount": "Cannot be the same as the account name or its reverse",
+    "passwordMustMatch": "Passwords must match",
+    "currentPasswordRequired": "Please enter current password!",
+    "newPasswordRequired": "Please enter new password!",
+    "confirmPasswordRequired": "Please confirm new password!",
+    "passwordEmpty": "Password cannot be empty",
+    "passwordLengthRange": "Password length should be between 8-32 characters",
+    "passwordChars": "Password must contain only letters, numbers, and special characters `~!@#$%^&*()-_=+\\|[{ }];:'\",<.>/?",
+    "usernameEmpty": "Username cannot be empty",
+    "usernameMaxLength": "Username length should not exceed 32 characters",
+    "usernameFormat": "Username must consist of lowercase letters, numbers, and \"-\", and must start and end with a letter or number",
+    "platformRoleRequired": "Platform role cannot be empty"
+  },
+  "modal": {
+    "createUserTitle": "Create User",
+    "modifyUserTitle": "Modify User",
+    "deleteUserTitle": "Delete User",
+    "deleteUserWarning": "User cannot be recovered after deletion. Please proceed with caution.",
+    "deleteUserConfirm": "Are you sure to delete {{name}}?"
+  },
+  "messages": {
+    "passwordChangeSuccess": "Password changed successfully, logging out",
+    "passwordChangeLocked": "Password change limit reached, user locked",
+    "passwordChangeFailed": "Password change failed",
+    "editDescriptionSuccess": "Description for {{name}} updated successfully",
+    "editDescriptionFailed": "Failed to update description for {{name}}",
+    "uploadSuccess": "{{name}} uploaded successfully",
+    "uploadFailed": "{{name}} upload failed.",
+    "roleListError": "Failed to get role list",
+    "roleDetailError": "Failed to get role detail",
+    "createUserSuccess": "User created successfully!",
+    "createUserFailed": "Failed to create user!",
+    "createUserFailedReason": "Failed to create user, reason: {{reason}}",
+    "editUserSuccess": "User updated successfully!",
+    "editUserFailed": "Failed to update user!",
+    "editUserFailedReason": "Failed to update user, reason: {{reason}}",
+    "deleteUserSuccess": "User {{name}} deleted successfully!",
+    "deleteUserFailed": "Failed to delete user {{name}}!",
+    "deleteUserFailedReason": "Failed to delete user, reason: {{reason}}",
+    "fetchDataError": "Failed to fetch data"
+  },
+  "tip": {
+    "platformRoleOnly": "Only platform-level roles are shown here. Cluster roles can be managed in the corresponding cluster resource settings."
+  }
+}

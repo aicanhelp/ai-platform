@@ -1,0 +1,18 @@
+# helm_config.yaml - Helm chart configuration for infernex tests.
+# helmUrl supports both OCI remote URL (oci://...) and local chart directory/file path.
+#   - OCI URL: e.g. "oci://cr.openfuyao.cn/charts/infernex" (default)
+#   - Local path: e.g. "/path/to/infernex-chart" or "./charts/infernex"
+# version: semver (e.g. "0.22.0") or "latest"/"" (omit --version flag).
+#   Ignored when helmUrl is a local path.
+infernex:
+  releaseName: "infernex"
+  helmUrl: "oci://cr.openfuyao.cn/charts/infernex"
+  version: "0.0.0-latest"
+  namespace: "ai-hms"
+  predictionModelPath: "./prediction-model"
+hermes-router:
+  releaseName: "hermes-router"
+  helmUrl: "oci://cr.openfuyao.cn/charts/hermes-router"
+  version: "0.0.0-latest"
+  namespace: "ai-hms"
+  predictionModelPath: "./prediction-model"

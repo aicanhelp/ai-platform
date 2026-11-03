@@ -1,0 +1,10 @@
+name: vllm-ascend
+type: private
+description: '基于vllm-ascend提供PD分离架构下面向长短请求场景的吞吐优化方案。'
+branches:
+  - name: v0.10.0rc1-mooncake
+    type: protected
+    create_from: v0.10.0rc1
+  - name: v0.10.0rc1-dev
+    type: protected
+    create_from: v0.10.0rc1

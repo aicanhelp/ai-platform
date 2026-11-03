@@ -1,0 +1,17 @@
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: pingss
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - Ping
+      id: ping agent
+      type: BuiltIn
+  nodeSelector:
+    matchLabels:
+      worker-1: "worker-1"
+      172.28.100.206: "172.28.100.206"

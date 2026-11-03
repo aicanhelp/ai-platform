@@ -1,0 +1,24 @@
+# permissions for end users to edit bkeclusters.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: bkecluster-editor-role
+rules:
+- apiGroups:
+  - cluster.bocloud.com
+  resources:
+  - bkeclusters
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cluster.bocloud.com
+  resources:
+  - bkeclusters/status
+  verbs:
+  - get

@@ -1,0 +1,36 @@
+apiVersion: device.openfuyao.com/v1
+kind: KAEPolicy
+metadata:
+  labels:
+    app.kubernetes.io/name: kae-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: kaepolicy-sample
+spec:
+  daemonSets:
+    priorityClassName: system-node-critical
+    rollingUpdate:
+      maxUnavailable: "1"
+    updateStrategy: RollingUpdate
+  devicePlugin:
+    enabledHPRE: true
+    enabledSEC: false
+    enabledZIP: false
+    image: kae-device-plugin
+    imagePullPolicy: IfNotPresent
+    repository: cr.openfuyao.cn/openfuyao
+    version: latest
+  driver:
+    enabled: true
+    enabledCleanup: false
+    env:
+    - name: INSTALL_POLICY
+      value: awlays
+    image: kae-driver-installer
+    imagePullPolicy: IfNotPresent
+    repository: 192.168.211.135/library
+    version: latest
+  operator:
+    enabledHPRE: true
+    enabledSEC: false
+    enabledZIP: false
+

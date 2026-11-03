@@ -1,0 +1,8 @@
+apiVersion: v2
+name: vllm
+description: vLLM backend with optional InferenceModel/InferencePool CRs
+type: application
+version: 0.1.0
+appVersion: 0.5.0
+
+

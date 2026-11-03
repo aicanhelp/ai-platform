@@ -1,0 +1,23 @@
+# permissions for end users to view containercheckpoints.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: colocation-management
+    app.kubernetes.io/managed-by: kustomize
+  name: containercheckpoint-viewer-role
+rules:
+- apiGroups:
+  - colocation.openfuyao.com
+  resources:
+  - containercheckpoints
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - colocation.openfuyao.com
+  resources:
+  - containercheckpoints/status
+  verbs:
+  - get

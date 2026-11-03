@@ -1,0 +1,24 @@
+label: Release Notes
+sections:
+  - label: Release Notes
+    href: ./release_notes.md
+  - label: Introduction
+    href: ./introduction.md
+  - label: User Notice
+    href: ./user_notice.md 
+  - label: Version Overview
+    href: ./version_overview.md
+  - label: Version Compatibility Notes
+    href: ./version_compatibility_notes.md
+  - label: Resolved Issues
+    href: ./resolved_issues.md
+  - label: Known Issues
+    href: ./known_issues.md
+  - label: CVE Vulnerabilities
+    href: ./cve.md
+  - label: Source Code
+    href: ./source_code.md
+  - label: How to Contribute
+    href: ./how_to_contribute.md
+  - label: Acknowledgments
+    href: ./acknowledgments.md

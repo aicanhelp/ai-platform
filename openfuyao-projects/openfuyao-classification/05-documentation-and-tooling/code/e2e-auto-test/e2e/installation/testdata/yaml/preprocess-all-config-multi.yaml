@@ -1,0 +1,32 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: preprocess-all-config
+  namespace: user-system
+data:
+  config.json: |
+    {
+      "scripts": [
+        {
+          "scriptName": "init-os.sh",
+          "order": 10,
+          "params": {
+            "HTTP_REPO": "http://repo.example.com"
+          }
+        },
+        {
+          "scriptName": "setup-env.sh",
+          "order": 20,
+          "params": {
+            "HTTP_REPO": "http://repo.example.com"
+          }
+        },
+        {
+          "scriptName": "install-agent.sh",
+          "order": 30,
+          "params": {
+            "HTTP_REPO": "http://repo.example.com"
+          }
+        }
+      ]
+    }

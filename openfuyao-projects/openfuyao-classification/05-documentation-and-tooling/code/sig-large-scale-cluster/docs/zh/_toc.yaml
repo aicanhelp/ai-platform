@@ -1,0 +1,6 @@
+label: 超大规模集群
+sections:
+  - label: 用户指南
+    href: ./user_guide/_toc.yaml
+  - label: 最佳实践
+    href: ./best_practice/_toc.yaml

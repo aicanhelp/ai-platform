@@ -1,0 +1,28 @@
+{{ $scriptDir := "/etc/openFuyao/bkeagent/scripts/" }}
+
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: clean-docker-images
+  namespace: {{.namespace}}
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/clean_docker_images.py:ro:{{$scriptDir}}clean_docker_images.py"
+      id: save-clean-docker-images-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "(crontab -l; echo '0 0 */3 * * /usr/bin/python {{$scriptDir}}clean_docker_images.py -t 3d') | crontab -"
+      id: clean-docker-images
+      type: Shell
+  backoffLimit: 3
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+    {{ . }}: {{ . }}
+    {{- end }}

@@ -1,0 +1,1367 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: 提供Kubernetes存储资源管理相关API接口。
+  version: 1.0.0
+servers:
+  - url: /
+    description: 默认服务器。
+paths:
+  /api/kubernetes/api/v1/persistentvolumes/{name}:
+    get:
+      tags:
+        - 数据卷
+      summary: 读取指定的数据卷。
+      description: 获取数据卷具体内容。
+      operationId: getPersistentVolume
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+    put:
+      tags:
+        - 数据卷
+      summary: 更新指定的数据卷。
+      description: 更新指定的数据卷。
+      operationId: updatePersistentVolume
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要更新的数据卷内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 数据卷配置对象。
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷对象。
+        '201':
+          description: 请求已成功处理，并且新资源已被创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+    delete:
+      tags:
+        - 数据卷
+      summary: 删除指定的数据卷。
+      description: 删除一个数据卷。
+      operationId: deletePersistentVolume
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除对象前的持续时间（秒数）。
+          required: false
+          schema:
+            type: integer
+        - name: propagationPolicy
+          in: query
+          description: 该字段决定是否以及如何执行垃圾收集。
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷对象。
+        '202':
+          description: 请求已被接收，但处理尚未完成。
+        '401':
+          description: 请求未授权，或凭证无效。
+    patch:
+      tags:
+        - 数据卷
+      summary: 部分更新指定的数据卷。
+      description: 部分更新指定的数据卷。
+      operationId: patchPersistentVolume
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制应用该请求。
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        description: 要应用的补丁操作。
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: 操作类型。
+                    enum:
+                      - add
+                      - remove
+                      - replace
+                      - move
+                      - copy
+                      - test
+                  path:
+                    type: string
+                    description: 要操作的JSON指针路径。
+                  value:
+                    description: 用于add、replace或test操作的值。
+                  from:
+                    type: string
+                    description: 用于move或copy操作的源JSON指针路径。
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷对象。
+        '201':
+          description: 已更新。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+
+  /api/kubernetes/api/v1/persistentvolumes:
+    get:
+      tags:
+        - 数据卷
+      summary: 获取数据卷列表。
+      description: 获取数据卷列表。
+      operationId: listPersistentVolumes
+      parameters:
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 对请求所针对的资源版本设置约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 决定如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: 监视对所述资源的更改。
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: 监视通知流将从合成事件开始，以生成集合中对象的当前状态。
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: list/watch调用的超时秒数。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷列表对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+    post:
+      tags:
+        - 数据卷
+      summary: 创建一个数据卷。
+      description: 创建一个数据卷。
+      operationId: createPersistentVolume
+      parameters:
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要创建的数据卷内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 数据卷配置对象。
+          application/yaml:
+            schema:
+              type: object
+              description: 数据卷配置对象。
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷对象。
+        '201':
+          description: 请求已成功处理，并且新资源已被创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷对象。
+        '202':
+          description: 请求已被接收，但处理尚未完成。
+        '401':
+          description: 请求未授权，或凭证无效。
+
+  /api/kubernetes/api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}:
+    get:
+      tags:
+        - 数据卷声明
+      summary: 读取指定的数据卷声明。
+      description: 获取数据卷声明具体内容。
+      operationId: getPersistentVolumeClaim
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷声明对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+    put:
+      tags:
+        - 数据卷声明
+      summary: 更新指定的数据卷声明。
+      description: 更新指定的数据卷声明。
+      operationId: updatePersistentVolumeClaim
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要更新的数据卷声明内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 数据卷声明配置对象。
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷声明对象。
+        '201':
+          description: 请求已成功处理，并且新资源已被创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷声明对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+    delete:
+      tags:
+        - 数据卷声明
+      summary: 删除指定的数据卷声明。
+      description: 删除一个数据卷声明。
+      operationId: deletePersistentVolumeClaim
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除对象前的持续时间（秒数）。
+          required: false
+          schema:
+            type: integer
+        - name: propagationPolicy
+          in: query
+          description: 该字段决定是否以及如何执行垃圾收集。
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷声明对象。
+        '202':
+          description: 请求已被接收，但处理尚未完成。
+        '401':
+          description: 请求未授权，或凭证无效。
+    patch:
+      tags:
+        - 数据卷声明
+      summary: 部分更新指定的数据卷声明。
+      description: 部分更新指定的数据卷声明。
+      operationId: patchPersistentVolumeClaim
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制应用该请求。
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        description: 要应用的补丁操作。
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: 操作类型。
+                    enum:
+                      - add
+                      - remove
+                      - replace
+                      - move
+                      - copy
+                      - test
+                  path:
+                    type: string
+                    description: 要操作的JSON指针路径。
+                  value:
+                    description: 用于add、replace或test操作的值。
+                  from:
+                    type: string
+                    description: 用于move或copy操作的源JSON指针路径。
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷声明对象。
+        '201':
+          description: 已更新。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷声明对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+
+  /api/kubernetes/api/v1/namespaces/{namespace}/persistentvolumeclaims:
+    get:
+      tags:
+        - 数据卷声明
+      summary: 获取数据卷声明列表。
+      description: 获取数据卷声明列表。
+      operationId: listPersistentVolumeClaims
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 对请求所针对的资源版本设置约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 决定如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: 监视对所述资源的更改。
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: 监视通知流将从合成事件开始，以生成集合中对象的当前状态。
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: list/watch调用的超时秒数。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷声明列表对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+    post:
+      tags:
+        - 数据卷声明
+      summary: 创建一个数据卷声明。
+      description: 创建一个数据卷声明。
+      operationId: createPersistentVolumeClaim
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要创建的数据卷声明内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 数据卷声明配置对象。
+          application/yaml:
+            schema:
+              type: object
+              description: 数据卷声明配置对象。
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷声明对象。
+        '201':
+          description: 请求已成功处理，并且新资源已被创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 数据卷声明对象。
+        '202':
+          description: 请求已被接收，但处理尚未完成。
+        '401':
+          description: 请求未授权，或凭证无效。
+
+  /api/kubernetes/apis/storage.k8s.io/v1/storageclasses/{name}:
+    get:
+      tags:
+        - 存储池
+      summary: 读取指定的存储池。
+      description: 获取存储池具体内容。
+      operationId: getStorageClass
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 存储池对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+    put:
+      tags:
+        - 存储池
+      summary: 更新指定的存储池。
+      description: 更新指定的存储池。
+      operationId: updateStorageClass
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: query
+          description: 命名空间。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要更新的存储池内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 存储池配置对象。
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 存储池对象。
+        '201':
+          description: 请求已成功处理，并且新资源已被创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 存储池对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+    delete:
+      tags:
+        - 存储池
+      summary: 删除指定的存储池。
+      description: 删除一个存储池。
+      operationId: deleteStorageClass
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: query
+          description: 命名空间。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除对象前的持续时间（秒数）。
+          required: false
+          schema:
+            type: integer
+        - name: propagationPolicy
+          in: query
+          description: 该字段决定是否以及如何执行垃圾收集。
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 存储池对象。
+        '202':
+          description: 请求已被接收，但处理尚未完成。
+        '401':
+          description: 请求未授权，或凭证无效。
+    patch:
+      tags:
+        - 存储池
+      summary: 部分更新指定的存储池。
+      description: 部分更新指定的存储池。
+      operationId: patchStorageClass
+      parameters:
+        - name: name
+          in: path
+          description: 负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: query
+          description: 命名空间。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制应用该请求。
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        description: 要应用的补丁操作。
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: 操作类型。
+                    enum:
+                      - add
+                      - remove
+                      - replace
+                      - move
+                      - copy
+                      - test
+                  path:
+                    type: string
+                    description: 要操作的JSON指针路径。
+                  value:
+                    description: 用于add、replace或test操作的值。
+                  from:
+                    type: string
+                    description: 用于move或copy操作的源JSON指针路径。
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 存储池对象。
+        '201':
+          description: 已更新。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 存储池对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+
+  /api/kubernetes/apis/storage.k8s.io/v1/storageclasses:
+    get:
+      tags:
+        - 存储池
+      summary: 获取存储池列表。
+      description: 获取存储池列表。
+      operationId: listStorageClasses
+      parameters:
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 对请求所针对的资源版本设置约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 决定如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: 监视对所述资源的更改。
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: 监视通知流将从合成事件开始，以生成集合中对象的当前状态。
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: list/watch调用的超时秒数。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 存储池列表对象。
+        '401':
+          description: 请求未授权，或凭证无效。
+    post:
+      tags:
+        - 存储池
+      summary: 创建一个存储池。
+      description: 创建一个存储池。
+      operationId: createStorageClass
+      parameters:
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要创建的存储池内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 存储池配置对象。
+          application/yaml:
+            schema:
+              type: object
+              description: 存储池配置对象。
+      responses:
+        '200':
+          description: 成功处理请求并返回了所请求的数据。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 存储池对象。
+        '201':
+          description: 请求已成功处理，并且新资源已被创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 存储池对象。
+        '202':
+          description: 请求已被接收，但处理尚未完成。
+        '401':
+          description: 请求未授权，或凭证无效。

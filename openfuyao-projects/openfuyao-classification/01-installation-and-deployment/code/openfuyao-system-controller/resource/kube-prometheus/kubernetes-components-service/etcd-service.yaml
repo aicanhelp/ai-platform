@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name: etcd
+    app.kubernetes.io/part-of: kube-prometheus
+  name: etcd-service
+  namespace: kube-system
+spec:
+  ports:
+  - name: client
+    port: 2379
+    targetPort: 2379
+    protocol: TCP
+  selector:
+    component: etcd
+    tier: control-plane
+  type: ClusterIP

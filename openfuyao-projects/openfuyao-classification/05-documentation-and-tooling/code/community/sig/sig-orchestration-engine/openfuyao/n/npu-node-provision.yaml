@@ -1,0 +1,6 @@
+name: npu-node-provision
+type: private
+description: '为openFuyao提供容器化部署MindIO组件的能力'
+branches:
+  - name: master
+    type: protected

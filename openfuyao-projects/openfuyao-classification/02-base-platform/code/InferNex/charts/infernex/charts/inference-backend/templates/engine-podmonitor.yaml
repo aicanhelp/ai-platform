@@ -1,0 +1,69 @@
+{{- if $.Capabilities.APIVersions.Has "monitoring.coreos.com/v1" }}
+{{- range .Values.services }}
+{{- if .enabled }}
+{{- if eq .mode "pd" }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  namespace: {{ $.Release.Namespace }}
+  name: {{ include "vllm.instance.serviceName" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) }}-prefill-metrics
+  labels:
+    release: {{ $.Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      openfuyao.com/engine: vllm
+      openfuyao.com/model: {{ include "vllm.modelName.label" (dict "Values" $.Values) }}
+      openfuyao.com/pdRole: {{ include "vllm.pdRole.label" (dict "role" "prefill" "Values" $.Values) }}
+      {{- if .pdGroupID }}
+      openfuyao.com/pdGroupID: {{ .pdGroupID }}
+      {{- end }}
+  podMetricsEndpoints:
+  - targetPort: 8000
+    path: /metrics
+    interval: 15s
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  namespace: {{ $.Release.Namespace }}
+  name: {{ include "vllm.instance.serviceName" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) }}-decode-metrics
+  labels:
+    release: {{ $.Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      openfuyao.com/engine: vllm
+      openfuyao.com/model: {{ include "vllm.modelName.label" (dict "Values" $.Values) }}
+      openfuyao.com/pdRole: {{ include "vllm.pdRole.label" (dict "role" "decode" "Values" $.Values) }}
+      {{- if .pdGroupID }}
+      openfuyao.com/pdGroupID: {{ .pdGroupID }}
+      {{- end }}
+  podMetricsEndpoints:
+  - targetPort: 8000
+    path: /metrics
+    interval: 15s
+{{- else }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  namespace: {{ $.Release.Namespace }}
+  name: {{ include "vllm.instance.serviceName" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) }}-aggregated-metrics
+  labels:
+    release: {{ $.Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      openfuyao.com/engine: vllm
+      openfuyao.com/model: {{ include "vllm.modelName.label" (dict "Values" $.Values) }}
+      openfuyao.com/pdRole: {{ include "vllm.pdRole.label" (dict "role" "aggregate" "Values" $.Values) }}
+  podMetricsEndpoints:
+  - targetPort: 8000
+    path: /metrics
+    interval: 15s
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,36 @@
+# Build Stage: using Go 1.24.1 image
+FROM quay.io/projectquay/golang:1.25 AS builder
+ARG TARGETOS
+ARG TARGETARCH
+
+WORKDIR /workspace
+
+# Copy the Go Modules manifests
+COPY go.mod go.mod
+COPY go.sum go.sum
+
+# Copy the go source
+COPY cmd/ cmd/
+COPY pkg/ pkg/
+
+ENV CGO_ENABLED=0
+ENV GOOS=${TARGETOS:-linux}
+ENV GOARCH=${TARGETARCH}
+ARG COMMIT_SHA=unknown
+ARG BUILD_REF
+RUN go build -a -o bin/epp -ldflags="-X sigs.k8s.io/gateway-api-inference-extension/version.CommitSHA=${COMMIT_SHA} -X sigs.k8s.io/gateway-api-inference-extension/version.BuildRef=${BUILD_REF}" cmd/epp/main.go
+
+# Use ubi9 as a minimal base image to package the manager binary
+FROM registry.access.redhat.com/ubi9/ubi-minimal:latest
+WORKDIR /
+
+COPY --from=builder /workspace/bin/epp /app/epp
+
+USER 65532:65532
+
+# expose gRPC, health and metrics ports
+EXPOSE 9002
+EXPOSE 9003
+EXPOSE 9090
+
+ENTRYPOINT ["/app/epp"]

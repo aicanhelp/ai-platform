@@ -1,0 +1,24 @@
+# permissions for end users to edit bkemachinetemplates.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: bkemachinetemplate-editor-role
+rules:
+- apiGroups:
+  - bke.bocloud.com
+  resources:
+  - bkemachinetemplates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - bke.bocloud.com
+  resources:
+  - bkemachinetemplates/status
+  verbs:
+  - get

@@ -1,0 +1,15 @@
+apiVersion: v2	
+name: volcano-config-package	
+description: A backend service responsible for handling configuration related operations in the volcano-system, ensuring consistent and reliable communication between components.	
+type: application	
+version: 0.0.0-latest	
+appVersion: latest	
+keywords: ["openfuyao-extension"]	
+dependencies: 	
+  - name: numa-exporter	
+    version: 0.0.0-latest	
+  - name: scheduler-config	
+    version: 0.0.0-latest	
+  - name: volcano	
+    version: 1.9.0
+    condition: volcano.components.enabled

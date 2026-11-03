@@ -1,0 +1,26 @@
+{{- $serviceMonitorEnabled := true -}}
+{{- with .Values.serviceMonitor }}
+{{- if ne .enabled nil }}
+{{- $serviceMonitorEnabled = .enabled -}}
+{{- end }}
+{{- end }}
+{{- if and $serviceMonitorEnabled (.Capabilities.APIVersions.Has "monitoring.coreos.com/v1/ServiceMonitor") }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  labels:
+    name: numa-exporter
+  name: numa-exporter
+  namespace: volcano-system
+spec:
+  endpoints:
+    - interval: 1s
+      port: https
+      honorLabels: true
+  namespaceSelector:
+    matchNames:
+    - volcano-system
+  selector:
+    matchLabels:
+      app: numa-exporter
+{{- end }}

@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: npu-driver-daemonset
+    app.kubernetes.io/component: npu-driver
+  name: npu-driver
+  namespace: test
+spec:
+  selector:
+    matchLabels:
+      app: npu-driver-daemonset
+  template:
+    metadata:
+      labels:
+        app: npu-driver-daemonset
+        app.kubernetes.io/component: npu-driver
+    spec:
+      nodeSelector:
+        openfuyao.com/npu.present: ""
+      hostPID: true
+      hostNetwork: true
+      initContainers:
+        - name: npu-driver-installer
+          image: cr.openfuyao.cn/openfuyao/ascend-image/npu-driver-installer:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: DRIVER_VERSION
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.annotations['openfuyao.com/driver.version']
+            - name: HOST_DRIVER_SOURCE_PATH
+              value: "/opt/npu-driver-source"
+          securityContext:
+            privileged: true
+          command: [ "/bin/ash", "/home/npu-driver-files/npu-driver-entrypoint.sh" ]
+          args:
+            - "--mode"
+            - "auto"
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: root-mount
+              mountPath: /mnt
+      containers:
+        - image: "FILLED_BY_OPERATOR"
+          imagePullPolicy: IfNotPresent
+          name: npu-driver
+          command:
+            - /bin/sh
+            - -c
+            - while true; do sleep 3600; done
+          securityContext:
+            privileged: true
+            seLinuxOptions:
+              level: "s0"
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: root-mount
+              mountPath: /mnt
+      volumes:
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        - name: root-mount
+          hostPath:
+            path: /

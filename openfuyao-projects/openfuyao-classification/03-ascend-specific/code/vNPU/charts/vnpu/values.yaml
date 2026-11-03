@@ -1,0 +1,74 @@
+basic:
+  swr_addr: "cr.openfuyao.cn/openfuyao/vnpu"
+  namespace: xpu
+
+npu:
+  nodeSelector:
+    huawei.com/vnpu: ready
+  driverHostPath: /usr/local/Ascend
+  npuSmiHostPath: /usr/local/bin/npu-smi
+
+npuDevicePlugin:
+  name: npu-device-plugin
+  labels:
+    name: npu-device-plugin
+  image:
+    name: npu-device-plugin
+    version: "1.0.0"
+
+npuClientUpdate:
+  name: npu-client-update
+  labels:
+    name: npu-client-update
+  image:
+    name: acl-client-update-910b
+    version: "1.0.0"
+
+xpuExporter:
+  name: xpu-exporter
+  args:
+    ["--type=npu", "--logging-console=true"]
+  port: 8082
+  image:
+    name: xpu-exporter
+    version: "1.0.0"
+  https: '"off"'
+
+imagePullPolicy: IfNotPresent
+updateStrategy:
+  type: RollingUpdate
+priorityClassName: "system-node-critical"
+runtimeType: "docker"
+
+deviceSplitCount: 20
+loggingConsole: true
+
+devicePluginName: device-plugin
+
+flavor:
+  npu_client_update_daemonset:
+    requests:
+      cpu: "200m"
+      memory: "512Mi"
+    limits:
+      cpu: "200m"
+      memory: "512Mi"
+  npu_device_plugin_daemonset:
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+    limits:
+      cpu: "1"
+      memory: "2Gi"
+  xpu_exporter_daemonset:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "500m"
+      memory: "1Gi"
+
+ServiceMonitor:
+  enable: false
+
+vnpuNodeMode:

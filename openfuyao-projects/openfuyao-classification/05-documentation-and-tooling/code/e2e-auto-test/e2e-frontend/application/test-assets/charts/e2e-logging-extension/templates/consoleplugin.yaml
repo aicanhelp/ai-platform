@@ -1,0 +1,20 @@
+apiVersion: console.openfuyao.com/v1beta1
+kind: ConsolePlugin
+metadata:
+  name: e2e-logging-extension
+spec:
+  pluginName: {{ .Values.plugin.pluginName }}
+  displayName: {{ .Values.plugin.displayName | quote }}
+  subPages:
+{{- range .Values.plugin.subPages }}
+    - pageName: {{ .pageName }}
+      displayName: {{ .displayName | quote }}
+{{- end }}
+  entrypoint: {{ .Values.plugin.entrypoint }}
+  backend:
+    type: Service
+    service:
+      name: {{ .Values.backend.serviceName }}
+      namespace: {{ .Values.backend.namespace }}
+      port: {{ .Values.backend.port }}
+  enabled: {{ .Values.plugin.enabled }}

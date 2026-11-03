@@ -1,0 +1,6 @@
+name: agent-vanguard
+type: private
+description: ''
+branches:
+  - name: main
+    type: protected

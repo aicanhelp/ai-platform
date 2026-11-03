@@ -1,0 +1,2671 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    control-plane: controller-manager
+  name: cluster-system
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.10.0
+  creationTimestamp: null
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    cluster.x-k8s.io/v1beta1: v1beta1
+  name: bkeclusters.bke.bocloud.com
+spec:
+  group: bke.bocloud.com
+  names:
+    kind: BKECluster
+    listKind: BKEClusterList
+    plural: bkeclusters
+    shortNames:
+      - bc
+    singular: bkecluster
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .status.phase
+          name: PHASE
+          type: string
+        - jsonPath: .spec.controlPlaneEndpoint.host
+          name: ENDPOINT
+          type: string
+        - jsonPath: .spec.controlPlaneEndpoint.port
+          name: ENDPOINT PORT
+          type: string
+        - jsonPath: .status.clusterStatus.cluster.kubernetesVersion
+          name: VERSION
+          type: string
+        - jsonPath: .status.agentStatus.status
+          name: AGENT STATUS
+          type: string
+      name: v1beta1
+      schema:
+        openAPIV3Schema:
+          description: BKECluster is the Schema for the bkeclusters API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: BKEClusterSpec defines the desired state of BKECluster
+              properties:
+                clusterConfig:
+                  description: ClusterConfig defines the cluster config
+                  properties:
+                    addons:
+                      description: Addons defines the addons that the target cluster will install after deployment
+                      items:
+                        properties:
+                          block:
+                            default: true
+                            description: Block defines fully wait for the Product to be deployed successfully
+                            type: boolean
+                          name:
+                            type: string
+                          param:
+                            additionalProperties:
+                              type: string
+                            type: object
+                          version:
+                            type: string
+                        required:
+                          - name
+                        type: object
+                      type: array
+                    cluster:
+                      description: Cluster defines the configuration of the target cluster
+                      properties:
+                        apiServer:
+                          description: APIServer contains extra settings for the api server control plane component
+                          properties:
+                            certSANs:
+                              description: CertSANs sets extra Subject Alternative Names for the API Server signing cert.
+                              items:
+                                type: string
+                              type: array
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                            host:
+                              description: AdvertiseAddress sets the IP address for the API server to advertise.
+                              type: string
+                            port:
+                              description: BindPort sets the secure port for the API Server to bind to. Defaults to 6443.
+                              format: int32
+                              type: integer
+                          type: object
+                        certificatesDir:
+                          description: CertificatesDir specifies where to store or look for all required certificates.
+                          type: string
+                        controllerManager:
+                          description: ControllerManager contains extra settings for the controller manager control plane component
+                          properties:
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                          type: object
+                        etcd:
+                          description: Etcd holds configuration for etcd
+                          properties:
+                            dataDir:
+                              description: DataDir is the directory etcd will place its data. Defaults to "/var/lib/openFuyao/etcd".
+                              type: string
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                            peerCertSANs:
+                              description: PeerCertSANs sets extra Subject Alternative Names for the etcd peer signing cert.
+                              items:
+                                type: string
+                              type: array
+                            serverCertSANs:
+                              description: ServerCertSANs sets extra Subject Alternative Names for the etcd server signing cert.
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        imageRepo:
+                          description: ImageRepo defines the global image repository of the deployment target cluster
+                          properties:
+                            domain:
+                              description: Domain defines the Repo domain name
+                              type: string
+                            ip:
+                              description: Ip defines the Repo ip
+                              type: string
+                            port:
+                              description: Port defines the number of port to connect to the Repo
+                              type: string
+                            prefix:
+                              description: Prefix defines the kubernetes image address
+                              type: string
+                          type: object
+                        kubelet:
+                          description: Kubelet define kubelet configuration for all nodes in the target cluster
+                          properties:
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                            manifestsDir:
+                              description: ManifestsDir is the directory where kubelet will store manifests
+                              type: string
+                          type: object
+                        kubernetesVersion:
+                          description: KubernetesVersion defines the Kubernetes version of the target cluster support up to v1.21.1 in bke
+                          type: string
+                        networking:
+                          description: Networking defines the configuration of target cluster network
+                          properties:
+                            dnsDomain:
+                              description: DNSDomain is the dns domain used by k8s services. Defaults to "cluster.local".
+                              type: string
+                            podSubnet:
+                              description: PodSubnet is the subnet used by pods.
+                              type: string
+                            serviceSubnet:
+                              description: ServiceSubnet is the subnet used by k8s services. Defaults to "10.96.0.0/12".
+                              type: string
+                          type: object
+                        ntpServer:
+                          description: NTPServer defines the ntp server information used for time synchronization
+                          type: string
+                        scheduler:
+                          description: Scheduler contains extra settings for the scheduler control plane component
+                          properties:
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                          type: object
+                        yumRepo:
+                          description: YumRepo defines the yum repository to use when deploying
+                          properties:
+                            domain:
+                              description: Domain defines the Repo domain name
+                              type: string
+                            ip:
+                              description: Ip defines the Repo ip
+                              type: string
+                            port:
+                              description: Port defines the number of port to connect to the Repo
+                              type: string
+                            prefix:
+                              description: Prefix defines the kubernetes image address
+                              type: string
+                          type: object
+                      type: object
+                    customExtra:
+                      additionalProperties:
+                        type: string
+                      description: CustomArgs defines the custom args
+                      type: object
+                    nodes:
+                      description: Nodes defines the configuration of the target cluster nodes
+                      items:
+                        properties:
+                          apiServer:
+                            description: APIServer contains extra settings for the api server control plane component
+                            properties:
+                              certSANs:
+                                description: CertSANs sets extra Subject Alternative Names for the API Server signing cert.
+                                items:
+                                  type: string
+                                type: array
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                              host:
+                                description: AdvertiseAddress sets the IP address for the API server to advertise.
+                                type: string
+                              port:
+                                description: BindPort sets the secure port for the API Server to bind to. Defaults to 6443.
+                                format: int32
+                                type: integer
+                            type: object
+                          controllerManager:
+                            description: ControllerManager contains extra settings for the controller manager control plane component
+                            properties:
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                            type: object
+                          etcd:
+                            description: Etcd holds configuration for etcd
+                            properties:
+                              dataDir:
+                                description: DataDir is the directory etcd will place its data. Defaults to "/var/lib/openFuyao/etcd".
+                                type: string
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                              peerCertSANs:
+                                description: PeerCertSANs sets extra Subject Alternative Names for the etcd peer signing cert.
+                                items:
+                                  type: string
+                                type: array
+                              serverCertSANs:
+                                description: ServerCertSANs sets extra Subject Alternative Names for the etcd server signing cert.
+                                items:
+                                  type: string
+                                type: array
+                            type: object
+                          hostname:
+                            description: Hostname specifies the hostname of the node
+                            type: string
+                          ip:
+                            description: IP node IP
+                            type: string
+                          kubelet:
+                            description: Kubelet rewrite the cluster's Kubelet configuration'
+                            properties:
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                              manifestsDir:
+                                description: ManifestsDir is the directory where kubelet will store manifests
+                                type: string
+                            type: object
+                          password:
+                            description: Password node Password used for SSH
+                            type: string
+                          port:
+                            description: Port node Port used for SSH
+                            type: string
+                          role:
+                            description: Role defines the role of the node in target cluster
+                            items:
+                              type: string
+                            type: array
+                          scheduler:
+                            description: Scheduler contains extra settings for the scheduler control plane component
+                            properties:
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                            type: object
+                          username:
+                            description: Username node Username used for SSH
+                            type: string
+                        type: object
+                      maxItems: 32
+                      type: array
+                  type: object
+                clusterFrom:
+                  description: 'ClusterFrom defines the manager cluster type, enum: bocloud, other bocloud:  manage bocloud cluster ("bocloud" cluster type is a cluster deployed by ansible) other:   manage other cluster ("other" cluster type is a cluster deployed by such as kubeadm etc) 3.when ClusterFrom is "other", BKE only collect the cluster information, and does not manage the cluster, so such as pause, dryRun, reset is not supported 4.when ClusterFrom is "bocloud", BKE will collect the cluster information, and manage the cluster. if bocloud cluster k8s version less than 1.21.1, need to use ansible to upgrade to 1.21.1, and then use BKE to upgrade to 1.25.6(plan version is 1.27) after this upgrade, BKE will take over the life cycle management of the cluster, including upgrading, scaling, etc'
+                  enum:
+                    - bocloud
+                    - other
+                  type: string
+                controlPlaneEndpoint:
+                  description: ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+                  properties:
+                    host:
+                      description: AdvertiseAddress sets the IP address for the API server to advertise.
+                      type: string
+                    port:
+                      description: BindPort sets the secure port for the API Server to bind to. Defaults to 6443.
+                      format: int32
+                      type: integer
+                  type: object
+                dryRun:
+                  description: DryRun is used to dry run the BKECluster, it also dries run the BKECluster's machines.
+                  type: boolean
+                pause:
+                  description: Pause is used to pause reconciliation of the BKECluster, it also pauses the BKECluster's machines.
+                  type: boolean
+                reset:
+                  description: Reset is used to reset the BKECluster, it also resets the BKECluster's machines, include cluster-api Cluster Machine etc.
+                  type: boolean
+              type: object
+            status:
+              description: BKEClusterStatus defines the observed state of BKECluster
+              properties:
+                agentStatus:
+                  properties:
+                    replies:
+                      default: 0
+                      format: int32
+                      type: integer
+                    status:
+                      default: 0/0
+                      type: string
+                    unavailableReplies:
+                      default: 0
+                      format: int32
+                      type: integer
+                  type: object
+                clusterStatus:
+                  properties:
+                    addons:
+                      description: Addons defines the addons that the target cluster will install after deployment
+                      items:
+                        properties:
+                          block:
+                            default: true
+                            description: Block defines fully wait for the Product to be deployed successfully
+                            type: boolean
+                          name:
+                            type: string
+                          param:
+                            additionalProperties:
+                              type: string
+                            type: object
+                          version:
+                            type: string
+                        required:
+                          - name
+                        type: object
+                      type: array
+                    cluster:
+                      description: Cluster defines the configuration of the target cluster
+                      properties:
+                        apiServer:
+                          description: APIServer contains extra settings for the api server control plane component
+                          properties:
+                            certSANs:
+                              description: CertSANs sets extra Subject Alternative Names for the API Server signing cert.
+                              items:
+                                type: string
+                              type: array
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                            host:
+                              description: AdvertiseAddress sets the IP address for the API server to advertise.
+                              type: string
+                            port:
+                              description: BindPort sets the secure port for the API Server to bind to. Defaults to 6443.
+                              format: int32
+                              type: integer
+                          type: object
+                        certificatesDir:
+                          description: CertificatesDir specifies where to store or look for all required certificates.
+                          type: string
+                        controllerManager:
+                          description: ControllerManager contains extra settings for the controller manager control plane component
+                          properties:
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                          type: object
+                        etcd:
+                          description: Etcd holds configuration for etcd
+                          properties:
+                            dataDir:
+                              description: DataDir is the directory etcd will place its data. Defaults to "/var/lib/openFuyao/etcd".
+                              type: string
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                            peerCertSANs:
+                              description: PeerCertSANs sets extra Subject Alternative Names for the etcd peer signing cert.
+                              items:
+                                type: string
+                              type: array
+                            serverCertSANs:
+                              description: ServerCertSANs sets extra Subject Alternative Names for the etcd server signing cert.
+                              items:
+                                type: string
+                              type: array
+                          type: object
+                        imageRepo:
+                          description: ImageRepo defines the global image repository of the deployment target cluster
+                          properties:
+                            domain:
+                              description: Domain defines the Repo domain name
+                              type: string
+                            ip:
+                              description: Ip defines the Repo ip
+                              type: string
+                            port:
+                              description: Port defines the number of port to connect to the Repo
+                              type: string
+                            prefix:
+                              description: Prefix defines the kubernetes image address
+                              type: string
+                          type: object
+                        kubelet:
+                          description: Kubelet define kubelet configuration for all nodes in the target cluster
+                          properties:
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                            manifestsDir:
+                              description: ManifestsDir is the directory where kubelet will store manifests
+                              type: string
+                          type: object
+                        kubernetesVersion:
+                          description: KubernetesVersion defines the Kubernetes version of the target cluster support up to v1.21.1 in bke
+                          type: string
+                        networking:
+                          description: Networking defines the configuration of target cluster network
+                          properties:
+                            dnsDomain:
+                              description: DNSDomain is the dns domain used by k8s services. Defaults to "cluster.local".
+                              type: string
+                            podSubnet:
+                              description: PodSubnet is the subnet used by pods.
+                              type: string
+                            serviceSubnet:
+                              description: ServiceSubnet is the subnet used by k8s services. Defaults to "10.96.0.0/12".
+                              type: string
+                          type: object
+                        ntpServer:
+                          description: NTPServer defines the ntp server information used for time synchronization
+                          type: string
+                        scheduler:
+                          description: Scheduler contains extra settings for the scheduler control plane component
+                          properties:
+                            extraArgs:
+                              additionalProperties:
+                                type: string
+                              description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                              type: object
+                            extraVolumes:
+                              description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                              items:
+                                description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                properties:
+                                  hostPath:
+                                    description: HostPath is the path in the host that will be mounted inside the pod.
+                                    type: string
+                                  mountPath:
+                                    description: MountPath is the path inside the pod where hostPath will be mounted.
+                                    type: string
+                                  name:
+                                    description: Name of the volume inside the pod template.
+                                    type: string
+                                  pathType:
+                                    description: PathType is the type of the HostPath.
+                                    type: string
+                                  readOnly:
+                                    description: ReadOnly controls write access to the volume
+                                    type: boolean
+                                type: object
+                              type: array
+                          type: object
+                        yumRepo:
+                          description: YumRepo defines the yum repository to use when deploying
+                          properties:
+                            domain:
+                              description: Domain defines the Repo domain name
+                              type: string
+                            ip:
+                              description: Ip defines the Repo ip
+                              type: string
+                            port:
+                              description: Port defines the number of port to connect to the Repo
+                              type: string
+                            prefix:
+                              description: Prefix defines the kubernetes image address
+                              type: string
+                          type: object
+                      type: object
+                    customExtra:
+                      additionalProperties:
+                        type: string
+                      description: CustomArgs defines the custom args
+                      type: object
+                    nodes:
+                      description: Nodes defines the configuration of the target cluster nodes
+                      items:
+                        properties:
+                          apiServer:
+                            description: APIServer contains extra settings for the api server control plane component
+                            properties:
+                              certSANs:
+                                description: CertSANs sets extra Subject Alternative Names for the API Server signing cert.
+                                items:
+                                  type: string
+                                type: array
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                              host:
+                                description: AdvertiseAddress sets the IP address for the API server to advertise.
+                                type: string
+                              port:
+                                description: BindPort sets the secure port for the API Server to bind to. Defaults to 6443.
+                                format: int32
+                                type: integer
+                            type: object
+                          controllerManager:
+                            description: ControllerManager contains extra settings for the controller manager control plane component
+                            properties:
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                            type: object
+                          etcd:
+                            description: Etcd holds configuration for etcd
+                            properties:
+                              dataDir:
+                                description: DataDir is the directory etcd will place its data. Defaults to "/var/lib/openFuyao/etcd".
+                                type: string
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                              peerCertSANs:
+                                description: PeerCertSANs sets extra Subject Alternative Names for the etcd peer signing cert.
+                                items:
+                                  type: string
+                                type: array
+                              serverCertSANs:
+                                description: ServerCertSANs sets extra Subject Alternative Names for the etcd server signing cert.
+                                items:
+                                  type: string
+                                type: array
+                            type: object
+                          hostname:
+                            description: Hostname specifies the hostname of the node
+                            type: string
+                          ip:
+                            description: IP node IP
+                            type: string
+                          kubelet:
+                            description: Kubelet rewrite the cluster's Kubelet configuration'
+                            properties:
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                              manifestsDir:
+                                description: ManifestsDir is the directory where kubelet will store manifests
+                                type: string
+                            type: object
+                          password:
+                            description: Password node Password used for SSH
+                            type: string
+                          port:
+                            description: Port node Port used for SSH
+                            type: string
+                          role:
+                            description: Role defines the role of the node in target cluster
+                            items:
+                              type: string
+                            type: array
+                          scheduler:
+                            description: Scheduler contains extra settings for the scheduler control plane component
+                            properties:
+                              extraArgs:
+                                additionalProperties:
+                                  type: string
+                                description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                type: object
+                              extraVolumes:
+                                description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                items:
+                                  description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                  properties:
+                                    hostPath:
+                                      description: HostPath is the path in the host that will be mounted inside the pod.
+                                      type: string
+                                    mountPath:
+                                      description: MountPath is the path inside the pod where hostPath will be mounted.
+                                      type: string
+                                    name:
+                                      description: Name of the volume inside the pod template.
+                                      type: string
+                                    pathType:
+                                      description: PathType is the type of the HostPath.
+                                      type: string
+                                    readOnly:
+                                      description: ReadOnly controls write access to the volume
+                                      type: boolean
+                                  type: object
+                                type: array
+                            type: object
+                          username:
+                            description: Username node Username used for SSH
+                            type: string
+                        type: object
+                      maxItems: 32
+                      type: array
+                  type: object
+                conditions:
+                  items:
+                    properties:
+                      addonName:
+                        description: AddonName is the name of the current reconcile addon
+                        type: string
+                      lastTransitionTime:
+                        description: Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+                        format: date-time
+                        type: string
+                      message:
+                        description: A human readable message indicating details about the transition. This field may be empty.
+                        type: string
+                      reason:
+                        description: The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+                        type: string
+                      status:
+                        description: Status of the condition, one of True, False, Unknown.
+                        type: string
+                      type:
+                        type: string
+                    required:
+                      - lastTransitionTime
+                      - status
+                      - type
+                    type: object
+                  type: array
+                phase:
+                  description: Phase is the current phase of the cluster.
+                  type: string
+                ready:
+                  description: 'INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file'
+                  type: boolean
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.10.0
+  creationTimestamp: null
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    cluster.x-k8s.io/v1beta1: v1beta1
+  name: bkeclustertemplates.bke.bocloud.com
+spec:
+  group: bke.bocloud.com
+  names:
+    kind: BKEClusterTemplate
+    listKind: BKEClusterTemplateList
+    plural: bkeclustertemplates
+    singular: bkeclustertemplate
+  scope: Namespaced
+  versions:
+    - name: v1beta1
+      schema:
+        openAPIV3Schema:
+          description: BKEClusterTemplate is the Schema for the bkeclustertemplates API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: BKEClusterTemplateSpec defines the desired state of BKEClusterTemplate
+              properties:
+                template:
+                  properties:
+                    metadata:
+                      description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
+                      properties:
+                        annotations:
+                          additionalProperties:
+                            type: string
+                          description: 'Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations'
+                          type: object
+                        labels:
+                          additionalProperties:
+                            type: string
+                          description: 'Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels'
+                          type: object
+                      type: object
+                    spec:
+                      description: BKEClusterSpec defines the desired state of BKECluster
+                      properties:
+                        clusterConfig:
+                          description: ClusterConfig defines the cluster config
+                          properties:
+                            addons:
+                              description: Addons defines the addons that the target cluster will install after deployment
+                              items:
+                                properties:
+                                  block:
+                                    default: true
+                                    description: Block defines fully wait for the Product to be deployed successfully
+                                    type: boolean
+                                  name:
+                                    type: string
+                                  param:
+                                    additionalProperties:
+                                      type: string
+                                    type: object
+                                  version:
+                                    type: string
+                                required:
+                                  - name
+                                type: object
+                              type: array
+                            cluster:
+                              description: Cluster defines the configuration of the target cluster
+                              properties:
+                                apiServer:
+                                  description: APIServer contains extra settings for the api server control plane component
+                                  properties:
+                                    certSANs:
+                                      description: CertSANs sets extra Subject Alternative Names for the API Server signing cert.
+                                      items:
+                                        type: string
+                                      type: array
+                                    extraArgs:
+                                      additionalProperties:
+                                        type: string
+                                      description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                      type: object
+                                    extraVolumes:
+                                      description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                      items:
+                                        description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                        properties:
+                                          hostPath:
+                                            description: HostPath is the path in the host that will be mounted inside the pod.
+                                            type: string
+                                          mountPath:
+                                            description: MountPath is the path inside the pod where hostPath will be mounted.
+                                            type: string
+                                          name:
+                                            description: Name of the volume inside the pod template.
+                                            type: string
+                                          pathType:
+                                            description: PathType is the type of the HostPath.
+                                            type: string
+                                          readOnly:
+                                            description: ReadOnly controls write access to the volume
+                                            type: boolean
+                                        type: object
+                                      type: array
+                                    host:
+                                      description: AdvertiseAddress sets the IP address for the API server to advertise.
+                                      type: string
+                                    port:
+                                      description: BindPort sets the secure port for the API Server to bind to. Defaults to 6443.
+                                      format: int32
+                                      type: integer
+                                  type: object
+                                certificatesDir:
+                                  description: CertificatesDir specifies where to store or look for all required certificates.
+                                  type: string
+                                controllerManager:
+                                  description: ControllerManager contains extra settings for the controller manager control plane component
+                                  properties:
+                                    extraArgs:
+                                      additionalProperties:
+                                        type: string
+                                      description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                      type: object
+                                    extraVolumes:
+                                      description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                      items:
+                                        description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                        properties:
+                                          hostPath:
+                                            description: HostPath is the path in the host that will be mounted inside the pod.
+                                            type: string
+                                          mountPath:
+                                            description: MountPath is the path inside the pod where hostPath will be mounted.
+                                            type: string
+                                          name:
+                                            description: Name of the volume inside the pod template.
+                                            type: string
+                                          pathType:
+                                            description: PathType is the type of the HostPath.
+                                            type: string
+                                          readOnly:
+                                            description: ReadOnly controls write access to the volume
+                                            type: boolean
+                                        type: object
+                                      type: array
+                                  type: object
+                                etcd:
+                                  description: Etcd holds configuration for etcd
+                                  properties:
+                                    dataDir:
+                                      description: DataDir is the directory etcd will place its data. Defaults to "/var/lib/openFuyao/etcd".
+                                      type: string
+                                    extraArgs:
+                                      additionalProperties:
+                                        type: string
+                                      description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                      type: object
+                                    extraVolumes:
+                                      description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                      items:
+                                        description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                        properties:
+                                          hostPath:
+                                            description: HostPath is the path in the host that will be mounted inside the pod.
+                                            type: string
+                                          mountPath:
+                                            description: MountPath is the path inside the pod where hostPath will be mounted.
+                                            type: string
+                                          name:
+                                            description: Name of the volume inside the pod template.
+                                            type: string
+                                          pathType:
+                                            description: PathType is the type of the HostPath.
+                                            type: string
+                                          readOnly:
+                                            description: ReadOnly controls write access to the volume
+                                            type: boolean
+                                        type: object
+                                      type: array
+                                    peerCertSANs:
+                                      description: PeerCertSANs sets extra Subject Alternative Names for the etcd peer signing cert.
+                                      items:
+                                        type: string
+                                      type: array
+                                    serverCertSANs:
+                                      description: ServerCertSANs sets extra Subject Alternative Names for the etcd server signing cert.
+                                      items:
+                                        type: string
+                                      type: array
+                                  type: object
+                                imageRepo:
+                                  description: ImageRepo defines the global image repository of the deployment target cluster
+                                  properties:
+                                    domain:
+                                      description: Domain defines the Repo domain name
+                                      type: string
+                                    ip:
+                                      description: Ip defines the Repo ip
+                                      type: string
+                                    port:
+                                      description: Port defines the number of port to connect to the Repo
+                                      type: string
+                                    prefix:
+                                      description: Prefix defines the kubernetes image address
+                                      type: string
+                                  type: object
+                                kubelet:
+                                  description: Kubelet define kubelet configuration for all nodes in the target cluster
+                                  properties:
+                                    extraArgs:
+                                      additionalProperties:
+                                        type: string
+                                      description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                      type: object
+                                    extraVolumes:
+                                      description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                      items:
+                                        description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                        properties:
+                                          hostPath:
+                                            description: HostPath is the path in the host that will be mounted inside the pod.
+                                            type: string
+                                          mountPath:
+                                            description: MountPath is the path inside the pod where hostPath will be mounted.
+                                            type: string
+                                          name:
+                                            description: Name of the volume inside the pod template.
+                                            type: string
+                                          pathType:
+                                            description: PathType is the type of the HostPath.
+                                            type: string
+                                          readOnly:
+                                            description: ReadOnly controls write access to the volume
+                                            type: boolean
+                                        type: object
+                                      type: array
+                                    manifestsDir:
+                                      description: ManifestsDir is the directory where kubelet will store manifests
+                                      type: string
+                                  type: object
+                                kubernetesVersion:
+                                  description: KubernetesVersion defines the Kubernetes version of the target cluster support up to v1.21.1 in bke
+                                  type: string
+                                networking:
+                                  description: Networking defines the configuration of target cluster network
+                                  properties:
+                                    dnsDomain:
+                                      description: DNSDomain is the dns domain used by k8s services. Defaults to "cluster.local".
+                                      type: string
+                                    podSubnet:
+                                      description: PodSubnet is the subnet used by pods.
+                                      type: string
+                                    serviceSubnet:
+                                      description: ServiceSubnet is the subnet used by k8s services. Defaults to "10.96.0.0/12".
+                                      type: string
+                                  type: object
+                                ntpServer:
+                                  description: NTPServer defines the ntp server information used for time synchronization
+                                  type: string
+                                scheduler:
+                                  description: Scheduler contains extra settings for the scheduler control plane component
+                                  properties:
+                                    extraArgs:
+                                      additionalProperties:
+                                        type: string
+                                      description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                      type: object
+                                    extraVolumes:
+                                      description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                      items:
+                                        description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                        properties:
+                                          hostPath:
+                                            description: HostPath is the path in the host that will be mounted inside the pod.
+                                            type: string
+                                          mountPath:
+                                            description: MountPath is the path inside the pod where hostPath will be mounted.
+                                            type: string
+                                          name:
+                                            description: Name of the volume inside the pod template.
+                                            type: string
+                                          pathType:
+                                            description: PathType is the type of the HostPath.
+                                            type: string
+                                          readOnly:
+                                            description: ReadOnly controls write access to the volume
+                                            type: boolean
+                                        type: object
+                                      type: array
+                                  type: object
+                                yumRepo:
+                                  description: YumRepo defines the yum repository to use when deploying
+                                  properties:
+                                    domain:
+                                      description: Domain defines the Repo domain name
+                                      type: string
+                                    ip:
+                                      description: Ip defines the Repo ip
+                                      type: string
+                                    port:
+                                      description: Port defines the number of port to connect to the Repo
+                                      type: string
+                                    prefix:
+                                      description: Prefix defines the kubernetes image address
+                                      type: string
+                                  type: object
+                              type: object
+                            customExtra:
+                              additionalProperties:
+                                type: string
+                              description: CustomArgs defines the custom args
+                              type: object
+                            nodes:
+                              description: Nodes defines the configuration of the target cluster nodes
+                              items:
+                                properties:
+                                  apiServer:
+                                    description: APIServer contains extra settings for the api server control plane component
+                                    properties:
+                                      certSANs:
+                                        description: CertSANs sets extra Subject Alternative Names for the API Server signing cert.
+                                        items:
+                                          type: string
+                                        type: array
+                                      extraArgs:
+                                        additionalProperties:
+                                          type: string
+                                        description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                        type: object
+                                      extraVolumes:
+                                        description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                        items:
+                                          description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                          properties:
+                                            hostPath:
+                                              description: HostPath is the path in the host that will be mounted inside the pod.
+                                              type: string
+                                            mountPath:
+                                              description: MountPath is the path inside the pod where hostPath will be mounted.
+                                              type: string
+                                            name:
+                                              description: Name of the volume inside the pod template.
+                                              type: string
+                                            pathType:
+                                              description: PathType is the type of the HostPath.
+                                              type: string
+                                            readOnly:
+                                              description: ReadOnly controls write access to the volume
+                                              type: boolean
+                                          type: object
+                                        type: array
+                                      host:
+                                        description: AdvertiseAddress sets the IP address for the API server to advertise.
+                                        type: string
+                                      port:
+                                        description: BindPort sets the secure port for the API Server to bind to. Defaults to 6443.
+                                        format: int32
+                                        type: integer
+                                    type: object
+                                  controllerManager:
+                                    description: ControllerManager contains extra settings for the controller manager control plane component
+                                    properties:
+                                      extraArgs:
+                                        additionalProperties:
+                                          type: string
+                                        description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                        type: object
+                                      extraVolumes:
+                                        description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                        items:
+                                          description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                          properties:
+                                            hostPath:
+                                              description: HostPath is the path in the host that will be mounted inside the pod.
+                                              type: string
+                                            mountPath:
+                                              description: MountPath is the path inside the pod where hostPath will be mounted.
+                                              type: string
+                                            name:
+                                              description: Name of the volume inside the pod template.
+                                              type: string
+                                            pathType:
+                                              description: PathType is the type of the HostPath.
+                                              type: string
+                                            readOnly:
+                                              description: ReadOnly controls write access to the volume
+                                              type: boolean
+                                          type: object
+                                        type: array
+                                    type: object
+                                  etcd:
+                                    description: Etcd holds configuration for etcd
+                                    properties:
+                                      dataDir:
+                                        description: DataDir is the directory etcd will place its data. Defaults to "/var/lib/openFuyao/etcd".
+                                        type: string
+                                      extraArgs:
+                                        additionalProperties:
+                                          type: string
+                                        description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                        type: object
+                                      extraVolumes:
+                                        description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                        items:
+                                          description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                          properties:
+                                            hostPath:
+                                              description: HostPath is the path in the host that will be mounted inside the pod.
+                                              type: string
+                                            mountPath:
+                                              description: MountPath is the path inside the pod where hostPath will be mounted.
+                                              type: string
+                                            name:
+                                              description: Name of the volume inside the pod template.
+                                              type: string
+                                            pathType:
+                                              description: PathType is the type of the HostPath.
+                                              type: string
+                                            readOnly:
+                                              description: ReadOnly controls write access to the volume
+                                              type: boolean
+                                          type: object
+                                        type: array
+                                      peerCertSANs:
+                                        description: PeerCertSANs sets extra Subject Alternative Names for the etcd peer signing cert.
+                                        items:
+                                          type: string
+                                        type: array
+                                      serverCertSANs:
+                                        description: ServerCertSANs sets extra Subject Alternative Names for the etcd server signing cert.
+                                        items:
+                                          type: string
+                                        type: array
+                                    type: object
+                                  hostname:
+                                    description: Hostname specifies the hostname of the node
+                                    type: string
+                                  ip:
+                                    description: IP node IP
+                                    type: string
+                                  kubelet:
+                                    description: Kubelet rewrite the cluster's Kubelet configuration'
+                                    properties:
+                                      extraArgs:
+                                        additionalProperties:
+                                          type: string
+                                        description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                        type: object
+                                      extraVolumes:
+                                        description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                        items:
+                                          description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                          properties:
+                                            hostPath:
+                                              description: HostPath is the path in the host that will be mounted inside the pod.
+                                              type: string
+                                            mountPath:
+                                              description: MountPath is the path inside the pod where hostPath will be mounted.
+                                              type: string
+                                            name:
+                                              description: Name of the volume inside the pod template.
+                                              type: string
+                                            pathType:
+                                              description: PathType is the type of the HostPath.
+                                              type: string
+                                            readOnly:
+                                              description: ReadOnly controls write access to the volume
+                                              type: boolean
+                                          type: object
+                                        type: array
+                                      manifestsDir:
+                                        description: ManifestsDir is the directory where kubelet will store manifests
+                                        type: string
+                                    type: object
+                                  password:
+                                    description: Password node Password used for SSH
+                                    type: string
+                                  port:
+                                    description: Port node Port used for SSH
+                                    type: string
+                                  role:
+                                    description: Role defines the role of the node in target cluster
+                                    items:
+                                      type: string
+                                    type: array
+                                  scheduler:
+                                    description: Scheduler contains extra settings for the scheduler control plane component
+                                    properties:
+                                      extraArgs:
+                                        additionalProperties:
+                                          type: string
+                                        description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                                        type: object
+                                      extraVolumes:
+                                        description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                                        items:
+                                          description: HostPathMount contains elements describing volumes that are mounted from the host.
+                                          properties:
+                                            hostPath:
+                                              description: HostPath is the path in the host that will be mounted inside the pod.
+                                              type: string
+                                            mountPath:
+                                              description: MountPath is the path inside the pod where hostPath will be mounted.
+                                              type: string
+                                            name:
+                                              description: Name of the volume inside the pod template.
+                                              type: string
+                                            pathType:
+                                              description: PathType is the type of the HostPath.
+                                              type: string
+                                            readOnly:
+                                              description: ReadOnly controls write access to the volume
+                                              type: boolean
+                                          type: object
+                                        type: array
+                                    type: object
+                                  username:
+                                    description: Username node Username used for SSH
+                                    type: string
+                                type: object
+                              maxItems: 32
+                              type: array
+                          type: object
+                        clusterFrom:
+                          description: 'ClusterFrom defines the manager cluster type, enum: bocloud, other bocloud:  manage bocloud cluster ("bocloud" cluster type is a cluster deployed by ansible) other:   manage other cluster ("other" cluster type is a cluster deployed by such as kubeadm etc) 3.when ClusterFrom is "other", BKE only collect the cluster information, and does not manage the cluster, so such as pause, dryRun, reset is not supported 4.when ClusterFrom is "bocloud", BKE will collect the cluster information, and manage the cluster. if bocloud cluster k8s version less than 1.21.1, need to use ansible to upgrade to 1.21.1, and then use BKE to upgrade to 1.25.6(plan version is 1.27) after this upgrade, BKE will take over the life cycle management of the cluster, including upgrading, scaling, etc'
+                          enum:
+                            - bocloud
+                            - other
+                          type: string
+                        controlPlaneEndpoint:
+                          description: ControlPlaneEndpoint represents the endpoint used to communicate with the control plane.
+                          properties:
+                            host:
+                              description: AdvertiseAddress sets the IP address for the API server to advertise.
+                              type: string
+                            port:
+                              description: BindPort sets the secure port for the API Server to bind to. Defaults to 6443.
+                              format: int32
+                              type: integer
+                          type: object
+                        dryRun:
+                          description: DryRun is used to dry run the BKECluster, it also dries run the BKECluster's machines.
+                          type: boolean
+                        pause:
+                          description: Pause is used to pause reconciliation of the BKECluster, it also pauses the BKECluster's machines.
+                          type: boolean
+                        reset:
+                          description: Reset is used to reset the BKECluster, it also resets the BKECluster's machines, include cluster-api Cluster Machine etc.
+                          type: boolean
+                      type: object
+                  required:
+                    - spec
+                  type: object
+              required:
+                - template
+              type: object
+          type: object
+      served: true
+      storage: true
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.10.0
+  creationTimestamp: null
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    cluster.x-k8s.io/v1beta1: v1beta1
+  name: bkemachines.bke.bocloud.com
+spec:
+  group: bke.bocloud.com
+  names:
+    kind: BKEMachine
+    listKind: BKEMachineList
+    plural: bkemachines
+    singular: bkemachine
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - description: The hostname of the machine
+          jsonPath: .status.node.hostname
+          name: HOSTNAME
+          type: string
+        - description: The ip of the machine
+          jsonPath: .status.node.ip
+          name: IP
+          type: string
+        - jsonPath: .spec.providerID
+          name: PROVIDER-ID
+          type: string
+        - jsonPath: .status.bootstrapped
+          name: BOOTSTRAPPED
+          type: boolean
+      name: v1beta1
+      schema:
+        openAPIV3Schema:
+          description: BKEMachine is the Schema for the bkemachines API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: BKEMachineSpec defines the desired state of BKEMachine
+              properties:
+                dryRun:
+                  description: DryRun is used to dry run the BKEMachine.
+                  type: boolean
+                pause:
+                  description: Pause is used to pause reconciliation of the BKEMachine.
+                  type: boolean
+                providerID:
+                  description: 标识唯一的主机 cluster-api需要的参数，可以用hostname或者ip填充
+                  type: string
+              type: object
+            status:
+              description: BKEMachineStatus defines the observed state of BKEMachine
+              properties:
+                addresses:
+                  items:
+                    description: MachineAddress contains information for the node's address.
+                    properties:
+                      address:
+                        description: The machine address.
+                        type: string
+                      type:
+                        description: Machine address type, one of Hostname, ExternalIP or InternalIP.
+                        type: string
+                    required:
+                      - address
+                      - type
+                    type: object
+                  type: array
+                bootstrapped:
+                  description: Bootstrapped means that the machine already has bootstrapped
+                  type: boolean
+                conditions:
+                  description: Conditions provide observations of the operational state of a Cluster API resource.
+                  items:
+                    description: Condition defines an observation of a Cluster API resource operational state.
+                    properties:
+                      lastTransitionTime:
+                        description: Last time the condition transitioned from one status to another. This should be when the underlying condition changed. If that is not known, then using the time when the API field changed is acceptable.
+                        format: date-time
+                        type: string
+                      message:
+                        description: A human readable message indicating details about the transition. This field may be empty.
+                        type: string
+                      reason:
+                        description: The reason for the condition's last transition in CamelCase. The specific API may choose whether or not this field is considered a guaranteed API. This field may not be empty.
+                        type: string
+                      severity:
+                        description: Severity provides an explicit classification of Reason code, so the users or machines can immediately understand the current situation and act accordingly. The Severity field MUST be set only when Status=False.
+                        type: string
+                      status:
+                        description: Status of the condition, one of True, False, Unknown.
+                        type: string
+                      type:
+                        description: Type of condition in CamelCase or in foo.example.com/CamelCase. Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be useful (see .node.status.conditions), the ability to deconflict is important.
+                        type: string
+                    required:
+                      - lastTransitionTime
+                      - status
+                      - type
+                    type: object
+                  type: array
+                node:
+                  properties:
+                    apiServer:
+                      description: APIServer contains extra settings for the api server control plane component
+                      properties:
+                        certSANs:
+                          description: CertSANs sets extra Subject Alternative Names for the API Server signing cert.
+                          items:
+                            type: string
+                          type: array
+                        extraArgs:
+                          additionalProperties:
+                            type: string
+                          description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                          type: object
+                        extraVolumes:
+                          description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                          items:
+                            description: HostPathMount contains elements describing volumes that are mounted from the host.
+                            properties:
+                              hostPath:
+                                description: HostPath is the path in the host that will be mounted inside the pod.
+                                type: string
+                              mountPath:
+                                description: MountPath is the path inside the pod where hostPath will be mounted.
+                                type: string
+                              name:
+                                description: Name of the volume inside the pod template.
+                                type: string
+                              pathType:
+                                description: PathType is the type of the HostPath.
+                                type: string
+                              readOnly:
+                                description: ReadOnly controls write access to the volume
+                                type: boolean
+                            type: object
+                          type: array
+                        host:
+                          description: AdvertiseAddress sets the IP address for the API server to advertise.
+                          type: string
+                        port:
+                          description: BindPort sets the secure port for the API Server to bind to. Defaults to 6443.
+                          format: int32
+                          type: integer
+                      type: object
+                    controllerManager:
+                      description: ControllerManager contains extra settings for the controller manager control plane component
+                      properties:
+                        extraArgs:
+                          additionalProperties:
+                            type: string
+                          description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                          type: object
+                        extraVolumes:
+                          description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                          items:
+                            description: HostPathMount contains elements describing volumes that are mounted from the host.
+                            properties:
+                              hostPath:
+                                description: HostPath is the path in the host that will be mounted inside the pod.
+                                type: string
+                              mountPath:
+                                description: MountPath is the path inside the pod where hostPath will be mounted.
+                                type: string
+                              name:
+                                description: Name of the volume inside the pod template.
+                                type: string
+                              pathType:
+                                description: PathType is the type of the HostPath.
+                                type: string
+                              readOnly:
+                                description: ReadOnly controls write access to the volume
+                                type: boolean
+                            type: object
+                          type: array
+                      type: object
+                    etcd:
+                      description: Etcd holds configuration for etcd
+                      properties:
+                        dataDir:
+                          description: DataDir is the directory etcd will place its data. Defaults to "/var/lib/openFuyao/etcd".
+                          type: string
+                        extraArgs:
+                          additionalProperties:
+                            type: string
+                          description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                          type: object
+                        extraVolumes:
+                          description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                          items:
+                            description: HostPathMount contains elements describing volumes that are mounted from the host.
+                            properties:
+                              hostPath:
+                                description: HostPath is the path in the host that will be mounted inside the pod.
+                                type: string
+                              mountPath:
+                                description: MountPath is the path inside the pod where hostPath will be mounted.
+                                type: string
+                              name:
+                                description: Name of the volume inside the pod template.
+                                type: string
+                              pathType:
+                                description: PathType is the type of the HostPath.
+                                type: string
+                              readOnly:
+                                description: ReadOnly controls write access to the volume
+                                type: boolean
+                            type: object
+                          type: array
+                        peerCertSANs:
+                          description: PeerCertSANs sets extra Subject Alternative Names for the etcd peer signing cert.
+                          items:
+                            type: string
+                          type: array
+                        serverCertSANs:
+                          description: ServerCertSANs sets extra Subject Alternative Names for the etcd server signing cert.
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    hostname:
+                      description: Hostname specifies the hostname of the node
+                      type: string
+                    ip:
+                      description: IP node IP
+                      type: string
+                    kubelet:
+                      description: Kubelet rewrite the cluster's Kubelet configuration'
+                      properties:
+                        extraArgs:
+                          additionalProperties:
+                            type: string
+                          description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                          type: object
+                        extraVolumes:
+                          description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                          items:
+                            description: HostPathMount contains elements describing volumes that are mounted from the host.
+                            properties:
+                              hostPath:
+                                description: HostPath is the path in the host that will be mounted inside the pod.
+                                type: string
+                              mountPath:
+                                description: MountPath is the path inside the pod where hostPath will be mounted.
+                                type: string
+                              name:
+                                description: Name of the volume inside the pod template.
+                                type: string
+                              pathType:
+                                description: PathType is the type of the HostPath.
+                                type: string
+                              readOnly:
+                                description: ReadOnly controls write access to the volume
+                                type: boolean
+                            type: object
+                          type: array
+                        manifestsDir:
+                          description: ManifestsDir is the directory where kubelet will store manifests
+                          type: string
+                      type: object
+                    password:
+                      description: Password node Password used for SSH
+                      type: string
+                    port:
+                      description: Port node Port used for SSH
+                      type: string
+                    role:
+                      description: Role defines the role of the node in target cluster
+                      items:
+                        type: string
+                      type: array
+                    scheduler:
+                      description: Scheduler contains extra settings for the scheduler control plane component
+                      properties:
+                        extraArgs:
+                          additionalProperties:
+                            type: string
+                          description: ExtraArgs is an extra set of flags to pass to the control plane component.
+                          type: object
+                        extraVolumes:
+                          description: ExtraVolumes is an extra set of host volumes, mounted to the control plane component.
+                          items:
+                            description: HostPathMount contains elements describing volumes that are mounted from the host.
+                            properties:
+                              hostPath:
+                                description: HostPath is the path in the host that will be mounted inside the pod.
+                                type: string
+                              mountPath:
+                                description: MountPath is the path inside the pod where hostPath will be mounted.
+                                type: string
+                              name:
+                                description: Name of the volume inside the pod template.
+                                type: string
+                              pathType:
+                                description: PathType is the type of the HostPath.
+                                type: string
+                              readOnly:
+                                description: ReadOnly controls write access to the volume
+                                type: boolean
+                            type: object
+                          type: array
+                      type: object
+                    username:
+                      description: Username node Username used for SSH
+                      type: string
+                  type: object
+                ready:
+                  description: 'INSERT ADDITIONAL STATUS FIELD - define observed state of cluster Important: Run "make" to regenerate code after modifying this file Ready denotes that the machine is ready'
+                  type: boolean
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.10.0
+  creationTimestamp: null
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    cluster.x-k8s.io/v1beta1: v1beta1
+  name: bkemachinetemplates.bke.bocloud.com
+spec:
+  group: bke.bocloud.com
+  names:
+    kind: BKEMachineTemplate
+    listKind: BKEMachineTemplateList
+    plural: bkemachinetemplates
+    singular: bkemachinetemplate
+  scope: Namespaced
+  versions:
+    - name: v1beta1
+      schema:
+        openAPIV3Schema:
+          description: BKEMachineTemplate is the Schema for the bkemachinetemplates API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: BKEMachineTemplateSpec defines the desired state of BKEMachineTemplate
+              properties:
+                template:
+                  properties:
+                    metadata:
+                      description: 'Standard object''s metadata. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata'
+                      properties:
+                        annotations:
+                          additionalProperties:
+                            type: string
+                          description: 'Annotations is an unstructured key value map stored with a resource that may be set by external tools to store and retrieve arbitrary metadata. They are not queryable and should be preserved when modifying objects. More info: http://kubernetes.io/docs/user-guide/annotations'
+                          type: object
+                        labels:
+                          additionalProperties:
+                            type: string
+                          description: 'Map of string keys and values that can be used to organize and categorize (scope and select) objects. May match selectors of replication controllers and services. More info: http://kubernetes.io/docs/user-guide/labels'
+                          type: object
+                      type: object
+                    spec:
+                      description: Spec is the specification of the desired behavior of the machine.
+                      properties:
+                        dryRun:
+                          description: DryRun is used to dry run the BKEMachine.
+                          type: boolean
+                        pause:
+                          description: Pause is used to pause reconciliation of the BKEMachine.
+                          type: boolean
+                        providerID:
+                          description: 标识唯一的主机 cluster-api需要的参数，可以用hostname或者ip填充
+                          type: string
+                      type: object
+                  required:
+                    - spec
+                  type: object
+              required:
+                - template
+              type: object
+          type: object
+      served: true
+      storage: true
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-controller-manager
+  namespace: cluster-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-leader-election-role
+  namespace: cluster-system
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - coordination.k8s.io
+    resources:
+      - leases
+    verbs:
+      - get
+      - list
+      - watch
+      - create
+      - update
+      - patch
+      - delete
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-bkemachinetemplate-editor-role
+rules:
+  - apiGroups:
+      - bke.bocloud.com
+    resources:
+      - bkemachinetemplates
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - bke.bocloud.com
+    resources:
+      - bkemachinetemplates/status
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  creationTimestamp: null
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-manager-role
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - configmaps
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - events
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - ""
+    resources:
+      - secrets
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - bke.bocloud.com
+    resources:
+      - bkeclusters
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - bke.bocloud.com
+    resources:
+      - bkeclusters/Status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - bke.bocloud.com
+    resources:
+      - bkeclusters/finalizers
+    verbs:
+      - delete
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - bke.bocloud.com
+    resources:
+      - bkemachines
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - bke.bocloud.com
+    resources:
+      - bkemachines/Status
+    verbs:
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - bke.bocloud.com
+    resources:
+      - bkemachines/finalizers
+    verbs:
+      - delete
+      - get
+      - patch
+      - update
+  - apiGroups:
+      - bke.bocloud.com
+    resources:
+      - bkemachinetemplates
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - bkeagent.bocloud.com
+    resources:
+      - commands
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - bootstrap.cluster.x-k8s.io
+    resources:
+      - kubeadmconfigtemplates
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - cluster.x-k8s.io
+    resources:
+      - clusters
+      - machinedeployments
+      - machines
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+  - apiGroups:
+      - cluster.x-k8s.io
+    resources:
+      - clusters
+      - machines
+    verbs:
+      - get
+      - list
+      - watch
+  - apiGroups:
+      - controlplane.cluster.x-k8s.io
+    resources:
+      - kubeadmcontrolplanes
+    verbs:
+      - create
+      - delete
+      - get
+      - list
+      - patch
+      - update
+      - watch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-metrics-reader
+rules:
+  - nonResourceURLs:
+      - /metrics
+    verbs:
+      - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-proxy-role
+rules:
+  - apiGroups:
+      - authentication.k8s.io
+    resources:
+      - tokenreviews
+    verbs:
+      - create
+  - apiGroups:
+      - authorization.k8s.io
+    resources:
+      - subjectaccessreviews
+    verbs:
+      - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-leader-election-rolebinding
+  namespace: cluster-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: bke-leader-election-role
+subjects:
+  - kind: ServiceAccount
+    name: bke-controller-manager
+    namespace: cluster-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-bkemachinetemplate-editor-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: bke-bkemachinetemplate-editor-role
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: system:serviceaccounts:cluster-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-cluster-api-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: bke-manager-role
+subjects:
+  - apiGroup: rbac.authorization.k8s.io
+    kind: Group
+    name: system:serviceaccounts:cluster-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: bke-manager-role
+subjects:
+  - kind: ServiceAccount
+    name: bke-controller-manager
+    namespace: cluster-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-proxy-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: bke-proxy-role
+subjects:
+  - kind: ServiceAccount
+    name: bke-controller-manager
+    namespace: cluster-system
+---
+apiVersion: v1
+data:
+  controller_manager_config.yaml: "apiVersion: controller-runtime.sigs.k8s.io/v1alpha1\r\nkind: ControllerManagerConfig\r\nhealth:\r\n  healthProbeBindAddress: :8081\r\nmetrics:\r\n  bindAddress: 127.0.0.1:8080\r\nwebhook:\r\n  port: 9443\r\nleaderElection:\r\n  leaderElect: true\r\n  resourceName: e2b5373a.bocloud.com\r\n"
+kind: ConfigMap
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-manager-config
+  namespace: cluster-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    control-plane: controller-manager
+  name: bke-controller-manager-metrics-service
+  namespace: cluster-system
+spec:
+  ports:
+    - name: https
+      port: 8443
+      protocol: TCP
+      targetPort: https
+  selector:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    control-plane: controller-manager
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/created-by: cluster-api-provider-bke
+    app.kubernetes.io/instance: webhook-service
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: service
+    app.kubernetes.io/part-of: cluster-api-provider-bke
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-webhook-service
+  namespace: cluster-system
+spec:
+  ports:
+    - port: 443
+      protocol: TCP
+      targetPort: 9443
+  selector:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    control-plane: controller-manager
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    control-plane: controller-manager
+  name: bke-controller-manager
+  namespace: cluster-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/provider: infrastructure-bke
+      control-plane: controller-manager
+  template:
+    metadata:
+      annotations:
+        kubectl.kubernetes.io/default-container: manager
+      labels:
+        cluster.x-k8s.io/provider: infrastructure-bke
+        control-plane: controller-manager
+    spec:
+      containers:
+        - command:
+            - /manager
+          env:
+            - name: container
+              value: "true"
+            - name: DEBUG
+              value: "true"
+          image: {{.repo}}bke-controller:{{.version}}
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          name: manager
+          ports:
+            - containerPort: 9443
+              name: webhook-server
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+          securityContext:
+            allowPrivilegeEscalation: true
+          volumeMounts:
+            - mountPath: /tmp/k8s-webhook-server/serving-certs
+              name: cert
+              readOnly: true
+            - mountPath: /var/log
+              name: log
+            - mountPath: /etc/localtime
+              name: localtime
+            - mountPath: /manifests
+              name: manifests
+        - image: {{.repo}}addons:latest
+          imagePullPolicy: Always
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - cp -r . /manifests
+          name: manifests
+          resources:
+            requests:
+              cpu: 50m
+              memory: 50Mi
+          volumeMounts:
+            - mountPath: /manifests
+              name: manifests
+      securityContext:
+        runAsNonRoot: false
+      serviceAccountName: bke-controller-manager
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: cert
+          secret:
+            defaultMode: 420
+            secretName: webhook-server-cert
+        - hostPath:
+            path: /var/log
+            type: Directory
+          name: log
+        - hostPath:
+            path: /etc/localtime
+          name: localtime
+        - emptyDir: {}
+          name: manifests
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  labels:
+    app.kubernetes.io/component: certificate
+    app.kubernetes.io/created-by: cluster-api-provider-bke
+    app.kubernetes.io/instance: serving-cert
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: certificate
+    app.kubernetes.io/part-of: cluster-api-provider-bke
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-serving-cert
+  namespace: cluster-system
+spec:
+  dnsNames:
+    - bke-webhook-service.cluster-system.svc
+    - bke-webhook-service.cluster-system.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: bke-selfsigned-issuer
+  secretName: webhook-server-cert
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  labels:
+    app.kuberentes.io/name: issuer
+    app.kubernetes.io/component: certificate
+    app.kubernetes.io/created-by: cluster-api-provider-bke
+    app.kubernetes.io/instance: selfsigned-issuer
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/part-of: cluster-api-provider-bke
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-selfsigned-issuer
+  namespace: cluster-system
+spec:
+  selfSigned: {}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  annotations:
+    cert-manager.io/inject-ca-from: cluster-system/bke-serving-cert
+  labels:
+    app.kubernetes.io/component: webhook
+    app.kubernetes.io/created-by: cluster-api-provider-bke
+    app.kubernetes.io/instance: validating-webhook-configuration
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: validatingwebhookconfiguration
+    app.kubernetes.io/part-of: cluster-api-provider-bke
+    cluster.x-k8s.io/provider: infrastructure-bke
+  name: bke-validating-webhook-configuration
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      service:
+        name: bke-webhook-service
+        namespace: cluster-system
+        path: /validate-bke-bocloud-com-v1beta1-bkecluster
+    failurePolicy: Fail
+    name: vbkecluster.kb.io
+    rules:
+      - apiGroups:
+          - bke.bocloud.com
+        apiVersions:
+          - v1beta1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - bkeclusters
+    sideEffects: None

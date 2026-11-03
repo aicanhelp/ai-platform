@@ -1,0 +1,324 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.19.0
+  name: containerdconfigs.bke.bocloud.com
+spec:
+  group: bke.bocloud.com
+  names:
+    kind: ContainerdConfig
+    listKind: ContainerdConfigList
+    plural: containerdconfigs
+    shortNames:
+      - cct
+    singular: containerdconfig
+  scope: Namespaced
+  versions:
+    - name: v1beta1
+      schema:
+        openAPIV3Schema:
+          description: ContainerdConfig is the Schema for the containerdconfigs API
+          properties:
+            apiVersion:
+              description: |-
+                APIVersion defines the versioned schema of this representation of an object.
+                Servers should convert recognized schemas to the latest internal value, and
+                may reject unrecognized values.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+              type: string
+            kind:
+              description: |-
+                Kind is a string value representing the REST resource this object represents.
+                Servers may infer this from the endpoint the client submits requests to.
+                Cannot be updated.
+                In CamelCase.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: spec defines the desired state of ContainerdConfig
+              properties:
+                configType:
+                  default: combined
+                  description: ConfigType indicates the type of configuration
+                  enum:
+                    - service
+                    - main
+                    - registry
+                    - combined
+                  type: string
+                description:
+                  description: Description provides human-readable description of this
+                    configuration
+                  type: string
+                main:
+                  description: Main contains main config.toml configuration
+                  properties:
+                    configPath:
+                      default: /etc/containerd/certs.d
+                      description: ConfigPath specifies the registry config directory
+                      type: string
+                    metricsAddress:
+                      description: |-
+                        MetricsAddress specifies the address for metrics exposure
+                        If set, enables Prometheus metrics endpoint
+                        Example: "0.0.0.0:1338", "127.0.0.1:1338"
+                      type: string
+                    rawTOML:
+                      description: |-
+                        RawTOML allows raw TOML configuration for advanced use cases
+                        This will be used as-is if provided, ignoring other fields
+                      type: string
+                    root:
+                      default: /var/lib/containerd
+                      description: Root directory for containerd state
+                      type: string
+                    sandboxImage:
+                      default: registry.k8s.io/pause:3.9
+                      description: SandboxImage specifies the pause container image
+                      type: string
+                    state:
+                      default: /run/containerd
+                      description: State directory for containerd
+                      type: string
+                  type: object
+                registry:
+                  description: Registry contains containerd v2.1+ registry configuration
+                  properties:
+                    configPath:
+                      default: /etc/containerd/certs.d
+                      description: ConfigPath specifies the registry config directory
+                      type: string
+                    configs:
+                      additionalProperties:
+                        description: RegistryHostConfig defines containerd v2.1+ registry
+                          host configuration
+                        properties:
+                          auth:
+                            description: Auth configuration
+                            properties:
+                              auth:
+                                description: Auth base64 encoded auth string
+                                type: string
+                              identityToken:
+                                description: IdentityToken for token authentication
+                                type: string
+                              password:
+                                description: Password for authentication
+                                type: string
+                              registryToken:
+                                description: RegistryToken for registry-specific tokens
+                                type: string
+                              username:
+                                description: Username for authentication
+                                type: string
+                            type: object
+                          capabilities:
+                            default:
+                              - pull
+                              - resolve
+                            description: Capabilities defines allowed operations
+                            items:
+                              type: string
+                            type: array
+                          header:
+                            additionalProperties:
+                              items:
+                                type: string
+                              type: array
+                            description: Header contains additional headers
+                            type: object
+                          host:
+                            description: Host defines the registry host URL
+                            type: string
+                          insecure:
+                            description: Insecure uses insecure connection
+                            type: boolean
+                          overridePath:
+                            description: OverridePath enables path override for mirrors
+                            type: boolean
+                          plainHTTP:
+                            description: PlainHTTP uses HTTP instead of HTTPS
+                            type: boolean
+                          skipVerify:
+                            description: SkipVerify skips TLS certificate verification
+                            type: boolean
+                          tls:
+                            description: TLS configuration
+                            properties:
+                              caFile:
+                                description: CAFile path to CA certificate
+                                type: string
+                              certFile:
+                                description: CertFile path to client certificate
+                                type: string
+                              insecureSkipVerify:
+                                description: InsecureSkipVerify skips TLS certificate
+                                  verification
+                                type: boolean
+                              keyFile:
+                                description: KeyFile path to client private key
+                                type: string
+                            type: object
+                        type: object
+                      description: Configs defines registry-specific configurations
+                      type: object
+                  type: object
+                script:
+                  description: Script defines shell script execution configuration
+                  properties:
+                    args:
+                      description: Args specifies arguments to pass to the script
+                      items:
+                        type: string
+                      type: array
+                    content:
+                      description: Content contains the shell script content to execute
+                      type: string
+                    interpreter:
+                      default: /bin/bash
+                      description: Interpreter specifies the shell interpreter to use
+                      type: string
+                    path:
+                      description: |-
+                        Path specifies the path to a shell script file
+                        If both Content and Path are provided, Content takes precedence
+                      type: string
+                  type: object
+                service:
+                  description: Service contains systemd service drop-in configuration
+                  properties:
+                    customExtra:
+                      additionalProperties:
+                        type: string
+                      description: CustomExtra defines user custom variables for the
+                        service
+                      type: object
+                    execStart:
+                      description: |-
+                        ExecStart defines the complete ExecStart command
+                        Example: "/usr/bin/containerd --config /etc/containerd/config.toml"
+                      type: string
+                    killMode:
+                      default: process
+                      description: |-
+                        KillMode specifies how processes of this service shall be killed
+                        One of: "control-group" (default), "process", "mixed", "none"
+                        - control-group: All processes in the control group will be killed
+                        - process: Only the main process itself is killed
+                        - mixed: The main process is killed with SIGTERM, other processes with SIGKILL
+                        - none: No processes are killed
+                      enum:
+                        - control-group
+                        - process
+                        - mixed
+                        - none
+                      type: string
+                    logging:
+                      description: Logging configuration for systemd service
+                      properties:
+                        logLevelMax:
+                          description: LogLevelMax specifies the maximum log level
+                          enum:
+                            - emerg
+                            - alert
+                            - crit
+                            - err
+                            - warning
+                            - notice
+                            - info
+                            - debug
+                          type: string
+                        standardError:
+                          default: journal
+                          description: |-
+                            StandardError specifies stderr destination
+                            One of: "inherit", "null", "tty", "journal", "syslog", "kmsg", "journal+console", "syslog+console", "kmsg+console"
+                          enum:
+                            - inherit
+                            - "null"
+                            - tty
+                            - journal
+                            - syslog
+                            - kmsg
+                            - journal+console
+                            - syslog+console
+                            - kmsg+console
+                          type: string
+                        standardOutput:
+                          default: journal
+                          description: |-
+                            StandardOutput specifies stdout destination
+                            One of: "inherit", "null", "tty", "journal", "syslog", "kmsg", "journal+console", "syslog+console", "kmsg+console"
+                          enum:
+                            - inherit
+                            - "null"
+                            - tty
+                            - journal
+                            - syslog
+                            - kmsg
+                            - journal+console
+                            - syslog+console
+                            - kmsg+console
+                          type: string
+                        syslogIdentifier:
+                          description: SyslogIdentifier specifies the syslog identifier
+                          type: string
+                      type: object
+                    restart:
+                      default: always
+                      description: |-
+                        Restart specifies when the service shall be restarted
+                        One of: "no", "on-success", "on-failure", "on-abnormal", "on-watchdog", "on-abort", "always"
+                        - no: Never restart
+                        - on-success: Restart only when the service process exits cleanly
+                        - on-failure: Restart only when the service process exits with a non-zero exit code
+                        - on-abnormal: Restart when the process is terminated by a signal
+                        - on-abort: Restart only when the service process exits due to an uncaught signal
+                        - always: Always restart
+                      enum:
+                        - "no"
+                        - on-success
+                        - on-failure
+                        - on-abnormal
+                        - on-watchdog
+                        - on-abort
+                        - always
+                      type: string
+                    restartSec:
+                      default: 5s
+                      description: |-
+                        RestartSec configures the time to sleep before restarting a service
+                        Specified as a time span value (e.g., "5s", "1min 30s", "300ms")
+                      type: string
+                    slice:
+                      default: system.slice
+                      description: Slice specifies the systemd slice for resource control
+                      type: string
+                    startLimitBurst:
+                      default: 5
+                      description: StartLimitBurst specifies the burst limit for start
+                        attempts
+                      type: integer
+                    startLimitInterval:
+                      default: 10s
+                      description: StartLimitInterval specifies the interval for the
+                        start rate limiting
+                      type: string
+                    timeoutStopSec:
+                      default: 90s
+                      description: TimeoutStopSec configures the time to wait for stop
+                        before timing out
+                      type: string
+                  type: object
+              type: object
+          required:
+            - spec
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}

@@ -1,0 +1,30 @@
+label: Feature Developer Guide
+sections:
+  - label: Authentication and Authorization Development Guide
+    href: ./authentication_and_authorization_development_guide.md
+  - label: Extension Component Development Guide
+    href: ./extension_development_guide.md
+  - label: Log Extension Component Development Guide
+    href: ./log_extension_development_guide.md
+  - label: Monitoring Development Guide
+    href: ./monitoring_development_guide.md
+  - label: NUMA Affinity Scheduling Development Guide
+    href:
+      upstream: https://gitcode.com/openFuyao/sig-numa-affinity/blob/master/docs/en/developer_guide/numa-affinity_development_guide.md
+      path: ./
+  - label: OS Consistency Check Tool Development Guide
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/oschecktool_developer_guide/os_consistency_check_tool_development_guide.md
+      path: ./
+  - label: AI Inference Hermes Routing Development Guide
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-ai-inference/blob/main/docs/en/ai_inference_hermes_routing/developer_guide/ai_inference_hermes_routing_plugin_in_development_guide.md
+      path: ./ai_inference_hermes_routing
+  - label: AI Inference Elastic Scaling Plugin Development Guide
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-ai-inference/blob/main/docs/en/ai_inference_elastic_scaling_system/ai_inference_elastic_scaling/developer_guide/ai_inference_elastic_scaling_plugin_in_development_guide.md
+      path: ./
+  
+   
+  
+  

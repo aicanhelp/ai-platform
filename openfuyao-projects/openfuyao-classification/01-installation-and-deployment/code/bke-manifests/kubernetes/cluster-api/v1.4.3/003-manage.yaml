@@ -1,0 +1,27 @@
+{{ if eq .manage "true" }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ .namespace }}
+
+{{- range .nodes }}
+---
+apiVersion: bke.bocloud.com/v1beta1
+kind: BKENode
+metadata:
+  name: {{ .name }}
+  namespace: {{ $.namespace }}
+  labels:
+    cluster.x-k8s.io/cluster-name: {{ $.clusterName }}
+spec:
+  hostname: {{ .hostname }}
+  ip: {{ .ip }}
+  username: {{ .username }}
+  password: {{ .password }}
+  port: "{{ .port }}"
+  role:
+{{- range .role }}
+  - {{ . }}
+{{- end }}
+{{- end }}
+{{- end }}

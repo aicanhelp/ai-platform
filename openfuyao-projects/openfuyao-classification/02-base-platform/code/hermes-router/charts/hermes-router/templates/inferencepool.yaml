@@ -1,0 +1,32 @@
+{{ include "gateway-api-inference-extension.validations.inferencepool.name" $ }}
+{{- $inferencePoolName := include "gateway-api-inference-extension.inferencepool.name" . }}
+apiVersion: {{ .Values.inferencePool.apiVersion | default "inference.networking.k8s.io/v1" | quote }}
+kind: InferencePool
+metadata:
+  name: {{ $inferencePoolName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gateway-api-inference-extension.labels" . | nindent 4 }}
+spec:
+  targetPorts:
+    {{- range .Values.inferencePool.targetPorts }}
+      - number: {{ .number }}
+    {{- end }}
+  {{- if eq (.Values.inferencePool.modelServerProtocol | default "http") "grpc" }}
+  appProtocol: "kubernetes.io/h2c"
+  {{- else if eq (.Values.inferencePool.modelServerProtocol | default "http") "http" }}
+  appProtocol: "http"
+  {{- end }}
+  selector:
+    matchLabels:
+      openfuyao.com/model: {{ $inferencePoolName | quote }}
+      {{- if and .Values.inferencePool .Values.inferencePool.modelServers .Values.inferencePool.modelServers.matchLabels }}
+      {{- range $key, $value := .Values.inferencePool.modelServers.matchLabels }}
+      {{ $key }}: {{ quote $value }}
+      {{- end }}
+      {{- end }}
+  endpointPickerRef:
+    name: {{ include "gateway-api-inference-extension.name" . }}
+    port:
+      number: {{ .Values.inferenceExtension.extProcPort | default 9002 }}
+    failureMode: {{ .Values.inferenceExtension.failureMode | default "FailOpen" }}

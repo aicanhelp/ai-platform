@@ -1,0 +1,15 @@
+{{- if .Values.config.enableTLS }}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: console-website-tls
+  namespace: openfuyao-system
+data:
+  tls.crt: |
+    {{ b64enc .Values.config.tlsCert }}
+  tls.key: |
+    {{ b64enc .Values.config.tlsKey }}
+  ca.crt: |
+    {{ b64enc .Values.config.rootCA }}
+type: kubernetes.io/tls
+{{- end }}

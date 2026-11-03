@@ -1,0 +1,9 @@
+name: installer-service
+type: private
+description: '集群生命周期管理后端服务'
+branches:
+  - name: master
+    type: protected
+  - name: feat/upgrade-530
+    type: protected
+    create_from: master

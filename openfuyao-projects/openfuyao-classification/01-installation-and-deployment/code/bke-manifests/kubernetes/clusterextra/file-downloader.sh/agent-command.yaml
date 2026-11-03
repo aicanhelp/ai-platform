@@ -1,0 +1,31 @@
+{{ $scriptDir := "/etc/openFuyao/bkeagent/scripts/" }}
+
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: save-file-downloader-script
+  namespace: {{.namespace}}
+spec:
+  commands:
+    - backoffDelay: 3
+      command:
+        - "mkdir -p {{$scriptDir}}"
+      id: mkdir-scripts
+      type: Shell
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/file-downloader.sh:ro:{{$scriptDir}}file-downloader.sh"
+      id: save-file-downloader-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}file-downloader.sh"
+      id: chmod-file-downloader-script
+      type: Shell
+  backoffLimit: 3
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}

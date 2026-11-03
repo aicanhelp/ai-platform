@@ -1,0 +1,394 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN 'AS IS' BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import './styles/common.less';
+
+* {
+  box-sizing: border-box;
+}
+
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat', sans-serif;
+  line-height: 1.6;
+  // color: #fff;
+  height: 100vh;
+  background: @page-background-color;
+}
+
+.content {
+  background: @page-background-color;
+}
+
+/**
+子路由容器样式
+**/
+.child_content {
+  background: @page-background-color;
+  overflow-y: hidden;
+  width: 100%;
+}
+
+.ray-website_root {
+  .child_content {
+    background: @page-background-color;
+    overflow-y: hidden;
+    max-height: calc(100vh - 65px);
+  }
+}
+
+/** 页面布局样式**/
+.page_header {
+  padding: 16px 0 16px 32px;
+  background: @page-container-color;
+  box-shadow: inset 0px -1px 0px rgba(229, 229, 229, 1);
+
+  .@{container-prefix}-breadcrumb {
+    padding: 0 !important;
+  }
+}
+
+.page_header_noPadding {
+  padding: 16px 0 16px 0px;
+  background: @page-container-color;
+  box-shadow: inset 0px -1px 0px rgba(229, 229, 229, 1);
+}
+
+.page_content {
+  margin: 20px 32px;
+  background: @page-container-color;
+}
+
+.common_icon {
+  width: 20px;
+  height: 20px;
+}
+
+.common_antd_icon {
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+//form 添加标签按钮
+.label_icon_btn {
+  display: flex;
+  padding-left: 0;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+//form 添加标签按钮
+.label_icon_color {
+  svg {
+    width: 18px;
+    height: 18px;
+    color: #4B8BEA;
+  }
+}
+
+.ray_rules_col_popver {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.@{container-prefix}-btn-variant-outlined:disabled{
+  color: #666 !important;
+}
+.primary_btn.@{container-prefix}-btn-variant-outlined:disabled{
+  color: #fff !important;
+}
+.@{container-prefix}-btn-variant-link:disabled{
+  color: #666 !important;
+}
+.rules-form-col {
+  display: flex;
+
+  .@{container-prefix}-form-item {
+    width: 100%;
+
+    .@{container-prefix}-form-item-control {
+      width: 100%;
+
+      .@{container-prefix}-form-item-control-input {
+        width: 100%;
+      }
+    }
+
+    .@{container-prefix}-row {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: start !important;
+    }
+  }
+}
+
+//分页调整
+.@{container-prefix}-page {
+  padding: 20px 0px 17px 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0 !important;
+
+  .@{container-prefix}-pagination-item,
+  .@{container-prefix}-pagination-next,
+  .@{container-prefix}-pagination-prev,
+  .@{container-prefix}-select-selector {
+    border-radius: 6px;
+    background: #fff;
+    border: 1px solid @page-border-color;
+  }
+
+  .@{container-prefix}-pagination-options-quick-jumper {
+    input {
+      border-radius: 6px;
+      background: #fff;
+      border: 1px solid @page-border-color;
+    }
+
+    input:hover {
+      border: 1px solid @border-focus-color !important;
+    }
+  }
+
+  .@{container-prefix}-pagination-item:hover {
+    border: 1px solid @border-focus-color;
+    background-color: #fff !important;
+  }
+
+  .@{container-prefix}-select:hover {
+    .@{container-prefix}-select-selector {
+      border: 1px solid @border-focus-color !important;
+      background-color: #fff !important;
+    }
+  }
+
+  .@{container-prefix}-pagination-next:hover,
+  .@{container-prefix}-pagination-prev:hover {
+    border: 1px solid @border-focus-color;
+
+    button {
+      background-color: #fff !important;
+    }
+  }
+
+  .@{container-prefix}-pagination-item-active {
+    background: @button-normal-color !important;
+    border: 1px solid @button-normal-color !important;
+
+    a {
+      color: #fff;
+    }
+  }
+}
+
+//默认按钮
+.primary_btn {
+  height: 32px;
+  width: 96px;
+  background-color: @button-normal-color;
+  color: #fff;
+  border-radius: 6px;
+}
+
+.primary_btn:hover {
+  background-color: @button-hover-color !important;
+  color: #fff !important;
+  box-shadow: none !important;
+}
+
+.primary_btn:focus {
+  background-color: @button-click-color !important;
+  border-color: @button-click-color !important;
+  box-shadow: none !important;
+}
+
+// 删除按钮 
+.delete_btn {
+  height: 32px;
+  width: 96px;
+  color: @del-button-normal-color;
+  border-radius: 6px !important;
+}
+
+.delete_btn:hover {
+  border: 1px solid @del-button-hover-color !important;
+  color: @del-button-hover-color !important;
+}
+
+.delete_btn:focus {
+  border: 1px solid @del-button-click-color !important;
+  color: @del-button-click-color !important;
+}
+
+// 取消按钮
+.cancel_btn {
+  height: 32px;
+  width: 96px;
+  border: 1px solid @button-disabled-color;
+  color: @title-color;
+  border-radius: 6px !important;
+}
+
+.cancel_btn:hover {
+  border: 1px solid @button-hover-color;
+  color: @button-hover-color;
+}
+
+.cancel_btn:focus {
+  border: 1px solid @button-click-color;
+  color: @button-click-color;
+}
+
+// 禁用按钮
+.disabled_btn {
+  height: 32px;
+  width: 96px;
+}
+
+//菜单栏颜色
+.@{container-prefix}-menu-item-selected{
+  color: @a-link-color !important;
+  background-color: #CFE7FF !important;
+}
+.@{container-prefix}-menu-submenu-selected{
+  .@{container-prefix}-menu-submenu-title{
+    color: @a-link-color !important;
+  }
+  .@{container-prefix}-menu-submenu-title:active{
+    background-color: #CFE7FF !important;
+  }
+}
+
+//面包屑颜色
+.@{container-prefix}-breadcrumb {
+  background-color: @page-container-color;
+  padding: 16px 0 0 32px;
+
+  a {
+    color: @narbar-and-content-color !important;
+  }
+}
+
+//面包屑
+.breadCrumb_self {
+  width: auto;
+}
+
+.create_bread {
+  padding-bottom: 16px;
+  box-shadow: inset 0px -1px 0px rgba(229, 229, 229, 1);
+}
+
+.unNormalColor {
+  color: #E7434A;
+}
+
+.normalColor {
+  color: #09AA71;
+}
+
+//输入框颜色
+.@{container-prefix}-input,
+.@{container-prefix}-input-search-button {
+  border-color: @border-normal-color;
+}
+
+.@{container-prefix}-input:focus,
+.@{container-prefix}-input:hover,
+.@{container-prefix}-input-affix-wrapper:hover {
+  border-color: @border-focus-color !important;
+}
+
+.@{container-prefix}-input-search-button:hover,
+.@{container-prefix}-input-search-button:focus {
+  border-color: @border-focus-color !important;
+}
+
+.@{container-prefix}-input-search-button:hover {
+  svg {
+    fill: @border-focus-color !important;
+  }
+}
+
+.@{container-prefix}-btn {
+  .@{container-prefix}-btn-block {
+    width: 100px;
+  }
+}
+
+//修改全局滚动条
+*::-webkit-scrollbar {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  position: absolute;
+  width: 8px;
+  top: 0px;
+  height: 8px;
+  bottom: 0px;
+  right: 0px;
+  visibility: hidden;
+}
+
+*::-webkit-scrollbar-track {
+  background-color: #fff;
+}
+
+*::-webkit-scrollbar-thumb {
+  position: absolute;
+  border-radius: 99px !important;
+  cursor: pointer;
+  user-select: none;
+  height: 20px;
+  background: rgba(145, 145, 145, 0.8);
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.5);
+}
+
+*::-webkit-scrollbar-thumb:window-inactive {
+  background: rgba(145, 145, 145, 0.4);
+}
+
+.@{container-prefix}-table-cell-row-hover {
+  background: transparent;
+}
+
+.@{container-prefix}-table-column-sort {
+  background: transparent;
+}
+
+.pop_modal{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  button{
+    color: @button-normal-color;
+  }
+  button:hover{
+    color: @button-hover-color;
+  }
+}
+.ray-website-tabs .ray-website-tabs-tab.ray-website-tabs-tab-active .ray-website-tabs-tab-btn{
+  color: #3f66f5 !important;
+  text-shadow:0 0 0.25px #3f66f5!important;
+}
+.ray-website-space-item,.detail_dashboard a{
+  color:#3f66f5 !important;
+}
+.common_antd_icon,.defaultRayCluster{
+  color:#3f66f5 !important;
+}

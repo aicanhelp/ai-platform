@@ -1,0 +1,6 @@
+name: ray-image-builder
+type: private
+description: 'ray镜像构建仓库。'
+branches:
+  - name:
+    type: 

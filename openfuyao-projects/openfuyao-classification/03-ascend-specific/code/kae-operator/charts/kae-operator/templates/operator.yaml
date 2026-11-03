@@ -1,0 +1,97 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kae-operator
+  labels:
+    {{- include "kae-operator.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "kae-operator"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: "kae-operator"
+      app: "kae-operator"
+  template:
+    metadata:
+      labels:
+        {{- include "kae-operator.labels" . | nindent 8 }}
+        app.kubernetes.io/component: "kae-operator"
+        app: "kae-operator"
+    spec:
+      serviceAccountName: kae-operator
+      {{- if .Values.operator.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.operator.imagePullSecrets }}
+        - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.operator.priorityClassName }}
+      priorityClassName: {{ .Values.operator.priorityClassName }}
+      {{- end }}
+      containers:
+      - name: kae-operator
+        image: {{ list . "core" | include "helpers.image.name" }}
+        imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+        env:
+        - name: WATCH_NAMESPACE
+          value: ""
+        - name: OPERATOR_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        volumeMounts:
+          - name: host-os-release
+            mountPath: "/host-etc/os-release"
+            readOnly: true
+          - name: config-volume
+            mountPath: /etc/kae-operator
+          - name: varlog
+            mountPath: /var/log/kae-operator
+          - name: host-time
+            mountPath: /etc/localtime
+            readOnly: true
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      {{- with .Values.operator.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+      {{- end }}
+        ports:
+          - name: metrics
+            containerPort: 8080
+      volumes:
+        - name: host-os-release
+          hostPath:
+            path: "/etc/os-release"
+        - name: varlog
+          hostPath:
+            path: /var/log/kae-operator
+        - name: config-volume
+          configMap:
+            name: kae-operator-logcm
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+    {{- with .Values.operator.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.operator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.operator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

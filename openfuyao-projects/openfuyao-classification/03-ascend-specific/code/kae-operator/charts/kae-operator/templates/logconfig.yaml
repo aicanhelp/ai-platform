@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kae-operator-logcm
+data:
+  kae-operator.yaml: |
+    Level: info
+    EncoderType: console
+    Path: /var/log/kae-operator
+    FileName: root.log
+    MaxSize: 20
+    MaxBackups: 0
+    MaxAge: 7
+    LocalTime: false
+    Compress: true
+    OutMod: console

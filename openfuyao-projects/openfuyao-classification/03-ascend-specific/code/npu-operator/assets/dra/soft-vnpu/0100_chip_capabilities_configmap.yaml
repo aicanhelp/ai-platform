@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: vnpu-template-config
+  namespace: FILLED_BY_OPERATOR
+  labels:
+    name: npu-dra-kubeletplugin
+data:
+  capabilities.yaml: |
+    chips:
+      - chipName: 310P3
+        totalAiCore: 8
+        totalAiCpu: 7
+        totalMemoryMi: 21525
+        templates:
+          - { name: vir01, aiCore: 1, aiCpu: 1, memoryMi: 3072 }
+          - { name: vir02, aiCore: 2, aiCpu: 2, memoryMi: 6144 }
+          - { name: vir02_1c, aiCore: 2, aiCpu: 1, memoryMi: 6144 }
+          - { name: vir04, aiCore: 4, aiCpu: 4, memoryMi: 12288 }
+          - { name: vir04_3c, aiCore: 4, aiCpu: 3, memoryMi: 12288 }
+      - chipName: 910B4
+        totalAiCore: 20
+        totalAiCpu: 6
+        totalMemoryMi: 32768
+        templates:
+          - { name: vir05_1c_8g, aiCore: 5, aiCpu: 1, memoryMi: 8192 }
+          - { name: vir10_3c_16g, aiCore: 10, aiCpu: 3, memoryMi: 16384 }
+          - { name: vir10_4c_16g_m, aiCore: 10, aiCpu: 4, memoryMi: 16384 }
+          - { name: vir10_3c_16g_nm, aiCore: 10, aiCpu: 3, memoryMi: 16384 }

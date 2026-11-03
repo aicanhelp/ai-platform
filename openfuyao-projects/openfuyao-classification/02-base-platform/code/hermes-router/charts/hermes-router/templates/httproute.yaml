@@ -1,0 +1,27 @@
+{{- if .Values.httpRoute }}
+{{ include "gateway-api-inference-extension.validations.inferencepool.name" $ }}
+{{- $inferencePoolName := include "gateway-api-inference-extension.inferencepool.name" . }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: {{ printf "%s-httproute" $inferencePoolName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gateway-api-inference-extension.labels" . | nindent 4 }}
+spec:
+  parentRefs:
+  - group: gateway.networking.k8s.io
+    kind: Gateway
+    name: {{ .Values.httpRoute.inferenceGatewayName }}
+  rules:
+  - backendRefs:
+    - group: inference.networking.k8s.io
+      kind: InferencePool
+      name: {{ $inferencePoolName }}
+    matches:
+    - path:
+        type: PathPrefix
+        value: /
+    timeouts:
+      request: {{ .Values.httpRoute.requestTimeout | default "300s" }}
+{{- end }}

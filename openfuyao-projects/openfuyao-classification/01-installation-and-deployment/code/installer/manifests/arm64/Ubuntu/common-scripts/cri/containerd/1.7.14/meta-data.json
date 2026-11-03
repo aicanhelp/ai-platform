@@ -1,0 +1,8 @@
+{
+  "name": "containerd",
+  "version": "1.7.14",
+  "required": true,
+  "hide": false,
+  "bootstrap-node": "all",
+  "dependencies": []
+}

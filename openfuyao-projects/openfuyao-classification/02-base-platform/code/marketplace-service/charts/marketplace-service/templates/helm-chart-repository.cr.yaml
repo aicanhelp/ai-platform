@@ -1,0 +1,31 @@
+apiVersion: console.openfuyao.com/v1beta1
+kind: HelmChartRepository
+metadata:
+  name: openfuyao
+spec:
+  basicAuth:
+    name: ""
+  ca:
+    name: ""
+  displayName: openFuyao
+  insecureSkipTLSVerify: false
+  passCredentialsAll: false
+  tls:
+    name: ""
+  url: https://helm.openfuyao.cn
+---
+apiVersion: console.openfuyao.com/v1beta1
+kind: HelmChartRepository
+metadata:
+  name: local
+spec:
+  basicAuth:
+    name: ""
+  ca:
+    name: ""
+  displayName: local
+  insecureSkipTLSVerify: true
+  passCredentialsAll: false
+  tls:
+    name: ""
+  url: http://local-harbor.openfuyao-system.svc.cluster.local/chartrepo/library

@@ -1,0 +1,189 @@
+{{ $scriptDir := "/etc/openFuyao/bkeagent/scripts/" }}
+
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: save-common-script
+  namespace: {{.namespace}}
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "mkdir -p {{$scriptDir}}"
+      id: mkdir-scripts
+      type: Shell
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/file-downloader.sh:ro:{{$scriptDir}}file-downloader.sh"
+        - "configmap:cluster-system/package-downloader.sh:ro:{{$scriptDir}}package-downloader.sh"
+      id: save-common-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}file-downloader.sh && chmod +x {{$scriptDir}}package-downloader.sh"
+      id: chmod-common-script
+      type: Shell
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 60
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}
+
+
+{{- if and (ne .lxcfsEnable nil ) ( ne .lxcfsEnable "" ) (ne .nodesIps nil ) (ne .nodesIps "" ) }}
+---
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: install-lxcfs
+  namespace: {{.namespace}}
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/install-lxcfs.sh:ro:{{$scriptDir}}install-lxcfs.sh"
+      id: save-install-lxcfs-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}install-lxcfs.sh"
+      id: chmod-install-lxcfs-script
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}install-lxcfs.sh"
+      id: install-lxcfs
+      type: Shell
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 60
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}
+{{- end }}
+
+{{- if and (ne .nfsUtilsEnable nil ) ( ne .nfsUtilsEnable "" ) (ne .nfsUtilsNodesIps nil ) (ne .nfsUtilsNodesIps "" ) }}
+---
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: install-nfs-utils
+  namespace: {{.namespace}}
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/install-nfsutils.sh:ro:{{$scriptDir}}install-nfsutils.sh"
+      #todo　bke还未适配
+        - "configmap:cluster-system/clean_docker_images.py:ro:{{$scriptDir}}clean_docker_images.py"
+      id: save-install-nfsutils-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}install-nfsutils.sh"
+      id: chmod-install-nfsutils-script
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}install-nfsutils.sh"
+      id: install-nfsutils
+      type: Shell
+    {{- if eq .pipelineServerEnableCleanImages "true" }}
+    - backoffDelay: 3
+      command:
+        - "(crontab -l; echo '0 0 */3 * * /usr/bin/python {{$scriptDir}}clean_docker_images.py -t 3d') | crontab -"
+      id: clean-docker-images
+      type: Shell
+    {{- end }}
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 60
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nfsUtilsNodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}
+{{- end }}
+
+{{- if and (ne .etcdctlEnable nil ) ( ne .etcdctlEnable "" ) (ne .etcdctlNodesIps nil ) (ne .etcdctlNodesIps "" ) }}
+---
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: install-etcdctl
+  namespace: {{.namespace}}
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/install-etcdctl.sh:ro:{{$scriptDir}}install-etcdctl.sh"
+      id: save-install-etcdctl-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}install-etcdctl.sh"
+      id: chmod-install-etcdctl-script
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}install-etcdctl.sh {{.httpRepo}}"
+      id: install-etcdctl
+      type: Shell
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 60
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .etcdctlNodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}
+{{- end }}
+
+{{- if and (ne .calicoctlEnable nil ) ( ne .calicoctlEnable "" ) (ne .calicoctlNodesIps nil ) (ne .calicoctlNodesIps "" ) }}
+---
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: install-calicoctl
+  namespace: {{.namespace}}
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/install-calicoctl.sh:ro:{{$scriptDir}}install-calicoctl.sh"
+      id: save-install-etcdctl-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}install-calicoctl.sh"
+      id: chmod-install-calicoctl-script
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}install-calicoctl.sh {{.httpRepo}}"
+      id: install-calicoctl
+      type: Shell
+  backoffLimit: 3
+  ttlSecondsAfterFinished: 60
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .calicoctlNodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}
+{{- end }}

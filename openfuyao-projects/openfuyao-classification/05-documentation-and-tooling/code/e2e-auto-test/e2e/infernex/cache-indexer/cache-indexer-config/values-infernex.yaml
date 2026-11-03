@@ -1,0 +1,74 @@
+inferenceGateway:
+  enabled: false
+
+hermes-router:
+  enabled: false
+
+eagle-eye:
+  enabled: false
+
+global:
+  image:
+    pullPolicy: IfNotPresent
+  imagePullSecrets: []
+  env:
+    - name: HF_HUB_OFFLINE
+      value: "0"
+    - name: PYTHONHASHSEED
+      value: "0"
+    - name: VLLM_KV_EVENTS_USE_INT_BLOCK_HASHES
+      value: "1"
+  modelName: "Qwen/Qwen3-8B"
+  modelPath: ""
+  autoDownloadModel: true
+  cachePath: "/home/llm_cache"
+
+inference-backend:
+  images:
+    inferenceEngine:
+      repository: "hub.oepkgs.net/openfuyao/ascend/vllm-ascend"
+      tag: "v0.18.0"
+  inferenceDevice: "huawei.com/Ascend910"
+  volumeMounts:
+    ascend:
+      enable: true
+  volumes:
+    ascend:
+      enable: true
+  services: []
+
+cache-indexer:
+  enabled: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  blockKey:
+    pythonHashSeed: "0"
+    prefixCachingHashAlgo: sha256_cbor
+    useIntBlockHashes: true
+  discovery:
+    refreshInterval: 10s
+    vllm:
+      zmqPortName: zmq-pub
+    mooncakeMaster:
+      httpPortName: http
+      httpPort: 9003
+  service:
+    name: cache-indexer-service
+    port: 8080
+
+pd-orchestrator:
+  elastic-scaler:
+    enabled: false
+    elasticScaler:
+      enabled: false
+  resourcescalinggroup:
+    enabled: false
+    instanceConfig:
+      enabled: false
+  tidal:
+    enabled: false

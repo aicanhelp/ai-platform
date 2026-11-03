@@ -1,0 +1,105 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: console-website-config
+    namespace: openfuyao-system
+data:
+  nginx.conf: |
+    worker_processes  32;
+
+    user fuyao fuyao;
+
+    error_log  /var/log/nginx/error.log notice;
+    error_log  /dev/stderr notice;
+    pid        /tmp/nginx.pid;
+
+
+    events {
+        worker_connections  1024;
+    }
+
+
+    http {
+        proxy_temp_path /tmp/proxy_temp;
+        client_body_temp_path /tmp/client_temp;
+        fastcgi_temp_path /tmp/fastcgi_temp;
+        uwsgi_temp_path /tmp/uwsgi_temp;
+        scgi_temp_path /tmp/scgi_temp;
+
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /var/log/nginx/access.log  main;
+        access_log  /dev/stdout  main;
+
+        sendfile        on;
+        #tcp_nopush     on;
+
+        gzip on;
+        gzip_min_length 10k;
+        gzip_buffers 4 32k;
+        gzip_http_version 1.1;
+        gzip_comp_level 6;
+        gzip_types text/plain text/css text/html text/xml text/javascript application/json application/x-javascript application/xml application/xml+rss application/javascript font/ttf font/woff font/woff2 image/png image/svg+xml video/mp4;
+        gzip_vary on;
+
+        client_body_timeout 10;
+        client_header_timeout 10;
+        keepalive_timeout 5 30;
+        send_timeout 10;
+
+        port_in_redirect off;
+
+        limit_conn_zone $binary_remote_addr zone=limitperip:10m;
+        limit_req_zone $binary_remote_addr zone=ratelimit:10m rate=50r/s;
+
+        server_tokens off;
+        autoindex off;
+
+        server {
+            listen 8080 default_server{{- if .Values.config.enableTLS }} ssl{{- end }};
+
+            {{- if .Values.config.enableTLS }}
+            ssl_certificate "cert/server.crt";
+            ssl_certificate_key "cert/server.key";
+            ssl_client_certificate "cert/ca.crt";
+            ssl_verify_client on;
+            ssl_protocols TLSv1.3;
+            ssl_session_timeout 10s;
+            ssl_session_cache shared:SSL:10m;
+            
+            ssl_ciphers "HIGH:!aNULL:!MD5";
+            {{- end }}
+
+            root /usr/share/nginx/html/;
+            index index.html index.htm;
+
+            client_header_buffer_size 5k;
+            large_client_header_buffers 4 16k;
+            client_body_buffer_size 10m;
+            client_max_body_size 256m;
+            proxy_hide_header X-Powered-By;
+            
+            proxy_hide_header X-Powered-By;
+            add_header Referrer-Policy "no-referrer";
+            add_header X-Frame-Options DENY;
+            add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
+            add_header X-Content-Type-Options nosniff;
+            add_header X-XSS-Protection "1; mode=block";
+            add_header Cache-control "no-cahce, no-store, must-revalidate";
+            add_header Pragma no-cache;
+            add_header Expires 0;
+
+            limit_conn limitperip 10;
+
+            location / {
+                limit_req zone=ratelimit burst=50 nodelay;
+                try_files $uri /index.html;
+            }
+        }
+    }
+

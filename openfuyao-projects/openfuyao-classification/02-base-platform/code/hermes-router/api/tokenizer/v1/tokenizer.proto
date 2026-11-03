@@ -1,0 +1,136 @@
+// Copyright (c) 2024 Huawei Technologies Co., Ltd.
+// openFuyao is licensed under Mulan PSL v2.
+// You can use this software according to the terms and conditions of the Mulan PSL v2.
+// You may obtain a copy of Mulan PSL v2 at:
+//         http://license.coscl.org.cn/MulanPSL2
+// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+// EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+// See the Mulan PSL v2 for more details.
+
+syntax = "proto3";
+
+package hermes.tokenizer.v1;
+
+option go_package = "hermes-router/api/tokenizer/v1;tokenizerv1";
+
+enum TokenizerProvider {
+  TOKENIZER_PROVIDER_UNSPECIFIED = 0;
+  TOKENIZER_PROVIDER_AUTO = 1;
+  TOKENIZER_PROVIDER_HUGGINGFACE = 2;
+  TOKENIZER_PROVIDER_MODELSCOPE = 3;
+}
+
+enum Modality {
+  MODALITY_UNSPECIFIED = 0;
+  MODALITY_IMAGE = 1;
+}
+
+message MultiModalFeature {
+  Modality modality = 1;
+  string hash = 2;
+  int32 offset = 3;
+  int32 length = 4;
+}
+
+message TokenizationResult {
+  repeated uint32 token_ids = 1;
+  repeated MultiModalFeature multimodal_features = 2;
+}
+
+message InitializeRequest {
+  string model = 1;
+  optional string tokenizer_name = 3;
+}
+
+message InitializeResponse {
+  string model = 1;
+  TokenizerProvider resolved_provider = 2;
+  string resolved_tokenizer_name = 3;
+}
+
+message TokenizeRequest {
+  string model = 1;
+  string prompt = 2;
+  bool add_special_tokens = 3;
+}
+
+message TokenizeResponse {
+  TokenizationResult result = 1;
+}
+
+message TokenIdList {
+  repeated uint32 values = 1;
+}
+
+message RenderCompletionRequest {
+  string model = 1;
+
+  oneof prompt_source {
+    string prompt_text = 2;
+    TokenIdList prompt_token_ids = 3;
+  }
+
+  bool add_special_tokens = 4;
+  optional int32 truncate_prompt_tokens = 5;
+}
+
+message RenderCompletionResponse {
+  TokenizationResult result = 1;
+}
+
+message MediaRef {
+  Modality modality = 1;
+  string url = 2;
+  bytes inline_data = 3;
+  string mime_type = 4;
+  string detail_json = 5;
+}
+
+message ChatContentPart {
+  oneof part {
+    string text = 1;
+    MediaRef media = 2;
+  }
+}
+
+message ChatContentParts {
+  repeated ChatContentPart values = 1;
+}
+
+message ChatMessage {
+  string role = 1;
+
+  oneof content_form {
+    string content = 2;
+    ChatContentParts content_parts = 3;
+  }
+
+  string name = 4;
+  string tool_calls_json = 5;
+  string tool_call_id = 6;
+}
+
+message RenderChatCompletionRequest {
+  string model = 1;
+  repeated ChatMessage messages = 2;
+  string chat_template = 3;
+  string chat_template_kwargs_json = 4;
+  string tools_json = 5;
+  string tool_choice_json = 6;
+  bool add_generation_prompt = 7;
+  bool continue_final_message = 8;
+  string mm_processor_kwargs_json = 9;
+  string media_io_kwargs_json = 10;
+}
+
+message RenderChatCompletionResponse {
+  TokenizationResult result = 1;
+}
+
+service TokenizationService {
+  rpc Initialize(InitializeRequest) returns (InitializeResponse);
+  rpc Tokenize(TokenizeRequest) returns (TokenizeResponse);
+  rpc RenderCompletion(RenderCompletionRequest) returns (RenderCompletionResponse);
+  rpc RenderChatCompletion(RenderChatCompletionRequest) returns (RenderChatCompletionResponse);
+}

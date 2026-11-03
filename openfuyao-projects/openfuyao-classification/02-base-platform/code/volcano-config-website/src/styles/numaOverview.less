@@ -1,0 +1,85 @@
+@import '@/styles/common.less';
+p{
+  margin: 0;
+}
+.numa_overview{
+  width: 100%;
+  .numa_overview_content{
+    .numa_overview_content_banner{
+      height: 219px;
+      width: 100%;
+      padding-top: 64px;
+      background-image: url(../assets/images/overviewBanner.png);
+      background-size: cover;
+      .numa_overview_content_banner_title{
+        font-size: 32px;
+        margin-bottom: 40px;
+        text-align: center;
+        -webkit-text-fill-color:transparent;
+        background: linear-gradient(90deg,#346ac4,#599bf5,#3870ca);
+        background-clip: text;
+        font-weight: 700;
+      }
+      .numa_overview_content_banner_desc{
+        color: #333;
+        font-size: 16px;
+        text-align: center;
+      }
+    }
+    .numa_overview_content_process{
+      padding: 22px 26px;
+      .numa_overview_content_process_all{
+        padding: 0 32px;
+        background: #fff;
+        .numa_overview_content_process_single{
+          height: 152px;
+          width: 100%;
+          display: flex;
+          padding: 32px 0;
+          border-bottom: 1px solid #dcdcdc;
+          .numa_overview_content_process_single_img{
+            width: 88px;
+            height: 88px;
+            margin-right: 20px;
+          }
+          .numa_overview_content_process_single_rightTop{
+            display: flex;
+            margin-bottom: 20px;
+            .numa_overview_content_process_single_rightTop_num{
+              color: #77aef7;
+              font-weight: 700;
+              font-size: 36px;
+              line-height: 40px; 
+            }
+            .numa_overview_content_process_single_rightTop_title{
+              color: #333;
+              font-weight: 700;
+              font-size: 20px;
+              line-height: 40px;
+              margin: 0 16px 0 14px;
+            }
+            svg{
+              color: #89939b;
+            }
+          }
+          .numa_overview_content_process_single_rightBottom{
+            font-weight: 400;
+            color: #89939b;
+            font-size: 14px;
+            .numa_overview_content_process_single_rightBottom_link{
+              color: #346ac4;
+              text-decoration: none;
+              cursor: pointer;
+              font-weight: 400;
+              font-size: 14px;
+              margin-left: 8px;
+            }
+          }
+        }
+        .numa_overview_content_process_single:last-child{
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}

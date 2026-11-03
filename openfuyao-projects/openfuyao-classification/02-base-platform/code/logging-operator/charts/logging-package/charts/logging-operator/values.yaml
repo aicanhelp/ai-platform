@@ -1,0 +1,36 @@
+replicaCount: 1
+
+images:
+  core:
+    repository: "cr.openfuyao.cn/openfuyao/logging-operator"
+    pullPolicy: Always
+
+
+serviceAccount:
+  create: true
+  name: logging-operator
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 9197
+
+loki:
+  hosts: "http://loki.loki.svc.cluster.local:3100"
+
+tolerations:
+  - key: "node-role.kubernetes.io/control-plane"
+    effect: "NoSchedule"
+  - key: "node-role.kubernetes.io/master"
+    effect: "NoSchedule"
+
+volumes:
+  - name: host-time
+    hostPath:
+      path: /etc/localtime
+      type: ""
+      
+namespace:
+  backend: default
+
+

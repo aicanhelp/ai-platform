@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: oauth-server-config
+  namespace: openfuyao-system
+data:
+  config.json: |
+    {
+      "HttpServerConfig": {
+        {{- if .Values.config.httpServerConfig.enableHttps }}
+        "HttpsPort": {{ .Values.config.httpServerConfig.port }},
+        "TlsCertFile": "/ssl/server.crt",
+        "TlsPrivateKeyFile": "/ssl/server.key",
+        "RootCAFile": "/ssl/ca.pem"
+        {{- else }}
+        "HttpPort": {{ .Values.config.httpServerConfig.port }}
+        {{- end }}
+      },
+      "IDPLoginStoreConfig": {
+        "SessionName": {{ .Values.config.loginSessionConfig.name | quote}},
+        "SessionMaxAge": {{ .Values.config.loginSessionConfig.maxSeconds | quote }},
+        "CsrfCookieName": {{ .Values.config.loginSessionConfig.csrfCookieName | quote}}
+      },
+      "IPProtectorConfig": {
+        "FailTimes": {{ .Values.config.ipProtectorConfig.failTimes | quote }},
+        "FailDuration": {{ .Values.config.ipProtectorConfig.failDuration | quote }},
+        "LockDuration": {{ .Values.config.ipProtectorConfig.lockDuration | quote }}
+      },
+      "K8sConfig": {
+        "KubeConfigFile": "",
+        "QPS": 1e6,
+        "Burst": 1e6
+      },
+      "LoginConfig": {
+        "Provider": "fuyaoPasswordProvider"
+      },
+      "OAuthServerConfig": {
+        "CodeTokenNamespace": "oauth-code-token",
+        "AuthCodeExp": {{ .Values.config.oauthServerConfig.authCodeExp | quote }},
+        "AccessTokenExp": {{ .Values.config.oauthServerConfig.accessTokenExp | quote }},
+        "RefreshTokenExp": {{ .Values.config.oauthServerConfig.refreshTokenExp | quote }},
+        "IsGenerateRefresh": {{- if .Values.config.oauthServerConfig.refreshTokenExp }}true{{- else }}false{{- end }},
+        "JWTKeyID": "access_token_sign_key"
+      }
+    }

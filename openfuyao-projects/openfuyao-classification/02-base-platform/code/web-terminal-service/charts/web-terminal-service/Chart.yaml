@@ -1,0 +1,10 @@
+apiVersion: v2
+name: web-terminal-service
+description: >
+  The Helm Chart deploys openFuyao Web Terminal Service that provides terminal for users.
+  It allows users to interact with kubernetes clusters or kubernetes containers directly 
+  from the openFuyao web console.
+type: application
+version: 0.0.0-latest
+appVersion: "1.16.0"
+keywords: ["openfuyao-component"]

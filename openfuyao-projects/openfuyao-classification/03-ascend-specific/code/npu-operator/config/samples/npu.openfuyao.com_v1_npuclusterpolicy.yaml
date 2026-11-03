@@ -1,0 +1,24 @@
+apiVersion: npu.openfuyao.com/v1
+kind: NPUClusterPolicy
+metadata:
+  labels:
+    app.kubernetes.io/name: npu-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: npuclusterpolicy-sample
+spec:
+  inferOperator:
+    managed: false
+    # imageSpec:
+    #   repository: registry.example.com/mindcluster/infer-operator
+    #   tag: v26.1.0
+    # config:
+    #   fault_handling: "true"
+  rdmaDevicePlugin:
+    managed: false
+    # imageSpec:
+    #   repository: registry.example.com/mindcluster/k8s-rdma-shared-dp
+    #   tag: v26.1.0
+  nodeD:
+    containerSnapshot:
+      enabled: false
+    # Set a compatible snapshot-enabled image before enabling; see docs/mindcluster-components.md.

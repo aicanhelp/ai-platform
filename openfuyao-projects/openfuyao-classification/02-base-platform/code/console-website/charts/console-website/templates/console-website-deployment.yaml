@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: console-website
+  namespace: openfuyao-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: console-website
+  template:
+    metadata:
+      labels:
+        app: console-website
+    spec:
+      securityContext:
+        fsGroup: 65532
+        runAsUser: 65532
+        runAsGroup: 65532
+      containers:
+        - name: console-website
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            {{- if .Values.config.enableTLS }}
+            - name: console-website-tls
+              mountPath: /etc/nginx/cert/ca.crt
+              subPath: ca.crt
+            - name: console-website-tls
+              readOnly: true
+              mountPath: /etc/nginx/cert/server.key
+              subPath: tls.key
+            - name: console-website-tls
+              readOnly: true
+              mountPath: /etc/nginx/cert/server.crt
+              subPath: tls.crt
+            {{- end }}
+          {{- if .Values.resources }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        - name: nginx-config
+          defaultMode: 0400
+          configMap:
+            name: console-website-config
+            items:
+            - key: nginx.conf
+              path: nginx.conf
+        {{- if .Values.config.enableTLS }}
+        - name: console-website-tls
+          secret:
+            defaultMode: 0400
+            secretName: console-website-tls
+        {{- end }}

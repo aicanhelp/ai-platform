@@ -1,0 +1,24 @@
+# permissions for end users to edit bkemachines.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: bkemachine-editor-role
+rules:
+- apiGroups:
+  - cluster.bocloud.com
+  resources:
+  - bkemachines
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - cluster.bocloud.com
+  resources:
+  - bkemachines/status
+  verbs:
+  - get

@@ -1,0 +1,53 @@
+# Default values for plugin-management-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+images:
+  core:
+    repository: cr.openfuyao.cn/openfuyao/plugin-management-service
+    tag: latest
+    pullPolicy: Always
+  busyBox:
+    repository: hub.oepkgs.net/openfuyao/busybox
+    tag: "1.36.1"
+  oauthProxy:
+    repository: "cr.openfuyao.cn/openfuyao/oauth-proxy"
+    pullPolicy: Always
+    tag: "latest"
+
+config:
+  httpServerConfig:
+    port: 9040
+    enableHttps: false
+    tlsCert: |
+      -----BEGIN CERTIFICATE-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END CERTIFICATE-----
+    tlsKey: |
+      -----BEGIN PRIVATE KEY-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END PRIVATE KEY-----
+    rootCA: |
+      -----BEGIN CERTIFICATE-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END CERTIFICATE-----
+
+localHarbor:
+  chartLimit: 200
+
+serverHost:
+  marketplaceService: "http://marketplace-service.openfuyao-system.svc.cluster.local:80"
+
+enableOAuth: false			# 新添加
+
+oauthProxy:
+  containerPort: 9093
+  enableTLS: false
+  client:
+    id: "oauth-proxy"
+    secret: "SECRETTS"
+  urls:
+    host: "/"
+    loginURI: "/oauth2/oauth/authorize"
+    redeemURI: "/oauth2/oauth/token"
+    rootPrefix: ""

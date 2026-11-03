@@ -1,0 +1,8 @@
+label: AI Inference Integrated Deployment
+sections:
+    - label: AI Inference Integrated Deployment
+      href: ./ai_inference_infernex.md
+    - label: InferNex Pre-Deployment Verification
+      href: ./ai_inference_infernex_checker.md
+    - label: AI Inference InferNex Bridge
+      href: ./ai_inference_infernex_bridge.md

@@ -1,0 +1,17 @@
+# Let's getting started with kwokctl!
+kwokctl -c ./demo/exec.yaml create cluster
+
+# Create an nodes.
+kwokctl scale node --replicas 2
+
+# Apply a deployment.
+kubectl create deployment pod --image=pod --replicas=5
+
+# Exec into the pod.
+kubectl exec deployment/pod -- ls -lh
+
+# Delete the cluster.
+kwokctl delete cluster
+
+# That's all, enjoy it!
+clear

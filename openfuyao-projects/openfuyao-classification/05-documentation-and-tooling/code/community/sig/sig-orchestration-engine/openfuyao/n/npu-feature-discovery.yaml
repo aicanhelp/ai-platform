@@ -1,0 +1,6 @@
+name: npu-feature-discovery
+type: private
+description: '为openFuyao提供NPU相关特征发现的能力，并可为集群节点打上相应标签'
+branches:
+  - name: master
+    type: protected

@@ -1,0 +1,6 @@
+name: agent-foundry
+type: private
+description: ''
+branches:
+  - name: main
+    type: protected

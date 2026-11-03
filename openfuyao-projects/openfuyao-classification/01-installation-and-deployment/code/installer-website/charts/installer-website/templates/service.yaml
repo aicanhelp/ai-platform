@@ -1,0 +1,15 @@
+﻿apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/name:  installer-website
+  name: installer-website
+  namespace: openfuyao-system
+spec:
+  type: ClusterIP
+  ports:
+    - name: https
+      port: 8080       # service对外暴露的接口
+      targetPort: https    # 前端pods的端口  和 前端deployment端口对应上
+  selector:
+    app.kubernetes.io/name: installer-website

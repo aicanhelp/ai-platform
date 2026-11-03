@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: installer-service
+  namespace: openfuyao-system
+  labels:
+    app.kubernetes.io/name:  installer-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name:  installer-service
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name:  installer-service
+    spec:
+      serviceAccountName: installer-service
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          operator: "Exists"
+          effect: "NoSchedule"
+      containers:
+        - command: ["/usr/local/bin/installer-service"]
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: Always
+          name: installer-service
+          ports:
+            - containerPort: 9210
+              name: https
+          terminationMessagePolicy: FallbackToLogsOnError
+          env:
+          - name: REMOTE_PATCH_PATH
+            value: {{ .Values.serverHost.remotePatchPath }}

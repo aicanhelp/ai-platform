@@ -1,0 +1,274 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+.monitor_type{
+ margin-left: 64px;
+}
+.monitor_com_box{
+  padding: 20px 32px;
+  padding-bottom: 92px;
+.preview_box{
+  margin-top: 20px;
+  padding: 32px;
+  min-height: 340px;
+  background: #fff;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10%;
+}
+.dashboard_arround_word{
+    margin-bottom: 8px;
+    position: relative;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 20px;
+    color: #666666;
+}
+.dashboard_arround_word::before{
+    content:'*';
+    position:absolute;
+    margin-left: -10px;
+    color: #E7434A;
+}
+.dashboard_arround_area{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 32px;
+  .dashboard_arround_input{
+    width: 120px;
+    height: 32px;
+  }
+  span{
+    margin:0 14px;
+  }
+}
+.dashboard_add_box{
+  margin-top:20px;
+  background: #fff;
+  word-break: keep-all;
+  height: 72px;
+  border-radius: 6px;
+  padding: 20px 32px;
+
+  .dashboard_word{
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    align-items: center;
+    .dashboard_arround{
+      color:#666666;
+      font-size: 14px;
+      position: relative;
+      line-height: 20px;
+    }
+    .dashboard_arround::before{
+      position: absolute;
+      left: -10px;
+      content: '*';
+      color: #E7434A;
+      width: 7px;
+    }
+    .dashboard_split{
+      margin: 0  6px;
+      color:#333333;
+      font-size: 14px;
+    }
+  }
+  .dashboard_arround_input{
+    border-radius: 6px;
+    max-width: 120px;
+  }
+}
+.preview_dount_box{
+  width: 850px;
+}
+.select_chart_content{
+  margin-top: 32px;
+  h2{
+    color: #333333;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+  }
+  .form_aim{
+    background: #fff;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    .aim{
+      position: relative;
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #666666;
+    }
+    .aim::before{
+      content:'*';
+      position:absolute;
+      margin-left: -10px;
+      color: #E7434A;
+    }
+    .content_aim{
+      margin-top:8px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .aim_select{
+        width: 100%;
+        flex: 1 1 uato;
+      }
+      .monitor_primary_btn{
+        margin-left:12px;
+      }
+    }
+  }
+}
+.aim_table_box{
+  margin-top: 32px;
+  h2{
+    color: #333333;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    span{
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #89939b;
+    }
+  }
+  .aim_header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    h2{
+      color: #333333;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 24px;
+      margin-right: 16px;
+    }
+    .monitor_tag_label{
+      user-select: none;
+      background: #CFE7FF;
+      border: 1px solid #dcdcdc;
+      padding: 6px 20px;
+      border-radius: 6px;
+      margin-left: 6px;
+      color: #333333;
+      line-height: 20px;
+      font-size: 14px;
+    }
+    .@{container-prefix}-tag-close-icon{
+      vertical-align: middle;
+      color: #000000;
+    }
+  }
+  .aim_content{
+    margin-top:12px;
+    padding: 32px;
+    background: #fff;
+    .aim_table{
+      margin-top:20px;
+    }
+  }
+}
+}
+.monitor_footer{
+  position: fixed;
+  padding: 20px 32px;
+  bottom: 0;
+  width: calc(100vw - 220px);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  height: 72px;
+  box-shadow: 0px 0px 10px 0px rgba(51,51,51,0.1);
+  background: #fff;
+  .descirption{
+    display: flex;
+    align-self: flex-start;
+    color: #333333;
+    font-weight: 700;
+    height: 32px;
+    flex: 1 1 auto;
+    align-items: center;
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+.flex_filter_group{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 32px;
+  .flex_select{
+    width: 140px;
+    height: 32px;
+  }
+  .key_select{
+    .@{container-prefix}-select-selector{
+      border-radius: 6px 0px 0px 6px;
+    }
+  }
+  .value_select{
+    .@{container-prefix}-select-selector{
+      border-radius: 0px;
+    }
+  }
+  .medium{
+    border: 1px solid #dcdcdc;
+    color: #333333;
+    width: 32px;
+    height: 32px;
+    text-align: center;
+  }
+  .equal_icon{
+    border-left:0px;
+    border-right:0px;
+  }
+  .close_icon{
+    cursor: pointer;
+    border-left: 0px;
+    border-radius: 0px 6px 6px 0px;
+  }
+}
+@media  screen and (max-width: 1279px) {
+  .monitor_footer{
+    width: calc( 100vw - 72px);
+  }
+}
+@media screen and( max-width : 1280px) {
+  .component_name_input_monitor{
+    width: 50%;
+  }
+  .monitor_type{
+    margin-left: 20px !important;
+  }
+  .component_name{
+    .monitoring-dashboard-form-item-required{
+      font-size: 12px;
+    }
+  }
+  .monitor_com_header{
+    .component_name{
+      .monitoring-dashboard-form-item-control{
+        width: 100px;
+      }
+    }
+    .monitor_type{
+      margin-left: 0;
+    }
+  }
+}

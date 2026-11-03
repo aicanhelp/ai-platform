@@ -1,0 +1,254 @@
+inferenceGateway:
+  enabled: true
+  name: "inference-gateway"
+  className: "istio"
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+
+global:
+  image:
+    pullPolicy: IfNotPresent
+  imagePullSecrets: [] # 私有镜像仓库的 Secret，例如: [{"name": "registry-secret"}]
+
+  env:
+    - name: HF_HUB_OFFLINE # HuggingFace Hub 离线开关（1=离线；0=在线）
+      value: "0"
+    - name: PYTHONHASHSEED # cache-indexer 要求与所有目标 vLLM Pod 保持一致
+      value: "0"
+    - name: VLLM_KV_EVENTS_USE_INT_BLOCK_HASHES # 与 cache-indexer 的 BlockHash 归一化规则保持一致
+      value: "1"
+
+  modelName: "Qwen/Qwen3-8B" # 推理模型名称（用于 served-model-name 和标签）
+  modelPath: "" # 推理模型本地路径（可选）。若配置，则 vLLM 使用该路径启动模型，否则使用 modelName。
+  autoDownloadModel: true # 是否自动通过 huggingface (hf download) 下载模型，本地已有模型时建议关闭自动下载
+  cachePath: "/home/llm_cache" # 推理侧缓存目录（如 HuggingFace / vLLM 的下载与编译缓存）
+
+hermes-router: 
+  enabled: true
+
+  image:
+    repository: "cr.openfuyao.cn/openfuyao/hermes-router"
+    tag: "latest"
+
+  inferenceExtension:
+    replicas: 1
+    pluginsConfigFile: default-plugins.yaml
+    routing:
+      deploymentMode: aggregate
+      profile: random
+    tokenizer:
+      enabled: false
+
+  inferencePool:
+    targetPorts:
+      - number: 8000
+    modelServerType: vllm
+
+  httpRoute:
+    inferenceGatewayName: "inference-gateway"
+
+  provider:
+    name: istio
+    istio:
+      destinationRule:
+        trafficPolicy:
+          tls:
+            mode: SIMPLE         
+            insecureSkipVerify: true
+      retryConfig:
+        enabled: retry
+        retryOn: "connect-failure,refused-stream,unavailable,cancelled,retriable-status-codes,5xx,reset"
+        numRetries: 3
+
+inference-backend:
+  images: 
+    inferenceEngine:
+      repository: "hub.oepkgs.net/openfuyao/ascend/vllm-ascend"
+      tag: "v0.18.0"
+    proxyServer:
+      repository: "cr.openfuyao.cn/openfuyao/proxy-server"
+      tag: "latest"
+
+  inferenceDevice: "huawei.com/Ascend910"
+
+  # 默认 volumeMounts（所有 vLLM deployment 共享）
+  volumeMounts:
+    ascend: # Ascend 设备相关的 volumeMounts
+      enable: true
+
+  # 默认 volumes（所有 vLLM deployment 共享）
+  volumes:
+    ascend: # Ascend 设备相关的 volumes
+      enable: true
+
+  services:
+  - name: qwen3-8b-aggregated-0
+    enabled: true
+    mode: aggregated
+    service:
+      port: 8000
+    kvTransferConfig: # KV Cache transfer 配置（aggregated 模式使用 store类型的 connector）
+      connectorConfig:
+        kv_connector: "AscendStoreConnector"
+        kv_connector_extra_config:
+          lookup_rpc_port: "1"
+          backend: "mooncake"
+      mooncake: # mooncake store提供的内存挂载配置
+        configPath: "/app/mooncake.json"
+        use_store: true
+        master:
+          rpcPort: 50051
+          servicePort: 30089
+          httpPort: 9003 # cache-indexer L3 依赖该 admin HTTP 端口（/get_all_keys、/query_key、/get_all_segments）
+        # mooncake 配置文件内容（YAML 格式，initContainer 会自动替换 $POD_IP 并转换为 JSON）
+        config: |
+          local_hostname: "$POD_IP"
+          metadata_server: "redis://redis-service:6379"
+          master_server_address: "mooncake-master-service:30089"
+          device_name: ""
+          protocol: "ascend"
+          global_segment_size: 42949672960
+          use_ascend_direct: true
+
+    aggregated:
+      replicas: 2
+      tensorParallelSize: 1
+      pipelineParallelSize: 1
+      dataParallelSize: 1
+      dataParallelSizeLocal: 1
+      dataParallelRpcPort: 12890
+      env:
+        - name: UB_SHARE_MEMORY
+          value: "true"
+      volumeMounts: [] # aggregated 节点特定的 volumeMounts
+      volumes: [] # aggregated 节点特定的 volumes
+      extraArgs:
+        - --enable-prefix-caching
+        - --max-model-len 10000
+        - --max-num-batched-tokens 40960
+        - --gpu-memory-utilization 0.8
+        - --block-size 128
+        - --prefix-caching-hash-algo sha256_cbor
+        - --enable-prompt-tokens-details
+    resources: # aggregated 节点资源配置
+      requests:
+        cpu: "4"
+        memory: "32Gi"
+      limits:
+        cpu: "8"
+        memory: "64Gi"
+
+# cache indexer
+cache-indexer:
+  enabled: false # 该 example 为 random example，不使用 cache-indexer
+  image:
+    repository: cr.openfuyao.cn/openfuyao/cache-indexer
+    tag: "latest"
+  resources: # cache-indexer 运行资源，生产环境可按集群规模调整
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  blockKey: # 需与 vLLM 的 PYTHONHASHSEED / hash algo / int hash 开关保持一致
+    pythonHashSeed: "0"
+    prefixCachingHashAlgo: sha256_cbor
+    useIntBlockHashes: true
+  discovery:
+    refreshInterval: 10s
+    vllm:
+      zmqPortName: zmq-pub
+    mooncakeMaster:
+      httpPortName: http
+      httpPort: 9003
+  service:
+    name: cache-indexer-service
+    port: 8080
+
+eagle-eye:
+  enabled: true
+
+  hardware-monitor:
+    images:
+      core:
+        repository: cr.openfuyao.cn/openfuyao/eagle-eye-hardware-monitor
+        tag: "latest"
+
+  hardware-diagnosis:
+    images:
+      core:
+        repository: cr.openfuyao.cn/openfuyao/eagle-eye-hardware-diagnosis
+        tag: "latest"
+
+  network-performance-exporter:
+    images:
+      core:
+        repository: cr.openfuyao.cn/openfuyao/eagle-eye-network-performance-exporter
+        tag: "latest"
+
+    networkPerformanceExporter:
+      metricsPort: 8222
+      collectInterval: 15
+
+pd-orchestrator:
+  elastic-scaler:
+    enabled: true # elastic-scaler 组件部署开关
+    image:
+      repository: cr.openfuyao.cn/openfuyao/elastic-scaler
+      tag: latest
+
+    elasticScaler:
+      enabled: true # chart包中默认提供的 elastic-scaler CR 实例开关，开启后会默认安装 elastic-scaler CR
+
+    name: elastic-scaler # 通过 HPA 扩缩的最大副本数和最小副本数
+    minReplicas: 1
+    maxReplicas: 10
+
+    targetRef:
+      kind: resourcescalinggroup
+      name: rsg # 该 name 需要对应 resourcescalinggroup.instanceConfig.name
+      apiVersion: autoscaling.openfuyao.com/v1alpha1
+
+    trigger:
+      scalingAlgorithm: apa
+      # 设置 apa 扩缩资源指标
+      resource:
+        metricsName: cpu
+        targetType: Utilization
+        targetValue: 70
+
+  resourcescalinggroup:
+    enabled: true # resourcescalinggroup 组件的部署开关
+    image:
+      repository: cr.openfuyao.cn/openfuyao/resource-scaling-group
+      tag: latest
+
+    instanceConfig:
+      enabled: true # chart包中默认提供的 resource scaling group CR 实例开关，开启后会默认安装 CR 实例
+      name: rsg
+      targetResources:
+      - name: aggregated
+        resourceRef:
+          apiVersion: leaderworkerset.x-k8s.io/v1
+          kind: LeaderWorkerSet
+          name: qwen3-8b-aggregated-01 # 该 name 需要和 inference backend 的 aggregated deployment name 对应
+      scalingStrategy:
+        type: GroupReplication
+        groupConfig: 
+          groupName: aggregated 
+          scaleDown: 
+            metric: 
+              expr: "vllm:num_requests_running" 
+              type: "Gauge"
+              window: "2m"
+              aggregator: "avg"
+            order: ascending
+
+  tidal:
+    enabled: true # tidal 组件的部署开关
+    image:
+      repository: cr.openfuyao.cn/openfuyao/tidal
+      tag: latest

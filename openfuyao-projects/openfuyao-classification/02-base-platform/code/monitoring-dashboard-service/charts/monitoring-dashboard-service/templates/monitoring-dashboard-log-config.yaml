@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-dashboard-service-logcfg
+  namespace: monitoring-dashboard
+data:
+  monitoring-dashboard-service.yaml: |
+    Level: info
+    EncoderType: console
+    Path: /var/log/monitoring-dashboard-service
+    FileName: root.log
+    MaxSize: 20
+    MaxBackups: 5
+    MaxAge: 30
+    LocalTime: false
+    Compress: true
+    OutMod: both
+

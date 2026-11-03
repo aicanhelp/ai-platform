@@ -1,0 +1,97 @@
+label: Feature User Guide
+sections:
+  - label: AI Inference and KVCache Acceleration
+    href:
+      upstream: https://gitcode.com/openFuyao/sig-ai-inference/blob/main/docs/en/_toc.yaml
+      path: ./
+  - label: NPU and Hardware Device Management
+    sections:
+      - label: KAE Operator
+        href: ./kae_operator.md
+      - label: NPU Operator
+        href: ./npu_operator.md
+      - label: npu-dra-plugin
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/npu_dra_plugin_user_guide/npu_dra_plugin.md
+          path: ./
+      - label: vNPU
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/vnpu_user_guide/vnpu_user_guide.md
+          path: ./
+      - label: Device Plugin Based on UB Container Network
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/device_plug_in_based_on_ub_container_network/device_plug_in_based_on_ub_container_network.md
+          path: ./
+      - label: SuperPod
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/superpod_user_guide/superpod_user_guide.md
+          path: ./
+      - label: Memory Borrowing
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/memory_borrowing_user_guide/memory_borrowing.md
+          path: ./
+      - label: Memory Sharing
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/memory_sharing_user_guide/memory_sharing.md
+          path: ./
+
+  - label: Sandbox and Virtualization
+    sections:
+      - label: Agent Sandbox Checkpoint and Restore
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/sandbox_checkpoint_restore_user_guide/use_checkpoint_and_restore.md
+          path: ./
+      - label: SandboxSched Sandbox Scheduling Engine
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-agent-sandbox/blob/master/doc/en/sandboxsched.md
+          path: ./
+      - label: KubeVirt
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/kubevirt_user_guide/kubevirt.md
+          path: ./
+      - label: Kunpeng Confidential Container
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-container-platform/blob/master/docs/en/kunpeng_confidential_container/user_guide/kunpeng_confidential_container.md
+          path: ./
+
+  - label: Container Enhancement
+    sections:
+      - label: CPU Acceleration During Container Startup
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/cpu_acceleration_during_container_startup_user_guide/cpu_acceleration_during_container_startup.md
+          path: ./
+      - label: High Density Container Deployment
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/high_density_container_deployment_user_guide/high-density_container_deployment.md
+          path: ./
+      - label: Certificate Hot Reload
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/certificate_hot_reload_user_guide/certificate_hot_reload.md
+          path: ./
+      - label: kube-log-runner Log Rotation Reliability Enhancement
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/kube_log_runner_user_guide/kube-log-runner_log_rotation_reliability_enhancement.md
+          path: ./
+      - label: OS Consistency Check Tool
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/oschecktool_user_guide/os_consistency_check_tool.md
+          path: ./
+      - label: PVC Expansion Through Statefulset Modification
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/pvc_expansion_user_guide/pvc_expansion_through_statefulset_modification.md
+          path: ./
+      - label: Log Framework
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-container-platform/blob/master/docs/en/ologger/user_guide/ologger_log_framework.md
+          path: ./
+      - label: Serverlessdb Operator
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/serverlessdb_operator/serverlessdb_operator.md
+          path: ./
+
+  - label: Ultra-Large-Scale Cluster
+    sections:
+      - label: Ultra-Large-Scale Cluster
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-large-scale-cluster/blob/master/docs/en/_toc.yaml
+          path: ./sig-large-scale-cluster

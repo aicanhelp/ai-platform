@@ -1,0 +1,9 @@
+images:
+  core:
+    repository: cr.openfuyao.cn/openfuyao/eagle-eye-network-performance-exporter
+    tag: latest
+    pullPolicy: IfNotPresent
+
+networkPerformanceExporter:
+  metricsPort: 8222
+  collectInterval: 15

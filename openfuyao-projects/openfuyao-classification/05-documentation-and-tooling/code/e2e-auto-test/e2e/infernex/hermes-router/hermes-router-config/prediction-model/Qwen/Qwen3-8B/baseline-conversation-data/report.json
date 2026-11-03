@@ -1,0 +1,133 @@
+{
+  "backend": "xgboost",
+  "dropReasons": {
+    "tpot_label_invalid": 3
+  },
+  "modelVersion": "baseline-conversation-data",
+  "quantile": 0.9,
+  "slots": {
+    "aggregate_tpot": {
+      "coverage": 0.7314285714285714,
+      "holdoutSamples": 350,
+      "mae": 2.138746980814961,
+      "pinballLoss": 0.4829962079079639,
+      "ranking": {
+        "inputLenHigh": {
+          "n": 175,
+          "pairs": 15225,
+          "pairwiseAccuracy": 0.720919540229885,
+          "spearman": 0.607304895744419,
+          "valid": true
+        },
+        "inputLenLow": {
+          "n": 175,
+          "pairs": 15225,
+          "pairwiseAccuracy": 0.6691625615763547,
+          "spearman": 0.4811525341021344,
+          "valid": true
+        },
+        "loadHigh": {
+          "n": 175,
+          "pairs": 15225,
+          "pairwiseAccuracy": 0.6587192118226601,
+          "spearman": 0.46411803857935974,
+          "valid": true
+        },
+        "loadLow": {
+          "n": 175,
+          "pairs": 15225,
+          "pairwiseAccuracy": 0.6496551724137931,
+          "spearman": 0.4194878702013691,
+          "valid": true
+        },
+        "noQueue": {
+          "n": 350,
+          "pairs": 61075,
+          "pairwiseAccuracy": 0.7031682357756857,
+          "spearman": 0.5704191824925743,
+          "valid": true
+        },
+        "overall": {
+          "n": 350,
+          "pairs": 61075,
+          "pairwiseAccuracy": 0.7031682357756857,
+          "spearman": 0.5704191824925743,
+          "valid": true
+        },
+        "queued": {
+          "n": 0,
+          "pairs": 0,
+          "pairwiseAccuracy": null,
+          "spearman": null,
+          "valid": false
+        }
+      },
+      "rmse": 2.937728188704718,
+      "samples": 1749,
+      "trainSamples": 1399,
+      "violationRate": 0.26857142857142857
+    },
+    "aggregate_ttft": {
+      "coverage": 0.9031339031339032,
+      "holdoutSamples": 351,
+      "mae": 626.9280069565193,
+      "pinballLoss": 82.80384128852052,
+      "ranking": {
+        "inputLenHigh": {
+          "n": 175,
+          "pairs": 15225,
+          "pairwiseAccuracy": 0.7136945812807882,
+          "spearman": 0.590780746896864,
+          "valid": true
+        },
+        "inputLenLow": {
+          "n": 176,
+          "pairs": 15400,
+          "pairwiseAccuracy": 0.8007142857142857,
+          "spearman": 0.8167330787012497,
+          "valid": true
+        },
+        "loadHigh": {
+          "n": 175,
+          "pairs": 15225,
+          "pairwiseAccuracy": 0.7643349753694582,
+          "spearman": 0.7559766882987571,
+          "valid": true
+        },
+        "loadLow": {
+          "n": 176,
+          "pairs": 15400,
+          "pairwiseAccuracy": 0.8234415584415584,
+          "spearman": 0.8311417592348219,
+          "valid": true
+        },
+        "noQueue": {
+          "n": 351,
+          "pairs": 61425,
+          "pairwiseAccuracy": 0.8049328449328449,
+          "spearman": 0.8135864018604303,
+          "valid": true
+        },
+        "overall": {
+          "n": 351,
+          "pairs": 61425,
+          "pairwiseAccuracy": 0.8049328449328449,
+          "spearman": 0.8135864018604303,
+          "valid": true
+        },
+        "queued": {
+          "n": 0,
+          "pairs": 0,
+          "pairwiseAccuracy": null,
+          "spearman": null,
+          "valid": false
+        }
+      },
+      "rmse": 1701.7836450816712,
+      "samples": 1752,
+      "trainSamples": 1401,
+      "violationRate": 0.09686609686609682
+    }
+  },
+  "targetModel": "Qwen/Qwen3-8B"
+}

@@ -1,0 +1,637 @@
+openapi: 3.0.0
+info:
+  title:
+  description: Provides APIs for managing and monitoring Kubernetes colocation resources.
+  version: 1.0.0
+servers:
+  - url: /rest/colocation/v1
+    description: Main API endpoint for colocation and monitoring.
+
+paths:
+  /colocation-configs:
+    get:
+      tags: [Colocation]
+      summary: Extended API for obtaining all colocation configurations.
+      description: Obtains the colocation statistics in the cluster, including the number of colocation nodes, the number of colocation Pods, and the feature support status of each node.
+      responses:
+        '200':
+          description: The operation is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColocationConfigResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 200
+                    message: "ok"
+                    data:
+                      nodeInfo:
+                        - uid: "463bc3a6-945a-4ef2-8b2d-fbe8438864d6"
+                          name: "fuyao-master"
+                          addresses: ["192.168.100.89"]
+                          osImage: "openEuler 22.03 LTS"
+                          status: "active"
+                          isColocated: true
+                          featureSupport:
+                            cpuPreemption: "OK"
+                            memoryPreemption: "OK"
+                            quotaTurbo: "OK"
+                            dynMemory: "OK"
+                            dynCache: "The hardware does not support the RDT feature."
+                            psiDetection: "OK"
+                      rubikConfig:
+                        eviction:
+                          enable: true
+                          cpuevict:
+                            threshold: 60
+                          memoryevict:
+                            threshold: 80
+                        quotaTurbo:
+                          enable: true
+                          highWaterMark: 50
+                          alarmWaterMark: 100
+                        dynMemory:
+                          enable: true
+                        dynCache:
+                          enable: false
+                          l3Percent:
+                            low: 20
+                            mid: 30
+                            high: 50
+                          memBandPercent:
+                            low: 10
+                            mid: 30
+                            high: 50
+                        psi:
+                          enable: true
+                          resource: ["cpu", "memory"]
+                          avg10Threshold: 5.0
+                      volcanoSchedulerConfig:
+                        usagePlugin:
+                          enable: false
+                          usageThreshold:
+                            enable: false
+
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags: [Colocation]
+      summary: API for modifying colocation scheduling configurations and colocation feature configurations.
+      description: Full update of colocation scheduling configurations and colocation feature configurations, including eviction configuration interface, elastic CPU throttling, asynchronous memory reclamation, memory bandwidth limitation, and PSI interference detection.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ColocationConfigRequest'
+            examples:
+              configExample:
+                value:
+                  nodeInfo:
+                    - uid: "463bc3a6-945a-4ef2-8b2d-fbe8438864d6"
+                      name: "fuyao-master"
+                      addresses: ["192.168.100.89"]
+                      osImage: "openEuler 22.03 LTS"
+                      isColocated: true
+                  rubikConfig:
+                    eviction:
+                      enable: true
+                      cpuevict:
+                        threshold: 60
+                      memoryevict:
+                        threshold: 60
+                    quotaTurbo:
+                      enable: true
+                      highWaterMark: 70
+                      alarmWaterMark: 80
+                    dynMemory:
+                      enable: true
+                    dynCache:
+                      enable: true
+                      l3Percent:
+                        low: 15
+                        mid: 35
+                        high: 50
+                      memBandPercent:
+                        low: 15
+                        mid: 35
+                        high: 50
+                    psi:
+                      enable: true
+                      resource: ["cpu", "memory"]
+                      avg10Threshold: 3.0
+                  volcanoSchedulerConfig:
+                    usagePlugin:
+                      enable: true
+                      usageThreshold:
+                        enable: true
+                        cpu: 80
+                        memory: 80
+      responses:
+        '200':
+          description: Colocation configurations are modified successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColocationConfigResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 200
+                    message: "ok"
+                    data:
+                      nodeInfo:
+                        - uid: "463bc3a6-945a-4ef2-8b2d-fbe8438864d6"
+                          name: "fuyao-master"
+                          addresses: ["192.168.100.89"]
+                          osImage: "openEuler 22.03 LTS"
+                          status: "active"
+                          isColocated: true
+                      rubikConfig:
+                        eviction:
+                          enable: true
+                          cpuevict:
+                            threshold: 60
+                          memoryevict:
+                            threshold: 60
+                        quotaTurbo:
+                          enable: true
+                          highWaterMark: 70
+                          alarmWaterMark: 80
+                        dynMemory:
+                          enable: true
+                        dynCache:
+                          enable: true
+                          l3Percent:
+                            low: 15
+                            mid: 35
+                            high: 50
+                          memBandPercent:
+                            low: 15
+                            mid: 35
+                            high: 50
+                        psi:
+                          enable: true
+                          resource: ["cpu", "memory"]
+                          avg10Threshold: 3.0
+                      volcanoSchedulerConfig:
+                        usagePlugin:
+                          enable: true
+                          usageThreshold:
+                            enable: true
+                            cpu: 80
+                            memory: 80
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /colocation-nodes/{name}:
+    patch:
+      tags: [Colocation]
+      summary: API for enabling or disabling colocation for nodes.
+      description: Modifies the colocation label for a single node by specifying the node name and the desired colocation label status.
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Node name.
+        - name: colocation-status
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: ["true", "false"]
+          description: "true or false, indicating whether to enable colocation."
+      responses:
+        '200':
+          description: Colocation Pod information is queried successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodeStatusResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 0
+                    message: "ok"
+                    data:
+                      id: "fuyao-worker"
+                      colocation-status: "true"
+        '500':
+          description: Internal server error. Failed to switch between colocation nodes and oversold nodes.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /colocation-status:
+    get:
+      tags: [Colocation Monitoring]
+      summary: Obtains all colocation nodes and colocation workloads.
+      description: Obtains the details about all colocation nodes in the cluster, including the node status and colocation workloads.
+      responses:
+        '200':
+          description: All colocation nodes and colocation workload information are successfully queried.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColocationStatusResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 0
+                    message: "ok"
+                    data:
+                      totalNodeCount: 3
+                      colocationNodeCount: 0
+                      nonColocationNodeCount: 3
+                      podCount:
+                        normalCount: 64
+                        hlsCount: 0
+                        lsCount: 1
+                        beCount: 4
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /colocation-metrics/cluster:
+    get:
+      tags: [Colocation Monitoring]
+      summary: Obtains the line chart of cluster colocation monitoring data.
+      description: Obtains the line chart of cluster colocation monitoring data.
+      responses:
+        '200':
+          description: The query is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 0
+                    message: "ok"
+                    data:
+                      - status: "success"
+                        metricName: "cluster_cpu_total"
+                        data:
+                          resultType: "matrix"
+                          result:
+                            - metric:
+                                instance: ""
+                              values:
+                                - [1748525912, "16"]
+                                - [1748525972, "16"]
+                                - [1748526032, "16"]
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /colocation-metrics/nodes/{node}:
+    get:
+      tags: [Colocation Monitoring]
+      summary: Obtains the line chart of colocation monitoring data of a node.
+      description: Obtains the line chart of colocation monitoring data of a specified node.
+      parameters:
+        - name: node
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Selected node.
+          example: "fuyao-master|fuyao-worker"
+      responses:
+        '200':
+          description: The query is successful.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 0
+                    message: "ok"
+                    data:
+                      - status: "success"
+                        metricName: "node_cpu_total"
+                        data:
+                          resultType: "matrix"
+                          result:
+                            - metric:
+                                instance: "fuyao-master"
+                              values:
+                                - [1748523927, "4"]
+                                - [1748523987, "4"]
+                            - metric:
+                                instance: "fuyao-worker"
+                              values:
+                                - [1748523927, "8"]
+                                - [1748523987, "8"]
+        '500':
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ColocationConfigRequest:
+      type: object
+      properties:
+        nodeInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/NodeInfo'
+          description: Node information list.
+        rubikConfig:
+          $ref: '#/components/schemas/RubikConfig'
+        volcanoSchedulerConfig:
+          $ref: '#/components/schemas/VolcanoSchedulerConfig'
+
+    ColocationConfigResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+          description: Custom status code.
+        message:
+          type: string
+          example: "ok"
+          description: Message, which displays the basic status.
+        data:
+          type: object
+          properties:
+            nodeInfo:
+              type: array
+              items:
+                $ref: '#/components/schemas/NodeInfo'
+              description: Node information list.
+            rubikConfig:
+              $ref: '#/components/schemas/RubikConfig'
+            volcanoSchedulerConfig:
+              $ref: '#/components/schemas/VolcanoSchedulerConfig'
+
+    NodeStatusResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          description: Custom status code.
+        message:
+          type: string
+          example: "ok"
+          description: Message, which displays the basic status.
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: Node name.
+            colocation-status:
+              type: string
+              description: Specifies whether to enable colocation for nodes.
+
+    NodeInfo:
+      type: object
+      properties:
+        uid:
+          type: string
+          description: Node resource UID.
+        name:
+          type: string
+          description: Node name.
+        addresses:
+          type: array
+          items:
+            type: string
+          description: IP address of the node.
+        osImage:
+          type: string
+          description: OS version of the node.
+        status:
+          type: string
+          description: Node status. The value can be active, inactive, or unknown.
+        isColocated:
+          type: boolean
+          description: Specifies whether the node is a colocation node.
+        featureSupport:
+          type: object
+          description: Feature support status. If the value is OK, the feature is supported. Otherwise, the reason why the feature is not supported is displayed.
+          properties:
+            cpuPreemption:
+              type: string
+              description: Specifies whether CPU preemption (basic colocation capabilities) is supported.
+            memoryPreemption:
+              type: string
+              description: Specifies whether memory preemption (basic colocation capabilities) is supported.
+            quotaTurbo:
+              type: string
+              description: Specifies whether elastic CPU throttling is supported.
+            dynMemory:
+              type: string
+              description: Specifies whether asynchronous memory reclamation is supported.
+            dynCache:
+              type: string
+              description: Specifies whether memory bandwidth limitation is supported.
+            psiDetection:
+              type: string
+              description: Specifies whether PSI interference detection is supported.
+
+    RubikConfig:
+      type: object
+      properties:
+        eviction:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: Specifies whether to enable Rubik watermark eviction.
+            cpuevict:
+              type: object
+              properties:
+                threshold:
+                  type: integer
+                  description: CPU watermark eviction value (0–100).
+            memoryevict:
+              type: object
+              properties:
+                threshold:
+                  type: integer
+                  description: Memory watermark eviction value (0–100).
+        quotaTurbo:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: Specifies whether to enable elastic CPU throttling.
+            highWaterMark:
+              type: integer
+              description: Load high watermark (0–100).
+            alarmWaterMark:
+              type: integer
+              description: Load warning watermark (0-100).
+        dynMemory:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: Specifies whether to enable asynchronous memory reclamation.
+        dynCache:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: Specifies whether to enable memory bandwidth limitation.
+            l3Percent:
+              type: object
+              properties:
+                low:
+                  type: integer
+                mid:
+                  type: integer
+                high:
+                  type: integer
+            memBandPercent:
+              type: object
+              properties:
+                low:
+                  type: integer
+                mid:
+                  type: integer
+                high:
+                  type: integer
+        psi:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: Specifies whether to enable PSI interference detection.
+            resource:
+              type: array
+              items:
+                type: string
+              description: 'Type of the detected resource. Valid values: ["cpu","memory","io"].'
+            avg10Threshold:
+              type: number
+              description: Threshold for the 10-second average suppression percentage. The value ranges from 5.0 to 100.0.
+
+    ColocationStatusResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          description: Status code.
+        message:
+          type: string
+          example: "ok"
+          description: Status information.
+        data:
+          type: object
+          properties:
+            totalNodeCount:
+              type: integer
+              description: Total number of nodes.
+            colocationNodeCount:
+              type: integer
+              description: Number of colocation nodes.
+            nonColocationNodeCount:
+              type: integer
+              description: Number of non-colocation nodes.
+            podCount:
+              type: object
+              properties:
+                normalCount:
+                  type: integer
+                  description: Number of common Pods.
+                hlsCount:
+                  type: integer
+                  description: Number of high-priority Pods.
+                lsCount:
+                  type: integer
+                  description: Number of low-priority Pods.
+                beCount:
+                  type: integer
+                  description: Number of best-effort (BE) Pods.
+
+    MetricsResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          description: Status code.
+        message:
+          type: string
+          example: "ok"
+          description: Status information.
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+                description: Request status.
+              metricName:
+                type: string
+                description: Indicator name.
+              data:
+                type: object
+                properties:
+                  resultType:
+                    type: string
+                    description: Result type.
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        metric:
+                          type: object
+                          properties:
+                            instance:
+                              type: string
+                              description: Node name.
+                        values:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              oneOf:
+                                - type: integer
+                                - type: string
+                            description: Timestamp-indicator value pair.
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 500
+          description: Error status code.
+        message:
+          type: string
+          example: "Internal Server Error"
+          description: Error information.

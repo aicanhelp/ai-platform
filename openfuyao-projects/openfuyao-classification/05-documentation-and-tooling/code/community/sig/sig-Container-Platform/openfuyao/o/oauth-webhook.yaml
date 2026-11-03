@@ -1,0 +1,6 @@
+name: oauth-webhook
+type: public
+description: '作为openFuyao容器平台中kube-apiserver的认证webhook服务，校验openFuyao平台中oauth-server生成的access_token'
+branches:
+  - name: master
+    type: protected

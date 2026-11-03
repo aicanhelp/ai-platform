@@ -1,0 +1,169 @@
+# Default values for multi-cluster-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+system:
+  systemNamespace: "karmada-system"
+
+1-multi-cluster-service:
+  images:
+    core:
+      repository: cr.openfuyao.cn/openfuyao/multi-cluster-service
+      pullPolicy: Always
+      tag: "latest"
+  thirdPartyImages:
+    busyBox:
+      repository: hub.oepkgs.net/openfuyao/busybox
+      tag: "1.36.1"
+  service:
+    type: ClusterIP
+    ports:
+      http:
+        port: 9022
+        targetPort: 9022
+        nodePort: 30722
+
+2-multi-cluster-website:
+  images:
+    core:
+      repository: cr.openfuyao.cn/openfuyao/multi-cluster-website
+      pullPolicy: Always
+      tag: "latest"
+  service:
+    type: ClusterIP
+    port: 8080
+    backendPort: 9022
+    nodePort: 30884
+
+0-karmada:
+  ## @karmadaImageVersion the image version of each karmada components
+  ## "latest" is a default value for local installation.
+  karmadaImageVersion: &karmadaImageVersion v1.15.0
+
+  ## Specify the imagePullPolicy of karmada images
+  ## Defaults to 'IfNotPresent', you can set to 'Always' in cases of special needs
+  karmadaImagePullPolicy: &karmadaImagePullPolicy IfNotPresent
+
+  ## @karmadaImageRegistry the registry of karmada images
+  ## "docker.io" is the default value for karmada images.
+  karmadaImageRegistry: &karmadaImageRegistry hub.oepkgs.net/openfuyao
+
+  ## @karmadaK8sImageRegistry the registry of k8s images.
+  ## "registry.k8s.io" is the default value for k8s images.
+  karmadaK8sImageRegistry: &karmadaK8sImageRegistry hub.oepkgs.net/openfuyao
+
+  ## Specify the imagePullPolicy of K8s images
+  ## Defaults to 'IfNotPresent', you can set to 'Always' in cases of special needs
+  karmadaK8sImagePullPolicy: &karmadaK8sImagePullPolicy IfNotPresent
+
+  cfssl:
+    image:
+      registry: *karmadaImageRegistry
+      repository: cfssl/cfssl
+      tag: "v1.6.5"
+      pullPolicy: IfNotPresent
+      pullSecrets: []
+
+  kubectl:
+    image:
+      registry: *karmadaImageRegistry
+      repository: alpine/kubectl
+      tag: "1.34.2"
+      pullPolicy: IfNotPresent
+      pullSecrets: []
+
+  kubeControllerManager:
+    image:
+      registry: *karmadaK8sImageRegistry
+      repository: kube-controller-manager
+      tag: "v1.30.4"
+      pullPolicy: *karmadaK8sImagePullPolicy
+      pullSecrets: []
+
+  etcd:
+    internal:
+      image:
+        registry: *karmadaK8sImageRegistry
+        repository: etcd
+        tag: "3.5.13-0"
+        pullPolicy: *karmadaK8sImagePullPolicy
+        busyBox: hub.oepkgs.net/openfuyao/busybox:1.36.1
+
+  apiServer:
+    image:
+      registry: *karmadaK8sImageRegistry
+      repository: kube-apiserver
+      tag: "v1.30.4"
+      pullPolicy: *karmadaK8sImagePullPolicy
+      pullSecrets: []
+
+  scheduler:
+    image:
+      registry: *karmadaImageRegistry
+      repository: karmada/karmada-scheduler
+      tag: *karmadaImageVersion
+      pullPolicy: *karmadaImagePullPolicy
+      pullSecrets: []
+
+  webhook:
+    image:
+      registry: *karmadaImageRegistry
+      repository: karmada/karmada-webhook
+      tag: *karmadaImageVersion
+      pullPolicy: *karmadaImagePullPolicy
+      pullSecrets: []
+  
+  controllerManager:
+    image:
+      registry: *karmadaImageRegistry
+      repository: karmada/karmada-controller-manager
+      tag: *karmadaImageVersion
+      pullPolicy: *karmadaImagePullPolicy
+      pullSecrets: []
+
+  aggregatedApiServer:
+    image:
+      registry: *karmadaImageRegistry
+      repository: karmada/karmada-aggregated-apiserver
+      tag: *karmadaImageVersion
+      pullPolicy: *karmadaImagePullPolicy
+      pullSecrets: []
+
+  metricsAdapter:
+    image:
+      registry: *karmadaImageRegistry
+      repository: karmada/karmada-metrics-adapter
+      tag: *karmadaImageVersion
+      pullPolicy: *karmadaImagePullPolicy
+      pullSecrets: []
+
+  agent:
+    image:
+      registry: *karmadaImageRegistry
+      repository: karmada/karmada-agent
+      tag: *karmadaImageVersion
+      pullPolicy: *karmadaImagePullPolicy
+      pullSecrets: []
+
+  schedulerEstimator:
+    image:
+      registry: *karmadaImageRegistry
+      repository: karmada/karmada-scheduler-estimator
+      tag: *karmadaImageVersion
+      pullPolicy: *karmadaImagePullPolicy
+      pullSecrets: []
+
+  descheduler:
+    image:
+      registry: *karmadaImageRegistry
+      repository: karmada/karmada-descheduler
+      tag: *karmadaImageVersion
+      pullPolicy: *karmadaImagePullPolicy
+      pullSecrets: []
+
+  search:
+    image:
+      registry: *karmadaImageRegistry
+      repository: karmada/karmada-search
+      tag: *karmadaImageVersion
+      pullPolicy: *karmadaImagePullPolicy
+      pullSecrets: []

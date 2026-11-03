@@ -1,0 +1,91 @@
+{
+  "module": {
+    "title": "命名空间",
+    "description": "管理命名空间及相关资源"
+  },
+  "namespace": {
+    "title": "Namespace",
+    "create": "创建Namespace",
+    "name": "名称",
+    "nameLabel": "命名空间名称",
+    "status": "状态",
+    "labels": "标签",
+    "annotations": "注解",
+    "memory": "内存（MB）",
+    "cpu": "CPU（Core）",
+    "createdAt": "创建时间"
+  },
+  "limitRange": {
+    "title": "LimitRange",
+    "create": "创建LimitRange",
+    "name": "名称",
+    "nameLabel": "限制范围名称",
+    "namespace": "命名空间",
+    "createdAt": "创建时间",
+    "container": "容器限制",
+    "pod": "Pod限制",
+    "persistentVolumeClaim": "存储限制",
+    "min": "最小值",
+    "max": "最大值",
+    "default": "默认值",
+    "defaultRequest": "默认请求"
+  },
+  "resourceQuota": {
+    "title": "ResourceQuota",
+    "create": "创建ResourceQuota",
+    "name": "名称",
+    "nameLabel": "资源配额名称",
+    "namespace": "命名空间",
+    "labels": "标签",
+    "annotations": "项目注解",
+    "status": "状态",
+    "createdAt": "创建时间",
+    "hard": "硬限制",
+    "used": "已使用",
+    "scopes": "作用域",
+    "statusQuotaExceeded": "存在达到配额的资源",
+    "statusQuotaNormal": "没有已达到配额的资源"
+  },
+  "info": {
+    "basicInfo": "基本信息",
+    "labels": "标签",
+    "annotations": "注解",
+    "countZero": "0个",
+    "limits": "限制",
+    "quotaDetails": "资源配额详情",
+    "usedQuota": "使用配额",
+    "quotaLimit": "配额上限"
+  },
+  "fields": {
+    "name": "名称",
+    "namespace": "命名空间",
+    "createdAt": "创建时间",
+    "status": "状态"
+  },
+  "table": {
+    "type": "类型",
+    "resource": "资源",
+    "min": "最小",
+    "max": "最大",
+    "defaultRequest": "默认请求",
+    "defaultLimit": "默认限制",
+    "ratio": "最大限制/请求比率"
+  },
+  "actions": {
+    "detail": "详情",
+    "yaml": "YAML",
+    "operation": "操作",
+    "modify": "修改",
+    "editLabel": "编辑标签",
+    "editAnnotation": "编辑注解",
+    "delete": "删除",
+    "deleteConfirm": "删除{{resource}}",
+    "deleteWarning": "删除{{resource}}后将无法恢复，请谨慎操作。",
+    "deleteConfirmMessage": "确定删除{{resource}} {{name}} 吗？",
+    "deleteNamespaceWarning": "删除{{resource}}后将无法恢复，同时会删除namespace下的所有pod、服务和其他资源，请谨慎操作。"
+  },
+  "messages": {
+    "deleteSuccess": "删除成功！请手动刷新",
+    "getCpuMemoryFailed": "获取命名空间的内存&CPU失败: {{reason}}"
+  }
+}

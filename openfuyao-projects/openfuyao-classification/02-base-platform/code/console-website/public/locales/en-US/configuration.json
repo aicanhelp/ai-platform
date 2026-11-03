@@ -1,0 +1,53 @@
+{
+  "module": {
+    "title": "Config & Secrets",
+    "description": "Manage configuration and secret resources"
+  },
+  "configMap": {
+    "title": "ConfigMap",
+    "create": "Create ConfigMap",
+    "name": "Name",
+    "namespace": "Namespace",
+    "data": "Data",
+    "key": "Key",
+    "value": "Value",
+    "created": "Created"
+  },
+  "secret": {
+    "title": "Secret",
+    "create": "Create Secret",
+    "name": "Name",
+    "namespace": "Namespace",
+    "type": "Type",
+    "data": "Data",
+    "dockerConfig": "Docker Config",
+    "tls": "TLS Certificate",
+    "opaque": "Opaque",
+    "basicAuth": "Basic Auth",
+    "created": "Created"
+  },
+  "actions": {
+    "detail": "Details",
+    "yaml": "YAML",
+    "operation": "Operation",
+    "modify": "Modify",
+    "editLabel": "Edit Label",
+    "editAnnotation": "Edit Annotation",
+    "delete": "Delete",
+    "deleteConfirm": "Delete {{resource}}",
+    "deleteWarning": "The {{resource}} cannot be recovered after deletion, please proceed with caution.",
+    "deleteConfirmMessage": "Are you sure you want to delete {{resource}} {{name}}?"
+  },
+  "info": {
+    "basicInfo": "Basic Info",
+    "labels": "Labels: ",
+    "annotations": "Annotations: ",
+    "countZero": "0",
+    "data": "Data"
+  },
+  "fields": {
+    "name": "Name: ",
+    "namespace": "Namespace: ",
+    "createdAt": "Created: "
+  }
+}

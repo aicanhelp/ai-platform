@@ -1,0 +1,35 @@
+template:
+  spec:
+    serviceAccountName: rsg-sa
+    volumes:
+      - name: webhook-certs
+        secret:
+          secretName: webhook-server-cert
+    containers:
+      - name: resource-scaling-group
+        image: cr.openfuyao.cn/openfuyao/resource-scaling-group:latest
+        imagePullPolicy: IfNotPresent
+        args:
+          - --metrics-bind-address=:8443
+          - --health-probe-bind-address=:8081
+          - --leader-elect
+        ports:
+          - name: webhook-server
+            containerPort: 9443
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        volumeMounts:
+          - name: webhook-certs
+            mountPath: /tmp/k8s-webhook-server/serving-certs
+            readOnly: true

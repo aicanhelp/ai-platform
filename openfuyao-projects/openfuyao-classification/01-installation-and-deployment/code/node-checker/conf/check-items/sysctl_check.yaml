@@ -1,0 +1,43 @@
+name: sysctl_check
+kind: kv-checker
+doc: |
+  Check whether the sysctl configuration meets the system requirements.
+  Principle: Run the "sysctl -a" command to get the current sysctl configuration.
+  Suggestion: If any item is not as expected, modify the configuration file in /etc/sysctl.d/ and restart the system.
+
+spec:
+  source: 
+    command: 
+    - sysctl -a
+  kvParser:
+    reSplitter: '='
+  subItems:
+    - name: vm.overcommit_memory
+      expect: 1
+      type: int
+      doc: This parameter controls whether the kernel will overcommit memory.
+    - name: vm.panic_on_oom
+      expect: 0
+      type: int
+      doc: This parameter controls whether the kernel will panic when out of memory. 
+    - name: kernel.panic
+      expect: 10
+      type: int
+      doc: This parameter controls the time in seconds to wait before rebooting the system when a panic occurs. 
+    - name: kernel.panic_on_oops
+      expect: 1
+      type: int
+      doc: This parameter controls whether the kernel will panic when an oops occurs. 
+    - name: kernel.keys.root_maxkeys
+      expect: 1000000
+      type: int
+      doc: This parameter controls the maximum number of keys that the root user can create. 
+    - name: kernel.keys.root_maxbytes
+      expect: 25000000
+      type: int
+      doc: This parameter controls the maximum number of bytes that the root user can create. 
+
+
+
+
+

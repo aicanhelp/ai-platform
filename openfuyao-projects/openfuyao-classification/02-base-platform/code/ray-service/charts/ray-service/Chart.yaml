@@ -1,0 +1,6 @@
+apiVersion: v2
+name: ray-service
+description: A backend service responsible for handling configuration related operations in the openfuyao rayservice.
+type: application
+version: 0.0.0-latest
+appVersion: latest

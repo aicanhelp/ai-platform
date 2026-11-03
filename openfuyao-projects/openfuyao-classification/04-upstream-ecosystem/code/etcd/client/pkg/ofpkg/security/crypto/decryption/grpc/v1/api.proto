@@ -1,0 +1,20 @@
+// To regenerate api.pb.go run hack/update-generated-decryption.sh
+syntax = "proto3";
+
+package v1;
+
+// DecryptionService defines APIs for remote Decryption provider
+service DecryptionService {
+  rpc DecryptCert(DecryptRequest) returns (DecryptResponse) {}
+  rpc DecryptSecret(DecryptRequest) returns (DecryptResponse) {}
+}
+
+// The data to be decrypted.
+message DecryptRequest {
+  bytes ciphertext = 1;
+}
+
+// The decrypted data.
+message DecryptResponse {
+  bytes plaintext = 1;
+}

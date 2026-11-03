@@ -1,0 +1,79 @@
+{{- if and .Values.webhooks.enabled (or .Values.certManager.enabled (not .Values.webhooks.certGenerator.enabled)) }}
+{{- $caBundle := .Values.webhooks.caBundle -}}
+{{- if and (not .Values.certManager.enabled) (eq $caBundle "") -}}
+{{- fail "Set webhooks.caBundle when webhooks.certGenerator.enabled is false (manual TLS), or enable certManager / certGenerator." -}}
+{{- end -}}
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: {{ include "infernex-bridge.fullname" . }}-mutating
+  labels:
+    app.kubernetes.io/name: {{ include "infernex-bridge.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  {{- if .Values.certManager.enabled }}
+  annotations:
+    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/{{ .Values.certManager.certificateName }}
+  {{- end }}
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      {{- if not .Values.certManager.enabled }}
+      caBundle: {{ required "webhook CA bundle is required when certManager.enabled=false" $caBundle | quote }}
+      {{- end }}
+      service:
+        name: webhook-service
+        namespace: {{ .Release.Namespace }}
+        path: /mutate-serving-kserve-io-v1alpha1-llminferenceservice
+    failurePolicy: Fail
+    name: mllminferenceservice.kb.io
+    rules:
+      - apiGroups:
+          - serving.kserve.io
+        apiVersions:
+          - v1alpha1
+          - v1alpha2
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - llminferenceservices
+    sideEffects: NoneOnDryRun
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: {{ include "infernex-bridge.fullname" . }}-validating
+  labels:
+    app.kubernetes.io/name: {{ include "infernex-bridge.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+  {{- if .Values.certManager.enabled }}
+  annotations:
+    cert-manager.io/inject-ca-from: {{ .Release.Namespace }}/{{ .Values.certManager.certificateName }}
+  {{- end }}
+webhooks:
+  - admissionReviewVersions:
+      - v1
+    clientConfig:
+      {{- if not .Values.certManager.enabled }}
+      caBundle: {{ required "webhook CA bundle is required when certManager.enabled=false" $caBundle | quote }}
+      {{- end }}
+      service:
+        name: webhook-service
+        namespace: {{ .Release.Namespace }}
+        path: /validate-infernex-infernex-io-v1alpha1-infernexservice
+    failurePolicy: Fail
+    name: vinfernexservice-v1alpha1.kb.io
+    rules:
+      - apiGroups:
+          - infernex.infernex.io
+        apiVersions:
+          - v1alpha1
+        operations:
+          - CREATE
+          - UPDATE
+        resources:
+          - infernexservices
+    sideEffects: None
+{{- end }}

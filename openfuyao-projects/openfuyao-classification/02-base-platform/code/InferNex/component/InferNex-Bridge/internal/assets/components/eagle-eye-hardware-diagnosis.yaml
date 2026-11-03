@@ -1,0 +1,67 @@
+template:
+  spec:
+    initContainers:
+      - name: wait-for-nats
+        image: busybox:1.36.1
+        imagePullPolicy: IfNotPresent
+        command:
+          - /bin/sh
+          - -c
+          - |
+            until nc -z nats.nats 4222; do
+              echo "Wait NATS service...";
+              sleep 3;
+            done;
+            echo "NATS service is ready!";
+    containers:
+      - name: eagle-eye-hardware-diagnosis
+        image: cr.openfuyao.cn/openfuyao/eagle-eye-hardware-diagnosis:latest
+        imagePullPolicy: IfNotPresent
+        env:
+          - name: MODULE_NAME
+            value: "hardware-diagnosis"
+        securityContext:
+          privileged: true
+          readOnlyRootFilesystem: true
+          runAsUser: 0
+          runAsGroup: 0
+        ports:
+          - name: diagnosis
+            containerPort: 8538
+        volumeMounts:
+          - name: log-hardware-diagnosis
+            mountPath: /var/log/hardware-diagnosis
+          - name: localtime
+            mountPath: /etc/localtime
+            readOnly: true
+          - name: ascend-driver
+            mountPath: /usr/local/Ascend/driver
+            readOnly: true
+          - name: ascend-dcmi
+            mountPath: /usr/local/dcmi
+            readOnly: true
+          - name: containerd
+            mountPath: /run/containerd
+            readOnly: true
+          - name: tmp
+            mountPath: /tmp
+    volumes:
+      - name: log-hardware-diagnosis
+        hostPath:
+          path: /var/log/hardware-diagnosis
+          type: DirectoryOrCreate
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      - name: ascend-driver
+        hostPath:
+          path: /usr/local/Ascend/driver
+      - name: ascend-dcmi
+        hostPath:
+          path: /usr/local/dcmi
+      - name: containerd
+        hostPath:
+          path: /run/containerd
+      - name: tmp
+        hostPath:
+          path: /tmp

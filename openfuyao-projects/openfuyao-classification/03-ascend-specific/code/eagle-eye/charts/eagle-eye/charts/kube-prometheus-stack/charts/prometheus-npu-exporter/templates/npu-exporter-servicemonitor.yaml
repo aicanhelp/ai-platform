@@ -1,0 +1,24 @@
+{{- if eq (include "prometheus.installed" .) "false" }}
+{{- if eq (include "npu.exporter.installed" .) "false" }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ .Release.Name }}-npu-exporter
+  namespace: {{ template "kube-prometheus-stack.namespace" . }}
+  labels:
+    app: {{ .Release.Name }}-npu-exporter
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app: npu-exporter-svc
+  endpoints:
+    - port: http
+      interval: 10s
+      path: /metrics
+      targetPort: 8082
+  namespaceSelector:
+    matchNames:
+      - npu-exporter
+{{- end }}
+{{- end }}

@@ -1,0 +1,87 @@
+# Default values for console-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+images:
+  core:
+    repository: cr.openfuyao.cn/openfuyao/console-service
+    tag: latest
+    pullPolicy: Always
+  kubectl:
+    repository: cr.openfuyao.cn/openfuyao/kubectl-openfuyao
+    tag: latest
+
+thirdPartyImages:
+  busyBox:
+    repository: hub.oepkgs.net/openfuyao/busybox
+    tag: 1.36.1
+
+# Service networking: PreferDualStack degrades safely to the cluster default
+# family on single-stack clusters. Set ipFamilies explicitly only when needed,
+# e.g. [IPv6, IPv4] for IPv6-first planes or [IPv4] to pin IPv4.
+service:
+  ipFamilyPolicy: PreferDualStack
+  # ipFamilies:
+  #   - IPv6
+  #   - IPv4
+
+config:
+  enableHttps: true
+  insecureSkipVerify: false
+  tlsCert: |
+    -----BEGIN CERTIFICATE-----
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    -----END CERTIFICATE-----
+  tlsKey: |
+    -----BEGIN PRIVATE KEY-----
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    -----END PRIVATE KEY-----
+  rootCA: |
+    -----BEGIN CERTIFICATE-----
+    XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+    -----END CERTIFICATE-----
+
+symmetricKey:
+  tokenKey:
+  secretKey:
+
+oauthClient:
+  # clientID请输入base64编码后的数据
+  clientID: "Y29uc29sZQ=="
+  # clientSecret生成方式为 openssl rand -base64 32
+  clientSecret: "loI8mEPaPriZw7TdDnZDT5YRY5BB2kaTVkJn+dI0qKw="
+
+# Component hosts use cluster DNS FQDNs so CoreDNS can return AAAA on IPv6 planes.
+# Prefer DNS over literal IPs; if a literal IPv6 must be used, bracket it (e.g. http://[2001:db8::1]:80).
+serverHost:
+  localHarbor: "http://local-harbor.openfuyao-system.svc.cluster.local"
+  officialHarbor: "https://cr.openfuyao.cn"
+  oauthServer: "http://oauth-server.openfuyao-system.svc.cluster.local:9096"
+  consoleService: "http://console-service.openfuyao-system.svc.cluster.local:80"
+  consoleWebsite: "http://console-website.openfuyao-system.svc.cluster.local:80"
+  alertManager: "http://alertmanager-main.monitoring.svc.cluster.local:9093"
+  monitoring: "http://monitoring-service.openfuyao-system.svc.cluster.local:80"
+  applicationManagement: "http://application-management-service.openfuyao-system.svc.cluster.local"
+  marketplace: "http://marketplace-service.openfuyao-system.svc.cluster.local"
+  pluginManagement: "http://plugin-management-service.openfuyao-system.svc.cluster.local"
+  userManagement: "http://user-management-operator.openfuyao-system.svc.cluster.local:80"
+  webTerminal: "http://web-terminal-service.openfuyao-system.svc.cluster.local:9072"
+
+localHarbor:
+  chartLimit: 200
+
+ingress:
+  limitConnections: 100
+  limitRPS: 1000
+  limitBurst: 5
+  limitBurstMultiplier: 1
+  secretName:
+  sslProtocols: TLSv1.3
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+  limits:
+    cpu: 500m
+    memory: 500Mi

@@ -1,0 +1,21 @@
+#apiVersion: v1
+#kind: Service
+#metadata:
+#  name: promtail-clusterip-service
+#  namespace: loki
+#  labels:
+#    app.kubernetes.io/name: promtail
+#    app.kubernetes.io/instance: loki
+#spec:
+#  type: ClusterIP
+#  ports:
+#    - name: http-metrics
+#      port: 3101
+#      protocol: TCP
+#    - name: tcp-syslog
+#      port: 1514
+#      targetPort: 1514
+#      protocol: TCP
+#  selector:
+#    app.kubernetes.io/name: promtail
+#    app.kubernetes.io/instance: loki

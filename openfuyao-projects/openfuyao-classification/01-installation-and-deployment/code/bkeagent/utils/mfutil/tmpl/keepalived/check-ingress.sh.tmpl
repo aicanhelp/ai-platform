@@ -1,0 +1,13 @@
+#!/bin/sh
+errorExit() {
+    echo "*** $*" 1>&2
+    exit 1
+}
+
+curl --silent --max-time 2 --connect-timeout 10 -s http://localhost:10254/healthz || errorExit "Error GET https://localhost:10254/healthz"
+curl --silent --max-time 2 --connect-timeout 10 -s http://localhost:9014/healthz || errorExit "Error GET https://localhost:9014/health"
+
+if ip addr | grep -q {{ .vip }}; then
+    curl --silent --max-time 2 --connect-timeout 10 -s http://localhost:10254/healthz || errorExit "Error GET https://localhost:10254/healthz"
+    curl --silent --max-time 2 --connect-timeout 10 -s http://localhost:9014/healthz || errorExit "Error GET https://localhost:9014/health"
+fi

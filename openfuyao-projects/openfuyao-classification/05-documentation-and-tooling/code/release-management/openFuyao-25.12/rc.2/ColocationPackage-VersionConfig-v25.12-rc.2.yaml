@@ -1,0 +1,54 @@
+registry:
+  imageAddress: cr.openfuyao.cn/openfuyao/registry:2.8.1
+  architecture:
+    - amd64
+    - arm64
+repos:
+  - architecture: # openfuyao colocation 扩展组件
+      - amd64
+      - arm64
+    needDownload: true
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao
+        targetRepo: openfuyao
+        images:
+          - name: colocation-service
+            tag:
+              - 1.0.1
+          - name: colocation-website
+            tag:
+              - 1.0.1
+          - name: colocation-overquota-agent
+            tag:
+              - 1.0.1
+          - name: colocation-manager
+            tag:
+              - 1.0.1
+          - name: oauth-proxy
+            tag:
+              - 1.0.1
+          - name: rubik
+            tag:
+              - 2.0.1-r1
+          - name: busybox
+            tag:
+              - 1.36.1
+      - sourceRepo: docker.io
+        targetRepo: /
+        images:
+          - name: library/busybox
+            tag:
+              - 1.35
+      - sourceRepo: registry.k8s.io
+        targetRepo: /
+        images:
+          - name: nfd/node-feature-discovery
+            tag:
+              - v0.17.3
+rpms:
+debs: []
+files: []
+charts:
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/charts/releases/download/
+    files:
+      - fileName: colocation-package-1.0.1.tgz

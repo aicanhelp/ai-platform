@@ -1,0 +1,32 @@
+inferenceExtension:
+  pluginsConfigFile: default-plugins.yaml
+  routing:
+    deploymentMode: aggregate
+    profile: prediction
+    tokenizer:
+      model: Qwen/Qwen3-8B
+      socketPath: /tmp/tokenizer/tokenizer-uds.socket
+    requestTracking:
+      storeName: hermes-inflight
+      persistence:
+        enabled: false
+        flushThreshold: 100
+        outputPath: /tmp/hermes-inflight/completed.jsonl
+    cacheIndexer:
+      address: http://cache-indexer-service:8080
+      blockSize: 128
+    npuExporter:
+      exporterNamespace: npu-exporter
+      exporterPodLabelSelector: app=npu-exporter
+      exporterPort: 8082
+      path: /metrics
+      cacheTTL: 500ms
+      scrapeTimeout: 1s
+      staleAfter: 5s
+  prediction:
+    enabled: true
+    # Set targetModel/modelVersion/modelVolume to load a real bundle
+    # (examples/prediction-model/README.md).
+    socketPath: /var/run/hermes/prediction.sock
+    timeout: 1s
+    maxBatchSize: 128

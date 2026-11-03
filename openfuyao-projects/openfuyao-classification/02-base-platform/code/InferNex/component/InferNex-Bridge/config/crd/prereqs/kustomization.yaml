@@ -1,0 +1,4 @@
+resources:
+  - ../../../chart/infernex-bridge/crds/autoscaling.openfuyao.com_resourcescalinggroups.yaml
+  - ../../../chart/infernex-bridge/crds/tidal.io_tidals.yaml
+  - ../../../chart/infernex-bridge/crds/elasticscaler.io_elasticscalers.yaml

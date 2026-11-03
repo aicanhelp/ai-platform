@@ -1,0 +1,6 @@
+name: common-modules
+type: public
+description: '公共模块仓库，用于存放可复用的框架组件，供其他项目引用。'
+branches:
+  - name: main
+    type: protected

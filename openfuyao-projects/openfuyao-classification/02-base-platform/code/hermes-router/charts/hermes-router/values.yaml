@@ -1,0 +1,302 @@
+#############################################
+# Copyright (c) 2024 Huawei Technologies Co., Ltd.
+# openFuyao is licensed under Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#         http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the Mulan PSL v2 for more details.
+#############################################
+
+# Condition anchor for parent chart toggle.
+# A parent chart (e.g. infernex) wires this via its Chart.yaml dependency:
+#   dependencies:
+#     - name: hermes-router
+#       condition: hermes-router.enabled
+# Setting `hermes-router.enabled: false` in the parent skips rendering entirely.
+# Standalone installs of this chart can ignore the field.
+enabled: true
+
+images:
+  hermes-router:
+    repository: cr.openfuyao.cn/openfuyao/hermes-router
+    tag: latest
+    pullPolicy: IfNotPresent
+  hermes-router-tokenizer:
+    repository: cr.openfuyao.cn/openfuyao/hermes-router-tokenizer
+    tag: latest
+    pullPolicy: IfNotPresent
+  hermes-router-prediction:
+    repository: cr.openfuyao.cn/openfuyao/hermes-router-prediction
+    tag: latest
+    pullPolicy: IfNotPresent
+
+global:
+  modelName: "Qwen/Qwen3-8B"
+  image:
+    # Optional override for all chart-managed container imagePullPolicy values.
+    pullPolicy: ""
+
+inferenceExtension:
+  replicas: 1
+  podSecurityContext:
+    runAsUser: 65532
+    runAsGroup: 65532
+  extProcPort: 9002
+  failureMode: "FailOpen"
+  env: []
+  pluginsConfigFile: "default-plugins.yaml"
+  routing:
+    deploymentMode: pd
+    # Supported profiles: "" (disabled), random, kv-cache-aware, bucket (pd only),
+    # prediction, decode-first (pd only).
+    profile: kv-cache-aware
+    pd:
+      pdLabelName: openfuyao.com/pdRole
+      pdGroupLabelName: openfuyao.com/pdGroupID
+      prefillValue: prefill
+      decodeValue: decode
+      leaderValue: leader
+    tokenizer:
+      # Provide a tokenizer backend on this UDS path, for example by enabling
+      # inferenceExtension.tokenizer in an environment-specific override.
+      model: Qwen/Qwen3-8B
+      socketPath: /tmp/tokenizer/tokenizer-uds.socket
+      # tokenizerSource: /models/glm-base-tok   # set only when the tokenizer
+      # source differs from model (quantized/renamed served models). Empty
+      # falls back to model.
+      # initTimeout: 2m        # per-attempt Initialize RPC deadline (Go duration string)
+      # initRetries: 2         # extra retries after the first failed attempt; 0 = single attempt
+    kvCacheAware:
+      prefillKVUsageWeight: 1.0
+      prefillPrefixWeight: 1.0
+      prefillQueueWeight: 1.0
+      prefillInflightWeight: 1.0
+      decodeRunningWeight: 1.0
+      decodeKVUsageWeight: 1.0
+      decodeQueueWeight: 1.0
+      decodeInflightWeight: 1.0
+      prefillScoreWeight: 1.0
+      decodeScoreWeight: 1.0
+    requestTracking:
+      storeName: hermes-inflight
+      persistence:
+        enabled: false
+        flushThreshold: 100
+        outputPath: /tmp/hermes-inflight/completed.jsonl
+    cacheIndexer:
+      address: http://cache-indexer-service:8080
+      blockSize: 128
+      prefill:
+        l1Weight: 0.7
+        l3Weight: 0.3
+      decode:
+        l1Weight: 1.0
+        l3Weight: 0.0
+    decodeFirst:
+      prefillDecider:
+        # Supported types: always-disagg, prefix-based.
+        type: prefix-based
+        minHitRatio: 0.8
+        maxUncachedTokens: 128
+      decodeKVCacheAware:
+        prefixWeight: 1.0
+        runningWeight: 1.0
+        kvUsageWeight: 1.0
+        queueWeight: 1.0
+        inflightWeight: 1.0
+  # Additional EPP container ports.
+  extraContainerPorts: []
+  # Additional EPP service ports.
+  extraServicePorts: []
+  extraContainers: []
+  volumes: []
+  volumeMounts: []
+  # Command-line flags passed to EPP.
+  flags:
+    v: 1
+  affinity: {}
+  tolerations: []
+  # EPP main container resources.
+  # Defaults inherited from upstream GIE scale testing: requests sized for
+  # standard built-in scheduling plugins, p90 scheduler latency within 100ms.
+  # CPU limit intentionally unset so the scheduler can burst across all node
+  # CPUs under load spikes. Memory limit caps blast radius of leaks.
+  # Hermes Router adds tokenizer/prediction sidecars on top of these baselines;
+  # profile with pprof (https://pkg.go.dev/net/http/pprof) and right-size for
+  # your workload when adding heavy plugins.
+  resources:
+    requests:
+      cpu: "4"
+      memory: 8Gi
+    limits:
+      memory: 16Gi
+  sidecar:
+    enabled: false
+  tokenizer:
+    enabled: true
+    # routing.tokenizer.socketPath defaults to this socket when the sidecar is enabled.
+    socketPath: /tmp/tokenizer/tokenizer-uds.socket
+    provider: huggingface
+    # HTTP /healthz port. Matches sidecar DEFAULT_HEALTH_PORT and the kserve
+    # scheduler preset. Set to 0 to disable the endpoint and omit probes.
+    healthPort: 8082
+    # Shallow probes: 200 once HTTP serves, not after tokenizer Initialize.
+    # Use port name "health" so probes follow healthPort. Set a probe to null
+    # to omit it.
+    startupProbe:
+      httpGet:
+        path: /healthz
+        port: health
+      periodSeconds: 2
+      timeoutSeconds: 1
+      failureThreshold: 30
+    livenessProbe:
+      httpGet:
+        path: /healthz
+        port: health
+      periodSeconds: 10
+      timeoutSeconds: 1
+      failureThreshold: 3
+    readinessProbe:
+      httpGet:
+        path: /healthz
+        port: health
+      periodSeconds: 5
+      timeoutSeconds: 1
+      failureThreshold: 3
+    extraArgs: []
+    extraEnv: []
+    # Extra tokenizer-sidecar-only mounts. Use this when you want to mount a
+    # hostPath or PVC into the tokenizer container without affecting the main
+    # EPP container. If TOKENIZER_CACHE_DIR is not set here, the sidecar image
+    # default remains in effect: /.cache/huggingface/hub.
+    volumeMounts:
+      - name: tokenizer-cache
+        mountPath: /.cache/huggingface/hub
+    # Extra tokenizer-sidecar pod volumes. Use this for tokenizer-local cache
+    # or model artifacts without routing them through the main EPP container.
+    volumes:
+      - name: tokenizer-cache
+        hostPath:
+          path: /home/llm_cache/huggingface/hub
+          type: Directory
+    # Tokenizer sidecar resources. The CPU *limit* is what matters: the sidecar
+    # reads the cgroup CPU quota (set by limits.cpu, NOT requests.cpu) to
+    # auto-size its tokenizer thread pool to one worker thread per core. Always
+    # set a CPU limit so the pool matches the cores actually granted. This is a
+    # co-located sidecar, so size the node for the EPP container + this together.
+    resources:
+      requests:
+        cpu: "4"
+        memory: 2Gi
+      limits:
+        cpu: "4"
+        memory: 4Gi
+    # Tokenizer thread-pool size (parallel-tokenize worker threads, excluding the
+    # event-loop thread). When unset it is auto-derived from resources.limits.cpu
+    # (one worker per core), the measured sweet spot. Set an integer to override.
+    # threadPoolSize: 4
+  prediction:
+    enabled: false
+    socketPath: /var/run/hermes/prediction.sock
+    # predictionMode: "active" routes on predicted latency and requires the
+    # prediction sidecar (enabled: true). "shadow" only collects PredictionInput
+    # training data and routes via the snapshot fallback; pair it with
+    # enabled: false to bootstrap a dataset with no prediction sidecar at all.
+    predictionMode: active
+    timeout: 1s
+    maxBatchSize: 128
+    # Scorer weights passed to prediction-scorer (defaults match plugin.go).
+    ttftWeight: 0.8
+    tpotWeight: 0.2
+    kvWeight: 1.0
+    queueWeight: 1.0
+    prefixWeight: 1.0
+    inflightWeight: 1.0
+    # Set targetModel+modelVersion+modelVolume to load a bundle from
+    # <artifactRoot>/<targetModel>/<modelVersion>/ (must match manifest.json).
+    # Example bundle: examples/prediction-model/ (Qwen/Qwen3-32B / aggregate-Qwen-Qwen3-32B).
+    targetModel: ""
+    modelVersion: ""
+    # Bound the latency-critical predictor. Leaving resources empty makes it
+    # BestEffort: first to be CPU-throttled and OOM-killed under node pressure,
+    # which pushes Predict past its timeout and forces routing fallback. The
+    # OpenMP cap matters as much as the limit: an uncapped booster spawns one
+    # thread per node core and oversubscribes the cgroup. K=2 predict workers x
+    # OMP_NUM_THREADS=2 = ~4 busy threads, matched to the 4-core limit so the
+    # model's internal threads do not fight the worker pool.
+    resources:
+      requests:
+        cpu: "2"
+        memory: 1Gi
+      limits:
+        cpu: "4"
+        memory: 2Gi
+    env:
+      - name: OMP_NUM_THREADS
+        value: "2"
+    # The bundle is mounted at a fixed in-pod path by the shared chart helper, so
+    # supply only the volume SOURCE here (PVC / hostPath / CSI) — not a mountPath.
+    # The bundle must be laid out as <targetModel>/<modelVersion>/ under the volume
+    # root. Left empty it falls back to an empty no-op volume; pair that with
+    # predictionMode: shadow. Example:
+    #   modelVolume:
+    #     persistentVolumeClaim:
+    #       claimName: hermes-models
+    modelVolume: {}
+  monitoring:
+    interval: "10s"
+    prometheus:
+      enabled: false
+      auth:
+        enabled: true
+        secretName: inference-gateway-sa-metrics-reader-secret
+      extraLabels: {}
+  tracing:
+    enabled: false
+    otelExporterEndpoint: "http://localhost:4317"
+    sampling:
+      sampler: "parentbased_traceidratio"
+      samplerArg: "0.1"
+  latencyPredictor:
+    enabled: false
+  metricsDataSource:
+    scheme: "http"
+    path: "/metrics"
+    insecureSkipVerify: true
+
+inferencePool:
+  # name: "vllm-qwen-qwen3-8b"
+  targetPorts:
+    - number: 8000
+  modelServerType: vllm
+  modelServerProtocol: http
+  parser: ""
+  apiVersion: inference.networking.k8s.io/v1
+  # modelServers:
+  #   matchLabels:
+  #     openfuyao.com/model: qwen-qwen3-8b
+
+provider:
+  name: istio
+  istio:
+    # DestinationRule apiVersion.
+    # Empty/unset defaults to "networking.istio.io/v1" (GA from Istio 1.22+).
+    # Override to "networking.istio.io/v1beta1" when targeting Istio <1.22.
+    # EnvoyFilter (used by retryConfig) stays on v1alpha3 in all cases —
+    # Istio has no GA channel for EnvoyFilter.
+    apiVersion: ""
+    destinationRule:
+      host: ""
+      trafficPolicy: {}
+    retryConfig:
+      enabled: false
+      retryOn: "connect-failure,refused-stream,unavailable,cancelled,retriable-status-codes,5xx,reset"
+      numRetries: 3
+
+httpRoute:
+  inferenceGatewayName: "inference-gateway"
+  requestTimeout: "300s"

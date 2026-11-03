@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: numaadj
+  namespace: {{ .Values.namespace.backend }}
+  labels:
+    app: numaadj
+spec:
+  selector:
+    matchLabels:
+      app: numaadj
+  template:
+    metadata:
+      labels:
+        app: numaadj
+    spec:
+      hostPID: true
+      hostNetwork: true
+      serviceAccountName: scheduler-config
+      volumes:
+        - name: kubelet-config
+          hostPath:
+            path: /var/lib/kubelet
+            type: Directory
+        - name: kubelet-config-bke
+          hostPath:
+            path: /etc/kubernetes/
+            type: Directory
+        - name: host-mnt
+          hostPath:
+            path: /
+      containers:
+        - name: scheduler
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          securityContext:
+            privileged: true
+            capabilities:
+              add: [ "SYS_ADMIN" ]
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: RUN_MODE
+              value: "DAEMONSET"
+            - name: METRICS_PORT
+              value: "{{ .Values.daemonset.metricsPort }}"
+            - name: HEALTH_PROBE_PORT
+              value: "{{ .Values.daemonset.healthProbePort }}"
+          volumeMounts:
+            - name: kubelet-config
+              mountPath: /var/lib/kubelet
+              readOnly: false
+            - name: kubelet-config-bke
+              mountPath: /etc/kubernetes/
+              readOnly: false
+            - name: host-mnt
+              mountPath: /mnt
+              readOnly: false

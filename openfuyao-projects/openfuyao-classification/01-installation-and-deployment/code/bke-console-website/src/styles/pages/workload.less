@@ -1,0 +1,100 @@
+@import '@/styles/common.less';
+
+.@{container-prefix}-tabs {
+  width: auto;
+}
+
+.@{container-prefix}-tabs-tab {
+  margin: 0 0 0 64px !important;
+  font-size: 16px;
+  color: @title-color;
+  padding-bottom: 15px;
+}
+
+.@{container-prefix}-tabs-nav {
+  margin: 0px !important;
+  padding-left: 32px;
+  padding-top: 18px;
+  box-shadow: inset 0px -1px 0px rgba(229, 229, 229, 1);
+  background-color: @page-container-color;
+}
+
+.@{container-prefix}-tabs-tab:nth-child(1) {
+  margin: 0 0 0 0 !important;
+}
+
+.tab_container {
+  margin: 20px 32px;
+  background: @page-container-color;
+  min-height: calc(100vh - 196px); //减去导航栏 命名空间选择器 面包屑 标题 tab 容器margin
+  display: flex;
+  flex-direction: column;
+
+  .pod_searchForm {
+    padding: 32px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .pod_search_input {
+      width: 300px;
+      height: 32px;
+      border-radius: @button-radius;
+    }
+
+    .@{container-prefix}-input-affix-wrapper {
+      border-radius: @button-radius !important;
+    }
+
+    .@{container-prefix}-input-suffix {
+      svg {
+        width: 16px;
+        height: 17px;
+        color: #686868;
+      }
+    }
+  }
+}
+
+.userManageMinHeight {
+  min-height: calc(100vh - 158px) !important;
+}
+
+.pop_modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  button {
+    color: @button-normal-color;
+  }
+
+  button:hover {
+    color: @button-hover-color !important;
+  }
+}
+
+@media screen and (min-width: 1680px) and (max-width: 1920px) {
+  .alermForm {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 32px;
+  }
+}
+
+@media screen and (min-width: 1440px) and (max-width: 1678px) {
+  .alermForm {
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 32px;
+  }
+}
+
+@media screen and (min-width:1280px) and (max-width: 1439px) {
+  .alermForm {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 32px;
+  }
+}

@@ -1,0 +1,31 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: colocation-management
+    app.kubernetes.io/managed-by: kustomize
+  name: colocation-management-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: colocation-management-role
+subjects:
+- kind: ServiceAccount
+  name: colocation-management-account
+  namespace: {{ .Values.namespace | default .Release.Namespace }}
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: colocation-management
+  name: colocation-manager-cert-cleanup-rolebinding
+subjects:
+  - kind: ServiceAccount
+    name: colocation-manager-cert-cleanup
+    namespace: {{ .Values.namespace | default .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: colocation-manager-cert-cleanup-role
+  apiGroup: rbac.authorization.k8s.io

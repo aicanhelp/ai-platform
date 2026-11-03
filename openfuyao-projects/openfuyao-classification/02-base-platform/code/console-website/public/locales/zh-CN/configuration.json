@@ -1,0 +1,53 @@
+{
+  "module": {
+    "title": "配置与密钥",
+    "description": "管理配置和密钥资源"
+  },
+  "configMap": {
+    "title": "ConfigMap",
+    "create": "创建ConfigMap",
+    "name": "名称",
+    "namespace": "命名空间",
+    "data": "数据",
+    "key": "键",
+    "value": "值",
+    "created": "创建时间"
+  },
+  "secret": {
+    "title": "Secret",
+    "create": "创建Secret",
+    "name": "名称",
+    "namespace": "命名空间",
+    "type": "种类",
+    "data": "数据",
+    "dockerConfig": "Docker配置",
+    "tls": "TLS证书",
+    "opaque": "Opaque",
+    "basicAuth": "基本认证",
+    "created": "创建时间"
+  },
+  "actions": {
+    "detail": "详情",
+    "yaml": "YAML",
+    "operation": "操作",
+    "modify": "修改",
+    "editLabel": "修改标签",
+    "editAnnotation": "修改注解",
+    "delete": "删除",
+    "deleteConfirm": "删除{{resource}}",
+    "deleteWarning": "删除{{resource}}后将无法恢复，请谨慎操作。",
+    "deleteConfirmMessage": "确定删除{{resource}} {{name}} 吗？"
+  },
+  "info": {
+    "basicInfo": "基本信息",
+    "labels": "标签：",
+    "annotations": "注解：",
+    "countZero": "0个",
+    "data": "数据"
+  },
+  "fields": {
+    "name": "名称：",
+    "namespace": "命名空间：",
+    "createdAt": "创建时间："
+  }
+}

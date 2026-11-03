@@ -1,0 +1,9 @@
+name: ping_check
+kind: ping
+doc: 模拟检测目标Ip是否可以联通, 具体目标通过-p 参数输入
+params:
+  - name: ping-addr
+    desc: 检查目标Ip是否可以联通
+    multi: true
+spec:
+  targets: '{{ping-addr}}'

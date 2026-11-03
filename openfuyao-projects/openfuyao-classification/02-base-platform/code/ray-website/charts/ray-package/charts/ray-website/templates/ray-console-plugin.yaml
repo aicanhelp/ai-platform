@@ -1,0 +1,26 @@
+{{- if .Values.openFuyao }}
+apiVersion: console.openfuyao.com/v1beta1
+kind: ConsolePlugin
+metadata:
+  name: ray
+spec:
+  pluginName: ray
+  displayName: "openFuyao Ray"
+  entrypoint: /container_platform
+  subPages:
+    - pageName: RayOverview
+      displayName: 概览
+    - pageName: RayCluster
+      displayName: RayCluster
+    - pageName: RayService
+      displayName: RayService
+    - pageName: RayJob
+      displayName: RayJob
+  backend:
+    type: Service
+    service:
+      name: ray-website
+      namespace: {{ .Release.Namespace }}
+      port: {{ .Values.service.port }}
+  enabled: true
+{{- end }}

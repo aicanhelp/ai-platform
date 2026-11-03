@@ -1,0 +1,32 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cleanup-cr
+  namespace: {{ .Values.namespace.backend }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  backoffLimit: 1
+  template:
+    spec:
+      serviceAccountName: rayservice-admission
+      restartPolicy: Never
+      containers:
+        - name: cleanup
+          image: cr.openfuyao.cn/openfuyao/bitnami/kubectl:1.28
+          securityContext:
+            runAsUser: 0 #65532
+            runAsGroup: 0 #65532
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Deleting CRs with label createby=openfuyao.com..."
+              echo "Checking auth:"
+              kubectl auth can-i delete rayclusters.ray.io
+              echo "Try deleting resources:"
+              kubectl get rayclusters.ray.io -A
+              kubectl delete rayclusters.ray.io --all-namespaces --selector kuberaycrd-createby=openfuyao.com
+              kubectl delete rayjobs.ray.io --all-namespaces --selector kuberaycrd-createby=openfuyao.com
+              kubectl delete rayservices.ray.io --all-namespaces --selector kuberaycrd-createby=openfuyao.com

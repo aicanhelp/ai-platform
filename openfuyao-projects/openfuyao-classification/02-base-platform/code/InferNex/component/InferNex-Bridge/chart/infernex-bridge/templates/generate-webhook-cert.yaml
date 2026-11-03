@@ -1,0 +1,241 @@
+{{- if and .Values.webhooks.enabled .Values.webhooks.certGenerator.enabled (not .Values.certManager.enabled) }}
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded, hook-failed, before-hook-creation
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded, hook-failed, before-hook-creation
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "update", "get", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": hook-succeeded, hook-failed, before-hook-creation
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded, hook-failed, before-hook-creation
+rules:
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["mutatingwebhookconfigurations", "validatingwebhookconfigurations"]
+    verbs: ["create", "get", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": hook-succeeded, hook-failed, before-hook-creation
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+    namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "infernex-bridge.fullname" . }}-generate-webhook-cert
+  namespace: {{ .Release.Namespace }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "2"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: {{ include "infernex-bridge.fullname" . }}-webhook-cert-gen
+      volumes:
+        - name: work
+          emptyDir: {}
+      initContainers:
+        - name: generator
+          image: '{{ list . "openssl" | include "helpers.image.name.pinned" }}'
+          imagePullPolicy: {{ include "infernex-bridge.image.pullPolicy" . }}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              set -eu
+              mkdir -p /work
+              openssl genrsa -out /work/ca.key 4096
+              openssl req -x509 -new -nodes -key /work/ca.key -sha256 -days 3650 -out /work/ca.crt \
+                -subj "/CN=infernex-bridge-webhook-ca"
+              openssl genrsa -out /work/tls.key 4096
+              cat > /work/server.conf <<EOF
+              [req]
+              distinguished_name = req_distinguished_name
+              req_extensions = v3_req
+              prompt = no
+
+              [req_distinguished_name]
+              CN = ${SERVICE_NAME}.${NAMESPACE}.svc
+
+              [v3_req]
+              keyUsage = keyEncipherment, dataEncipherment
+              extendedKeyUsage = serverAuth
+              subjectAltName = @alt_names
+
+              [alt_names]
+              DNS.1 = ${SERVICE_NAME}
+              DNS.2 = ${SERVICE_NAME}.${NAMESPACE}
+              DNS.3 = ${SERVICE_NAME}.${NAMESPACE}.svc
+              DNS.4 = ${SERVICE_NAME}.${NAMESPACE}.svc.cluster.local
+              EOF
+              openssl req -new -key /work/tls.key -out /work/server.csr -config /work/server.conf
+              openssl x509 -req -in /work/server.csr -CA /work/ca.crt -CAkey /work/ca.key -CAcreateserial \
+                -out /work/tls.crt -days 1095 -sha256 -extensions v3_req -extfile /work/server.conf
+              CA_BUNDLE=$(openssl base64 -A -in /work/ca.crt)
+              TLS_CRT_B64=$(openssl base64 -A -in /work/tls.crt)
+              TLS_KEY_B64=$(openssl base64 -A -in /work/tls.key)
+              cat > /work/secret.yaml <<SECRETEOF
+              apiVersion: v1
+              kind: Secret
+              metadata:
+                name: ${SECRET_NAME}
+                namespace: ${NAMESPACE}
+                labels:
+                  app.kubernetes.io/name: ${APP_NAME}
+                  app.kubernetes.io/instance: ${RELEASE_NAME}
+              type: kubernetes.io/tls
+              data:
+                tls.crt: ${TLS_CRT_B64}
+                tls.key: ${TLS_KEY_B64}
+              SECRETEOF
+              cat > /work/mutating.yaml <<MWCEOF
+              apiVersion: admissionregistration.k8s.io/v1
+              kind: MutatingWebhookConfiguration
+              metadata:
+                name: ${MWC_NAME}
+                labels:
+                  app.kubernetes.io/name: ${APP_NAME}
+                  app.kubernetes.io/instance: ${RELEASE_NAME}
+              webhooks:
+                - admissionReviewVersions:
+                    - v1
+                  clientConfig:
+                    caBundle: ${CA_BUNDLE}
+                    service:
+                      name: ${SERVICE_NAME}
+                      namespace: ${NAMESPACE}
+                      path: /mutate-serving-kserve-io-v1alpha1-llminferenceservice
+                  failurePolicy: Fail
+                  name: mllminferenceservice.kb.io
+                  rules:
+                    - apiGroups:
+                        - serving.kserve.io
+                      apiVersions:
+                        - v1alpha1
+                        - v1alpha2
+                      operations:
+                        - CREATE
+                        - UPDATE
+                      resources:
+                        - llminferenceservices
+                  sideEffects: NoneOnDryRun
+              MWCEOF
+              cat > /work/validating.yaml <<VWCEOF
+              apiVersion: admissionregistration.k8s.io/v1
+              kind: ValidatingWebhookConfiguration
+              metadata:
+                name: ${VWC_NAME}
+                labels:
+                  app.kubernetes.io/name: ${APP_NAME}
+                  app.kubernetes.io/instance: ${RELEASE_NAME}
+              webhooks:
+                - admissionReviewVersions:
+                    - v1
+                  clientConfig:
+                    caBundle: ${CA_BUNDLE}
+                    service:
+                      name: ${SERVICE_NAME}
+                      namespace: ${NAMESPACE}
+                      path: /validate-infernex-infernex-io-v1alpha1-infernexservice
+                  failurePolicy: Fail
+                  name: vinfernexservice-v1alpha1.kb.io
+                  rules:
+                    - apiGroups:
+                        - infernex.infernex.io
+                      apiVersions:
+                        - v1alpha1
+                      operations:
+                        - CREATE
+                        - UPDATE
+                      resources:
+                        - infernexservices
+                  sideEffects: None
+              VWCEOF
+          env:
+            - name: NAMESPACE
+              value: {{ .Release.Namespace | quote }}
+            - name: SECRET_NAME
+              value: {{ .Values.webhooks.tls.secretName | quote }}
+            - name: SERVICE_NAME
+              value: "webhook-service"
+            - name: MWC_NAME
+              value: {{ printf "%s-mutating" (include "infernex-bridge.fullname" .) | quote }}
+            - name: VWC_NAME
+              value: {{ printf "%s-validating" (include "infernex-bridge.fullname" .) | quote }}
+            - name: APP_NAME
+              value: {{ include "infernex-bridge.name" . | quote }}
+            - name: RELEASE_NAME
+              value: {{ .Release.Name | quote }}
+          volumeMounts:
+            - name: work
+              mountPath: /work
+      containers:
+        - name: kubectl-apply
+          image: '{{ list . "kubectl-openfuyao" | include "helpers.image.name.pinned" }}'
+          imagePullPolicy: {{ include "infernex-bridge.image.pullPolicy" . }}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              set -e
+              kubectl apply -f /work/secret.yaml
+              kubectl apply -f /work/mutating.yaml
+              kubectl apply -f /work/validating.yaml
+          volumeMounts:
+            - name: work
+              mountPath: /work
+{{- end }}

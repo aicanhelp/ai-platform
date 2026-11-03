@@ -1,0 +1,35 @@
+components:
+  enabled: true
+  volcano:
+    enabled: true
+    admission:
+      enabled: true
+    controllers:
+      enabled: true
+    scheduler:
+      enabled: true
+    crds:
+      enabled: true
+    webhooks:
+      enabled: true
+  resourceExporter:
+    enabled: true
+images:
+  resourceExporter:
+    repository: cr.openfuyao.cn/openfuyao/volcano/resource-exporter
+    tag: latest
+    pullPolicy: Always
+  vcWebhookManager:
+    repository: hub.oepkgs.net/openfuyao/volcanosh/vc-webhook-manager
+    tag: v1.9.0
+    pullPolicy: Always
+  vcControllerManager:
+    repository: hub.oepkgs.net/openfuyao/volcanosh/vc-controller-manager
+    tag: v1.9.0
+    pullPolicy: Always
+  vcScheduler:
+    repository: cr.openfuyao.cn/openfuyao/vc-scheduler
+    tag: latest
+    pullPolicy: Always
+namespace:
+  backend: volcano-system

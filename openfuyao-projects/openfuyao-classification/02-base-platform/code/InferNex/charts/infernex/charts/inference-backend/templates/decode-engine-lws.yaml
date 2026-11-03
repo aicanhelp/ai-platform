@@ -1,0 +1,229 @@
+{{- range .Values.services }}
+{{- if and .enabled (eq .mode "pd") }}
+{{- $dpSize := int (.pd.decode.dataParallelSize | default 1) }}
+{{- $dpLocal := int (.pd.decode.dataParallelSizeLocal | default 1) }}
+{{- $lwsSize := div $dpSize $dpLocal }}
+{{- $decodePrefixCachingEnabled := false }}
+{{- range .pd.decode.extraArgs | default list }}
+{{- $flag := regexReplaceAll "(=|\\s).*" (trim (toString .)) "" }}
+{{- if eq $flag "--enable-prefix-caching" }}
+{{- $decodePrefixCachingEnabled = true }}
+{{- end }}
+{{- end }}
+---
+apiVersion: leaderworkerset.x-k8s.io/v1
+kind: LeaderWorkerSet
+metadata:
+  namespace: {{ $.Release.Namespace }}
+  name: {{ include "vllm.instance.deploymentName" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) }}-decode
+  labels:
+    openfuyao.com/engine: vllm
+    openfuyao.com/model: {{ include "vllm.modelName.label" (dict "Values" $.Values) }}
+    openfuyao.com/pdRole: {{ include "vllm.pdRole.label" (dict "role" "decode" "Values" $.Values) }}
+    {{- if .pdGroupID }}
+    openfuyao.com/pdGroupID: {{ .pdGroupID }}
+    {{- end }}
+    {{- include "vllm.instance.labels" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) | nindent 4 }}
+spec:
+  replicas: {{ include "vllm.lwsReplicas" (dict "node" .pd.decode "default" 1) }}
+  leaderWorkerTemplate:
+    size: {{ $lwsSize }}
+    workerTemplate:
+      metadata:
+        annotations:
+          {{- if $.Values.global }}
+          checksum/config: {{ "vllm-config" | sha256sum }}
+          {{- end }}
+        labels:
+          openfuyao.com/engine: vllm
+          openfuyao.com/pdRole: {{ include "vllm.pdRole.label" (dict "role" "decode" "Values" $.Values) }}
+          openfuyao.com/model: {{ include "vllm.modelName.label" (dict "Values" $.Values) }}
+          {{- if .pdGroupID }}
+          openfuyao.com/pdGroupID: {{ .pdGroupID }}
+          {{- end }}
+          {{- if .pd.decode.tensorParallelSize }}
+          openfuyao.com/tpSize: {{ .pd.decode.tensorParallelSize | quote }}
+          {{- end }}
+          {{- if .pd.decode.dataParallelSize }}
+          openfuyao.com/dpSize: {{ .pd.decode.dataParallelSize | quote }}
+          {{- end }}
+          {{- include "vllm.instance.selectorLabels" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) | nindent 10 }}
+      spec:
+        {{- if $.Values.global.imagePullSecrets }}
+        imagePullSecrets:
+          {{- $.Values.global.imagePullSecrets | toYaml | nindent 10 }}
+        {{- end }}
+        {{- if or (and .kvTransferConfig .kvTransferConfig.mooncake) (and $.Values.global.autoDownloadModel $.Values.images.modelDownloader) $.Values.global.tracingEnabled }}
+        initContainers:
+        {{- if $.Values.global.tracingEnabled }}
+        - name: install-tracing
+          image: {{ $.Values.global.tracingImage.repository }}:{{ $.Values.global.tracingImage.tag }}
+          imagePullPolicy: {{ $.Values.global.image.pullPolicy | default "IfNotPresent" }}
+          command: ["cp", "-r", "/tracing-source/.", "/tracing-install/"]
+          volumeMounts:
+          - name: tracing-install
+            mountPath: /tracing-install
+        {{- end }}
+        {{- if and .kvTransferConfig .kvTransferConfig.mooncake }}
+        - name: mooncake-config-init
+          image: {{ include "vllm.yamlTool.image" $ | quote }}
+          command: ["/bin/sh", "-c"]
+          args:
+          - |
+            set -e
+            CONFIG_PATH="{{ .kvTransferConfig.mooncake.configPath | default "/app/mooncake.json" }}"
+            mkdir -p "$(dirname "$CONFIG_PATH")"
+            cat > /tmp/mooncake_config.tpl << 'EOF'
+{{- .kvTransferConfig.mooncake.config | default "" | nindent 14 }}
+            EOF
+            POD_IP_VALUE="${POD_IP:-0.0.0.0}"
+            sed "s/\$POD_IP/${POD_IP_VALUE}/g" /tmp/mooncake_config.tpl | yq eval - -o=json > "$CONFIG_PATH"
+          env:
+          {{- include "vllm.podEnv" . | nindent 10 }}
+          volumeMounts:
+          - name: mooncake-config
+            mountPath: {{ dir (.kvTransferConfig.mooncake.configPath | default "/app/mooncake.json") }}
+        {{- end }}
+        {{- if and $.Values.global.autoDownloadModel $.Values.images.modelDownloader }}
+        - name: huggingface-download
+          image: {{ include "vllm.modelDownloader.image" $ | quote }}
+          imagePullPolicy: {{ include "vllm.image.pullPolicy" $ }}
+          command:
+          - hf
+          - download
+          - {{ $.Values.global.modelName | quote }}
+          env:
+          {{- include "vllm.baseEnv" (dict "service" . "Values" $.Values) | nindent 10 }}
+          volumeMounts:
+          - name: rootcache
+            mountPath: /root/.cache
+            readOnly: false
+        {{- end }}
+        {{- end }}
+        containers:
+        - name: decode-engine
+          image: {{ include "vllm.image" $ | quote }}
+          imagePullPolicy: {{ include "vllm.image.pullPolicy" $ }}
+          command: ["/bin/bash", "-c"]
+          args:
+          - |
+            set -euo pipefail
+
+            {{- if $.Values.global.tracingEnabled }}
+            # Install tracing patch
+            /tracing-install/install.sh
+            {{- end }}
+
+            # PHYSICAL_DEVICES stands for the physical devices assigned to the container, use for vllm ascend 0.10.x
+            export PHYSICAL_DEVICES=$(ls /dev/davinci* 2>/dev/null | grep -o '[0-9]\+' | sort -n | paste -sd',' - || true)
+            # vLLM Ascend 0.18.0+ may ship without some bundled deps; ensure shared libs under /usr/local/lib are on the loader path.
+            export LD_LIBRARY_PATH="/usr/local/lib:${LD_LIBRARY_PATH:-}"
+
+            {{- include "vllm.dpParallelConfig" (dict "dpSize" $dpSize "dpLocal" $dpLocal "rpcPort" .pd.decode.dataParallelRpcPort) | nindent 12 }}
+            exec vllm serve {{ default $.Values.global.modelName $.Values.global.modelPath }} \
+              --served-model-name {{ $.Values.global.modelName }} \
+              {{- if $.Values.global.tracingEnabled }}
+              --otlp-traces-endpoint http://eagle-eye-tracing-collector.{{ $.Release.Namespace }}.svc.cluster.local:4317 \
+              {{- end }}
+              --port 8000 \
+              --tensor-parallel-size {{ .pd.decode.tensorParallelSize }} \
+              --pipeline-parallel-size {{ .pd.decode.pipelineParallelSize | default 1 }} \
+              ${DP_PARALLEL_FLAGS}{{- if or $decodePrefixCachingEnabled .kvTransferConfig .pd.decode.extraArgs }} \{{- end }}
+              {{- if $decodePrefixCachingEnabled }}
+              --kv-events-config '{"enable_kv_cache_events": true, "publisher":"zmq", "topic":"kv-events"}'{{- if or .kvTransferConfig .pd.decode.extraArgs }} \{{- end }}
+              {{- end }}
+              {{- if .kvTransferConfig }}
+              --kv-transfer-config '{{- include "vllm.kvTransferConfig.json" (dict "kvTransferConfig" .kvTransferConfig "service" . "nodeType" "decode") }}'{{- if .pd.decode.extraArgs }} \{{- end }}
+              {{- end }}
+              {{- if .pd.decode.extraArgs }}
+              {{- $extraArgs := .pd.decode.extraArgs }}
+              {{- range $index, $arg := $extraArgs }}
+              {{ $arg }}{{- if ne (add $index 1) (len $extraArgs) }} \{{- end }}
+              {{- end }}
+              {{- end }}
+          ports:
+          - name: decode-port
+            containerPort: 8000
+          - name: zmq-pub
+            containerPort: 5557
+          env:
+          {{- if $.Values.global.tracingEnabled }}
+          - name: OTEL_SERVICE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.name
+          - name: VLLM_ASCEND_TRACING_ENABLED
+            value: "1"
+          - name: VLLM_ASCEND_TRACING_LOG_LEVEL
+            value: "INFO"
+          {{- end }}
+          {{- include "vllm.baseEnv" (dict "service" . "Values" $.Values) | nindent 10 }}
+          {{- include "vllm.nodeEnv" (dict "nodeEnv" .pd.decode.env) | nindent 10 }}
+          {{- include "vllm.podEnv" . | nindent 10 }}
+          resources:
+            {{- include "vllm.decode.resources" (dict "service" . "Values" $.Values) | nindent 12 }}
+          volumeMounts:
+          {{- if $.Values.global.tracingEnabled }}
+          - name: tracing-install
+            mountPath: /tracing-install
+            readOnly: true
+          {{- end }}
+          {{- if and .kvTransferConfig .kvTransferConfig.mooncake }}
+          - name: mooncake-config
+            mountPath: {{ dir (.kvTransferConfig.mooncake.configPath | default "/app/mooncake.json") }}
+            readOnly: true
+          {{- end }}
+          {{- include "vllm.baseMounts" (dict "service" . "Values" $.Values) | nindent 10 }}
+          {{- if .pd.decode.volumeMounts }}
+          {{- .pd.decode.volumeMounts | toYaml | nindent 10 }}
+          {{- end }}
+          startupProbe:
+            httpGet:
+              path: /v1/models
+              port: decode-port
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 60
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: decode-port
+            periodSeconds: 10
+            timeoutSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /v1/models
+              port: decode-port
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+        volumes:
+        {{- if $.Values.global.tracingEnabled }}
+        - name: tracing-install
+          emptyDir: {}
+        {{- end }}
+        {{- if and .kvTransferConfig .kvTransferConfig.mooncake }}
+        - name: mooncake-config
+          emptyDir: {}
+        {{- end }}
+        {{- include "vllm.baseVolumes" (dict "service" . "Values" $.Values) | nindent 8 }}
+        {{- if .pd.decode.volumes }}
+        {{- .pd.decode.volumes | toYaml | nindent 8 }}
+        {{- end }}
+        {{- $nodeSelector := .pd.decode.nodeSelector }}
+        {{- with $nodeSelector }}
+        nodeSelector:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .pd.decode.tolerations }}
+        tolerations:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+        {{- with .affinity }}
+        affinity:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+{{- end }}
+{{- end }}

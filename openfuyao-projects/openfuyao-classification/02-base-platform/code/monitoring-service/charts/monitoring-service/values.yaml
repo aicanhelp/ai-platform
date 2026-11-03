@@ -1,0 +1,57 @@
+# Default values for monitoring-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+images:
+  busybox:
+    repository: hub.oepkgs.net/openfuyao/busybox
+    tag: 1.36.1
+  core:
+    repository: cr.openfuyao.cn/openfuyao/monitoring-service
+    pullPolicy: Always
+  oauth:
+    repository: cr.openfuyao.cn/openfuyao/oauth-proxy
+    pullPolicy: Always
+
+prometheus:
+  insecureSkipVerify: "true"
+  host: "http://prometheus-k8s.monitoring.svc:9090"
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+  limits:
+    cpu: 1
+    memory: 4Gi
+
+config:
+  httpServerConfig:
+    port: 9083
+    enableHttps: false
+    tlsCert: |
+      -----BEGIN CERTIFICATE-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END CERTIFICATE-----
+    tlsKey: |
+      -----BEGIN PRIVATE KEY-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END PRIVATE KEY-----
+    rootCA: |
+      -----BEGIN CERTIFICATE-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END CERTIFICATE-----
+
+enableOAuth: false			# 新添加
+
+oauthProxy:
+  containerPort: 9093
+  enableTLS: false
+  client:
+    id: "oauth-proxy"
+    secret: "SECRETTS"
+  urls:
+    host: "/"
+    loginURI: "/oauth2/oauth/authorize"
+    redeemURI: "/oauth2/oauth/token"
+    rootPrefix: "/"

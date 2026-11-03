@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: npu-operator-logcm
+data:
+  npu-operator.yaml: |
+    Level: info
+    EncoderType: console
+    Path: /var/log/npu-operator
+    FileName: root.log
+    MaxSize: 20
+    MaxBackups: 0
+    MaxAge: 7
+    LocalTime: false
+    Compress: true
+    OutMod: console

@@ -1,0 +1,34 @@
+{
+  "name": "NPU",
+  "version": "25.3.RC1",
+  "other": [
+    {
+      "310p_aarch64": {
+        "filename": "Ascend-hdk-310p-npu_25.3.rc1_linux-aarch64.zip",
+        "url": "https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Ascend%20HDK/Ascend%20HDK%2025.3.RC1/Ascend-hdk-310p-npu_25.3.rc1_linux-aarch64.zip",
+        "sha256": "d93e147fc4bbde985e42d55edac7dfaa9050b0c67d249406763f1a1165a88cdd"
+      }
+    },
+    {
+      "310p_x86_64": {
+        "filename": "Ascend-hdk-310p-npu_25.3.rc1_linux-x86-64.zip",
+        "url": "https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Ascend%20HDK/Ascend%20HDK%2025.3.RC1/Ascend-hdk-310p-npu_25.3.rc1_linux-x86-64.zip",
+        "sha256": "013b6144a08ce01d4f471ba3c7dcfef305c7b3b890da0a1c4f3650f34ba9d98b"
+      }
+    },
+    {
+      "910b_x86_64": {
+        "filename": "Ascend-hdk-910b-npu_25.3.rc1_linux-x86-64.zip",
+        "url": "https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Ascend%20HDK/Ascend%20HDK%2025.3.RC1/Ascend-hdk-910b-npu_25.3.rc1_linux-x86-64.zip",
+        "sha256": "6428514cc4d900557a7e468687aa9740d4fc3bf52681e840743e2c526cceea3d"
+      }
+    },
+    {
+      "910b_aarch64": {
+        "filename": "Ascend-hdk-910b-npu_25.3.rc1_linux-aarch64.zip",
+        "url": "https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/Ascend%20HDK/Ascend%20HDK%2025.3.RC1/Ascend-hdk-910b-npu_25.3.rc1_linux-aarch64.zip",
+        "sha256": "8bd5eba24ab456b5ddba1593e3161bc3981863b30ad2bdf73c8ad88e121c10c7"
+      }
+    }
+  ]
+}

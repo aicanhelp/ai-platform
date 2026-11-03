@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitoring-dashboard-website
+  namespace: monitoring-dashboard
+  labels:
+    app: monitoring-dashboard-website
+spec:
+  selector:
+    matchLabels:
+      app: monitoring-dashboard-website
+  template:
+    metadata:
+      labels:
+        app: monitoring-dashboard-website
+    spec:
+      {{- if .Values.enableOAuth}}
+      serviceAccountName: {{.Chart.Name}}
+      {{- end}}
+      containers:
+        - name: monitoring-dashboard-website
+          image: "{{ .Values.images.web.repository }}:{{ .Values.images.web.tag }}"
+          imagePullPolicy: {{.Values.images.web.pullPolicy}}
+          ports:
+            - name: http
+              containerPort: {{.Values.service.containerPort}}
+              protocol: TCP
+          volumeMounts:
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+        {{- if .Values.enableOAuth}}
+        - name: oauth-proxy
+          image: "{{ .Values.images.core.repository }}:{{ .Values.images.core.tag }}"
+          imagePullPolicy: {{.Values.images.core.pullPolicy}}
+          ports:
+            - containerPort: {{.Values.oauthProxy.containerPort}}
+              name: proxy
+          args:
+            - --https-address=
+            - '--http-address=:{{ .Values.oauthProxy.containerPort}}'
+            - --email-domain=*
+            - --provider=openfuyao
+            - --client-id={{ .Values.oauthProxy.client.id }}
+            - --client-secret={{ .Values.oauthProxy.client.secret }}
+            - '--upstream=http://localhost:{{ .Values.service.containerPort }}'
+            - '--openfuyao-delegate-urls={"/":{"resource": "services/proxy", "group": ""}}'
+            - --redirect-url={{ .Values.oauthProxy.urls.host }}
+            - --login-url={{ .Values.oauthProxy.urls.loginURI }}
+            - --redeem-url={{ .Values.oauthProxy.urls.redeemURI }}
+            - --root-prefix={{ .Values.oauthProxy.urls.rootPrefix }}
+            - --cookie-httponly
+        {{- end}}
+      securityContext:
+        runAsNonRoot: false
+      terminationGracePeriodSeconds: 10
+      volumes:
+        - name: oauth-proxy-server
+          secret:
+            secretName: {{ .Chart.Name }}-oauth-proxy-server
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        - name: nginx-config
+          configMap:
+            name: monitoring-dashboard-website-config
+            items:
+              - key: nginx.conf
+                path: nginx.conf

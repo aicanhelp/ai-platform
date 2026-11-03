@@ -1,0 +1,165 @@
+apiVersion: preflight.openfuyao.io/v1
+kind: PreflightConfig
+metadata:
+  release: v26.06
+  description: Human-readable openFuyao init and cluster-create preflight policy (external, memory=6GiB, systemDisk=40GiB)
+operations:
+  init:
+    platform:
+      distributions:
+        - name: openeuler
+          version: "20.03"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["4.19."]
+        - name: openeuler
+          version: "22.03"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["5.10."]
+        - name: openeuler
+          version: "24.03"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["6.6."]
+        - name: ubuntu
+          version: "22.04"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["5.15."]
+        - name: uos
+          version: "20 1070e"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["4.19.", "5.10."]
+    resources:
+      - key: cpu
+        description: Logical CPU count
+        minimum: 2
+      - key: memory
+        description: Available memory
+        minimum: 6442450944
+      - key: systemDisk
+        description: System disk capacity
+        minimum: 42949672960
+    tools:
+      - key: tar
+        description: tar executable
+        names: [tar]
+      - key: systemctl
+        description: systemctl executable
+        names: [systemctl]
+    paths:
+      - key: workspace
+        description: Workspace is creatable and not read-only
+        require: [create, notReadOnly]
+    ports:
+      - key: kubernetes
+        description: Kubernetes API port
+        defaultPort: 36443
+        portFrom: port.kubernetes
+      - key: imageRepo
+        description: Image repository port
+        defaultPort: 40443
+        portFrom: port.imageRepo
+      - key: chart
+        description: Chart repository port
+        defaultPort: 38080
+        portFrom: port.chart
+      - key: yum
+        description: Package repository port
+        defaultPort: 40080
+        portFrom: port.yum
+      - key: console
+        description: BKE Console port
+        defaultPort: 30010
+        portFrom: port.console
+        when: feature.installConsole
+      - key: ntp
+        description: Local NTP port
+        defaultPort: 123
+        protocol: udp
+        when: feature.localNTP
+    customChecks: []
+  clusterCreate:
+    platform:
+      distributions:
+        - name: openeuler
+          version: "20.03"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["4.19."]
+        - name: openeuler
+          version: "22.03"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["5.10."]
+        - name: openeuler
+          version: "24.03"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["6.6."]
+        - name: ubuntu
+          version: "22.04"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["5.15."]
+        - name: uos
+          version: "20 1070e"
+          architectures: [amd64, arm64]
+          kernelPrefixes: ["4.19.", "5.10."]
+    topology:
+      masters: {minimum: 1, odd: true}
+      etcd: {minimum: 1}
+      workers: {minimum: 1}
+      unique: [hostname, ip]
+    managementCluster:
+      api: true
+      discovery: true
+      crds: [bkeclusters, bkenodes]
+      requiredKubeconfig: kube-system/localkubeconfig
+    resources:
+      - key: cpu
+        description: Node logical CPU count
+        minimum: 4
+      - key: memory
+        description: Node available memory
+        minimum: 6442450944
+      - key: systemDisk
+        description: Node system disk capacity
+        minimum: 42949672960
+    ports:
+      - key: apiServer
+        description: Node Kubernetes API port
+        defaultPort: 6443
+        portFrom: cluster.apiPort
+        roles: [master]
+      - key: etcdClient
+        description: Etcd client port
+        defaultPort: 2379
+        roles: [etcd]
+      - key: etcdPeer
+        description: Etcd peer port
+        defaultPort: 2380
+        roles: [etcd]
+      - key: etcdMetrics
+        description: Etcd metrics port
+        defaultPort: 2381
+        roles: [etcd]
+      - key: kubelet
+        description: Kubelet secure port
+        defaultPort: 10250
+        roles: [master, worker]
+      - key: kubeletHealth
+        description: Kubelet health port
+        defaultPort: 10248
+        roles: [master, worker]
+      - key: controllerManager
+        description: Controller manager port
+        defaultPort: 10257
+        roles: [master]
+      - key: scheduler
+        description: Scheduler port
+        defaultPort: 10259
+        roles: [master]
+      - key: localHA
+        description: Multi-master local HA port
+        defaultPort: 36443
+        roles: [master]
+        when: cluster.topology.multiMaster
+      - key: bkeAgent
+        description: BKE Agent port
+        defaultPort: 58080
+        roles: [all]
+    customChecks: []

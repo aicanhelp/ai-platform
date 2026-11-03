@@ -1,0 +1,248 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: generate-numa-affinity-webhook-cert
+  {{- if .Values.namespace.backend }}
+  namespace: {{ .Values.namespace.backend }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "2"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: numa-affinity-webhook-cert-generator
+      volumes:
+        - name: work
+          emptyDir: {}
+      initContainers:
+        - name: generator
+          image: {{ .Values.thirdPartyImages.alpine.repository }}:{{ .Values.thirdPartyImages.alpine.tag }}
+          imagePullPolicy: {{ .Values.thirdPartyImages.alpine.pullPolicy }}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              set -e
+              {{- if .Values.namespace.backend }}
+              NAMESPACE={{ .Values.namespace.backend }}
+              {{- else }}
+              NAMESPACE={{ .Release.Namespace }}
+              {{- end }}
+              SERVICE_NAME="numa-affinity-webhook-svc"
+              SECRET_NAME="numa-affinity-webhook-secret"
+
+              echo "Creating Secret and MutatingWebhookConfiguration..."
+
+              mkdir -p /work
+
+              # 1. 生成 CA
+              openssl genrsa -out /work/ca.key 4096
+              openssl req -x509 -new -nodes -key /work/ca.key -sha256 -days 3650 -out /work/ca.crt \
+                -subj "/CN=numa-affinity-webhook-cert-ca"
+
+              # 2. 生成服务端私钥和CSR
+              openssl genrsa -out /work/tls.key 4096
+              cat > /work/server.conf <<EOF
+              [req]
+              distinguished_name = req_distinguished_name
+              req_extensions = v3_req
+              prompt = no
+
+              [req_distinguished_name]
+              CN = ${SERVICE_NAME}.${NAMESPACE}.svc
+
+              [v3_req]
+              keyUsage = keyEncipherment, dataEncipherment
+              extendedKeyUsage = serverAuth
+              subjectAltName = @alt_names
+
+              [alt_names]
+              DNS.1 = ${SERVICE_NAME}
+              DNS.2 = ${SERVICE_NAME}.${NAMESPACE}
+              DNS.3 = ${SERVICE_NAME}.${NAMESPACE}.svc
+              DNS.4 = ${SERVICE_NAME}.${NAMESPACE}.svc.cluster.local
+              EOF
+
+              openssl req -new -key /work/tls.key -out /work/server.csr -config /work/server.conf
+
+              # 3. 使用 CA 签署服务端证书
+              openssl x509 -req -in /work/server.csr -CA /work/ca.crt -CAkey /work/ca.key -CAcreateserial \
+                -out /work/tls.crt -days 1095 -sha256 -extensions v3_req -extfile /work/server.conf
+
+              # 4. 生成 Secret YAML
+              cat <<EOF > /work/secret.yaml
+              apiVersion: v1
+              kind: Secret
+              metadata:
+                name: numa-affinity-webhook-secret
+                namespace: $NAMESPACE
+                labels:
+                  app.kubernetes.io/managed-by: Helm
+                annotations:
+                  meta.helm.sh/release-name: {{ .Release.Name }}
+                  meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+              type: Opaque
+              data:
+                server.pem: $(base64 -w 0 /work/tls.crt)
+                key.pem: $(base64 -w 0 /work/tls.key)
+              EOF
+
+              # 5. 生成 mutatewebhook
+              cat <<EOF > /work/mutatewebhook.yaml
+              apiVersion: admissionregistration.k8s.io/v1
+              kind: MutatingWebhookConfiguration
+              metadata:
+                name: numa-affinity-webhook-mutate-webhook
+                {{- if .Values.namespace.backend }}
+                namespace: {{ .Values.namespace.backend }}
+                {{- else }}
+                namespace: {{ .Release.Namespace }}
+                {{- end }}
+                labels:
+                  app.kubernetes.io/managed-by: Helm
+                annotations:
+                  meta.helm.sh/release-name: {{ .Release.Name }}
+                  meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+              webhooks:
+                - name: numa-affinity-webhook-svc.${NAMESPACE}.com
+                  failurePolicy: 'Ignore'
+                  rules:
+                    - apiGroups: [""]
+                      apiVersions: ["v1"]
+                      operations: ["CREATE"]
+                      resources: ["pods"]
+                  clientConfig:
+                    service:
+                      {{- if .Values.namespace.backend }}
+                      namespace: {{ .Values.namespace.backend }}
+                      {{- else }}
+                      namespace: {{ .Release.Namespace }}
+                      {{- end }}
+                      name: numa-affinity-webhook-svc
+                      path: "/mutate"
+                      port: 443
+                    caBundle: $(base64 -w 0 /work/ca.crt)
+                  admissionReviewVersions: ["v1"]
+                  sideEffects: None
+                  timeoutSeconds: 5
+              EOF
+          volumeMounts:
+            - name: work
+              mountPath: /work
+      containers:
+        - name: kubectl-apply
+          image: '{{ list . "kubectl" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.kubectl.pullPolicy }}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              echo "Applying Secret and ConfigMap..."
+              kubectl apply -f /work/secret.yaml
+              kubectl apply -f /work/mutatewebhook.yaml
+          volumeMounts:
+            - name: work
+              mountPath: /work
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: numa-affinity-webhook-cert-role
+  {{- if .Values.namespace.backend }}
+  namespace: {{ .Values.namespace.backend }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "update", "get"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: numa-affinity-webhook-cert-rolebinding
+  {{- if .Values.namespace.backend }}
+  namespace: {{ .Values.namespace.backend }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+subjects:
+  - kind: ServiceAccount
+    name: numa-affinity-webhook-cert-generator
+    {{- if .Values.namespace.backend }}
+    namespace: {{ .Values.namespace.backend }}
+    {{- else }}
+    namespace: {{ .Release.Namespace }}
+    {{- end }}
+roleRef:
+  kind: Role
+  name: numa-affinity-webhook-cert-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: numa-affinity-webhook-cert-generator
+  {{- if .Values.namespace.backend }}
+  namespace: {{ .Values.namespace.backend }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: numa-affinity-webhook-cert-clusterrole
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed,before-hook-creation
+rules:
+  - apiGroups: ["admissionregistration.k8s.io"]
+    resources: ["mutatingwebhookconfigurations"]
+    verbs: ["create", "get", "update", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: numa-affinity-webhook-cert-clusterrolebinding
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-delete-policy":  hook-succeeded,hook-failed,before-hook-creation
+subjects:
+  - kind: ServiceAccount
+    name: numa-affinity-webhook-cert-generator
+    namespace: {{ .Values.namespace.backend | default .Release.Namespace }}
+roleRef:
+  kind: ClusterRole
+  name: numa-affinity-webhook-cert-clusterrole
+  apiGroup: rbac.authorization.k8s.io

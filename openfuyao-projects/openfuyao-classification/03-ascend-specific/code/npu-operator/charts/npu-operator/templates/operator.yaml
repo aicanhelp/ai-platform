@@ -1,0 +1,117 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: npu-operator
+  labels:
+    {{- include "npu-operator.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "npu-operator"
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: "npu-operator"
+      app: "npu-operator"
+  template:
+    metadata:
+      labels:
+        {{- include "npu-operator.labels" . | nindent 8 }}
+        app.kubernetes.io/component: "npu-operator"
+        app: "npu-operator"
+    spec:
+      hostPID: true
+      hostNetwork: true
+      nodeSelector:
+        {{- if .Values.operator.nodeSelector }}
+        {{- toYaml .Values.operator.nodeSelector | nindent 8 }}
+        {{- else }}
+        masterselector: dls-master-node
+        {{- end }}
+      {{- with .Values.operator.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.operator.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: npu-operator
+      {{- if .Values.operator.imagePullSecrets }}
+      imagePullSecrets:
+      {{- range .Values.operator.imagePullSecrets }}
+      - name: {{ . }}
+      {{- end }}
+      {{- end }}
+      {{- if .Values.operator.priorityClassName }}
+      priorityClassName: {{ .Values.operator.priorityClassName }}
+      {{- end }}
+      containers:
+        - name: npu-operator
+          image: '{{ list . "operator" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.operator.pullPolicy }}
+          ports:
+            - name: metrics
+              containerPort: 8081
+          securityContext:
+            privileged: true
+          env:
+            - name: WATCH_NAMESPACE
+              value: ""
+            - name: NPU_OPERATOR_RELEASE_TAG
+              value: {{ .Chart.AppVersion | quote }}
+            - name: NPU_OPERATOR_BUSYBOX_IMAGE_REPOSITORY
+              value: {{ .Values.images.busybox.repository | quote }}
+            - name: NPU_OPERATOR_BUSYBOX_IMAGE_TAG
+              value: {{ .Values.images.busybox.tag | default .Chart.AppVersion | quote }}
+            - name: NPU_OPERATOR_BUSYBOX_IMAGE_PULL_POLICY
+              value: {{ .Values.images.busybox.pullPolicy | quote }}
+            - name: OPERATOR_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: OPERATOR_NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: host-os-release
+              mountPath: "/host-etc/os-release"
+              readOnly: true
+            - name: config-volume
+              mountPath: /etc/npu-operator
+            - name: varlog
+              mountPath: /var/log/npu-operator
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          {{- with .Values.operator.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: host-os-release
+          hostPath:
+            path: "/etc/os-release"
+        - name: varlog
+          hostPath:
+            path: /var/log/npu-operator
+        - name: config-volume
+          configMap:
+            name: npu-operator-logcm
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""

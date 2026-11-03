@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: {{ .Chart.Name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: {{ .Chart.Name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Chart.Name }}
+    spec:
+      serviceAccountName: {{ .Chart.Name }}-oauth-proxy
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+      containers:
+        - name: {{ .Release.Name }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+        - name: oauth-proxy
+          image: "{{ .Values.oauthProxy.image.repository }}:{{ .Values.oauthProxy.image.tag }}"
+          imagePullPolicy: {{ .Values.oauthProxy.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.oauthProxy.service.containerPort }}
+              name: proxy
+          args:
+            - --https-address=:{{ .Values.oauthProxy.service.containerPort }}
+            - --http-address=
+            - --email-domain=*
+            - --provider=openfuyao
+            - --client-id={{ .Values.oauthProxy.client.id }}
+            - --client-secret={{ .Values.oauthProxy.client.secret }}
+            - --upstream=http://localhost:{{ .Values.service.port }}
+            - --tls-cert=/ssl/server.crt
+            - --tls-key=/ssl/server.key
+            - '--openfuyao-delegate-urls={"/":{"resource": "services/proxy", "group": ""}}'
+            - --redirect-url={{ .Values.oauthProxy.urls.host }}
+            - --login-url={{ .Values.oauthProxy.urls.loginURI }}
+            - --redeem-url={{ .Values.oauthProxy.urls.redeemURI }}
+            - --root-prefix=/{{ .Values.extensionName }}
+            - --ssl-insecure-skip-verify
+            - --cookie-httponly
+          volumeMounts:
+            - name: oauth-proxy-server
+              readOnly: true
+              mountPath: /ssl/server.key
+              subPath: tls.key
+            - name: oauth-proxy-server
+              readOnly: true
+              mountPath: /ssl/server.crt
+              subPath: tls.crt
+
+      volumes:
+        - name: oauth-proxy-server
+          secret:
+            secretName: {{ .Chart.Name }}-oauth-proxy-server
+

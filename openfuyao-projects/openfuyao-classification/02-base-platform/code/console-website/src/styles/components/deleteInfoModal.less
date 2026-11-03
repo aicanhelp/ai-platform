@@ -1,0 +1,37 @@
+@import '@/styles/common.less';
+.modal_flex_delete{
+  .modal_delete_content{
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+  }
+  .warn_icon svg{
+    height: 48px;
+    width: 48px;
+    color: #f5595c;
+  }
+  .word_tograry{
+    margin-left: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 10px 0;
+    p{
+      line-height: 24px;
+      font-size: 14px;
+      color: #666666;
+      margin-bottom: 11px;
+    }
+    .multi_checkbox{
+      text-align: left;
+      color: #89939b;
+      .@{container-prefix}-checkbox + span{
+        width: auto;
+      }
+    }
+  }
+}
+.bread_word_delete{
+  word-break: break-all;
+}

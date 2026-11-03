@@ -1,0 +1,15 @@
+{{- if or .Values.config.httpServerConfig.enableHttps .Values.oauthProxy.enableTLS }}
+apiVersion: v1
+data:
+  tls.crt: |
+    {{ b64enc .Values.config.httpServerConfig.tlsCert }}
+  tls.key: |
+    {{ b64enc .Values.config.httpServerConfig.tlsKey }}
+  ca.crt: |
+    {{ b64enc .Values.config.httpServerConfig.rootCA }}
+kind: Secret
+metadata:
+  name: marketplace-service-tls
+  namespace: openfuyao-system
+type: kubernetes.io/tls
+{{- end }}

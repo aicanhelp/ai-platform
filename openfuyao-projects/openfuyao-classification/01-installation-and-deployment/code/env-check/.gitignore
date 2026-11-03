@@ -1,0 +1,4 @@
+.idea
+
+# Default ologger log file (pkg/logger default log_file path)
+envCheck.log

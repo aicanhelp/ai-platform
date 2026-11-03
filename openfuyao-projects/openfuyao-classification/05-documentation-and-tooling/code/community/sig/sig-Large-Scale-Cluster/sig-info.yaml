@@ -1,0 +1,162 @@
+name: sig-Large-Scale-Cluster
+description: 面向超万卡规格集群的企业级集群增强和集群仿真能力，支撑典型超大规模集群生产级应用。
+descriptionEn: Provide enterprise-level cluster enhancement and cluster simulation capabilities for clusters with more than 10,000 cards, supporting production-level applications in typical ultra-large-scale clusters.
+mailing_list: large-scale-cluster@list.openfuyao.cn
+maintainers:
+  - gitcode_id: mmmonsterrr
+    name: MA Xin
+    email: maxin5@huawei.com
+  - gitcode_id: javadoors
+    name: ZHANG Chao
+    email: paul.zhang@huawei.com
+  - gitcode_id: zhangxyjlu
+    name: ZHANG Xiaoyang
+    email: zhangxiaoyang2@huawei.com
+  - gitcode_id: ChenChuanyu
+    name: CHEN Chuanyu
+    email: chenchuanyu@huawei.com
+  - gitcode_id: shizilong
+    name: SHI Zilong
+    email: shizilong1@h-partners.com
+  - gitcode_id: luogangyi
+    name: Luo Gangyi
+    email: luogangyi2@cmss.chinamobile.com
+  - gitcode_id: osmcn
+    name: Zhu Guihua
+    email: zhuguihua@cmss.chinamobile.com
+  - gitcode_id: regandy
+    name: Gao Bo
+    email: huawei.gaobo@huawei.com
+repositories:
+  - repo:
+      - openfuyao/sig-large-scale-cluster        
+    committers:
+      - gitcode_id: mmmonsterrr
+        name: MA Xin
+        email: maxin5@huawei.com
+      - gitcode_id: cnhoneybee
+        name: XU Wenbo
+        email: xuwenbo1@huawei.com
+      - gitcode_id: tietouli
+        name: Li Xiaofeng
+        email: lixf311@chinaunicom.cn
+    members:
+      - gitcode_id: zhangfan345
+        name: ZHANG Fan
+        email: zhangfan345@huawei.com
+      - gitcode_id: lishuai_hw
+        name: LI Shuai
+        email: lishuai123@huawei.com
+      - gitcode_id: h3nt41
+        name: ZUO Zongyuan
+        email: zuozongyuan@huawei.com
+      - gitcode_id: panxun2
+        name: PAN Shun
+        email: panxun2@huawei.com
+      - gitcode_id: Mia_o
+        name: HUO Ran
+        email: huoran1@huawei.com
+      - gitcode_id: cnhoneybee
+        name: XU Wenbo
+        email: xxwwbb3@163.com
+      - gitcode_id: robinsonzhang
+        name: ZHANG Weiguo
+        email: zhangweiguo15@huawei.com
+      - gitcode_id: shihuanghouyi
+        name: WANG Qibo
+        email: 13924653+shihuanghouyi@user.noreply.gitee.com
+      - gitcode_id: AliceFlame
+        name: ZHANG Wenxuan
+        email: zhangwenxuan23@huawei-partners.com
+        
+  - repo:
+      - openfuyao/clusters-computing-operator        
+    committers:
+      - gitcode_id: hw_wh_computing
+        name: WANG Hao
+        email: wanghao214@huawei.com
+      - gitcode_id: panxun2
+        name: PAN Xun
+        email: panxun2@huawei.com
+      - gitcode_id: tietouli
+        name: Li Xiaofeng
+        email: lixf311@chinaunicom.cn
+    members:
+      - gitcode_id: yu-minglai
+        name: YU Minglai
+        email: yuminglai@huawei.com
+      - gitcode_id: furry-bear
+        name: SONG Chunjiang
+        email: bear.songchunjiang@huawei.com
+      - gitcode_id: wwklm
+        name: WANG Yao
+        email: wangyao196@h-partners.com
+        
+  - repo:
+      - openfuyao/volcano-ext
+    committers:
+      - gitcode_id: hw_wh_computing
+        name: WANG Hao
+        email: wanghao214@huawei.com
+      - gitcode_id: kkkkkw
+        name: KANG Nan
+        email: kangnan3@huawei.com
+      - gitcode_id: tietouli
+        name: Li Xiaofeng
+        email: lixf311@chinaunicom.cn
+    members:
+      - gitcode_id: wangjunhao24
+        name: WANG Junhao
+        email: wangjunhao24@huawei.com
+      - gitcode_id: khalilzhk
+        name: ZHANG Kaikai
+        email: zhangkaikai12@huawei.com
+      - gitcode_id: x1a0hp
+        name: XIAO Hongpeng
+        email: xiaohongpeng1@h-partners.com
+      - gitcode_id: dabing1314
+        name: HAN Bing
+        email: hanbing45@h-partners.com
+      - gitcode_id: wwklm
+        name: WANG Yao
+        email: wangyao196@h-partners.com
+      - gitcode_id: zhanghang119
+        name: ZHANG Hang
+        email: zhanghang35@h-partners.com
+      - gitcode_id: xavierchang
+        name: Chang Xuzheng
+        email: changxuzheng@huawei.com
+  - repo:
+      - openfuyao/kwok
+    committers:
+      - gitcode_id: osmcn
+        name: Zhu Guihua
+        email: zhuguihua@cmss.chinamobile.com
+    members:
+      - gitcode_id: maaoBit
+        name: Ma Ao
+        email: maao_yewu@cmss.chinamobile.com
+      - gitcode_id: fsl-go
+        name: Fan Shaolin
+        email: fanshaolin_yewu@cmss.chinamobile.com
+  - repo:
+      - openfuyao/victoriametrics-controller
+    committers:
+      - gitcode_id: javadoors
+        name: ZHANG Chao
+        email: paul.zhang@huawei.com
+      - gitcode_id: zhangxyjlu
+        name: ZHANG Xiaoyang
+        email: zhangxiaoyang2@huawei.com
+      - gitcode_id: zhangfan345
+        name: ZHANG Fan
+        email: zhangfan345@huawei.com
+      - gitcode_id: osmcn
+        name: Zhu Guihua
+        email: zhuguihua@cmss.chinamobile.com
+    members:
+      - gitcode_id: yufeic
+        name: Cheng Yufei
+        email: chengyufei3@huawei.com
+
+      

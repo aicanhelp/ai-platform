@@ -1,0 +1,241 @@
+registry:
+  imageAddress: cr.openfuyao.cn/openfuyao/registry:2.8.1
+  architecture:
+    - amd64
+    - arm64
+repos:
+  - architecture: # k3s集群容器相关镜像
+      - amd64
+      - arm64
+    needDownload: true
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao
+        targetRepo: kubernetes
+        imageTrack: ""
+        images:
+          - name: registry
+            tag:
+              - 2.8.1
+          - name: nginx_yum_repo
+            tag:
+              - 1.23.0-alpine
+          - name: chartmuseum
+            tag:
+              - v0.16.2
+          - name: nfs-server-alpine
+            tag:
+              - 0.9.0
+          - name: k3s
+            tag:
+              - v1.25.16-k3s4
+          - name: mirrored-pause
+            tag:
+              - "3.6"
+  - architecture: # k3s集群拉起的pod相关镜像
+      - amd64
+      - arm64
+    needDownload: true
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao
+        targetRepo: kubernetes
+        images:
+          - name: bke-console-service
+            tag:
+              - latest
+          - name: bke-console-website
+            tag:
+              - latest
+          - name: bke-manifests
+            tag:
+              - latest
+          - name: cluster-api-provider-bke
+            tag:
+              - latest
+          - name: installer-website
+            tag:
+              - latest
+          - name: installer-service
+            tag:
+              - latest
+          - name: kubectl-openfuyao
+            tag:
+              - latest
+          - name: oauth-proxy
+            tag:
+              - latest
+          - name: oauth-server
+            tag:
+              - latest
+          - name: oauth-webhook
+            tag:
+              - latest
+          - name: plugin-management-service
+            tag:
+              - latest
+          - name: user-management-operator
+            tag:
+              - latest
+      - sourceRepo: cr.openfuyao.cn/openfuyao/busybox
+        targetRepo: kubernetes/busybox
+        images:
+          - name: busybox
+            tag:
+              - 1.36.1
+      - sourceRepo: cr.openfuyao.cn/openfuyao/cluster-api
+        targetRepo: kubernetes/cluster-api
+        images:
+          - name: cluster-api-controller
+            tag:
+              - v1.4.3
+          - name: kubeadm-bootstrap-controller
+            tag:
+              - v1.4.3
+          - name: kubeadm-control-plane-controller
+            tag:
+              - v1.4.3
+      - sourceRepo: cr.openfuyao.cn/openfuyao/ingress-nginx
+        targetRepo: kubernetes/ingress-nginx
+        images:
+          - name: controller
+            tag:
+              - v1.9.4
+          - name: kube-webhook-certgen
+            tag:
+              - v20231011-8b53cabe0
+  - architecture: # k8s集群拉起的pod相关镜像
+      - amd64
+      - arm64
+    needDownload: true
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao/kubernetes
+        targetRepo: kubernetes/kubernetes
+        images:
+          - name: coredns
+            tag:
+              - v1.10.1
+          - name: etcd
+            tag:
+              - 3.5.12-0
+          - name: kube-apiserver
+            tag:
+              - v1.29.1
+              - v1.28.8
+          - name: kube-controller-manager
+            tag:
+              - v1.29.1
+              - v1.28.8
+          - name: kube-scheduler
+            tag:
+              - v1.29.1
+              - v1.28.8
+          - name: kube-proxy
+            tag:
+              - v1.28.8
+          - name: pause
+            tag:
+              - 3.9
+      - sourceRepo: cr.openfuyao.cn/openfuyao/
+        targetRepo: kubernetes
+        images:
+          - name: kube-proxy
+            tag:
+              - v1.29.1
+          - name: pause
+            tag:
+              - 3.9
+      - sourceRepo: cr.openfuyao.cn/openfuyao/keepalived # keepalived 组件
+        targetRepo: kubernetes/keepalived
+        images:
+          - name: keepalived
+            tag:
+              - 1.3.5
+      - sourceRepo: cr.openfuyao.cn/openfuyao/haproxy # haproxy 组件
+        targetRepo: kubernetes/haproxy
+        images:
+          - name: haproxy
+            tag:
+              - 2.1.4
+      - sourceRepo: cr.openfuyao.cn/openfuyao/calico # calico 组件
+        targetRepo: kubernetes/calico
+        images:
+          - name: cni
+            tag:
+              - v3.27.3
+          - name: node
+            tag:
+              - v3.27.3
+          - name: kube-controllers
+            tag:
+              - v3.27.3
+rpms:
+debs: []
+files:
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/kubernetes/kubernetes/releases/download/v1.28.8/bin/linux/arm64/
+    files:
+      - kubectl-v1.29.1-arm64
+      - kubectl-v1.28.8-arm64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/kubernetes/kubernetes/releases/download/v1.28.8/bin/linux/amd64/
+    files:
+      - kubectl-v1.29.1-amd64
+      - kubectl-v1.28.8-amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/kubernetes/kubernetes/releases/download/v1.28.8/bin/linux/amd64/
+    files:
+      - kubelet-v1.28.8-amd64
+      - kubelet-v1.29.1-amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/kubernetes/kubernetes/releases/download/v1.28.8/bin/linux/arm64/
+    files:
+      - kubelet-v1.28.8-arm64
+      - kubelet-v1.29.1-arm64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/containerd/containerd/releases/download/v1.7.14-bke/
+    files:
+      - containerd-1.7.14-linux-amd64.tar.gz
+      - containerd-1.7.14-linux-arm64.tar.gz
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/containernetworking/plugins/releases/download/v1.4.1/
+    files:
+      - cni-plugins-linux-amd64-v1.4.1.tgz
+      - cni-plugins-linux-arm64-v1.4.1.tgz
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/mikefarah/yq/releases/download/v4.43.1
+    files:
+      - yq_linux_arm64
+      - yq_linux_amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/jqlang/jq/releases/download/v1.7.1
+    files:
+      - jq-linux-arm64
+      - jq-linux-amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/cloudflare/cfssl/releases/download/v1.6.4
+    files:
+      - cfssl-certinfo_1.6.4_linux_arm64
+      - cfssl-certinfo_1.6.4_linux_amd64
+      - cfssl_1.6.4_linux_arm64
+      - cfssl_1.6.4_linux_amd64
+      - cfssljson_1.6.4_linux_arm64
+      - cfssljson_1.6.4_linux_amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/opencontainers/runc/releases/download/v1.1.12/
+    files:
+      - runc-arm64
+      - runc-amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/etcd-io/etcd/releases/download/v3.5.6/
+    files:
+      - etcdctl-v3.5.6-linux-amd64
+      - etcdctl-v3.5.6-linux-arm64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/rpm/releases/download/v0.0.1/
+    files:
+      - rpm.tar.gz
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/nfs/
+    files:
+      - nfsshare.tar.gz
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/openFuyao/bkeadm/releases/download/latest/
+    files:
+      - bkeadm_linux_amd64
+      - bkeadm_linux_arm64
+charts:
+  - address: https://static.openfuyao.cn/charts/releases/download/v25.09/
+    files:
+      - oauth-webhook-0.0.0-latest.tgz
+      - oauth-server-0.0.0-latest.tgz
+      - plugin-management-service-0.0.0-latest.tgz
+      - user-management-operator-0.0.0-latest.tgz
+      - installer-service-0.0.0-latest.tgz
+      - installer-website-0.0.0-latest.tgz
+      - bke-console-website-0.0.0-latest.tgz
+      - bke-console-service-0.0.0-latest.tgz

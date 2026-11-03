@@ -1,0 +1,223 @@
+openapi: 3.0.0
+info:
+  title: 
+  version: v1beta1
+  description: 多集群管理接口参考文档
+
+paths:
+  /rest/multicluster/v1beta1/resources/clusters:
+    get:
+      summary: 获取集群列表
+      description: 返回当前所有集群的列表及相关资源信息
+      responses:
+        '200':
+          description: 查询成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  info:
+                    type: object
+                    additionalProperties:
+                      type: object
+                      properties:
+                        clustername:
+                          type: string
+                        clusterlabels:
+                          type: array
+                          items:
+                            type: string
+                        clusterresources:
+                          type: object
+                          properties:
+                            allocatablecpu:
+                              type: string
+                            allocatablemem:
+                              type: string
+                            allocatedcpu:
+                              type: string
+                            allocatedmem:
+                              type: string
+        '400':
+          description: 请求数据异常
+        '500':
+          description: 服务请求异常
+
+  /rest/multicluster/v1beta1/clusters:
+    post:
+      summary: 纳管集群
+      description: 将一个新的集群纳入管控
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, kubeconfig]
+              properties:
+                name:
+                  type: string
+                kubeconfig:
+                  type: object
+                  description: Kubeconfig对象
+                clusterlabels:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        '200':
+          description: 纳管集群成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Code:
+                    type: integer
+                  Message:
+                    type: string
+        '400':
+          description: 请求数据异常
+        '500':
+          description: 服务请求异常
+
+  /rest/multicluster/v1beta1/clusters/{clustername}:
+    patch:
+      summary: 修改集群标签
+      description: 更新已纳管集群的标签信息
+      parameters:
+        - in: path
+          name: clustername
+          required: true
+          schema:
+            type: string
+          description: 集群名称
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clusterlabels:
+                  type: object
+                  additionalProperties:
+                    type: string
+      responses:
+        '200':
+          description: 修改标签成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Code:
+                    type: integer
+                  Message:
+                    type: string
+        '400':
+          description: 请求数据异常
+        '500':
+          description: 服务请求异常
+
+    delete:
+      summary: 解除集群纳管
+      description: 将指定集群从控制面移除
+      parameters:
+        - in: path
+          name: clustername
+          required: true
+          schema:
+            type: string
+          description: 集群名称
+      responses:
+        '200':
+          description: 解除纳管成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Code:
+                    type: integer
+                  Message:
+                    type: string
+        '400':
+          description: 请求数据异常
+        '500':
+          description: 服务请求异常
+
+  /rest/multicluster/v1beta1/clusters/{clustername}/kubeconfig:
+    get:
+      summary: 查看集群凭证
+      description: 查看指定集群的 kubeconfig 信息
+      parameters:
+        - in: path
+          name: clustername
+          required: true
+          schema:
+            type: string
+          description: 集群名称
+      responses:
+        '200':
+          description: 权限校验通过
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiVersion:
+                    type: string
+                  kind:
+                    type: string
+                  preferences:
+                    type: object
+                  clusters:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        cluster:
+                          type: object
+                          properties:
+                            certificate-authority-data:
+                              type: string
+                            server:
+                              type: string
+                  contexts:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        context:
+                          type: object
+                          properties:
+                            cluster:
+                              type: string
+                            user:
+                              type: string
+                  current-context:
+                    type: string
+                  users:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        user:
+                          type: object
+                          properties:
+                            client-certificate-data:
+                              type: string
+                            client-key-data:
+                              type: string
+        '400':
+          description: 请求数据异常
+        '403':
+          description: 用户没有权限

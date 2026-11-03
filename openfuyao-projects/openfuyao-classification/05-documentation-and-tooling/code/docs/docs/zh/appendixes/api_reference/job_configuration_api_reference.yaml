@@ -1,0 +1,2121 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: Kubernetes API 接口文档。
+  version: v1.24
+servers:
+  - url: /
+paths:
+  #
+  # Job 资源相关API
+  #
+  /api/kubernetes/apis/batch/v1/namespaces/{namespace}/jobs/{name}:
+    get:
+      tags:
+        - Jobs
+      summary: 读取指定的任务。
+      description: 获取任务具体内容。
+      operationId: readJob
+      parameters:
+        - name: name
+          in: path
+          description: 任务名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 任务对象。
+        '401':
+          description: 未鉴权。
+    put:
+      tags:
+        - Jobs
+      summary: 更新指定的任务。
+      description: 更新指定的任务。
+      operationId: updateJob
+      parameters:
+        - name: name
+          in: path
+          description: 任务名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 任务配置对象。
+            example:
+              metadata:
+                name: example-job
+                namespace: default
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: example-job
+                        image: busybox
+                        command: ["sh", "-c", "echo Hello! && sleep 3600"]
+                    restartPolicy: Never
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 任务对象。
+        '201':
+          description: 已创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 任务对象。
+        '401':
+          description: 未鉴权。
+    delete:
+      tags:
+        - Jobs
+      summary: 删除指定的任务。
+      description: 删除一个任务。
+      operationId: deleteJob
+      parameters:
+        - name: name
+          in: path
+          description: 任务名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除对象前的持续时间（秒数）。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: propagationPolicy
+          in: query
+          description: 该字段决定是否以及如何执行垃圾收集。
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 任务对象。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+    patch:
+      tags:
+        - Jobs
+      summary: 部分更新指定的任务。
+      description: 部分更新指定的任务。
+      operationId: patchJob
+      parameters:
+        - name: name
+          in: path
+          description: 任务名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制应用该请求。
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: 操作类型，如add、replace、remove。
+                    enum: [add, replace, remove]
+                  path:
+                    type: string
+                    description: 要操作的JSON路径。
+                  value:
+                    type: object
+                    description: 新值（对于add和replace操作是必需的）。
+            examples:
+              添加标签:
+                value:
+                  - op: add
+                    path: /metadata/labels
+                    value:
+                      data: value
+              添加标签属性:
+                value:
+                  - op: add
+                    path: /metadata/labels/env
+                    value: value
+              替换标签属性:
+                value:
+                  - op: replace
+                    path: /metadata/labels/env
+                    value: value1
+              删除标签属性:
+                value:
+                  - op: remove
+                    path: /metadata/labels/env
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 任务对象。
+        '201':
+          description: 已更新。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 任务对象。
+        '401':
+          description: 未鉴权。
+  
+  /api/kubernetes/apis/batch/v1/namespaces/{namespace}/jobs:
+    get:
+      tags:
+        - Jobs
+      summary: 获取任务列表。
+      description: 获取任务列表。
+      operationId: listJobs
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 对请求所针对的资源版本设置约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 决定如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: 监视对所述资源的更改。
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: 监视通知流将从合成事件开始，以生成集合中对象的当前状态。
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: list/watch调用的超时秒数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 任务列表对象。
+                properties:
+                  kind:
+                    type: string
+                    example: JobList
+                  apiVersion:
+                    type: string
+                    example: batch/v1
+                  items:
+                    type: array
+                    description: 任务对象列表。
+                    items:
+                      type: object
+                      description: 任务对象。
+        '401':
+          description: 未鉴权。
+    post:
+      tags:
+        - Jobs
+      summary: 创建一个任务。
+      description: 创建一个任务。
+      operationId: createJob
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 任务配置对象。
+            example:
+              metadata:
+                name: example-job
+                namespace: default
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: example-job
+                        image: busybox
+                        command: ["sh", "-c", "echo Hello! && sleep 3600"]
+                    restartPolicy: Never
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 任务对象。
+        '201':
+          description: 已创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 任务对象。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+
+  #
+  # CronJob 资源相关API
+  #
+  /api/kubernetes/apis/batch/v1/namespaces/{namespace}/cronjobs/{name}:
+    get:
+      tags:
+        - CronJobs
+      summary: 读取指定的定时任务。
+      description: 获取定时任务具体内容。
+      operationId: readCronJob
+      parameters:
+        - name: name
+          in: path
+          description: 定时任务名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 定时任务对象。
+        '401':
+          description: 未鉴权。
+    put:
+      tags:
+        - CronJobs
+      summary: 更新指定的定时任务。
+      description: 更新指定的定时任务。
+      operationId: updateCronJob
+      parameters:
+        - name: name
+          in: path
+          description: 定时任务名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 定时任务配置对象。
+            example:
+              metadata:
+                name: example-cronjob
+                namespace: default
+              spec:
+                schedule: "0 * * * *"
+                jobTemplate:
+                  spec:
+                    template:
+                      spec:
+                        containers:
+                        - name: example-cronjob
+                          image: busybox
+                          args:
+                          - /bin/sh
+                          - -c
+                          - date; echo Hello from the Kubernetes cluster
+                        restartPolicy: OnFailure
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 定时任务对象。
+        '201':
+          description: 已创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 定时任务对象。
+        '401':
+          description: 未鉴权。
+    delete:
+      tags:
+        - CronJobs
+      summary: 删除指定的定时任务。
+      description: 删除一个定时任务。
+      operationId: deleteCronJob
+      parameters:
+        - name: name
+          in: path
+          description: 定时任务名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除对象前的持续时间（秒数）。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: propagationPolicy
+          in: query
+          description: 该字段决定是否以及如何执行垃圾收集。
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 定时任务对象。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+    patch:
+      tags:
+        - CronJobs
+      summary: 部分更新指定的定时任务。
+      description: 部分更新指定的定时任务。
+      operationId: patchCronJob
+      parameters:
+        - name: name
+          in: path
+          description: 定时任务名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制应用该请求。
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: 操作类型，如add、replace、remove。
+                    enum: [add, replace, remove]
+                  path:
+                    type: string
+                    description: 要操作的JSON路径。
+                  value:
+                    type: object
+                    description: 新值（对于add和replace操作是必需的）。
+            examples:
+              添加标签:
+                value:
+                  - op: add
+                    path: /metadata/labels
+                    value:
+                      data: value
+              添加标签属性:
+                value:
+                  - op: add
+                    path: /metadata/labels/env
+                    value: value
+              替换标签属性:
+                value:
+                  - op: replace
+                    path: /metadata/labels/env
+                    value: value1
+              删除标签属性:
+                value:
+                  - op: remove
+                    path: /metadata/labels/env
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 定时任务对象。
+        '201':
+          description: 已更新。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 定时任务对象。
+        '401':
+          description: 未鉴权。
+  
+  /api/kubernetes/apis/batch/v1/namespaces/{namespace}/cronjobs:
+    get:
+      tags:
+        - CronJobs
+      summary: 获取定时任务列表。
+      description: 获取定时任务列表。
+      operationId: listCronJobs
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 对请求所针对的资源版本设置约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 决定如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: 监视对所述资源的更改。
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: 监视通知流将从合成事件开始，以生成集合中对象的当前状态。
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: list/watch调用的超时秒数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 定时任务列表对象。
+                properties:
+                  kind:
+                    type: string
+                    example: CronJobList
+                  apiVersion:
+                    type: string
+                    example: batch/v1
+                  items:
+                    type: array
+                    description: 定时任务对象列表。
+                    items:
+                      type: object
+                      description: 定时任务对象。
+        '401':
+          description: 未鉴权。
+    post:
+      tags:
+        - CronJobs
+      summary: 创建一个定时任务。
+      description: 创建一个定时任务。
+      operationId: createCronJob
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 定时任务配置对象。
+            example:
+              metadata:
+                name: example-cronjob
+                namespace: default
+              spec:
+                schedule: "0 * * * *"
+                jobTemplate:
+                  spec:
+                    template:
+                      spec:
+                        containers:
+                        - name: example-cronjob
+                          image: busybox
+                          args:
+                          - /bin/sh
+                          - -c
+                          - date; echo Hello from the Kubernetes cluster
+                        restartPolicy: OnFailure
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 定时任务对象。
+        '201':
+          description: 已创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 定时任务对象。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+
+  #
+  # ConfigMap 资源相关API
+  #
+  /api/kubernetes/api/v1/namespaces/{namespace}/configmaps/{name}:
+    get:
+      tags:
+        - ConfigMaps
+      summary: 读取指定的配置字典。
+      description: 获取配置字典具体内容。
+      operationId: readConfigMap
+      parameters:
+        - name: name
+          in: path
+          description: 配置字典名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 配置字典对象。
+        '401':
+          description: 未鉴权。
+    put:
+      tags:
+        - ConfigMaps
+      summary: 更新指定的配置字典。
+      description: 更新指定的配置字典。
+      operationId: updateConfigMap
+      parameters:
+        - name: name
+          in: path
+          description: 配置字典名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 配置字典配置对象。
+            example:
+              metadata:
+                name: example-configmap
+              data:
+                key1: value1
+                key2: value2
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 配置字典对象。
+        '201':
+          description: 已创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 配置字典对象。
+        '401':
+          description: 未鉴权。
+    delete:
+      tags:
+        - ConfigMaps
+      summary: 删除指定的配置字典。
+      description: 删除一个配置字典。
+      operationId: deleteConfigMap
+      parameters:
+        - name: name
+          in: path
+          description: 配置字典名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除对象前的持续时间（秒数）。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: propagationPolicy
+          in: query
+          description: 该字段决定是否以及如何执行垃圾收集。
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 配置字典对象。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+    patch:
+      tags:
+        - ConfigMaps
+      summary: 部分更新指定的配置字典。
+      description: 部分更新指定的配置字典。
+      operationId: patchConfigMap
+      parameters:
+        - name: name
+          in: path
+          description: 配置字典名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制应用该请求。
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: 操作类型，如add、replace、remove。
+                    enum: [add, replace, remove]
+                  path:
+                    type: string
+                    description: 要操作的JSON路径。
+                  value:
+                    type: object
+                    description: 新值（对于add和replace操作是必需的）。
+            examples:
+              添加标签:
+                value:
+                  - op: add
+                    path: /metadata/labels
+                    value:
+                      data: value
+              添加标签属性:
+                value:
+                  - op: add
+                    path: /metadata/labels/env
+                    value: value
+              替换标签属性:
+                value:
+                  - op: replace
+                    path: /metadata/labels/env
+                    value: value1
+              删除标签属性:
+                value:
+                  - op: remove
+                    path: /metadata/labels/env
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 配置字典对象。
+        '201':
+          description: 已更新。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 配置字典对象。
+        '401':
+          description: 未鉴权。
+  
+  /api/kubernetes/api/v1/namespaces/{namespace}/configmaps:
+    get:
+      tags:
+        - ConfigMaps
+      summary: 获取配置字典列表。
+      description: 获取配置字典列表。
+      operationId: listConfigMaps
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 对请求所针对的资源版本设置约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 决定如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: 监视对所述资源的更改。
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: 监视通知流将从合成事件开始，以生成集合中对象的当前状态。
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: list/watch调用的超时秒数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 配置字典列表对象。
+                properties:
+                  kind:
+                    type: string
+                    example: ConfigMapList
+                  apiVersion:
+                    type: string
+                    example: v1
+                  items:
+                    type: array
+                    description: 配置字典对象列表。
+                    items:
+                      type: object
+                      description: 配置字典对象。
+        '401':
+          description: 未鉴权。
+    post:
+      tags:
+        - ConfigMaps
+      summary: 创建一个配置字典。
+      description: 创建一个配置字典。
+      operationId: createConfigMap
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 配置字典配置对象。
+            example:
+              metadata:
+                name: example-configmap
+              data:
+                key1: value1
+                key2: value2
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 配置字典对象。
+        '201':
+          description: 已创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 配置字典对象。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+
+  #
+  # Secret 资源相关API
+  #
+  /api/kubernetes/api/v1/namespaces/{namespace}/secrets/{name}:
+    get:
+      tags:
+        - Secrets
+      summary: 读取指定的保密字典。
+      description: 获取保密字典具体内容。
+      operationId: readSecret
+      parameters:
+        - name: name
+          in: path
+          description: 保密字典名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 保密字典对象。
+        '401':
+          description: 未鉴权。
+    put:
+      tags:
+        - Secrets
+      summary: 更新指定的保密字典。
+      description: 更新指定的保密字典。
+      operationId: updateSecret
+      parameters:
+        - name: name
+          in: path
+          description: 保密字典名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 保密字典配置对象。
+            example:
+              metadata:
+                name: example-secret
+                namespace: default
+              data:
+                username: YWRtaW4=
+                password: MWYyZDFlMmU2N2Rm
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 保密字典对象。
+        '201':
+          description: 已创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 保密字典对象。
+        '401':
+          description: 未鉴权。
+    delete:
+      tags:
+        - Secrets
+      summary: 删除指定的保密字典。
+      description: 删除一个保密字典。
+      operationId: deleteSecret
+      parameters:
+        - name: name
+          in: path
+          description: 保密字典名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除对象前的持续时间（秒数）。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: propagationPolicy
+          in: query
+          description: 该字段决定是否以及如何执行垃圾收集。
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 保密字典对象。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+    patch:
+      tags:
+        - Secrets
+      summary: 部分更新指定的保密字典。
+      description: 部分更新指定的保密字典。
+      operationId: patchSecret
+      parameters:
+        - name: name
+          in: path
+          description: 保密字典名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制应用该请求。
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: 操作类型，如add、replace、remove。
+                    enum: [add, replace, remove]
+                  path:
+                    type: string
+                    description: 要操作的JSON路径。
+                  value:
+                    type: object
+                    description: 新值（对于add和replace操作是必需的）。
+            examples:
+              添加标签:
+                value:
+                  - op: add
+                    path: /metadata/labels
+                    value:
+                      data: value
+              添加标签属性:
+                value:
+                  - op: add
+                    path: /metadata/labels/env
+                    value: value
+              替换标签属性:
+                value:
+                  - op: replace
+                    path: /metadata/labels/env
+                    value: value1
+              删除标签属性:
+                value:
+                  - op: remove
+                    path: /metadata/labels/env
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 保密字典对象。
+        '201':
+          description: 已更新。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 保密字典对象。
+        '401':
+          description: 未鉴权。
+  
+  /api/kubernetes/api/v1/namespaces/{namespace}/secrets:
+    get:
+      tags:
+        - Secrets
+      summary: 获取保密字典列表。
+      description: 获取保密字典列表。
+      operationId: listSecrets
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 对请求所针对的资源版本设置约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 决定如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: 监视对所述资源的更改。
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: 监视通知流将从合成事件开始，以生成集合中对象的当前状态。
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: list/watch调用的超时秒数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 保密字典列表对象。
+                properties:
+                  kind:
+                    type: string
+                    example: SecretList
+                  apiVersion:
+                    type: string
+                    example: v1
+                  items:
+                    type: array
+                    description: 保密字典对象列表。
+                    items:
+                      type: object
+                      description: 保密字典对象。
+        '401':
+          description: 未鉴权。
+    post:
+      tags:
+        - Secrets
+      summary: 创建一个保密字典。
+      description: 创建一个保密字典。
+      operationId: createSecret
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 保密字典配置对象。
+            example:
+              metadata:
+                name: example-secret
+                namespace: default
+              data:
+                username: YWRtaW4=
+                password: MWYyZDFlMmU2N2Rm
+        required: true
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 保密字典对象。
+        '201':
+          description: 已创建。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 保密字典对象。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。

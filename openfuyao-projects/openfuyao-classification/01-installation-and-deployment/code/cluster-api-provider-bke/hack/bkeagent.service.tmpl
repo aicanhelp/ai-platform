@@ -1,0 +1,14 @@
+[Unit]
+Description= bkeagent
+After=network.target
+
+[Service]
+Environment="DEBUG=true"
+ExecStart=/usr/local/bin/bkeagent --kubeconfig=/etc/openFuyao/bkeagent/config --health-port= --ntpserver=
+KillMode=process
+RestartSec=20
+Restart=always
+SuccessExitStatus=0
+
+[Install]
+WantedBy=multi-user.target

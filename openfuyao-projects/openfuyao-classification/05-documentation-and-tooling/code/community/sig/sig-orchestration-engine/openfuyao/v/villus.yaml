@@ -1,0 +1,6 @@
+name: villus
+type: private
+description: '基于eBPF的高性能CNI插件，支持Overlay、Underlay通信模式，支持路由转发与负载均衡等能力'
+branches:
+  - name: master
+    type: protected

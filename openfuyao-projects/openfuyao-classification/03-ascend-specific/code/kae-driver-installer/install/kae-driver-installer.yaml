@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kae-driver-installer
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: kae-driver-installer
+  template:
+    metadata:
+      labels:
+        app: kae-driver-installer
+    spec:
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          effect: NoSchedule
+        - key: node-role.kubernetes.io/master
+          effect: NoSchedule
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kae.io/kae-driver-installer
+                    operator: Exists
+      hostNetwork: true
+      hostPID: true
+      initContainers:
+        - name: kae-driver-installer
+          image: cr.openfuyao.cn/openfuyao/kae-driver-installer:latest
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: INSTALL_POLICY
+              value: "IfNotPresent"  # or "Always"
+          command:
+            - /bin/sh
+            - -c
+            - sh /home/kae-driver/kae-driver-entrypoint.sh -o install
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: root-mount
+              mountPath: /mnt
+      containers:
+        - name: kae-driver
+          securityContext:
+            privileged: true
+          image: cr.openfuyao.cn/openfuyao/kae-driver-installer:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - while true; do sleep 3600; done
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: root-mount
+              mountPath: /mnt
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - /bin/sh
+                  - -c
+                  - sh /home/kae-driver/kae-driver-entrypoint.sh -o uninstall
+      volumes:
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        - name: root-mount
+          hostPath:
+            path: /

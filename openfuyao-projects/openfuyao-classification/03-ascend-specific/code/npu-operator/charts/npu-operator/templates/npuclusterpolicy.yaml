@@ -1,0 +1,650 @@
+apiVersion: npu.openfuyao.com/v1
+kind: NPUClusterPolicy
+metadata:
+  labels:
+    app.kubernetes.io/name: npu-operator
+    app.kubernetes.io/managed-by: kustomize
+  name: cluster
+spec:
+  daemonsets:
+    labels:
+      {{- include "npu-operator.operand-labels" . | nindent 6 }}
+    {{- if .Values.daemonsets.annotations }}
+    annotations: {{ toYaml .Values.daemonsets.annotations | nindent 6 }}
+    {{- end }}
+    {{- if .Values.daemonsets.nodeSelector }}
+    nodeSelector: {{ toYaml .Values.daemonsets.nodeSelector | nindent 6 }}
+    {{- end }}
+    {{- if .Values.daemonsets.tolerations }}
+    tolerations: {{ toYaml .Values.daemonsets.tolerations | nindent 6 }}
+    {{- end }}
+  driver:
+    managed: {{ .Values.driver.enabled }}
+    initImageSpec:
+      registry: ""
+      repository: '{{ list . "driver" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.driver.pullPolicy }}
+      imagePullSecrets:
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "driver" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.driver.pullPolicy }}
+      imagePullSecrets:
+    {{- if .Values.driver.env }}
+    env: {{- toYaml .Values.driver.env | nindent 6 }}
+    {{- end }}
+    {{- include "npu-operator.placementSpec" .Values.driver | nindent 4 }}
+  trainer:
+    managed: {{ .Values.trainer.enabled }}
+    initImageSpec:
+      registry: ""
+      repository: '{{ list . "busybox" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.busybox.pullPolicy }}
+      imagePullSecrets:
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "trainer" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.trainer.pullPolicy }}
+      imagePullSecrets:
+    {{- if .Values.trainer.env }}
+    env: {{- toYaml .Values.trainer.env | nindent 6 }}
+    {{- end }}
+    {{- include "npu-operator.placementSpec" .Values.trainer | nindent 4 }}
+    {{- if .Values.trainer.commandSpec }}
+    commandSpec:
+      {{- if .Values.trainer.commandSpec.command }}
+      command: {{ .Values.trainer.commandSpec.command | toJson }}
+      {{- end }}
+      {{- if .Values.trainer.commandSpec.args }}
+      args: {{ .Values.trainer.commandSpec.args | toJson }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.trainer.volumeSpec }}
+    volumeSpec:
+      {{- if .Values.trainer.volumeSpec.volumes }}
+      volumes:
+        {{- toYaml .Values.trainer.volumeSpec.volumes | nindent 8 }}
+      {{- end }}
+      {{- if .Values.trainer.volumeSpec.volumeMounts }}
+      volumeMounts:
+        {{- toYaml .Values.trainer.volumeSpec.volumeMounts | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.trainer.resources }}
+    resources:
+      requests:
+        memory: {{ .Values.trainer.resources.requests.memory }}
+        cpu: {{ .Values.trainer.resources.requests.cpu }}
+      limits:
+        memory: {{ .Values.trainer.resources.limits.memory }}
+        cpu: {{ .Values.trainer.resources.limits.cpu }}
+    {{- end }}
+  operator: {}
+  devicePlugin:
+    managed: {{ .Values.devicePlugin.enabled }}
+    initImageSpec:
+      registry: ""
+      repository: '{{ list . "busybox" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.busybox.pullPolicy }}
+      imagePullSecrets:
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "devicePlugin" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.devicePlugin.pullPolicy }}
+      imagePullSecrets:
+    env: {{- toYaml .Values.devicePlugin.env | nindent 6 }}
+    {{- include "npu-operator.placementSpec" .Values.devicePlugin | nindent 4 }}
+    {{- if .Values.devicePlugin.commandSpec }}
+    commandSpec:
+      {{- if .Values.devicePlugin.commandSpec.command }}
+      command: {{ .Values.devicePlugin.commandSpec.command | toJson }}
+      {{- end }}
+      {{- if .Values.devicePlugin.commandSpec.args }}
+      args: {{ .Values.devicePlugin.commandSpec.args | toJson }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.devicePlugin.volumeSpec }}
+    volumeSpec:
+      {{- if .Values.devicePlugin.volumeSpec.volumes }}
+      volumes:
+        {{- toYaml .Values.devicePlugin.volumeSpec.volumes | nindent 8 }}
+      {{- end }}
+      {{- if .Values.devicePlugin.volumeSpec.volumeMounts }}
+      volumeMounts:
+        {{- toYaml .Values.devicePlugin.volumeSpec.volumeMounts | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.devicePlugin.resources }}
+    resources:
+      requests:
+        memory: {{ .Values.devicePlugin.resources.requests.memory }}
+        cpu: {{ .Values.devicePlugin.resources.requests.cpu }}
+      limits:
+        memory: {{ .Values.devicePlugin.resources.limits.memory }}
+        cpu: {{ .Values.devicePlugin.resources.limits.cpu }}
+    {{- end }}
+  ociRuntime:
+    managed: {{ .Values.ociRuntime.enabled }}
+    initRuntimeImageSpec:
+      registry: ""
+      repository: '{{ list . "initRuntime" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.initRuntime.pullPolicy }}
+      imagePullSecrets:
+    initConfigImageSpec:
+      registry: ""
+      repository: '{{ list . "ociRuntime" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.ociRuntime.pullPolicy }}
+      imagePullSecrets:
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "ociRuntime" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.ociRuntime.pullPolicy }}
+      imagePullSecrets:
+    {{- include "npu-operator.placementSpec" .Values.ociRuntime | nindent 4 }}
+  nodeD:
+    managed: {{ .Values.nodeD.enabled }}
+    containerSnapshot:
+      enabled: {{ .Values.nodeD.containerSnapshot.enabled }}
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "nodeD" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.nodeD.pullPolicy }}
+      imagePullSecrets:
+    {{- if .Values.nodeD.env }}
+    env: {{- toYaml .Values.nodeD.env | nindent 6 }}
+    {{- end }}
+    {{- include "npu-operator.placementSpec" .Values.nodeD | nindent 4 }}
+    {{- if .Values.nodeD.commandSpec }}
+    commandSpec:
+      {{- if .Values.nodeD.commandSpec.command }}
+      command: {{ .Values.nodeD.commandSpec.command | toJson }}
+      {{- end }}
+      {{- if .Values.nodeD.commandSpec.args }}
+      args: {{ .Values.nodeD.commandSpec.args | toJson }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.nodeD.volumeSpec }}
+    volumeSpec:
+      {{- if .Values.nodeD.volumeSpec.volumes }}
+      volumes:
+        {{- toYaml .Values.nodeD.volumeSpec.volumes | nindent 8 }}
+      {{- end }}
+      {{- if .Values.nodeD.volumeSpec.volumeMounts }}
+      volumeMounts:
+        {{- toYaml .Values.nodeD.volumeSpec.volumeMounts | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.nodeD.resources }}
+    resources:
+      requests:
+        memory: {{ .Values.nodeD.resources.requests.memory }}
+        cpu: {{ .Values.nodeD.resources.requests.cpu }}
+      limits:
+        memory: {{ .Values.nodeD.resources.limits.memory }}
+        cpu: {{ .Values.nodeD.resources.limits.cpu }}
+    {{- end }}
+  inferOperator:
+    managed: {{ .Values.inferOperator.enabled }}
+    imageSpec:
+{{- include "npu-operator.imageSpec" (dict "root" . "image" "inferOperator" "values" .Values.inferOperator) | nindent 6 }}
+    {{- include "npu-operator.placementSpec" .Values.inferOperator | nindent 4 }}
+    {{- include "npu-operator.envSpec" .Values.inferOperator | nindent 4 }}
+    {{- include "npu-operator.commandSpec" .Values.inferOperator | nindent 4 }}
+    {{- include "npu-operator.volumeSpec" .Values.inferOperator | nindent 4 }}
+    {{- include "npu-operator.resourcesSpec" .Values.inferOperator | nindent 4 }}
+    {{- with .Values.inferOperator.logRotate }}
+    logRotate:
+{{ toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.inferOperator.config }}
+    config:
+{{ toYaml . | nindent 6 }}
+    {{- end }}
+  rdmaDevicePlugin:
+    managed: {{ .Values.rdmaDevicePlugin.enabled }}
+    imageSpec:
+{{- include "npu-operator.imageSpec" (dict "root" . "image" "rdmaDevicePlugin" "values" .Values.rdmaDevicePlugin) | nindent 6 }}
+    {{- include "npu-operator.placementSpec" .Values.rdmaDevicePlugin | nindent 4 }}
+    {{- include "npu-operator.envSpec" .Values.rdmaDevicePlugin | nindent 4 }}
+    {{- include "npu-operator.commandSpec" .Values.rdmaDevicePlugin | nindent 4 }}
+    {{- include "npu-operator.volumeSpec" .Values.rdmaDevicePlugin | nindent 4 }}
+    {{- include "npu-operator.resourcesSpec" .Values.rdmaDevicePlugin | nindent 4 }}
+    {{- with .Values.rdmaDevicePlugin.logRotate }}
+    logRotate:
+{{ toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.rdmaDevicePlugin.config }}
+    config:
+{{ toYaml . | nindent 6 }}
+    {{- end }}
+  volcano:
+    flavor: {{ .Values.volcano.flavor }}
+    {{- if ne .Values.volcano.runAsUser nil }}
+    runAsUser: {{ .Values.volcano.runAsUser }}
+    {{- end }}
+    {{- if ne .Values.volcano.runAsGroup nil }}
+    runAsGroup: {{ .Values.volcano.runAsGroup }}
+    {{- end }}
+    {{- $volcanoAdmissionImageSpec := "" }}
+    {{- if .Values.volcano.admission.imageOverrideEnabled }}
+    {{- $volcanoAdmissionImageSpec = include "npu-operator.optionalImageSpec" (dict "root" . "image" "volcanoAdmission" "values" .Values.volcano.admission) | trim }}
+    {{- end }}
+    {{- $volcanoAdmissionInitImageSpec := include "npu-operator.optionalImageSpec" (dict "root" . "image" "busybox" "values" .Values.volcano.admission) | trim }}
+    {{- $volcanoAdmissionLog := .Values.volcano.admission.log }}
+    {{- if or (kindIs "bool" .Values.volcano.admission.enabled) $volcanoAdmissionImageSpec $volcanoAdmissionInitImageSpec $volcanoAdmissionLog.dir $volcanoAdmissionLog.file $volcanoAdmissionLog.level }}
+    admission:
+      {{- if kindIs "bool" .Values.volcano.admission.enabled }}
+      enabled: {{ .Values.volcano.admission.enabled }}
+      {{- end }}
+      {{- if $volcanoAdmissionImageSpec }}
+      imageSpec:
+{{- $volcanoAdmissionImageSpec | nindent 8 }}
+      {{- end }}
+      {{- if $volcanoAdmissionInitImageSpec }}
+      initImageSpec:
+{{- $volcanoAdmissionInitImageSpec | nindent 8 }}
+      {{- end }}
+      {{- if or $volcanoAdmissionLog.dir $volcanoAdmissionLog.file $volcanoAdmissionLog.level }}
+      log:
+        {{- if $volcanoAdmissionLog.dir }}
+        dir: {{ $volcanoAdmissionLog.dir }}
+        {{- end }}
+        {{- if $volcanoAdmissionLog.file }}
+        file: {{ $volcanoAdmissionLog.file }}
+        {{- end }}
+        {{- if $volcanoAdmissionLog.level }}
+        level: {{ $volcanoAdmissionLog.level }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  vccontroller:
+    {{- $vccontrollerCommandSpec := .Values.vccontroller.commandSpec -}}
+    {{- if eq .Values.volcano.flavor "vnpu" -}}
+    {{- $vccontrollerCommandSpec = .Values.vccontroller.vnpuCommandSpec -}}
+    {{- end }}
+    managed: {{ .Values.vccontroller.enabled }}
+    {{- if .Values.vccontroller.initImageOverrideEnabled }}
+    initImageSpec:
+      registry: ""
+      repository: '{{ list . "busybox" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.busybox.pullPolicy }}
+      imagePullSecrets:
+    {{- end }}
+    {{- if .Values.vccontroller.imageOverrideEnabled }}
+    {{- $vccontrollerImageSpec := include "npu-operator.optionalImageSpec" (dict "root" . "image" (ternary "vnpuVccontroller" "vccontroller" (eq .Values.volcano.flavor "vnpu")) "values" .Values.vccontroller) | trim }}
+    {{- if $vccontrollerImageSpec }}
+    imageSpec:
+{{- $vccontrollerImageSpec | nindent 6 }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.vccontroller.env }}
+    env: {{- toYaml .Values.vccontroller.env | nindent 6 }}
+    {{- end }}
+    {{- include "npu-operator.placementSpec" .Values.vccontroller | nindent 4 }}
+    {{- if $vccontrollerCommandSpec }}
+    commandSpec:
+      {{- if $vccontrollerCommandSpec.command }}
+      command: {{ $vccontrollerCommandSpec.command | toJson }}
+      {{- end }}
+      {{- if $vccontrollerCommandSpec.args }}
+      args: {{ $vccontrollerCommandSpec.args | toJson }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.vccontroller.volumeSpec }}
+    volumeSpec:
+      {{- if .Values.vccontroller.volumeSpec.volumes }}
+      volumes:
+        {{- toYaml .Values.vccontroller.volumeSpec.volumes | nindent 8 }}
+      {{- end }}
+      {{- if .Values.vccontroller.volumeSpec.volumeMounts }}
+      volumeMounts:
+        {{- toYaml .Values.vccontroller.volumeSpec.volumeMounts | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.vccontroller.resources }}
+    resources:
+      requests:
+        memory: {{ .Values.vccontroller.controllerResources.requests.memory }}
+        cpu: {{ .Values.vccontroller.controllerResources.requests.cpu }}
+      limits:
+        memory: {{ .Values.vccontroller.controllerResources.limits.memory }}
+        cpu: {{ .Values.vccontroller.controllerResources.limits.cpu }}
+    {{- end }}
+  vcscheduler:
+    {{- $vcschedulerCommandSpec := .Values.vcscheduler.commandSpec -}}
+    {{- $schedulerConfigMap := .Values.vcscheduler.schedulerConfigMap.conf -}}
+    {{- if eq .Values.volcano.flavor "vnpu" -}}
+    {{- $vcschedulerCommandSpec = .Values.vcscheduler.vnpuCommandSpec -}}
+    {{- $schedulerConfigMap = .Values.vcscheduler.vnpuSchedulerConfigMap.conf -}}
+    {{- end }}
+    managed: {{ .Values.vcscheduler.enabled }}
+    {{- if .Values.vcscheduler.initImageOverrideEnabled }}
+    initImageSpec:
+      registry: ""
+      repository: '{{ list . "busybox" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.busybox.pullPolicy }}
+      imagePullSecrets:
+    {{- end }}
+    {{- if .Values.vcscheduler.imageOverrideEnabled }}
+    {{- $vcschedulerImageSpec := include "npu-operator.optionalImageSpec" (dict "root" . "image" (ternary "vnpuVcscheduler" "vcscheduler" (eq .Values.volcano.flavor "vnpu")) "values" .Values.vcscheduler) | trim }}
+    {{- if $vcschedulerImageSpec }}
+    imageSpec:
+{{- $vcschedulerImageSpec | nindent 6 }}
+    {{- end }}
+    {{- end }}
+    {{- if .Values.vcscheduler.env }}
+    env: {{- toYaml .Values.vcscheduler.env | nindent 6 }}
+    {{- end }}
+    {{- include "npu-operator.placementSpec" .Values.vcscheduler | nindent 4 }}
+    {{- if $vcschedulerCommandSpec }}
+    commandSpec:
+      {{- if $vcschedulerCommandSpec.command }}
+      command: {{ $vcschedulerCommandSpec.command | toJson }}
+      {{- end }}
+      {{- if $vcschedulerCommandSpec.args }}
+      args: {{ $vcschedulerCommandSpec.args | toJson }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.vcscheduler.volumeSpec }}
+    volumeSpec:
+      {{- if .Values.vcscheduler.volumeSpec.volumes }}
+      volumes:
+        {{- toYaml .Values.vcscheduler.volumeSpec.volumes | nindent 8 }}
+      {{- end }}
+      {{- if .Values.vcscheduler.volumeSpec.volumeMounts }}
+      volumeMounts:
+        {{- toYaml .Values.vcscheduler.volumeSpec.volumeMounts | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.vcscheduler.schedulerResources }}
+    resources:
+      requests:
+        memory: {{ .Values.vcscheduler.schedulerResources.requests.memory }}
+        cpu: {{ .Values.vcscheduler.schedulerResources.requests.cpu }}
+      limits:
+        memory: {{ .Values.vcscheduler.schedulerResources.limits.memory }}
+        cpu: {{ .Values.vcscheduler.schedulerResources.limits.cpu }}
+    {{- end}}
+    {{- if $schedulerConfigMap }}
+    schedulerConfigMap: |
+    {{ $schedulerConfigMap | nindent 6 }}
+    {{- end }}
+  clusterd:
+    managed: {{ .Values.clusterd.enabled }}
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "clusterd" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.clusterd.pullPolicy }}
+      imagePullSecrets:
+    {{- if .Values.clusterd.env }}
+    env: {{- toYaml .Values.clusterd.env | nindent 6 }}
+    {{- end }}
+    {{- include "npu-operator.placementSpec" .Values.clusterd | nindent 4 }}
+    {{- if .Values.clusterd.commandSpec }}
+    commandSpec:
+      {{- if .Values.clusterd.commandSpec.command }}
+      command: {{ .Values.clusterd.commandSpec.command | toJson }}
+      {{- end }}
+      {{- if .Values.clusterd.commandSpec.args }}
+      args: {{ .Values.clusterd.commandSpec.args | toJson }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.clusterd.volumeSpec }}
+    volumeSpec:
+      {{- if .Values.clusterd.volumeSpec.volumes }}
+      volumes:
+        {{- toYaml .Values.clusterd.volumeSpec.volumes | nindent 8 }}
+      {{- end }}
+      {{- if .Values.clusterd.volumeSpec.volumeMounts }}
+      volumeMounts:
+        {{- toYaml .Values.clusterd.volumeSpec.volumeMounts | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.clusterd.resources }}
+    resources:
+      requests:
+        memory: {{ .Values.clusterd.resources.requests.memory }}
+        cpu: {{ .Values.clusterd.resources.requests.cpu }}
+      limits:
+        memory: {{ .Values.clusterd.resources.limits.memory }}
+        cpu: {{ .Values.clusterd.resources.limits.cpu }}
+    {{- end }}
+  rscontroller:
+    managed: {{ .Values.rscontroller.enabled }}
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "rscontroller" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.rscontroller.pullPolicy }}
+      imagePullSecrets:
+    {{- include "npu-operator.placementSpec" .Values.rscontroller | nindent 4 }}
+    {{- if .Values.rscontroller.resources }}
+    resources:
+      requests:
+        memory: {{ .Values.rscontroller.resources.requests.memory }}
+        cpu: {{ .Values.rscontroller.resources.requests.cpu }}
+      limits:
+        memory: {{ .Values.rscontroller.resources.limits.memory }}
+        cpu: {{ .Values.rscontroller.resources.limits.cpu }}
+    {{- end }}
+    {{- if .Values.rscontroller.commandSpec }}
+    commandSpec:
+      {{- if .Values.rscontroller.commandSpec.command }}
+      command: {{ .Values.rscontroller.commandSpec.command | toJson }}
+      {{- end }}
+      {{- if .Values.rscontroller.commandSpec.args }}
+      args: {{ .Values.rscontroller.commandSpec.args | toJson }}
+      {{- end }}
+    {{- end }}
+  exporter:
+    managed: {{ .Values.exporter.enabled }}
+    serviceMonitor:
+      enabled: {{ dig "serviceMonitor" "enabled" false .Values.exporter }}
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "exporter" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.exporter.pullPolicy }}
+      imagePullSecrets:
+    {{- if .Values.exporter.env }}
+    env: {{- toYaml .Values.exporter.env | nindent 6 }}
+    {{- end }}
+    {{- include "npu-operator.placementSpec" .Values.exporter | nindent 4 }}
+    {{- if .Values.exporter.commandSpec }}
+    commandSpec:
+      {{- if .Values.exporter.commandSpec.command }}
+      command: {{ .Values.exporter.commandSpec.command | toJson }}
+      {{- end }}
+      {{- if .Values.exporter.commandSpec.args }}
+      args: {{ .Values.exporter.commandSpec.args | toJson }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.exporter.volumeSpec }}
+    volumeSpec:
+      {{- if .Values.exporter.volumeSpec.volumes }}
+      volumes:
+        {{- toYaml .Values.exporter.volumeSpec.volumes | nindent 8 }}
+      {{- end }}
+      {{- if .Values.exporter.volumeSpec.volumeMounts }}
+      volumeMounts:
+        {{- toYaml .Values.exporter.volumeSpec.volumeMounts | nindent 8 }}
+      {{- end }}
+    {{- end }}
+    {{- if .Values.exporter.resources }}
+    resources:
+      requests:
+        memory: {{ .Values.exporter.resources.requests.memory }}
+        cpu: {{ .Values.exporter.resources.requests.cpu }}
+      limits:
+        memory: {{ .Values.exporter.resources.limits.memory }}
+        cpu: {{ .Values.exporter.resources.limits.cpu }}
+    {{- end }}
+  mindiotft:
+    managed: {{ .Values.mindiotft.enabled }}
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "mindiotft" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.mindiotft.pullPolicy }}
+      imagePullSecrets:
+    {{- if .Values.mindiotft.env }}
+    env: {{- toYaml .Values.mindiotft.env | nindent 6 }}
+    {{- end }}
+    {{- include "npu-operator.placementSpec" .Values.mindiotft | nindent 4 }}
+  mindioacp:
+    managed: {{ .Values.mindioacp.enabled }}
+    version: {{ .Values.mindioacp.version }}
+    imageSpec:
+      registry: ""
+      repository: '{{ list . "mindioacp" | include "helpers.image.name" }}'
+      tag: ""
+      imagePullPolicy: {{ .Values.images.mindioacp.pullPolicy }}
+      imagePullSecrets:
+    {{- if .Values.mindioacp.env }}
+    env: {{- toYaml .Values.mindioacp.env | nindent 6 }}
+    {{- end }}
+    {{- include "npu-operator.placementSpec" .Values.mindioacp | nindent 4 }}
+  vnpu:
+    managed: {{ .Values.vnpu.enabled }}
+    {{- include "npu-operator.placementSpec" .Values.vnpu | nindent 4 }}
+    {{- if .Values.vnpu.updateStrategy }}
+    updateStrategy: {{ .Values.vnpu.updateStrategy }}
+    {{- end }}
+    {{- if .Values.vnpu.priorityClassName }}
+    priorityClassName: {{ .Values.vnpu.priorityClassName }}
+    {{- end }}
+    {{- if .Values.vnpu.nodeModeConfig }}
+    nodeModeConfig: |
+{{ .Values.vnpu.nodeModeConfig | nindent 6 }}
+    {{- end }}
+    {{- if .Values.vnpu.virtualTemplateConfig }}
+    virtualTemplateConfig: |
+{{ .Values.vnpu.virtualTemplateConfig | nindent 6 }}
+    {{- end }}
+    clientUpdate:
+      managed: {{ .Values.vnpu.clientUpdate.enabled }}
+      imageSpec:
+{{- include "npu-operator.imageSpec" (dict "root" . "image" "vnpuClientUpdate" "values" .Values.vnpu.clientUpdate) | nindent 8 }}
+      {{- include "npu-operator.placementSpec" .Values.vnpu.clientUpdate | nindent 6 }}
+      {{- include "npu-operator.envSpec" .Values.vnpu.clientUpdate | nindent 6 }}
+      {{- include "npu-operator.commandSpec" .Values.vnpu.clientUpdate | nindent 6 }}
+      {{- include "npu-operator.volumeSpec" .Values.vnpu.clientUpdate | nindent 6 }}
+      {{- include "npu-operator.resourcesSpec" .Values.vnpu.clientUpdate | nindent 6 }}
+    devicePlugin:
+      managed: {{ .Values.vnpu.devicePlugin.enabled }}
+      imageSpec:
+{{- include "npu-operator.imageSpec" (dict "root" . "image" "vnpuDevicePlugin" "values" .Values.vnpu.devicePlugin) | nindent 8 }}
+      {{- include "npu-operator.placementSpec" .Values.vnpu.devicePlugin | nindent 6 }}
+      {{- include "npu-operator.envSpec" .Values.vnpu.devicePlugin | nindent 6 }}
+      {{- if .Values.vnpu.devicePlugin.commandSpec }}
+      {{- include "npu-operator.commandSpec" .Values.vnpu.devicePlugin | nindent 6 }}
+      {{- end }}
+      {{- include "npu-operator.volumeSpec" .Values.vnpu.devicePlugin | nindent 6 }}
+      {{- include "npu-operator.resourcesSpec" .Values.vnpu.devicePlugin | nindent 6 }}
+      deviceSplitCount: {{ .Values.vnpu.devicePlugin.deviceSplitCount }}
+      loggingConsole: {{ .Values.vnpu.devicePlugin.loggingConsole }}
+    exporter:
+      managed: {{ .Values.vnpu.exporter.enabled }}
+      imageSpec:
+{{- include "npu-operator.imageSpec" (dict "root" . "image" "vnpuExporter" "values" .Values.vnpu.exporter) | nindent 8 }}
+      {{- include "npu-operator.placementSpec" .Values.vnpu.exporter | nindent 6 }}
+      {{- include "npu-operator.envSpec" .Values.vnpu.exporter | nindent 6 }}
+      {{- if .Values.vnpu.exporter.commandSpec }}
+      {{- include "npu-operator.commandSpec" .Values.vnpu.exporter | nindent 6 }}
+      {{- end }}
+      {{- include "npu-operator.volumeSpec" .Values.vnpu.exporter | nindent 6 }}
+      {{- include "npu-operator.resourcesSpec" .Values.vnpu.exporter | nindent 6 }}
+      port: {{ .Values.vnpu.exporter.port }}
+      https: {{ .Values.vnpu.exporter.https }}
+      serviceMonitor:
+        enabled: {{ .Values.vnpu.exporter.serviceMonitor.enabled }}
+  dra:
+    managed: {{ .Values.dra.enabled }}
+    driverName: {{ .Values.dra.driverName }}
+    deviceProfile: {{ .Values.dra.deviceProfile }}
+    cdiRoot: {{ .Values.dra.cdiRoot }}
+    healthcheckPort: {{ .Values.dra.healthcheckPort }}
+    numDevices: {{ .Values.dra.numDevices }}
+    kubeconfig: {{ .Values.dra.kubeconfig | quote }}
+    kubeAPIQPS: {{ .Values.dra.kubeAPIQPS | quote }}
+    kubeAPIBurst: {{ .Values.dra.kubeAPIBurst }}
+    featureGates: {{ .Values.dra.featureGates | quote }}
+    kubeletRegistrarDirectoryPath: {{ .Values.dra.kubeletRegistrarDirectoryPath }}
+    kubeletPluginsDirectoryPath: {{ .Values.dra.kubeletPluginsDirectoryPath }}
+    {{- include "npu-operator.placementSpec" .Values.dra | nindent 4 }}
+    kubeletPlugin:
+      managed: {{ .Values.dra.kubeletPlugin.enabled }}
+      imageSpec:
+{{- include "npu-operator.imageSpec" (dict "root" . "image" "draKubeletPlugin" "values" .Values.dra.kubeletPlugin) | nindent 8 }}
+      {{- include "npu-operator.placementSpec" .Values.dra.kubeletPlugin | nindent 6 }}
+      {{- include "npu-operator.envSpec" .Values.dra.kubeletPlugin | nindent 6 }}
+      {{- if .Values.dra.kubeletPlugin.commandSpec }}
+      {{- include "npu-operator.commandSpec" .Values.dra.kubeletPlugin | nindent 6 }}
+      {{- end }}
+      {{- include "npu-operator.volumeSpec" .Values.dra.kubeletPlugin | nindent 6 }}
+      {{- include "npu-operator.resourcesSpec" .Values.dra.kubeletPlugin | nindent 6 }}
+    deviceClasses:
+      managed: {{ .Values.dra.deviceClasses.enabled }}
+      {{- with .Values.dra.deviceClasses.templates }}
+      templates:
+{{ toYaml . | nindent 8 }}
+      {{- end }}
+    softVNPU:
+      managed: {{ .Values.dra.softVNPU.enabled }}
+      {{- include "npu-operator.placementSpec" .Values.dra.softVNPU | nindent 6 }}
+      shareCount: {{ .Values.dra.softVNPU.shareCount }}
+      softShareShmDir: {{ .Values.dra.softVNPU.softShareShmDir }}
+      softShareDevConfigDir: {{ .Values.dra.softVNPU.softShareDevConfigDir }}
+      npuProfileConfigPath: {{ .Values.dra.softVNPU.npuProfileConfigPath }}
+      chipCapabilitiesConfigMap: {{ .Values.dra.softVNPU.chipCapabilitiesConfigMap }}
+      chipCapabilitiesNamespace: {{ default .Release.Namespace .Values.dra.softVNPU.chipCapabilitiesNamespace }}
+      {{- if .Values.dra.softVNPU.chipCapabilities }}
+      chipCapabilities: |
+{{ .Values.dra.softVNPU.chipCapabilities | nindent 8 }}
+      {{- end }}
+      {{- if .Values.dra.softVNPU.profileConfig }}
+      profileConfig: |
+{{ .Values.dra.softVNPU.profileConfig | nindent 8 }}
+      {{- end }}
+      vcannrtInstaller:
+        managed: {{ .Values.dra.softVNPU.vcannrtInstaller.enabled }}
+        imageSpec:
+{{- include "npu-operator.imageSpec" (dict "root" . "image" "draVCANNRTInstaller" "values" .Values.dra.softVNPU.vcannrtInstaller) | nindent 10 }}
+        {{- include "npu-operator.placementSpec" .Values.dra.softVNPU.vcannrtInstaller | nindent 8 }}
+        {{- include "npu-operator.envSpec" .Values.dra.softVNPU.vcannrtInstaller | nindent 8 }}
+        {{- if .Values.dra.softVNPU.vcannrtInstaller.commandSpec }}
+        {{- include "npu-operator.commandSpec" .Values.dra.softVNPU.vcannrtInstaller | nindent 8 }}
+        {{- end }}
+        {{- include "npu-operator.volumeSpec" .Values.dra.softVNPU.vcannrtInstaller | nindent 8 }}
+        {{- include "npu-operator.resourcesSpec" .Values.dra.softVNPU.vcannrtInstaller | nindent 8 }}
+    webhook:
+      managed: {{ .Values.dra.webhook.enabled }}
+      imageSpec:
+{{- include "npu-operator.imageSpec" (dict "root" . "image" "draWebhook" "values" .Values.dra.webhook) | nindent 8 }}
+      {{- include "npu-operator.placementSpec" .Values.dra.webhook | nindent 6 }}
+      {{- include "npu-operator.envSpec" .Values.dra.webhook | nindent 6 }}
+      {{- if .Values.dra.webhook.commandSpec }}
+      {{- include "npu-operator.commandSpec" .Values.dra.webhook | nindent 6 }}
+      {{- end }}
+      {{- include "npu-operator.volumeSpec" .Values.dra.webhook | nindent 6 }}
+      {{- include "npu-operator.resourcesSpec" .Values.dra.webhook | nindent 6 }}
+      port: {{ .Values.dra.webhook.port }}
+      tlsCertFile: {{ .Values.dra.webhook.tlsCertFile }}
+      tlsPrivateKeyFile: {{ .Values.dra.webhook.tlsPrivateKeyFile }}
+      failurePolicy: {{ .Values.dra.webhook.failurePolicy }}
+      {{- if .Values.dra.webhook.caBundle }}
+      caBundle: {{ .Values.dra.webhook.caBundle | quote }}
+      {{- end }}

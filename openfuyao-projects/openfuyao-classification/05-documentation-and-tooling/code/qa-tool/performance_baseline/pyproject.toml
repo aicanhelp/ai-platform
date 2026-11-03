@@ -1,0 +1,60 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "performance-baseline"
+version = "0.1.0"
+description = "openFuyao 接口性能与资源占用自动化测试"
+readme = "performance/README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "assertpy==1.1",
+    "cachetools==5.5.2",
+    "certifi==2025.6.15",
+    "charset-normalizer==3.4.2",
+    "colorama==0.4.6",
+    "dotenv==0.9.9",
+    "durationpy==0.10",
+    "exceptiongroup==1.3.0",
+    "google-auth==2.40.3",
+    "greenlet==3.2.3",
+    "idna==3.10",
+    "iniconfig==2.1.0",
+    "numpy>=1.26.0",
+    "oauthlib==3.3.1",
+    "packaging==25.0",
+    "playwright==1.52.0",
+    "pluggy==1.6.0",
+    "pyasn1==0.6.1",
+    "pyasn1_modules==0.4.2",
+    "pyee==13.0.0",
+    "Pygments==2.19.2",
+    "pytest==8.4.1",
+    "pytest-base-url==2.1.0",
+    "pytest-order==1.3.0",
+    "pytest-playwright==0.7.0",
+    "python-dateutil==2.9.0.post0",
+    "python-dotenv==1.1.0",
+    "python-slugify==8.0.4",
+    "PyYAML==6.0.2",
+    "requests==2.32.4",
+    "requests-oauthlib==2.0.0",
+    "rsa==4.9.1",
+    "six==1.17.0",
+    "text-unidecode==1.3",
+    "tomli==2.2.1",
+    "typing_extensions==4.14.0",
+    "urllib3==1.26.20",
+    "websocket-client==1.8.0",
+    "kubernetes==28.1.0",
+    "paramiko==2.12.0",
+]
+
+[tool.hatch.build.targets.wheel]
+only-include = [
+    "performance",
+]
+
+[tool.uv]
+package = true

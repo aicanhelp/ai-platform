@@ -1,0 +1,11 @@
+cache-indexer:
+  releaseName: "cache-indexer"
+  helmUrl: "oci://cr.openfuyao.cn/charts/cache-indexer"
+  version: "0.0.0-latest"
+  namespace: "cache-indexer"
+
+infernex:
+  releaseName: "infernex"
+  helmUrl: "oci://cr.openfuyao.cn/charts/infernex"
+  version: "0.0.0-latest"
+  namespace: "cache-indexer"

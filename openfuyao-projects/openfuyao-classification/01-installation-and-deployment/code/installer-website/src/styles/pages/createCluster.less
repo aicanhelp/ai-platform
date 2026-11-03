@@ -1,0 +1,101 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+
+.form_each_title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.require_title::before {
+  content: '*';
+  color: #E7434A;
+  margin-right: 4px;
+  width: 24px;
+  height: 8px;
+}
+
+.col_flex {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+
+  .@{container-prefix}-form-item {
+    display: flex;
+    flex: 1;
+
+    .@{container-prefix}-form-item-row {
+      flex: 1;
+    }
+  }
+
+  .addonchoiceInput {
+    max-width: calc((100% - 24px) / 2);
+  }
+}
+
+.common_antd_icon .primary_color {
+  color: @button-normal-color;
+}
+
+.form_table {
+  .@{container-prefix}-form-item {
+    margin-bottom: 0;
+  }
+}
+
+.summary_line {
+  .summary_cell {
+    width: 100%;
+    border: none !important;
+
+    .summary_btn {
+      color: @button-normal-color;
+    }
+  }
+}
+
+.master_box {
+  margin-top: 32px;
+}
+
+.stricy_bottom {
+  z-index: 2;
+  padding: 20px 32px;
+  background-color: #fff;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+  height: 72px;
+  box-shadow: 0 0 10px 0 rgba(51, 51, 51, 0.16);
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+}
+
+.padding_bottom_no_box {
+  padding-bottom: 0;
+}
+
+.clusterLogContent {
+  overflow-y: auto;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border: 1px solid #cccccc;
+  color: #333333;
+  height: 580px;
+}

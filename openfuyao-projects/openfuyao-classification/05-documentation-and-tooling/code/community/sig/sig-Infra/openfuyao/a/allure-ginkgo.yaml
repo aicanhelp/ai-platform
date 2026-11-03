@@ -1,0 +1,6 @@
+name: allure-ginkgo
+type: public
+description: 'Allure Report 3 integration for Ginkgo testing framework'
+branches:
+  - name: main
+    type: protected

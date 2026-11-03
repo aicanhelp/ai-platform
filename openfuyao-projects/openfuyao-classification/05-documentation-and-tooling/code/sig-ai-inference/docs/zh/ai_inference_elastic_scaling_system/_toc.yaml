@@ -1,0 +1,9 @@
+label: AI推理弹性扩缩系统
+sections:
+  - label: AI推理弹性伸缩
+    href: ./ai_inference_elastic_scaling/user_guide/ai_inference_elastic_scaling.md
+  - label: ResourceScalingGroup-资源组扩缩容
+    href: ./ai_inference_resourcescalinggroup/user_guide/ai_inference_resourcescalinggroup.md
+  - label: AI推理潮汐算法
+    href: ./ai_inference_tidal_algorithm/user_guide/ai_inference_tidal_algorithm.md
+

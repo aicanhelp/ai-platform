@@ -1,0 +1,186 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+
+.dark_box {
+
+  .@{container-prefix}-select-selector,
+  .@{container-prefix}-picker {
+    border-color: #666666;
+    background-color: #2a2d34;
+  }
+
+  .@{container-prefix}-select-disabled.@{container-prefix}-select:not(.@{container-prefix}-select-customize-input) .@{container-prefix}-select-selector {
+    background: rgb(44, 44, 44) !important;
+    color: #ccc;
+    border: 1px solid rgb(68, 68, 68) !important;
+  }
+
+  .@{container-prefix}-select-arrow,
+  .@{container-prefix}-picker-suffix,
+  .@{container-prefix}-picker-clear {
+    color: #f7f7f7;
+  }
+
+  .@{container-prefix}-input-affix-wrapper {
+    background: #2a2d34ff;
+  }
+
+  .@{container-prefix}-table-cell a {
+    color: #4b8bea;
+  }
+
+  .@{container-prefix}-breadcrumb {
+    background-color: #2a2d34ff;
+    color: #F7F7F7;
+    box-shadow: @dark-box-shadow;
+
+    a {
+      color: #89939b !important;
+    }
+
+    li {
+      span {
+        color: #cccccc !important;
+      }
+    }
+  }
+
+  .@{container-prefix}-modal-content {
+    .@{container-prefix}-modal-title {
+      color: #f7f7f7;
+    }
+
+    .@{container-prefix}-modal-close-x svg {
+      color: #f7f7f7;
+    }
+  }
+
+  .@{container-prefix}-modal-root .cancel_btn {
+    border: 1px solid rgb(68, 68, 68);
+    background: #2a2d34ff;
+    color: #f7f7f7;
+  }
+
+  .@{container-prefix}-radio-inner::after {
+    background: #2a2d34ff;
+  }
+
+  .@{container-prefix}-table-column-sorter,
+  .@{container-prefix}-table-filter-trigger {
+    color: #f7f7f7;
+  }
+
+  .@{container-prefix}-input-outlined {
+    background-color: #2a2d34ff;
+    color: #ccc;
+    border-color: rgb(68, 68, 68);
+  }
+
+  .@{container-prefix}-input-outlined::placeholder {
+    color: #666666;
+  }
+
+  .@{container-prefix}-input-disabled {
+    background-color: rgb(44, 44, 44) !important;
+    color: #ccc;
+    border-color: rgb(68, 68, 68) !important;
+  }
+
+  .@{container-prefix}-input-search-button {
+    color: #666666 !important;
+    background-color: @dark-background-color;
+    border-color: rgb(68, 68, 68);
+  }
+
+  .@{container-prefix}-table-tbody {
+    .container-platform-table-row {
+      background: @dark-background-color !important;
+    }
+
+    tr {
+      td {
+        background: @dark-background-color !important;
+      }
+
+    }
+  }
+
+  .@{container-prefix}-tabs-nav {
+    background: #2a2d34ff;
+
+    .@{container-prefix}-tabs-nav-list {
+      background-color: #2a2d34ff;
+      // border: 1px solid #444444;
+    }
+
+    .@{container-prefix}-tabs-tab {
+      .@{container-prefix}-tabs-tab-btn {
+        color: #fff !important;
+      }
+    }
+
+    .@{container-prefix}-tabs-tab-active {
+      .@{container-prefix}-tabs-tab-btn {
+        color: #3f66f5 !important;
+      }
+    }
+  }
+
+  .@{container-prefix}-tabs-content-holder {
+    background-color: #171a1f;
+  }
+
+
+  .cluster_content {
+    background-color: #171a1f !important;
+  }
+  .service_content {
+    background-color: #171a1f !important;
+  }
+  .job_content {
+    background-color: #171a1f !important;
+  }
+  .overview_content{
+    background-color: #171a1f !important;
+    .overview_echarts{
+      .overview_box{
+        background: #2a2d34;
+        .overview_blod_title{
+          color: #fff;
+        }
+      }
+      .overview_echarts_top{
+        .overview_echarts_top_title{
+          color: #fff;
+        }
+        .overview_echarts_top_link{
+          background: #2a2d34ff;
+          border: 1px solid #444444ff;
+          color: #f7f7f7;
+        }
+      }
+    } 
+    .overview_echart2,.overview_echart{
+      background: #2a2d34;
+      .overview_echart2_one{
+        background: #2a2d34;
+        .overview_echart2_one_top{
+          p{
+            color: #fff;
+          }
+          svg{
+            color: #3f66f5;
+          }
+        }
+      }
+    }
+  }
+}

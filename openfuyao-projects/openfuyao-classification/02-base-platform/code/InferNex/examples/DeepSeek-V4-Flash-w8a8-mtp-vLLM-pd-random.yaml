@@ -1,0 +1,356 @@
+# DeepSeek-V4-Flash PD（1P1D：prefill tp8×dp2 + decode tp8×dp2，32 卡）+ Mooncake store。
+# 部署前请按实际权重修改 modelPath / cachePath。
+inferenceGateway:
+  enabled: true
+  name: "inference-gateway"
+  className: "istio"
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+
+  # 多套部署时 nodePort 须唯一。
+  service:
+    type: NodePort
+    nodePorts:
+      http: 30088
+
+  istio:
+    enabled: true
+
+global:
+  image:
+    pullPolicy: IfNotPresent
+  imagePullSecrets: []
+
+  env:
+    - name: HF_HUB_OFFLINE
+      value: "0"
+    - name: PYTHONHASHSEED
+      value: "0"
+    - name: VLLM_KV_EVENTS_USE_INT_BLOCK_HASHES
+      value: "1"
+
+  modelName: "deepseek-ai/DeepSeek-V4-Flash"
+  # Chart 将宿主机 cachePath 挂载到容器 /root/.cache。
+  # 容器内 modelPath 对应宿主机 <cachePath>/<权重目录名>，请改成你的权重位置。
+  modelPath: "/root/.cache/DeepSeek-V4-Flash-w8a8-mtp"
+  autoDownloadModel: false
+  cachePath: "/home/models" # 宿主机权重根目录，挂载为容器 /root/.cache
+
+hermes-router:
+  enabled: true
+
+  inferenceExtension:
+    replicas: 1
+    pluginsConfigFile: "default-plugins.yaml"
+    routing:
+      deploymentMode: pd
+      profile: random
+    tokenizer:
+      enabled: false
+    prediction:
+      enabled: false
+
+  inferencePool:
+    targetPorts:
+      - number: 8000
+    modelServerType: vllm
+
+  httpRoute:
+    inferenceGatewayName: "inference-gateway"
+    requestTimeout: "3600s"
+
+  provider:
+    name: istio
+    istio:
+      destinationRule:
+        trafficPolicy:
+          tls:
+            mode: SIMPLE
+            insecureSkipVerify: true
+      retryConfig:
+        enabled: true
+        retryOn: "connect-failure,refused-stream,unavailable,cancelled,retriable-status-codes,5xx,reset"
+        numRetries: 3
+
+inference-backend:
+  images:
+    inferenceEngine:
+      repository: "quay.io/ascend/vllm-ascend"
+      tag: "v0.23.0"
+  inferenceDevice: "huawei.com/Ascend910"
+
+  env:
+    - name: HCCL_OP_EXPANSION_MODE
+      value: "AIV"
+    - name: GLOO_SOCKET_IFNAME
+      value: "eth0"
+    - name: TP_SOCKET_IFNAME
+      value: "eth0"
+    - name: HCCL_SOCKET_IFNAME
+      value: "eth0"
+    - name: VLLM_EXECUTE_MODEL_TIMEOUT_SECONDS
+      value: "30000"
+    - name: HCCL_EXEC_TIMEOUT
+      value: "204"
+    - name: HCCL_CONNECT_TIMEOUT
+      value: "1200"
+    - name: HCCL_BUFFSIZE
+      value: "512"
+    # 缺失时分段 KV 拉取会在 remote_block_size 与 kernel_size 不对齐处崩溃。
+    - name: USE_MULTI_GROUPS_KV_CACHE
+      value: "1"
+    - name: USE_MULTI_BLOCK_POOL
+      value: "1"
+    - name: OMP_PROC_BIND
+      value: "false"
+    - name: OMP_NUM_THREADS
+      value: "10"
+    - name: PYTORCH_NPU_ALLOC_CONF
+      value: "expandable_segments:True"
+    - name: ACL_OP_INIT_MODE
+      value: "1"
+    - name: HCCL_INTRA_ROCE_ENABLE
+      value: "1"
+    - name: TASK_QUEUE_ENABLE
+      value: "1"
+    - name: CPU_AFFINITY_CONF
+      value: "1"
+    - name: VLLM_ENGINE_READY_TIMEOUT_S
+      value: "1200"
+    - name: VLLM_VERSION
+      value: "0.23.0"
+
+  volumeMounts:
+    ascend:
+      enable: true
+
+  volumes:
+    ascend:
+      enable: true
+
+  services:
+  - name: deepseek-v4-flash-1p1d-01
+    enabled: true
+    mode: pd
+    service:
+      port: 8000
+    pdGroupID: "deepseek-v4-flash-1p1d-01"
+
+    kvTransferConfig:
+      connectorConfig:
+        kv_connector: "MultiConnector"
+        kv_connector_extra_config:
+          connectors:
+            - kv_connector: "MooncakeHybridConnector"
+              kv_buffer_device: "npu"
+              kv_parallel_size: 1
+            - kv_connector: "AscendStoreConnector"
+              kv_buffer_device: "npu"
+              kv_parallel_size: 1
+              kv_connector_extra_config:
+                lookup_rpc_port: "0"
+                backend: "mooncake"
+      mooncake:
+        configPath: "/app/mooncake.json"
+        use_store: true
+        master:
+          rpcPort: 50051
+          servicePort: 30089
+          httpPort: 9003
+          extraArgs:
+            - --eviction_high_watermark_ratio 0.9
+            - --eviction_ratio 0.1
+        config: |
+          local_hostname: "$POD_IP"
+          metadata_server: "redis://redis-service:6379"
+          master_server_address: "mooncake-master-service:30089"
+          device_name: ""
+          protocol: "ascend"
+          global_segment_size: "40GB"
+          use_ascend_direct: true
+
+    pd:
+      prefill:
+        replicas: 1
+        tensorParallelSize: 8
+        pipelineParallelSize: 1
+        dataParallelSize: 2
+        dataParallelSizeLocal: 1
+        dataParallelRpcPort: 12890
+        env:
+          - name: HCCL_IF_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        volumeMounts: []
+        volumes: []
+        extraArgs:
+          - --max-model-len 68096
+          - --max-num-batched-tokens 1024
+          - --gpu-memory-utilization 0.9
+          - --block-size 128
+          - --enable-prefix-caching
+          - --prefix-caching-hash-algo sha256_cbor
+          - --enable-prompt-tokens-details
+          - --disable-access-log-for-endpoints=/health,/metrics
+          - --max-num-seqs 16
+          - --enforce-eager
+          - --async-scheduling
+          - --no-disable-hybrid-kv-cache-manager
+          - --trust-remote-code
+          - --enable-expert-parallel
+          - --quantization ascend
+          - --safetensors-load-strategy prefetch
+          - --model-loader-extra-config='{"enable_multithread_load":"true","num_threads":128}'
+          - --tokenizer-mode deepseek_v4
+          - --tool-call-parser deepseek_v4
+          - --enable-auto-tool-choice
+          - --reasoning-parser deepseek_v4
+          - --seed 1024
+          - --compilation-config '{"cudagraph_mode":"FULL_DECODE_ONLY"}'
+          - --additional-config '{"enable_cpu_binding":true}'
+
+      decode:
+        replicas: 1
+        tensorParallelSize: 8
+        pipelineParallelSize: 1
+        dataParallelSize: 2
+        dataParallelSizeLocal: 1
+        dataParallelRpcPort: 12777
+        env:
+          - name: HCCL_IF_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        volumeMounts: []
+        volumes: []
+        extraArgs:
+          - --max-model-len 68096
+          - --max-num-batched-tokens 64
+          - --gpu-memory-utilization 0.9
+          - --block-size 128
+          - --no-enable-prefix-caching
+          - --prefix-caching-hash-algo sha256_cbor
+          - --enable-prompt-tokens-details
+          - --disable-access-log-for-endpoints=/health,/metrics
+          - --max-num-seqs 30
+          - --async-scheduling
+          - --no-disable-hybrid-kv-cache-manager
+          - --trust-remote-code
+          - --enable-expert-parallel
+          - --quantization ascend
+          - --safetensors-load-strategy prefetch
+          - --model-loader-extra-config='{"enable_multithread_load":"true","num_threads":128}'
+          - --tokenizer-mode deepseek_v4
+          - --tool-call-parser deepseek_v4
+          - --enable-auto-tool-choice
+          - --reasoning-parser deepseek_v4
+          - --seed 1024
+          - --speculative-config '{"num_speculative_tokens":1,"method":"deepseek_mtp"}'
+          - --compilation-config '{"cudagraph_mode":"FULL_DECODE_ONLY"}'
+          - --additional-config '{"ascend_compilation_config":{"enable_npugraph_ex":true,"enable_static_kernel":false},"eplb_config":{"dynamic_eplb":false,"expert_heat_collection_interval":600,"algorithm_execution_interval":50,"eplb_policy_type":2,"num_redundant_experts":32},"enable_cpu_binding":true,"multistream_overlap_shared_expert":false,"multistream_dsa_preprocess":false,"recompute_scheduler_enable":true}'
+
+      proxyServer:
+        enabled: true
+        discoveryInterval: 10
+        accessLog:
+          enabled: true
+          excludedEndpoints:
+            - /health
+            - /metrics
+
+    resources:
+      requests:
+        cpu: "16"
+        memory: "300Gi"
+      limits:
+        cpu: "16"
+        memory: "300Gi"
+
+cache-indexer:
+  enabled: false
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  blockKey:
+    pythonHashSeed: "0"
+    prefixCachingHashAlgo: sha256_cbor
+    useIntBlockHashes: true
+  discovery:
+    refreshInterval: 10s
+    vllm:
+      zmqPortName: zmq-pub
+    mooncakeMaster:
+      httpPortName: http
+      httpPort: 9003
+  service:
+    name: cache-indexer-service
+    port: 8080
+
+eagle-eye:
+  enabled: false
+
+  network-performance-exporter:
+    networkPerformanceExporter:
+      metricsPort: 8222
+      collectInterval: 15
+
+pd-orchestrator:
+  elastic-scaler:
+    enabled: false
+
+    elasticScaler:
+      enabled: false
+
+    name: elastic-scaler
+    minReplicas: 1
+    maxReplicas: 10
+
+    targetRef:
+      kind: resourcescalinggroup
+      name: rsg
+      apiVersion: autoscaling.openfuyao.com/v1alpha1
+
+    trigger:
+      scalingAlgorithm: apa
+      resource:
+        metricsName: cpu
+        targetType: Utilization
+        targetValue: 70
+
+  resourcescalinggroup:
+    enabled: false
+    instanceConfig:
+      enabled: false
+      name: rsg
+      targetResources:
+      - name: prefill
+        resourceRef:
+          apiVersion: leaderworkerset.x-k8s.io/v1
+          kind: LeaderWorkerSet
+          name: deepseek-v4-flash-1p1d-01-prefill
+      - name: decode
+        resourceRef:
+          apiVersion: leaderworkerset.x-k8s.io/v1
+          kind: LeaderWorkerSet
+          name: deepseek-v4-flash-1p1d-01-decode
+      scalingStrategy:
+        type: GroupReplication
+        groupConfig:
+          groupName: pd
+          scaleDown:
+            metric:
+              expr: "vllm:num_requests_running"
+              type: "Gauge"
+              window: "2m"
+              aggregator: "avg"
+            order: ascending
+
+  tidal:
+    enabled: false

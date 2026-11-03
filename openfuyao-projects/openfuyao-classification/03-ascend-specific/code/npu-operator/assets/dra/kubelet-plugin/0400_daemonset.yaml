@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: npu-dra-kubeletplugin
+  namespace: FILLED_BY_OPERATOR
+spec:
+  selector:
+    matchLabels:
+      app: npu-dra-kubeletplugin
+  template:
+    metadata:
+      labels:
+        app: npu-dra-kubeletplugin
+    spec:
+      serviceAccountName: npu-dra-kubeletplugin
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: kubeletplugin
+          image: FILLED_BY_OPERATOR
+          imagePullPolicy: IfNotPresent
+          command: ["FILLED_BY_OPERATOR"]
+          args: ["FILLED_BY_OPERATOR"]
+          securityContext:
+            privileged: true
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: LD_LIBRARY_PATH
+              value: /usr/local/Ascend/driver/lib64:/usr/local/Ascend/driver/lib64/common:/usr/local/Ascend/driver/lib64/driver:/usr/local/Ascend/ascend-toolkit/latest/lib64:/usr/local/Ascend/ascend-toolkit/latest/runtime/lib64
+          volumeMounts:
+            - name: kubelet-plugins-registry
+              mountPath: /var/lib/kubelet/plugins_registry
+            - name: kubelet-plugins
+              mountPath: /var/lib/kubelet/plugins
+            - name: cdi
+              mountPath: /var/run/cdi
+            - name: dev
+              mountPath: /dev
+            - name: sys
+              mountPath: /sys
+              readOnly: true
+            - name: ascend-driver
+              mountPath: /usr/local/Ascend
+              readOnly: true
+            - name: npu-smi-command
+              mountPath: /usr/local/bin/npu-smi
+              readOnly: true
+      volumes:
+        - name: kubelet-plugins-registry
+          hostPath:
+            path: /var/lib/kubelet/plugins_registry
+            type: DirectoryOrCreate
+        - name: kubelet-plugins
+          hostPath:
+            path: /var/lib/kubelet/plugins
+            type: DirectoryOrCreate
+        - name: cdi
+          hostPath:
+            path: /var/run/cdi
+            type: DirectoryOrCreate
+        - name: dev
+          hostPath:
+            path: /dev
+            type: Directory
+        - name: sys
+          hostPath:
+            path: /sys
+            type: Directory
+        - name: ascend-driver
+          hostPath:
+            path: /usr/local/Ascend
+            type: Directory
+        - name: npu-smi-command
+          hostPath:
+            path: /usr/local/sbin/npu-smi
+            type: File

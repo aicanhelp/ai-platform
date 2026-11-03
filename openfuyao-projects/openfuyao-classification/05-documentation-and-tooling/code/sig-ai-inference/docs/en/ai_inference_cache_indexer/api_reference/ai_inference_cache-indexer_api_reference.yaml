@@ -1,0 +1,186 @@
+openapi: 3.0.0
+info:
+  title: AI Inference KVCache Index Management API Reference
+  description: Provides the cache-indexer KVCache hit rate query interface and health check interface.
+  version: 1.0.0
+servers:
+  - url: http://cache-indexer-service:28080
+paths:
+  /kv-cache/hit-rate:
+    post:
+      summary: Query KVCache hit rate.
+      description: Calculate L1/L3 KVCache hit rate for each service based on target service IP, token sequence, and block size.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - server_ip
+                - body
+              properties:
+                server_ip:
+                  type: array
+                  description: List of service IPs to evaluate hit rate.
+                  items:
+                    type: string
+                    example: "10.10.10.aa"
+                  example:
+                    - "10.10.10.aa"
+                    - "10.10.10.bb"
+                body:
+                  type: object
+                  required:
+                    - block_size
+                  properties:
+                    token_ids:
+                      type: array
+                      description: Token ID sequence for KVCache matching.
+                      items:
+                        type: integer
+                        format: int32
+                      example: [1, 2, 3, 4]
+                    cache_salt:
+                      type: string
+                      description: Cache isolation salt value; uses empty string when not set.
+                      example: ""
+                    block_size:
+                      type: integer
+                      format: int64
+                      description: KVCache block size, must be greater than 0.
+                      example: 4
+            examples:
+              Example 1:
+                value:
+                  server_ip:
+                    - "10.10.10.aa"
+                    - "10.10.10.bb"
+                  body:
+                    token_ids:
+                      - 1
+                      - 2
+                      - 3
+                      - 4
+                    cache_salt: ""
+                    block_size: 4
+      responses:
+        '200':
+          description: Hit rate calculation succeeded.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  server_score_list:
+                    type: array
+                    description: List of hit rate results for each service.
+                    items:
+                      type: object
+                      properties:
+                        server_ip:
+                          type: string
+                          description: Service IP.
+                          example: "10.10.10.aa"
+                        l1_hit_ratio:
+                          type: number
+                          format: double
+                          description: L1 cache hit rate.
+                          example: 0.75
+                        l3_hit_ratio:
+                          type: number
+                          format: double
+                          description: L3 cache hit rate.
+                          example: 0.0
+                  message:
+                    type: string
+                    description: Reserved response field; current implementation always returns an empty string.
+                    example: ""
+                  status:
+                    type: integer
+                    description: Reserved response field; current implementation always returns 0.
+                    example: 0
+        '400':
+          description: Invalid request data, such as empty request body, illegal JSON, unknown fields, missing server_ip, or block_size less than or equal to 0.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: server_ip is required
+                  status:
+                    type: integer
+                    example: 400
+        '405':
+          description: Request method not allowed; only POST is supported.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: method not allowed
+                  status:
+                    type: integer
+                    example: 405
+        '413':
+          description: Request body exceeds the server-configured size limit.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: request body too large
+                  status:
+                    type: integer
+                    example: 413
+        '500':
+          description: Hit rate calculation failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: score evaluation failed
+                  status:
+                    type: integer
+                    example: 500
+
+  /healthz:
+    get:
+      summary: Health check.
+      description: Check whether the cache-indexer process is alive. The server does not currently restrict request methods; GET is typically used for liveness probes.
+      responses:
+        '200':
+          description: Service is healthy.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /readyz:
+    get:
+      summary: Readiness check.
+      description: Check whether cache-indexer is ready to receive traffic. The server does not currently restrict request methods; GET is typically used for readiness probes.
+      responses:
+        '200':
+          description: Service is ready.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok

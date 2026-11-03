@@ -1,0 +1,26 @@
+label: 特性开发指南
+sections:
+  - label: 认证鉴权开发指南
+    href: ./authentication_and_authorization_development_guide.md
+  - label: 扩展组件开发指南
+    href: ./extension_development_guide.md
+  - label: 日志扩展组件开发指南
+    href: ./log_extension_development_guide.md
+  - label: 监控开发指南
+    href: ./monitoring_development_guide.md
+  - label: NUMA亲和调度开发指南
+    href:
+      upstream: https://gitcode.com/openFuyao/sig-numa-affinity/blob/master/docs/zh/developer_guide/numa-affinity_development_guide.md
+      path: ./
+  - label: OS一致性检查工具开发指南
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/oschecktool_developer_guide/os_consistency_check_tool_development_guide.md
+      path: ./
+  - label: AI推理赫尔墨斯路由开发指南
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-ai-inference/blob/main/docs/zh/ai_inference_hermes_routing/developer_guide/ai_inference_hermes_routing_plugin_in_development_guide.md
+      path: ./ai_inference_hermes_routing
+  - label: AI推理弹性伸缩插件开发指南
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-ai-inference/blob/main/docs/zh/ai_inference_elastic_scaling_system/ai_inference_elastic_scaling/developer_guide/ai_inference_elastic_scaling_plugin_in_development_guide.md
+      path: ./

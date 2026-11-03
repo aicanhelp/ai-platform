@@ -1,0 +1,70 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: __EXTERNAL_ROUTE__
+  namespace: __E2E_NS__
+spec:
+  parentRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: __NAME__-infernex-gateway
+      namespace: __E2E_NS__
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /__E2E_NS__/__NAME__/v1/completions
+      backendRefs:
+        - group: inference.networking.k8s.io
+          kind: InferencePool
+          name: __NAME__-inference-pool
+          namespace: __E2E_NS__
+          port: 8000
+          weight: 1
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /v1/completions
+      timeouts:
+        request: 0s
+        backendRequest: 0s
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /__E2E_NS__/__NAME__/v1/chat/completions
+      backendRefs:
+        - group: inference.networking.k8s.io
+          kind: InferencePool
+          name: __NAME__-inference-pool
+          namespace: __E2E_NS__
+          port: 8000
+          weight: 1
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /v1/chat/completions
+      timeouts:
+        request: 0s
+        backendRequest: 0s
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /__E2E_NS__/__NAME__
+      backendRefs:
+        - kind: Service
+          name: __NAME__-workload-svc
+          port: 8000
+          weight: 1
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
+      timeouts:
+        request: 0s
+        backendRequest: 0s

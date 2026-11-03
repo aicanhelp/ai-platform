@@ -1,0 +1,7 @@
+apiVersion: v2
+name: console-website
+description: openFuyao console website
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-component"]

@@ -1,0 +1,219 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.19.0
+  name: kubeletconfigs.bke.bocloud.com
+spec:
+  group: bke.bocloud.com
+  names:
+    kind: KubeletConfig
+    listKind: KubeletConfigList
+    plural: kubeletconfigs
+    shortNames:
+      - kct
+    singular: kubeletconfig
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .metadata.creationTimestamp
+          name: AGE
+          type: date
+      name: v1beta1
+      schema:
+        openAPIV3Schema:
+          description: KubeletConfig is the Schema for the kubeletconfigtemplates API
+          properties:
+            apiVersion:
+              description: |-
+                APIVersion defines the versioned schema of this representation of an object.
+                Servers should convert recognized schemas to the latest internal value, and
+                may reject unrecognized values.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+              type: string
+            kind:
+              description: |-
+                Kind is a string value representing the REST resource this object represents.
+                Servers may infer this from the endpoint the client submits requests to.
+                Cannot be updated.
+                In CamelCase.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: KubeletConfigSpec defines the desired state of KubeletConfig
+              properties:
+                commands:
+                  description: Commands defines additional commands to be executed
+                  items:
+                    description: CommandSpec defines a command to be executed on the
+                      node
+                    properties:
+                      args:
+                        description: Args are the command arguments
+                        items:
+                          type: string
+                        type: array
+                      command:
+                        description: Command is the command to execute
+                        type: string
+                      workingDir:
+                        description: WorkingDir is the working directory
+                        type: string
+                    required:
+                      - command
+                    type: object
+                  type: array
+                files:
+                  description: Files defines additional files to be created on the node
+                  items:
+                    description: FileSpec defines a file to be created on the node
+                    properties:
+                      content:
+                        description: Content is the file content
+                        type: string
+                      owner:
+                        description: Owner defines the file owner
+                        type: string
+                      path:
+                        description: Path is the file path on the node
+                        type: string
+                      permissions:
+                        description: Permissions defines the file permissions
+                        type: string
+                    required:
+                      - content
+                      - path
+                    type: object
+                  type: array
+                kubeletConfig:
+                  additionalProperties:
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                  description: KubeletConfig defines the kubelet configuration
+                  type: object
+                kubeletService:
+                  description: KubeletService defines the kubelet systemd service configuration
+                  properties:
+                    enabled:
+                      description: Enabled indicates whether to create the kubelet service
+                      type: boolean
+                    install:
+                      description: Install defines the [Install] section of the systemd
+                        service
+                      properties:
+                        requiredBy:
+                          description: RequiredBy defines the target that requires this
+                            service
+                          items:
+                            type: string
+                          type: array
+                        wantedBy:
+                          description: WantedBy defines the target that wants this service
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    service:
+                      description: Service defines the [Service] section of the systemd
+                        service
+                      properties:
+                        customExtra:
+                          additionalProperties:
+                            type: string
+                          description: CustomExtra defines user custom variables for
+                            the [Service] section
+                          type: object
+                        environment:
+                          description: Environment variables
+                          items:
+                            type: string
+                          type: array
+                        environmentFile:
+                          description: EnvironmentFile variables
+                          items:
+                            type: string
+                          type: array
+                        execStart:
+                          description: ExecStart defines the command to start the service
+                          type: string
+                        execStartPre:
+                          items:
+                            type: string
+                          type: array
+                        group:
+                          description: Group to run the service as
+                          type: string
+                        killMode:
+                          type: string
+                        restart:
+                          description: Restart policy
+                          type: string
+                        restartSec:
+                          description: RestartSec defines the restart delay
+                          type: integer
+                        standardError:
+                          type: string
+                        standardOutput:
+                          type: string
+                        startLimitBurst:
+                          type: integer
+                        startLimitInterval:
+                          description: StartLimitInterval defines the interval for start
+                            limit
+                          type: integer
+                        syslogIdentifier:
+                          type: string
+                        user:
+                          description: User to run the service as
+                          type: string
+                        workingDirectory:
+                          description: WorkingDirectory
+                          type: string
+                      required:
+                        - execStart
+                      type: object
+                    serviceName:
+                      description: ServiceName is the name of the systemd service
+                      type: string
+                    unit:
+                      description: Unit defines the [Unit] section of the systemd service
+                      properties:
+                        after:
+                          description: After defines services that this service should
+                            start after
+                          items:
+                            type: string
+                          type: array
+                        description:
+                          description: Description of the service
+                          type: string
+                        documentation:
+                          description: Documentation URL
+                          type: string
+                        requires:
+                          description: Requires defines services that this service requires
+                          items:
+                            type: string
+                          type: array
+                        wants:
+                          description: Wants defines services that this service wants
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                    variables:
+                      additionalProperties:
+                        type: string
+                      description: Variables defines template variables for the service
+                        file
+                      type: object
+                  type: object
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}

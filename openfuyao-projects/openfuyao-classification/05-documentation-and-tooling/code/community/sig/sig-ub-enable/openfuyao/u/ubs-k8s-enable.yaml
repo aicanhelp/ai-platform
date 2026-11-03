@@ -1,0 +1,9 @@
+name: ubs-k8s-enable
+type: private
+description: 'UB'
+branches:
+  - name: master
+    type: protected
+  - name: br-bugfix-20260330
+    type: protected
+    create_from: br_bugfix_20260330

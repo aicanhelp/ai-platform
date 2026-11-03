@@ -1,0 +1,6 @@
+name: juicefs
+type: public
+description: 'JuiceFS 是一个基于 Redis 和 S3 构建的分布式 POSIX 文件系统'
+branches:
+  - name: of-dev/v1.4.0
+    type: protected

@@ -1,0 +1,7 @@
+{{- if eq (include "prometheus.installed" .) "false" }}
+---
+service:
+  labels:
+    foo: bar
+    baz: quux
+{{- end }}

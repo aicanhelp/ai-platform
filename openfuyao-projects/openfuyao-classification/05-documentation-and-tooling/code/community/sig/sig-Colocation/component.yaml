@@ -1,0 +1,41 @@
+features:
+  - name: 在离线混部
+    repos:
+      - name: openFuyao/colocation-website
+        components:
+          - name: colocation-website
+            description: 'openFuyao在离线混部前端组件，支持统一混部策略配置、混部监控查看功能'
+            language: javascript
+            type: extension
+            release_type: independent
+            version: 1.0.1
+      - name: openFuyao/colocation-service
+        components:
+          - name: colocation-service
+            description: 'openFuyao在离线混部后端组件，对外提供service服务接口，包括混部监控信息接口，混部节点管理的添加、移除，混部调度策略配置'
+            language: go
+            type: extension
+            release_type: independent
+            version: 1.0.1
+      - name: openFuyao/colocation-management
+        components:
+          - name: colocation-manager
+            description: 'openFuyao在离线混部管理组件，负责计算每个节点的可超卖资源量，并对混部负载做webhook检查'
+            language: go
+            type: extension
+            release_type: independent
+            version: 1.0.1
+          - name: colocation-overquota-agent
+            description: 'openFuyao在离线混部后端组件，负责收集每个节点的实际资源利用率上报给colocation-manager以及普罗组件，同时借助nri-plugin技术修改容器cgroup等资源'
+            language: go
+            type: extension
+            release_type: independent
+            version: 1.0.1
+      - name: openFuyao/colocation-agent  # 这个里面其实没有制品，制品在openFuyao/image仓库
+        components:
+          - name: rubik
+            description: 'openFuyao适配的rubik混部引擎'
+            language: go
+            type: extension
+            release_type: independent
+            version: 2.0.1-r1

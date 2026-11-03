@@ -1,0 +1,58 @@
+apiVersion: openfuyao.io/v1beta1
+kind: params
+metadata:
+  name: openfuyao-system-params
+spec:
+  params:
+    - name: registry
+      value: harbor.openfuyao.com/openfuyao
+      type: string
+      describe: "fuyao-system拉取镜像地址"
+    - name: oauthCertsExpirationTime
+      value: 876000h
+      type: string
+      describe: "认证鉴权证书过期时间"
+    - name: harborRegistryPvSize
+      value: 10Gi
+      type: string
+      describe: "harbor registry pv"
+    - name: harborRegistryPvcSize
+      value: 10Gi
+      type: string
+      describe: "harbor registry pvc"
+    - name: harborChartmuseumPvSize
+      value: 10Gi
+      type: string
+      describe: "harbor chartmuseum pv"
+    - name: harborChartmuseumPvcSize
+      value: 10Gi
+      type: string
+      describe: "harbor chartmuseum pvc"
+    - name: harborRedisPvSize
+      value: 10Gi
+      type: string
+      describe: "harbor redis pv"
+    - name: harborRedisPvcSize
+      value: 10Gi
+      type: string
+      describe: "harbor redis pvc"
+    - name: harborJobservicePvSize
+      value: 10Gi
+      type: string
+      describe: "harbor jobservice pv"
+    - name: harborJobservicePvcSize
+      value: 10Gi
+      type: string
+      describe: "harbor jobservice pvc"
+    - name: harborDatabasePvSize
+      value: 10Gi
+      type: string
+      describe: "harbor database pv"
+    - name: harborDatabasePvcSize
+      value: 10Gi
+      type: string
+      describe: "harbor database pvc"
+    - name: enableHttps
+      value: true
+      type: bool
+      describe: "enable https verify"

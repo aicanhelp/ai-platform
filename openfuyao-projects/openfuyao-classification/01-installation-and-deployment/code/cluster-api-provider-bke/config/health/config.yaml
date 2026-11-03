@@ -1,0 +1,46 @@
+intervals:
+  critical: 5s
+  important: 15s
+  optional: 30s
+  normal: 5m
+components:
+  - name: etcd
+    namespace: kube-system
+    prefixes:
+      - etcd-
+    priority: critical
+  - name: kube-apiserver
+    namespace: kube-system
+    prefixes:
+      - kube-apiserver-
+    priority: critical
+  - name: kube-controller-manager
+    namespace: kube-system
+    prefixes:
+      - kube-controller-manager-
+    priority: critical
+  - name: kube-scheduler
+    namespace: kube-system
+    prefixes:
+      - kube-scheduler-
+    priority: critical
+  - name: calico-node
+    namespace: kube-system
+    prefixes:
+      - calico-node
+    priority: important
+  - name: calico-kube-controllers
+    namespace: kube-system
+    prefixes:
+      - calico-kube-controllers
+    priority: important
+  - name: kube-proxy
+    namespace: kube-system
+    prefixes:
+      - kube-proxy-
+    priority: important
+  - name: coredns
+    namespace: kube-system
+    prefixes:
+      - coredns
+    priority: important

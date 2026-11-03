@@ -1,0 +1,90 @@
+# Source: volcano/templates/admission.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: volcano-admission
+  name: volcano-admission
+  namespace: volcano-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: volcano-admission
+  template:
+    metadata:
+      labels:
+        app: volcano-admission
+    spec:
+      securityContext:
+        seLinuxOptions:
+          level: s0:c123,c456
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccount: volcano-admission
+      priorityClassName: system-cluster-critical
+      initContainers:
+        - name: init-permission
+          image: FILLED_BY_OPERATOR
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /var/log/volcano-admission
+              chown 1000:1000 /var/log/volcano-admission
+              chmod 750 /var/log/volcano-admission
+          securityContext:
+            privileged: true
+            runAsUser: 0
+            runAsGroup: 0
+          volumeMounts:
+            - name: admission-config-log
+              mountPath: /var/log/volcano-admission
+      containers:
+        - args:
+            - --enabled-admission=/jobs/mutate,/jobs/validate,/podgroups/validate,/queues/mutate,/queues/validate,/hypernodes/validate,/cronjobs/validate
+            - --tls-cert-file=/admission.local.config/certificates/tls.crt
+            - --tls-private-key-file=/admission.local.config/certificates/tls.key
+            - --ca-cert-file=/admission.local.config/certificates/ca.crt
+            - --admission-conf=/admission.local.config/configmap/volcano-admission.conf
+            - --webhook-namespace=volcano-system
+            - --webhook-service-name=volcano-admission-service
+            - --enable-healthz=true
+            - --logtostderr=false
+            - --log_dir=/var/log/volcano-admission
+            - --log_file=/var/log/volcano-admission/volcano-admission.log
+            - --port=8443
+            - -v=4
+            - 2>&1
+          image: cr.openfuyao.cn/openfuyao/vnpu/vc-webhook-manager:__NPU_OPERATOR_RELEASE_TAG__
+          imagePullPolicy: IfNotPresent
+          name: admission
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+              - DAC_OVERRIDE
+              drop:
+              - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+          volumeMounts:
+            - mountPath: /admission.local.config/certificates
+              name: admission-certs
+              readOnly: true
+            - mountPath: /admission.local.config/configmap
+              name: admission-config
+            - name: admission-config-log
+              mountPath: /var/log/volcano-admission
+      volumes:
+        - name: admission-certs
+          secret:
+            defaultMode: 420
+            secretName: volcano-admission-secret
+        - name: admission-config
+          configMap:
+            name: volcano-admission-configmap
+        - name: admission-config-log
+          hostPath:
+            path: /var/log/volcano-admission
+            type: DirectoryOrCreate

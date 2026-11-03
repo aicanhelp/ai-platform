@@ -1,0 +1,5 @@
+{{- if eq (include "prometheus.installed" .) "false" }}
+service:
+  targetPort: 9102
+  port: 9102
+{{- end }}

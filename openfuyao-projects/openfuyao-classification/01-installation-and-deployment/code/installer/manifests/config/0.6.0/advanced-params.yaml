@@ -1,0 +1,23 @@
+apiVersion: openfuyao.io/v1beta1
+kind: params
+metadata:
+  name: advanced-params
+spec:
+  params:
+    # 若为非中国大陆网络环境部署，需注释fuyao_zone
+    - name: fuyao_zone
+      value: cn
+      type: string
+      describe: "Install Openfuyao in the area where the machine is located to specify the binary file download link"
+    - name: http_proxy
+      value: ""
+      type: string
+      describe: "Http proxy, multiple are separated by commas"
+    - name: https_proxy
+      value: ""
+      type: string
+      describe: "Https proxy, multiple are separated by commas"
+    - name: no_proxy
+      value: ""
+      type: string
+      describe: "Do not use proxy addresses, multiple are separated by commas"

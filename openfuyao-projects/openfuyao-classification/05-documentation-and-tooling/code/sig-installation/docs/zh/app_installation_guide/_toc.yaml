@@ -1,0 +1,9 @@
+label: 应用/组件安装
+sections:
+  - label: 离线增量安装应用/扩展组件
+    href: ./offline_incremental_component_installation.md
+  - label: 在线增量安装应用/扩展组件
+    href: ./online_incremental_component_installation.md
+
+
+        

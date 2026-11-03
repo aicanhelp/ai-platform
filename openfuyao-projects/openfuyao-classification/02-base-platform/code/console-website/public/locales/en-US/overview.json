@@ -1,0 +1,91 @@
+{
+  "module": {
+    "title": "Summary"
+  },
+  "node": {
+    "title": "Nodes",
+    "total": "Total",
+    "manageNode": "Master Nodes",
+    "workerNode": "Worker Nodes",
+    "abnormal": "Abnormal",
+    "busy": "Busy",
+    "idle": "Idle",
+    "other": "Other"
+  },
+  "namespace": {
+    "title": "Namespaces"
+  },
+  "serviceAccount": {
+    "title": "ServiceAccounts"
+  },
+  "role": {
+    "title": "Roles"
+  },
+  "pod": {
+    "title": "Pods",
+    "total": "Total",
+    "running": "Running",
+    "pending": "Pending",
+    "succeeded": "Succeeded",
+    "failed": "Failed",
+    "unknown": "Unknown"
+  },
+  "alert": {
+    "title": "Alerts",
+    "critical": "Critical",
+    "warning": "Warning",
+    "info": "Info"
+  },
+  "application": {
+    "title": "Applications",
+    "total": "Total",
+    "deployed": "Deployed",
+    "processing": "Processing",
+    "failed": "Failed"
+  },
+  "extension": {
+    "title": "Extensions",
+    "total": "Total",
+    "deployed": "Deployed",
+    "processing": "Processing",
+    "failed": "Failed"
+  },
+  "workload": {
+    "title": "Workloads",
+    "deployment": "Deployment",
+    "statefulSet": "StatefulSet",
+    "daemonSet": "DaemonSet",
+    "active": "Active",
+    "updating": "Updating",
+    "failed": "Failed",
+    "running": "Running"
+  },
+  "network": {
+    "title": "Network Load",
+    "top5": "Network Load Top 5",
+    "inflow": "Inbound Traffic",
+    "outflow": "Outbound Traffic",
+    "node": "Node",
+    "pod": "Pod"
+  },
+  "resource": {
+    "title": "Resource Statistics",
+    "cpu": "CPU",
+    "memory": "Memory",
+    "storage": "Storage",
+    "total": "Total",
+    "usageRate": "Usage Rate",
+    "requestRate": "Request Rate",
+    "limitRate": "Limit Rate",
+    "diskUsage": "Disk Space Usage",
+    "inodeUsage": "Inode Usage",
+    "top5Percent": "Top 5 (%)",
+    "legend": "Legend",
+    "core": "Core",
+    "gib": "GiB",
+    "tenThousand": "10K"
+  },
+  "timeSync": {
+    "warning": "Client and server time differ by more than 10 seconds, please synchronize time"
+  }
+}

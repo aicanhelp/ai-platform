@@ -1,0 +1,6 @@
+name: containerd
+type: private
+description: '容器运行时核心组件，负责管理容器生命周期，镜像分发和存储，是Docker和Kubernetes的底层基础组件'
+branches:
+  - name: master
+    type: protected

@@ -1,0 +1,9 @@
+name: cache-indexer
+type: private
+description: '提供AI推理场景中的全局KV Cache管理能力。'
+branches:
+  - name: master
+    type: protected
+  - name: feat/go-refactor
+    type: protected
+    create_from: master

@@ -1,0 +1,16 @@
+{{- if .Values.enabled }}
+{{- $namespace := .Values.namespace | default "istio-system" }}
+{{- /* Avoid rendering a Namespace manifest when this chart is already being installed into the same namespace
+      (e.g. with `--create-namespace`), which can cause "already exists" conflicts. */ -}}
+{{- if ne $.Release.Namespace $namespace }}
+{{- $existingNamespace := lookup "v1" "Namespace" "" $namespace }}
+{{- if not $existingNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $namespace }}
+  labels:
+    {{- include "istio.labels" . | nindent 4 }}
+{{- end }}
+{{- end }}
+{{- end }}

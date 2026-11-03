@@ -1,0 +1,12 @@
+apiVersion: v2
+name: inference-gateway
+description: A Helm chart for Inference Gateway with Gateway API support
+type: application
+version: 0.0.0-latest
+appVersion: latest
+
+dependencies:
+  - name: istio
+    version: "*"
+    repository: "file://charts/istio"
+    condition: enabled,istio.enabled

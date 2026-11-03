@@ -1,0 +1,17 @@
+isManual: true
+label: 资源管理
+sections:
+  - label: 工作负载
+    href: ./workloads.md
+  - label: 网络
+    href: ./network.md 
+  - label: 存储
+    href: ./storage.md 
+  - label: 节点
+    href: ./nodes.md 
+  - label: 配置与密钥
+    href: ./configmap_and_secrets.md
+  - label: 命名空间
+    href: ./namespaces.md
+  - label: 自定义资源
+    href: ./custom_resources.md 

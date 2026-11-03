@@ -1,0 +1,20 @@
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: switchcluster
+spec:
+  nodeName: dev1-node-2.novalocal
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - id: auto-switch-cluster
+      command: ["SwitchCluster", "kubeconfig=kubeconfig", "nodeName=dev1-node-5.novalocal"]
+      type: BuiltIn
+      # 当该条指令执行失败，并且达到失败重试次数时，为true则运行跳过，默认false
+      backoffIgnore: false
+  # 失败后最大重试次数
+  backoffLimit: 1
+  # 超过此时间后，不在执行。默认600
+  # activeDeadlineSecond: 1000
+  # 运行完成后，超过此清理的时间则清理该任务
+  ttlSecondsAfterFinished: 50

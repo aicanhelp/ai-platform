@@ -1,0 +1,17 @@
+# Default values for colocation-agent.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+images:
+  rubik:
+    repository: cr.openfuyao.cn/openfuyao/rubik
+    tag: 2.0.1-r1
+    pullPolicy: IfNotPresent
+
+thirdPartyImages:
+  busyBox:
+    repository: "hub.oepkgs.net/openfuyao/busybox"
+    tag: "1.36.1"
+    pullPolicy: IfNotPresent
+
+namespace: openfuyao-colocation

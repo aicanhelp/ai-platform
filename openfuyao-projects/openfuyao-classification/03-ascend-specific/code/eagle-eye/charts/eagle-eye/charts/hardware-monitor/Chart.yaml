@@ -1,0 +1,7 @@
+apiVersion: v1
+name: hardware-monitor
+description: |
+  hardware-monitor is a component that performs health checks on the hardware components of the system, specifically targeting NPU and GPU devices. It collects detailed information on device status, memory usage, and hardware errors, which can be used for proactive management and troubleshooting of hardware resources.
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["artificial-intelligence"]

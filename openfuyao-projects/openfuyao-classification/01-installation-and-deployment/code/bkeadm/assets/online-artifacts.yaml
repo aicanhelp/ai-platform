@@ -1,0 +1,78 @@
+registry:
+  imageAddress: cr.openfuyao.cn/openfuyao/registry:2.8.1
+  architecture:
+    - amd64
+    - arm64
+repos:
+  - architecture: # openfuyao 组件
+      - amd64
+      - arm64
+    needDownload: true
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao
+        targetRepo: kubernetes
+        images:
+          - name: registry
+            tag:
+              - 2.8.1
+rpms:
+debs: []
+files:
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/kubernetes/kubernetes/releases/download/of-v1.33.1/bin/linux/arm64/
+    files:
+      - kubectl-v1.33.1-arm64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/kubernetes/kubernetes/releases/download/of-v1.33.1/bin/linux/amd64/
+    files:
+      - kubectl-v1.33.1-amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/kubernetes/kubernetes/releases/download/of-v1.33.1/bin/linux/arm64/
+    files:
+      - kubelet-v1.33.1-arm64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/kubernetes/kubernetes/releases/download/of-v1.33.1/bin/linux/amd64/
+    files:
+      - kubelet-v1.33.1-amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/containerd/containerd/releases/download/v2.1.1-origin/
+    files:
+      - containerd-v2.1.1-linux-amd64.tar.gz
+      - containerd-v2.1.1-linux-arm64.tar.gz
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/containernetworking/plugins/releases/download/v1.4.1/
+    files:
+      - cni-plugins-linux-amd64-v1.4.1.tgz
+      - cni-plugins-linux-arm64-v1.4.1.tgz
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/helm/releases/download/v3.14.2/
+    files:
+      - helm-v3.14.2-linux-amd64.tar.gz
+      - helm-v3.14.2-linux-arm64.tar.gz
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/mikefarah/yq/releases/download/v4.43.1
+    files:
+      - yq_linux_arm64
+      - yq_linux_amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/jqlang/jq/releases/download/v1.7.1
+    files:
+      - jq-linux-arm64
+      - jq-linux-amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/cloudflare/cfssl/releases/download/v1.6.4
+    files:
+      - cfssl-certinfo_1.6.4_linux_arm64
+      - cfssl-certinfo_1.6.4_linux_amd64
+      - cfssl_1.6.4_linux_arm64
+      - cfssl_1.6.4_linux_amd64
+      - cfssljson_1.6.4_linux_arm64
+      - cfssljson_1.6.4_linux_amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/opencontainers/runc/releases/download/v1.1.12/
+    files:
+      - runc-arm64
+      - runc-amd64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/etcd-io/etcd/releases/download/v3.5.6/
+    files:
+      - etcdctl-v3.5.6-linux-amd64
+      - etcdctl-v3.5.6-linux-arm64
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/rpm/releases/download/v0.0.1/
+    files:
+      - rpm.tar.gz
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/charts/releases/download/latest/
+    files:
+      - charts.tar.gz
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/nfs/
+    files:
+      - nfsshare.tar.gz
+charts: []

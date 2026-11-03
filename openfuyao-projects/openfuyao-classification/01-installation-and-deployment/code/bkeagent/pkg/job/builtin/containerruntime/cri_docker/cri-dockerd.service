@@ -1,0 +1,28 @@
+[Unit]
+Description=CRI Interface for Docker Application Container Engine
+Documentation=https://docs.mirantis.com
+After=network-online.target firewalld.service docker.service
+Wants=network-online.target
+Requires=cri-dockerd.socket
+
+[Service]
+Type=notify
+ExecStart=/usr/bin/cri-dockerd --pod-infra-container-image {{.sandbox}} --container-runtime-endpoint fd://
+ExecReload=/bin/kill -s HUP $MAINPID
+RestartSec=2
+Restart=always
+TimeoutSec=0
+
+StartLimitBurst=3
+StartLimitInterval=60s
+
+LimitNPROC=infinity
+LimitCORE=infinity
+LimitNOFILE=infinity
+
+Delegate=yes
+KillMode=process
+TasksMax=infinity
+
+[Install]
+WantedBy=multi-user.target

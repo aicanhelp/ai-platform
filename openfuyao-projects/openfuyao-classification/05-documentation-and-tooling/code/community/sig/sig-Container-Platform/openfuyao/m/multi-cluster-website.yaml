@@ -1,0 +1,6 @@
+name: multi-cluster-website
+type: public
+description: 'openFuyao多集群管理扩展组件前端，支持集群纳管、解纳管、集群标签管理以及服务跨集群访问'
+branches:
+  - name: master
+    type: protected

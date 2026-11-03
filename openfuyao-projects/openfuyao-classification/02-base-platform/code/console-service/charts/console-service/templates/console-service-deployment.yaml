@@ -1,0 +1,144 @@
+# RBAC authn and authz
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: console-service
+  namespace: openfuyao-system
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: console-role
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - '*'
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - '*'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: console-service
+subjects:
+- kind: ServiceAccount
+  name: console-service
+  namespace: openfuyao-system
+roleRef:
+  kind: ClusterRole
+  name: console-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# console-service deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: console-service
+  namespace: openfuyao-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: console-service
+  template:
+    metadata:
+      labels:
+        app: console-service
+    spec:
+      securityContext:
+        fsGroup: 65532
+        runAsUser: 65532
+        runAsGroup: 65532
+      serviceAccountName: console-service
+      initContainers:
+        - name: init-permission
+          image: {{ .Values.thirdPartyImages.busyBox.repository }}:{{ .Values.thirdPartyImages.busyBox.tag }}
+          command: ["sh","-c","chmod -R 700 /var/log/console-service && chown -R 65532:65532 /var/log/console-service"]
+          volumeMounts:
+            - mountPath: /var/log/console-service
+              name: varlog
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+        - name: check-apiserver
+          image: {{ .Values.images.kubectl.repository }}:{{ .Values.images.kubectl.tag }}
+          command: 
+            - sh
+            - '-c'
+            - |
+              echo "waiting for apiserver..."
+              until kubectl get cm -n openfuyao-system console-service-config > /dev/null 2>&1; do
+                sleep 2
+              done
+              echo "apiserver is ready"
+      containers:
+      - name: console-service
+        image: '{{ list . "core" | include "helpers.image.name" }}'
+        imagePullPolicy: {{ .Values.images.pullPolicy }}
+        env:
+          - name: OAUTH_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: console-service-oauth-client
+                key: client-id
+          - name: OAUTH_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: console-service-oauth-client
+                key: client-secret
+        ports:
+          - containerPort: 9037
+        volumeMounts:
+          {{- if .Values.config.enableHttps }}
+          - name: console-service-tls
+            mountPath: /ssl/ca.pem
+            subPath: ca.crt
+          - name: console-service-tls
+            readOnly: true
+            mountPath: /ssl/server.key
+            subPath: tls.key
+          - name: console-service-tls
+            readOnly: true
+            mountPath: /ssl/server.crt
+            subPath: tls.crt
+          {{- end }}
+          - name: log-config-volume
+            mountPath: /etc/console-service/log-config
+          - name: varlog
+            mountPath: /var/log/console-service
+          - name: host-time
+            mountPath: /etc/localtime
+            readOnly: true
+          - name: config-volume
+            mountPath: /etc/console-service/openfuyao-config
+        {{- if .Values.resources}}
+        resources: {{- toYaml .Values.resources | nindent 12}}
+        {{- end}}
+      volumes:
+        {{- if .Values.config.enableHttps }}
+        - name: console-service-tls
+          secret:
+            defaultMode: 0600
+            secretName: console-service-tls
+        {{- end }}
+        - name: varlog
+          hostPath:
+            path: /var/log/console-service
+            type: DirectoryOrCreate
+        - name: log-config-volume
+          configMap:
+            defaultMode: 420
+            name: console-service-logcfg
+        - name: config-volume
+          configMap:
+            defaultMode: 420
+            name: console-service-config
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""

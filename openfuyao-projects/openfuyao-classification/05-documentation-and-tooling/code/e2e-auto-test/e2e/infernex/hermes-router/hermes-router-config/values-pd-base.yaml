@@ -1,0 +1,357 @@
+inferenceGateway:
+  enabled: true
+  name: "inference-gateway"
+  className: "istio"
+  listeners:
+    - name: http
+      port: 80
+      protocol: HTTP
+
+global:
+  image:
+    pullPolicy: IfNotPresent
+  imagePullSecrets: []
+
+  env:
+    - name: HF_HUB_OFFLINE
+      value: "0"
+    - name: PYTHONHASHSEED
+      value: "0"
+    - name: VLLM_KV_EVENTS_USE_INT_BLOCK_HASHES
+      value: "1"
+
+  modelName: "Qwen/Qwen3-8B"
+  modelPath: ""
+  autoDownloadModel: true
+  cachePath: "/home/llm_cache"
+
+hermes-router:
+  enabled: true
+
+  inferenceExtension:
+    replicas: 1
+    image:
+      repository: cr.openfuyao.cn/openfuyao/hermes-router
+      tag: latest
+    pluginsConfigFile: "default-plugins.yaml"
+    # EPP 节点钉选见 values.yaml 注释；由 LoadHelmConfig 识别的 eppNode 经 --set 注入。
+    routing:
+      deploymentMode: pd
+      profile: ""
+      pd:
+        pdLabelName: openfuyao.com/pdRole
+        pdGroupLabelName: openfuyao.com/pdGroupID
+        prefillValue: prefill
+        decodeValue: decode
+        leaderValue: leader
+      tokenizer:
+        model: Qwen/Qwen3-8B
+        socketPath: /var/run/tokenizer/tokenizer.sock
+      kvCacheAware:
+        prefillKVUsageWeight: 1.0
+        prefillPrefixWeight: 1.0
+        prefillQueueWeight: 1.0
+        prefillInflightWeight: 1.0
+        decodeKVUsageWeight: 1.0
+        decodeQueueWeight: 1.0
+        decodeInflightWeight: 1.0
+        prefillScoreWeight: 1.0
+        decodeScoreWeight: 1.0
+      requestTracking:
+        storeName: hermes-inflight
+        persistence:
+          enabled: false
+          flushThreshold: 100
+          outputPath: /tmp/hermes-inflight/completed.jsonl
+      cacheIndexer:
+        address: http://cache-indexer-service:8080
+
+    tokenizer:
+      enabled: true
+      image:
+        repository: cr.openfuyao.cn/openfuyao/hermes-router-tokenizer
+        tag: latest
+      socketPath: /var/run/tokenizer/tokenizer.sock
+      provider: huggingface
+      extraArgs: []
+      extraEnv: []
+      volumeMounts:
+        - name: tokenizer-cache
+          mountPath: /workspace/.cache/huggingface/hub
+      volumes:
+        - name: tokenizer-cache
+          hostPath:
+            path: /home/llm_cache/huggingface/hub
+            type: Directory
+      resources: {}
+    prediction:
+      enabled: false
+      image:
+        repository: cr.openfuyao.cn/openfuyao/hermes-router-prediction
+        tag: latest
+      socketPath: /var/run/hermes/prediction.sock
+      timeout: 1s
+      maxBatchSize: 128
+      artifactRoot: /models/hermes
+      # 同 values.yaml：targetModel 与 bundle 目录布局一致，预测器才能 active。
+      targetModel: "Qwen/Qwen3-8B"
+      modelVersion: "baseline-conversation-data"
+      # 同 values.yaml：仅声明 volume 源，显式置空 volumeMounts/volumes 覆盖 chart 残留旧默认。
+      modelVolume: {}
+      volumeMounts: []
+      volumes: []
+    affinity: {}
+
+  inferencePool:
+    targetPorts:
+      - number: 8000
+    modelServerType: vllm
+
+  httpRoute:
+    inferenceGatewayName: "inference-gateway"
+
+  provider:
+    name: istio
+    istio:
+      destinationRule:
+        trafficPolicy:
+          tls:
+            mode: SIMPLE
+            insecureSkipVerify: true
+      retryConfig:
+        enabled: true
+        retryOn: "connect-failure,refused-stream,unavailable,cancelled,retriable-status-codes,5xx,reset"
+        numRetries: 3
+
+inference-backend:
+  images:
+    inferenceEngine:
+      repository: "quay.io/ascend/vllm-ascend"
+      tag: "v0.18.0"
+    proxyServer:
+      repository: "cr.openfuyao.cn/openfuyao/proxy-server"
+      tag: "latest"
+
+  inferenceDevice: "huawei.com/Ascend910"
+
+  volumeMounts:
+    ascend:
+      enable: true
+
+  volumes:
+    ascend:
+      enable: true
+
+  services:
+  - name: qwen3-8b-2p2d-01
+    enabled: true
+    mode: pd
+    service:
+      port: 8000
+    pdGroupID: "qwen3-8b-2p2d-01"
+    kvTransferConfig:
+      connectorConfig:
+        kv_connector: "MultiConnector"
+        kv_connector_extra_config:
+          connectors:
+            - kv_connector: "MooncakeConnectorV1"
+              kv_buffer_device: "npu"
+              kv_parallel_size: 1
+              kv_connector_extra_config:
+                use_ascend_direct: true
+            - kv_connector: "AscendStoreConnector"
+              kv_buffer_device: "npu"
+              kv_parallel_size: 1
+              kv_connector_extra_config:
+                lookup_rpc_port: "0"
+                backend: "mooncake"
+      mooncake:
+        use_store: true
+        master:
+          rpcPort: 50051
+          servicePort: 30089
+          httpPort: 9003
+        config: |
+          local_hostname: "$POD_IP"
+          metadata_server: "redis://redis-service:6379"
+          master_server_address: "mooncake-master-service:30089"
+          device_name: ""
+          protocol: "ascend"
+          global_segment_size: 42949672960
+          use_ascend_direct: true
+
+    pd:
+      prefill:
+        replicas: 2
+        tensorParallelSize: 1
+        pipelineParallelSize: 1
+        dataParallelSize: 1
+        dataParallelSizeLocal: 1
+        dataParallelRpcPort: 12890
+        env:
+          - name: HCCL_IF_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        volumeMounts: []
+        volumes: []
+        extraArgs:
+          - --enable-prefix-caching
+          - --max-model-len 10000
+          - --max-num-batched-tokens 40960
+          - --gpu-memory-utilization 0.8
+          - --block-size 128
+          - --prefix-caching-hash-algo sha256_cbor
+          - --enable-prompt-tokens-details
+
+      decode:
+        replicas: 2
+        tensorParallelSize: 1
+        pipelineParallelSize: 1
+        dataParallelSize: 1
+        dataParallelSizeLocal: 1
+        dataParallelRpcPort: 12777
+        env:
+          - name: HCCL_IF_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        volumeMounts: []
+        volumes: []
+        extraArgs:
+          - --no-enable-prefix-caching
+          - --max-model-len 10000
+          - --max-num-batched-tokens 40960
+          - --gpu-memory-utilization 0.8
+          - --block-size 128
+          - --prefix-caching-hash-algo sha256_cbor
+          - --enable-prompt-tokens-details
+
+      proxyServer:
+        enabled: true
+        discoveryInterval: 10
+
+    resources:
+      requests:
+        cpu: "4"
+        memory: "64Gi"
+      limits:
+        cpu: "8"
+        memory: "128Gi"
+
+cache-indexer:
+  enabled: true
+  image:
+    repository: cr.openfuyao.cn/openfuyao/cache-indexer
+    tag: "latest"
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+  blockKey:
+    pythonHashSeed: "0"
+    prefixCachingHashAlgo: sha256_cbor
+    useIntBlockHashes: true
+  discovery:
+    refreshInterval: 10s
+    vllm:
+      zmqPortName: zmq-pub
+    mooncakeMaster:
+      httpPortName: http
+      httpPort: 9003
+  service:
+    name: cache-indexer-service
+    port: 8080
+
+eagle-eye:
+  enabled: false
+
+  hardware-monitor:
+    images:
+      core:
+        repository: cr.openfuyao.cn/openfuyao/eagle-eye-hardware-monitor
+        tag: "latest"
+
+  hardware-diagnosis:
+    images:
+      core:
+        repository: cr.openfuyao.cn/openfuyao/eagle-eye-hardware-diagnosis
+        tag: "latest"
+
+  network-performance-exporter:
+    images:
+      core:
+        repository: cr.openfuyao.cn/openfuyao/eagle-eye-network-performance-exporter
+        tag: "latest"
+
+    networkPerformanceExporter:
+      metricsPort: 8222
+      collectInterval: 15
+
+pd-orchestrator:
+  elastic-scaler:
+    enabled: false # elastic-scaler 组件部署开关
+    image:
+      repository: cr.openfuyao.cn/openfuyao/elastic-scaler
+      tag: latest
+
+    elasticScaler:
+      enabled: false # chart包中默认提供的 elastic-scaler CR 实例开关，开启后会默认安装 elastic-scaler CR
+
+    name: elastic-scaler # 通过 HPA 扩缩的最大副本数和最小副本数
+    minReplicas: 1
+    maxReplicas: 10
+
+    targetRef:
+      kind: resourcescalinggroup
+      name: rsg # 该 name 需要对应 resourcescalinggroup.instanceConfig.name
+      apiVersion: autoscaling.openfuyao.com/v1alpha1
+
+    trigger:
+      scalingAlgorithm: apa
+      # 设置 apa 扩缩资源指标
+      resource:
+        metricsName: cpu
+        targetType: Utilization
+        targetValue: 70
+
+  resourcescalinggroup:
+    enabled: false # resourcescalinggroup 组件的部署开关
+    image:
+      repository: cr.openfuyao.cn/openfuyao/resource-scaling-group
+      tag: latest
+
+    instanceConfig:
+      enabled: false # chart包中默认提供的 resource scaling group CR 实例开关，开启后会默认安装 CR 实例
+      name: rsg
+      targetResources:
+      - name: prefill
+        resourceRef:
+          apiVersion: leaderworkerset.x-k8s.io/v1
+          kind: LeaderWorkerSet
+          name: qwen3-8b-2p2d-01-prefill
+      - name: decode
+        resourceRef:
+          apiVersion: leaderworkerset.x-k8s.io/v1
+          kind: LeaderWorkerSet
+          name: qwen3-8b-2p2d-01-decode
+      scalingStrategy:
+        type: GroupReplication
+        groupConfig: 
+          groupName: pd 
+          scaleDown: 
+            metric: 
+              expr: "vllm:num_requests_running" 
+              type: "Gauge"
+              window: "2m"
+              aggregator: "avg"
+            order: ascending
+
+  tidal:
+    enabled: false # tidal 组件的部署开关
+    image:
+      repository: cr.openfuyao.cn/openfuyao/tidal
+      tag: latest

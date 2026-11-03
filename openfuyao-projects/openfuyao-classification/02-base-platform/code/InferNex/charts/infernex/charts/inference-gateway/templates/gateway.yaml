@@ -1,0 +1,25 @@
+{{- if .Values.enabled }}
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: {{ include "inference-gateway.gatewayName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inference-gateway.labels" . | nindent 4 }}
+  {{- $annotations := include "inference-gateway.annotations" . | trim }}
+  {{- if $annotations }}
+  annotations:
+    {{- $annotations | nindent 4 }}
+  {{- end }}
+spec:
+  gatewayClassName: {{ .Values.className | default "istio" }}
+  {{- if include "inference-gateway.nodePortEnabled" . }}
+  infrastructure:
+    parametersRef:
+      group: ""
+      kind: ConfigMap
+      name: {{ include "inference-gateway.configMapName" . }}
+  {{- end }}
+  listeners:
+    {{- toYaml .Values.listeners | nindent 4 }}
+{{- end }}

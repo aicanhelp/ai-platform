@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-terminal-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    control-plane: web-terminal-service
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      control-plane: web-terminal-service
+  template:
+    metadata:
+      labels:
+        control-plane: web-terminal-service
+    spec:
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 0
+      initContainers:
+      - name: init-permission
+        image: {{ .Values.thirdPartyImage.busyBox.repository }}:{{ .Values.thirdPartyImage.busyBox.tag }}
+        command:
+          - "sh"
+          - "-c"
+          - |
+            IMAGE_PATH="{{ list . "kubectl" | include "helpers.image.name" }}"
+            echo $IMAGE_PATH > /mnt/data/imagePath.txt && chmod -R 700 /var/log/webterminal-service && chown -R 65532:65532 /var/log/webterminal-service
+        volumeMounts:
+        - name: webterminal-log
+          mountPath: /var/log/webterminal-service
+        - name: kubectl-image
+          mountPath: /mnt/data
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+      containers:
+        - name: webterminal-controller
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          env:
+            - name: SERVICE_PORT
+              value: {{ .Values.service.ports.http.targetPort | quote }}
+          volumeMounts:
+          - name: webterminal-log
+            mountPath: /var/log/webterminal-service
+          - name: kubectl-image
+            mountPath: /mnt/data
+          {{- if .Values.config.enableTLS }}
+          - name: web-terminal-service-tls
+            mountPath: /ssl/ca.pem
+            subPath: ca.crt
+          - name: web-terminal-service-tls
+            readOnly: true
+            mountPath: /ssl/server.key
+            subPath: tls.key
+          - name: web-terminal-service-tls
+            readOnly: true
+            mountPath: /ssl/server.crt
+            subPath: tls.crt
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.ports.http.targetPort }}
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8081
+            initialDelaySeconds: 15
+            periodSeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: 8081
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+      - name: webterminal-log
+        hostPath:
+          path: /var/log/webterminal-service
+          type: DirectoryOrCreate
+      - name: kubectl-image
+        emptyDir: {}
+      {{- if .Values.config.enableTLS }}
+      - name: web-terminal-service-tls
+        secret:
+          defaultMode: 0600
+          secretName: web-terminal-service-tls
+      {{- end }}
+      serviceAccountName: web-terminal-service
+      terminationGracePeriodSeconds: 10

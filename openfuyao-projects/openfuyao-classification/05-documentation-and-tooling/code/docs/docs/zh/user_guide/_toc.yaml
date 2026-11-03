@@ -1,0 +1,97 @@
+label: 特性用户指南
+sections:
+  - label: AI推理与KVCache加速
+    href:
+      upstream: https://gitcode.com/openFuyao/sig-ai-inference/blob/main/docs/zh/_toc.yaml
+      path: ./
+  - label: NPU与硬件设备管理
+    sections:
+      - label: KAE Operator
+        href: ./kae_operator.md
+      - label: NPU Operator
+        href: ./npu_operator.md
+      - label: npu-dra-plugin
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/npu_dra_plugin_user_guide/npu_dra_plugin.md
+          path: ./
+      - label: vNPU
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/vnpu_user_guide/vnpu_user_guide.md
+          path: ./
+      - label: 基于UB容器网络的设备插件
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/device_plug_in_based_on_ub_container_network/device_plug_in_based_on_ub_container_network.md
+          path: ./
+      - label: SuperPod
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/superpod_user_guide/superpod_user_guide.md
+          path: ./
+      - label: 内存借用
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/memory_borrowing_user_guide/memory_borrowing.md
+          path: ./
+      - label: 内存共享
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/memory_sharing_user_guide/memory_sharing.md
+          path: ./
+
+  - label: 沙箱与虚拟化
+    sections:
+      - label: Agent沙箱Checkpoint与Restore
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/sandbox_checkpoint_restore_user_guide/use_checkpoint_and_restore.md
+          path: ./
+      - label: SandboxSched沙箱调度引擎
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-agent-sandbox/blob/master/doc/zh/sandboxsched.md
+          path: ./
+      - label: KubeVirt
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/kubevirt_user_guide/kubevirt.md
+          path: ./
+      - label: 鲲鹏机密容器
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-container-platform/blob/master/docs/zh/kunpeng_confidential_container/user_guide/kunpeng_confidential_container.md
+          path: ./
+
+  - label: 容器增强
+    sections:
+      - label: 容器启动时CPU加速
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/cpu_acceleration_during_container_startup_user_guide/cpu_acceleration_during_container_startup.md
+          path: ./
+      - label: 容器高密部署
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/high_density_container_deployment_user_guide/high-density_container_deployment.md
+          path: ./
+      - label: 证书热更新
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/certificate_hot_reload_user_guide/certificate_hot_reload.md
+          path: ./
+      - label: kube-log-runner日志轮转可靠性增强
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/kube_log_runner_user_guide/kube-log-runner_log_rotation_reliability_enhancement.md
+          path: ./
+      - label: OS一致性检查工具
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/oschecktool_user_guide/os_consistency_check_tool.md
+          path: ./
+      - label: 修改statefulset实现PVC扩容
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/pvc_expansion_user_guide/pvc_expansion_through_statefulset_modification.md
+          path: ./
+      - label: 日志框架
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-container-platform/blob/master/docs/zh/ologger/user_guide/ologger_log_framework.md
+          path: ./
+      - label: Serverlessdb Operator
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/zh/serverlessdb_operator_user_guide/serverlessdb_operator.md
+          path: ./
+
+  - label: 超大规模集群
+    sections:
+      - label: 超大规模集群
+        href:
+          upstream: https://gitcode.com/openFuyao/sig-large-scale-cluster/blob/master/docs/zh/_toc.yaml
+          path: ./sig-large-scale-cluster

@@ -1,0 +1,81 @@
+.fz_16 {
+  font-size: 16px,
+}
+.fw-bold {
+  font-weight: bold;
+}
+.mg_b_20 {
+  margin-bottom: 20px;
+}
+.pd_32 {
+  padding: 0 32px;
+}
+.display_flex {
+  display: flex;
+  justify-content: space-between;
+}
+.stash_details_container {
+  margin: 20px 32px;
+  padding-bottom: 20px;
+}
+.package_item_container {
+  display: grid;
+  grid-template-columns: repeat(5,1fr);
+  gap: 22px;
+  margin: 0 32px;
+}
+.package_item {
+  display: flex;
+  border-radius: 6px;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  min-height: 200px;
+  border: 1px solid #dcdcdcff;
+  background-color: #fff;
+  cursor: pointer;
+}
+.ware_house_detail_header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 27px 32px;
+  height: 53px;
+  align-items: center;
+}
+.application_title {
+  text-overflow: ellipsis; /* 当文本溢出时显示省略号 */
+  overflow: hidden; /* 隐藏溢出的文本 */
+  min-width: 80px;
+}
+.application_description {
+  // text-overflow: ellipsis; /* 当文本溢出时显示省略号 */
+  // overflow: hidden; /* 隐藏溢出的文本 */
+  // white-space: nowrap;
+  // max-width: 200px;
+  max-width: 97%;
+  word-break: break-all;
+}
+
+.upload_container {
+  :where(.css-dev-only-do-not-override-j9bb5n).container-platform-upload-wrapper .container-platform-upload-list .container-platform-upload-list-item .container-platform-upload-list-item-name {
+    text-overflow: ellipsis;
+    /* 当文本溢出时显示省略号 */
+    overflow: hidden;
+    /* 隐藏溢出的文本 */
+    white-space: nowrap;
+    /* 禁止文本换行 */
+    width: 250px !important;
+  }
+}
+.container-platform-tabs-nav {
+  padding-top: 0 !important;
+}
+@media screen and (min-width: 1280px) and (max-width: 1600px) {
+  .package_item_container {
+    display: grid;
+    grid-template-columns: repeat(4,1fr) !important;
+    gap: 22px  !important;
+    margin: 0 32px  !important;
+  }
+}

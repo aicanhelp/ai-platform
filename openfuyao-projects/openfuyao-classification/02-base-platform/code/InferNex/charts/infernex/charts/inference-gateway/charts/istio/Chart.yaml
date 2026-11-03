@@ -1,0 +1,16 @@
+apiVersion: v2
+name: istio
+description: Istio service mesh wrapper chart
+type: application
+version: 1.28.0
+appVersion: "1.28.0"
+
+dependencies:
+  - name: base
+    version: "*"
+    repository: "file://charts/base"
+    condition: enabled
+  - name: istiod
+    version: "*"
+    repository: "file://charts/istiod"
+    condition: enabled

@@ -1,0 +1,34 @@
+apiVersion: openfuyao.io/v1beta1
+kind: params
+metadata:
+  name: harbor-params
+spec:
+  params:
+    - name: registryDomain
+      value: ""
+      type: string
+      describe: "harbor domain"
+    - name: registryPassword
+      value: ""
+      type: string
+      describe: "harbor password"
+    - name: ip
+      value: ""
+      type: string
+      describe: "harbor password"
+    - name: registryDBPassword
+      value: ""
+      type: string
+      describe: "harbor database password"
+    - name: certExpiryDays
+      value: ""
+      type: string
+      describe: "harbor certificate expiration days"
+    - name: HttpPort
+      value: "30080"
+      type: string
+      describe: "harbor http port"
+    - name: HttpsPort
+      value: "30443"
+      type: string
+      describe: "harbor https port"

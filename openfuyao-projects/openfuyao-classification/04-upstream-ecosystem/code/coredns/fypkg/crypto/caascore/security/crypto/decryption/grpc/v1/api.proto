@@ -1,0 +1,26 @@
+// Copyright(c) Huawei Technologies Co., Ltd. 2025-2025. All right reserved.
+
+syntax = "proto3";
+
+package v1;
+
+option go_package = "github.com/coredns/coredns/fypkg/crypto/caascore/security/crypto/decryption/grpc/v1";
+
+// This service defines the public APIs for remote Decryption provider.
+service DecryptionService {
+  // Execute decrypt cert operation in Decryption provider.
+  rpc DecryptCert(DecryptRequest) returns (DecryptResponse) {}
+
+  // Execute decrypt cert operation in Decryption provider.
+  rpc DecryptSecret(DecryptRequest) returns (DecryptResponse) {}
+}
+
+message DecryptRequest {
+  // The data to be decrypted.
+  bytes ciphertext = 1;
+}
+
+message DecryptResponse {
+  // The decrypted data
+  bytes plaintext = 1;
+}

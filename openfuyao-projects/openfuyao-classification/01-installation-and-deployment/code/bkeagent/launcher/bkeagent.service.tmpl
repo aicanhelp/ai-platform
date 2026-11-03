@@ -1,0 +1,14 @@
+[Unit]
+Description= bkeagent
+After=network.target
+
+[Service]
+Environment="DEBUG=true"
+ExecStart=/usr/local/bin/bkeagent --kubeconfig=/etc/bkeagent/config --ntpserver={{.ntpServer}}
+KillMode=process
+RestartSec=5
+Restart=on-failure
+SuccessExitStatus=0
+
+[Install]
+WantedBy=multi-user.target

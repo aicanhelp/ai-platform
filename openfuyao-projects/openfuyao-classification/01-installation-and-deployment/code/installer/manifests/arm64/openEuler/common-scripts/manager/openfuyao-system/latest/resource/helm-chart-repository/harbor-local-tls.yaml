@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  tls.crt: |
+    {{ b64enc .Values.config.tlsCert }}
+  tls.key: |
+    {{ b64enc .Values.config.tlsKey }}
+kind: Secret
+metadata:
+  name: harbor-local-tls
+  namespace: openfuyao-system
+type: kubernetes.io/tls

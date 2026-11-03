@@ -1,0 +1,9 @@
+name: bkecommon
+type: private
+description: 'bke的公共组件库，具有bkecluster的spec和status结构体'
+branches:
+  - name: master
+    type: protected
+  - name: dev1210
+    type: protected
+    create_from: master

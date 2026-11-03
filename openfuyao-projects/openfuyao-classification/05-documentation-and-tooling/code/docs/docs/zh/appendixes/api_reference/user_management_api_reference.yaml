@@ -1,0 +1,782 @@
+openapi: 3.0.0
+info:
+  title: 
+  version: 1.0.0
+  description: 用户管理模块的OpenAPI3.0规范定义。
+paths:
+  /rest/user/v1/users:
+    post:
+      summary: 创建用户。
+      description: 在openFuyao平台上新建一个用户实例。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, unEncryptedPassword]
+              properties:
+                username:
+                  type: string
+                unEncryptedPassword:
+                  type: string
+                description:
+                  type: string
+                platformRole:
+                  type: string
+      responses:
+        '200':
+          description: 用户创建成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      description:
+                        type: string
+                      platformRole:
+                        type: string
+        '400':
+          description: 用户名已存在或用户名格式无效或密码格式无效。
+        '500':
+          description: 服务器内部错误。
+
+    get:
+      summary: 获取平台用户列表。
+      description: 获取 openFuyao 平台所有用户。
+      responses:
+        '200':
+          description: 用户列表获取成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                        platformRole:
+                          type: string
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/users/{username}:
+    get:
+      summary: 获取用户详情。
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 用户详情获取成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      description:
+                        type: string
+                      platformRole:
+                        type: string
+                      invitedByClustersMap:
+                        type: object
+        '400':
+          description: 用户不存在或用户名格式无效。
+        '500':
+          description: 服务器内部错误。
+
+    patch:
+      summary: 修改用户信息。
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, platformRole]
+              properties:
+                username:
+                  type: string
+                description:
+                  type: string
+                platformRole:
+                  type: string
+      responses:
+        '200':
+          description: 编辑用户成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      description:
+                        type: string
+                      platformRole:
+                        type: string
+        '400':
+          description: 用户不存在或角色名格式无效。
+        '500':
+          description: 服务器内部错误。
+
+    delete:
+      summary: 删除用户。
+      parameters:
+        - name: username
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 用户删除成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      description:
+                        type: string
+                      platformRole:
+                        type: string
+        '400':
+          description: 用户不存在。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/cluster-members:
+    get:
+      summary: 获取集群成员列表。
+      parameters:
+        - name: cluster-name
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 集群成员列表获取成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                        clusterRole:
+                          type: string
+        '400':
+          description: 集群不存在。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/platform-roles:
+    get:
+      summary: 列出openFuyao平台级别角色。
+      description: 列出openFuyao平台级的角色列表。
+      operationId: listPlatformRoles
+      responses:
+        '200':
+          description: 成功返回角色列表。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: "Platform-Roles fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        metadata:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: "platform-admin"
+                            uid:
+                              type: string
+                              example: "6af0cd8a-86ac-4287-b4c9-5ec930484042"
+                            resourceVersion:
+                              type: string
+                              example: "1845"
+                            creationTimestamp:
+                              type: string
+                              format: date-time
+                              example: "2024-10-16T03:12:34Z"
+                            labels:
+                              type: object
+                              properties:
+                                app.kubernetes.io/managed-by:
+                                  type: string
+                                  example: "Helm"
+                                role-type:
+                                  type: string
+                                  example: "platform-role"
+                            annotations:
+                              type: object
+                              properties:
+                                author:
+                                  type: string
+                                  example: "Platform Installer"
+                                description:
+                                  type: string
+                                  example: "平台管理员拥有平台资源的全部权限..."
+                        rules:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              verbs:
+                                type: array
+                                items:
+                                  type: string
+                              apiGroups:
+                                type: array
+                                items:
+                                  type: string
+                              resources:
+                                type: array
+                                items:
+                                  type: string
+        '404':
+          description: 角色不存在。
+        '500':
+          description: 服务器内部错误。
+  /rest/user/v1/cluster-roles:
+    get:
+      summary: 列出集群级别角色。
+      description: 列出集群级别的角色列表。
+      operationId: listClusterRoles
+      responses:
+        '200':
+          description: 成功返回集群角色列表。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: "Cluster-Roles fetched successfully"
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        metadata:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: "cluster-admin"
+                            uid:
+                              type: string
+                              example: "791e73eb-d615-4018-a9de-7b0989589be8"
+                            resourceVersion:
+                              type: string
+                              example: "1803"
+                            creationTimestamp:
+                              type: string
+                              format: date-time
+                              example: "2024-10-26T02:13:14Z"
+                            labels:
+                              type: object
+                              properties:
+                                app.kubernetes.io/managed-by:
+                                  type: string
+                                  example: "Helm"
+                                role-type:
+                                  type: string
+                                  example: "cluster-role"
+                            annotations:
+                              type: object
+                              properties:
+                                author:
+                                  type: string
+                                  example: "Platform Installer"
+                                description:
+                                  type: string
+                                  example: "集群管理员拥有集群内的所有资源的权限..."
+                        rules:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              verbs:
+                                type: array
+                                items:
+                                  type: string
+                              apiGroups:
+                                type: array
+                                items:
+                                  type: string
+                              resources:
+                                type: array
+                                items:
+                                  type: string
+        '404':
+          description: 角色不存在。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/invite-users:
+    get:
+      summary: 获取可被邀请至某个集群的用户列表。
+      parameters:
+        - in: query
+          name: cluster-name
+          required: true
+          schema:
+            type: string
+          description: 目标集群名称。
+      responses:
+        '200':
+          description: 列出用户列表成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        username:
+                          type: string
+                        description:
+                          type: string
+        '400':
+          description: 集群名不存在或格式无效。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/cluster-rolebindings/{user-name}/{cluster-role}:
+    patch:
+      summary: 修改集群中的角色绑定资源。
+      parameters:
+        - in: path
+          name: user-name
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: cluster-role
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: ClusterRoleBinding编辑成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      metadata:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          creationTimestamp:
+                            type: string
+                            nullable: true
+                          labels:
+                            type: object
+                            additionalProperties:
+                              type: string
+                      subjects:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            kind:
+                              type: string
+                            name:
+                              type: string
+                      roleRef:
+                        type: object
+                        properties:
+                          apiGroup:
+                            type: string
+                          kind:
+                            type: string
+                          name:
+                            type: string
+        '400':
+          description: 用户或集群未找到，或用户已分配角色。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/invite-users/{user-name}/{cluster-name}/{cluster-role}:
+    put:
+      summary: 邀请用户到集群。
+      parameters:
+        - in: path
+          name: user-name
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: cluster-name
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: cluster-role
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 受邀成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      description:
+                        type: string
+                      InvitedByClustersList:
+                        type: array
+                        items:
+                          type: string
+                      platformRole:
+                        type: string
+        '400':
+          description: 用户或集群或角色不存在。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/remove-users/{user-name}/{cluster-name}:
+    delete:
+      summary: 把用户从集群中移除。
+      parameters:
+        - in: path
+          name: user-name
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: cluster-name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 用户移除成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      username:
+                        type: string
+                      description:
+                        type: string
+                      platformRole:
+                        type: string
+        '400':
+          description: 用户未被邀请加入集群或集群不存在。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/invite-user-crb/{user-name}/{cluster-role}:
+    post:
+      summary: 创建集群角色绑定资源。
+      parameters:
+        - in: path
+          name: user-name
+          required: true
+          schema:
+            type: string
+        - in: path
+          name: cluster-role
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 创建成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      metadata:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          creationTimestamp:
+                            type: string
+                            nullable: true
+                          labels:
+                            type: object
+                            additionalProperties:
+                              type: string
+                      subjects:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            kind:
+                              type: string
+                            name:
+                              type: string
+                      roleRef:
+                        type: object
+                        properties:
+                          apiGroup:
+                            type: string
+                          kind:
+                            type: string
+                          name:
+                            type: string
+        '400':
+          description: clusterRoleBinding 已存在。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/remove-user-crb/{user-name}:
+    delete:
+      summary: 删除集群角色绑定资源。
+      parameters:
+        - in: path
+          name: user-name
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 删除成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    additionalProperties: true
+        '400':
+          description: 用户未找到。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/cluster-rolebindings:
+    get:
+      summary: 通过用户名获取某个集群上对应的clusterRoleBinding
+      description: 通过用户名获取某个集群上对应的clusterRoleBinding资源。
+      parameters:
+        - name: user
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 用户名，唯一标识用户。
+      responses:
+        '200':
+          description: clusterRoleBinding获取成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      metadata:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                          uid:
+                            type: string
+                          resourceVersion:
+                            type: string
+                          creationTimestamp:
+                            type: string
+                          labels:
+                            type: object
+                            additionalProperties:
+                              type: string
+                          managedFields:
+                            type: array
+                            items:
+                              type: object
+                      subjects:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            kind:
+                              type: string
+                            apiGroup:
+                              type: string
+                            name:
+                              type: string
+                      roleRef:
+                        type: object
+                        properties:
+                          apiGroup:
+                            type: string
+                          kind:
+                            type: string
+                          name:
+                            type: string
+        '400':
+          description: 用户名不存在。
+        '500':
+          description: 服务器内部错误。
+
+  /rest/user/v1/request-userList:
+    post:
+      summary: 发送用户列表信息向Multi-cluster service。
+      description: 将openFuyao平台中的用户列表信息通过POST接口发送给多集群组件。
+      responses:
+        '200':
+          description: 用户获取成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                  data:
+                    type: object
+                    properties:
+                      userInfo:
+                        type: object
+                        additionalProperties:
+                          type: object
+                          properties:
+                            identityName:
+                              type: string
+                            apiGroup:
+                              type: string
+                            platformAdmin:
+                              type: boolean
+                            memberClusters:
+                              type: array
+                              items:
+                                type: string
+        '500':
+          description: 服务器内部错误。

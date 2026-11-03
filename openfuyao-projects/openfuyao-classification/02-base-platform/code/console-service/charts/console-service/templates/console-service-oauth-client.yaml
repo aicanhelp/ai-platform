@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: console-service-oauth-client
+  namespace: openfuyao-system
+data:
+  client-id: {{ .Values.oauthClient.clientID | quote}}
+  client-secret: {{ .Values.oauthClient.clientSecret | b64enc | quote}}

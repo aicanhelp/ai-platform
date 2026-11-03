@@ -1,0 +1,6 @@
+name: node-checker
+type: private
+description: '单机检查工具，检查特定运行环境是否满足容器平台的环境诉求，以减少各种因环境依赖造成的部署失败或功能失效的场景'
+branches:
+  - name: master
+    type: protected

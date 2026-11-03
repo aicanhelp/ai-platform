@@ -1,0 +1,14 @@
+isManual: true
+label: Computing Power Optimization Center
+sections:
+  - label: Colocation
+    href:
+      upstream: https://gitcode.com/openFuyao/sig-colocation/blob/master/docs/en/user_guide/colocation.md
+  - label: NUMA-aware Scheduling
+    href:
+      upstream: https://gitcode.com/openFuyao/sig-numa-affinity/blob/master/docs/en/user_guide/numa-affinity_user_guide.md
+  - label: Many-Core Orchestrator
+    href:
+      upstream: https://gitcode.com/openFuyao/sig-orchestration-engine/blob/master/docs/en/many_core_orchestrator_user_guide/many_core_orchestrator_user_guide.md
+  - label: openFuyao Ray
+    href: ./openfuyao_ray.md

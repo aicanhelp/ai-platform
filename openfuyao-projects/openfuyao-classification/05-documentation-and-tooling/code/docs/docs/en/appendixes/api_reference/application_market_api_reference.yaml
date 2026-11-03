@@ -1,0 +1,872 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: Full-function APIs of the Helm-based application market.
+  version: 2.0.0
+tags:
+  - name: Helm Charts
+    description: Full lifecycle management of Helm charts.
+  - name: Helm Repos
+    description: Helm repository configuration management.
+  - name: Chart Files
+    description: Chart file operation APIs.
+
+paths:
+  /helm-charts:
+    get:
+      tags: [Helm Charts]
+      summary: Querying the latest chart list.
+      description: Obtaining the list of all Helm charts that meet the filter criteria, with pagination and multi-condition filtering supported.
+      operationId: getLatestCharts
+      parameters:
+        - $ref: '#/components/parameters/RepositoryFilter'
+        - $ref: '#/components/parameters/ChartFilter'
+        - $ref: '#/components/parameters/SceneFilter'
+        - $ref: '#/components/parameters/AppTypeFilter'
+        - $ref: '#/components/parameters/SortType'
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Chart list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: nginx
+                              description: Chart name.
+                            latestVersion:
+                              type: string
+                              example: 1.2.3
+                              description: Latest version.
+                            description:
+                              type: string
+                              example: NGINX Ingress Controller
+                              description: Description.
+                            repoName:
+                              type: string
+                              example: bitnami
+                              description: Repository.
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              description: Last update time.
+                          required: [name, latestVersion]
+                      total:
+                        type: integer
+                        example: 100
+                        description: Total number.
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+    post:
+      tags: [Helm Charts]
+      summary: Uploading a Helm chart.
+      description: Uploading a new Helm chart to the repository. The package must be in .tgz format.
+      operationId: uploadChart
+      requestBody:
+        description: Helm chart file.
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                chart:
+                  type: string
+                  format: binary
+                  description: Helm chart file (in .tgz format).
+              required: [chart]
+      responses:
+        '200':
+          description: Uploaded successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                required: [code, msg]
+        '400':
+          $ref: '#/components/responses/InvalidFile'
+
+  /helm-charts/official-tags:
+    get:
+      tags: [Helm Charts]
+      summary: Filtering charts by official tag.
+      description: Obtaining the list of charts with official certification tags.
+      operationId: getChartsWithOfficialTags
+      parameters:
+        - name: tag
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [verified, recommended, security]
+          description: Official certification tag.
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: List of charts with tags obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: nginx
+                              description: Chart name.
+                            latestVersion:
+                              type: string
+                              example: 1.2.3
+                              description: Latest version.
+                            description:
+                              type: string
+                              example: NGINX Ingress Controller
+                              description: Description.
+                            repoName:
+                              type: string
+                              example: bitnami
+                              description: Repository.
+                            updatedAt:
+                              type: string
+                              format: date-time
+                              description: Last update time.
+                          required: [name, latestVersion]
+                      total:
+                        type: integer
+                        example: 100
+                        description: Total number.
+
+  /helm-charts/count:
+    get:
+      tags: [Helm Charts]
+      summary: Obtaining the total number of local charts.
+      description: Counting the total number of charts in the local repository.
+      operationId: countChart
+      responses:
+        '200':
+          description: Counted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                  data:
+                    type: integer
+                    example: 42
+                    description: Total number of charts.
+
+  /helm-charts/{chart}:
+    delete:
+      tags: [Helm Charts]
+      summary: Deleting all versions of a chart.
+      description: Deleting all versions of a specified chart from the repository.
+      operationId: deleteChart
+      parameters:
+        - name: chart
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Chart name.
+          example: nginx
+      responses:
+        '200':
+          description: Deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                required: [code, msg]
+
+  /helm-charts/{chart}/versions/{version}:
+    delete:
+      tags: [Helm Charts]
+      summary: Deleting a specified chart version.
+      description: Deleting a specific version of a specified chart from the repository.
+      operationId: deleteChartVersions
+      parameters:
+        - name: chart
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Chart name.
+          example: nginx
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version number.
+          example: 1.2.3
+      responses:
+        '200':
+          description: Version deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                required: [code, msg]
+
+  /helm-repos:
+    get:
+      tags: [Helm Repos]
+      summary: Listing all repositories.
+      description: Obtaining the list of all configured Helm repositories.
+      operationId: listHelmRepo
+      parameters:
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Repository list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: bitnami
+                              description: Repository name.
+                            url:
+                              type: string
+                              example: https://charts.bitnami.com/bitnami
+                              description: Repository address.
+                            chartCount:
+                              type: integer
+                              example: 150
+                              description: Number of charts.
+                            lastSyncStatus:
+                              type: string
+                              enum: [success, failed, syncing]
+                              description: Latest synchronization status.
+                          required: [name, url]
+                      total:
+                        type: integer
+                        description: Total number.
+
+    post:
+      tags: [Helm Repos]
+      summary: Creating a repository.
+      description: Adding a new Helm repository configuration.
+      operationId: createHelmRepo
+      requestBody:
+        description: Repository configuration information.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: my-repo
+                  description: Repository name.
+                url:
+                  type: string
+                  example: https://my-repo.com/charts
+                  description: Repository URL.
+                authType:
+                  type: string
+                  enum: [none, basic, token]
+                  description: Authentication type.
+                username:
+                  type: string
+                  description: Username (for basic authentication).
+                password:
+                  type: string
+                  description: Password (for basic authentication).
+                token:
+                  type: string
+                  description: Access token (for token authentication).
+              required: [name, url]
+      responses:
+        '200':
+          description: Repository created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                required: [code, msg]
+
+  /helm-repos/{repo}:
+    get:
+      tags: [Helm Repos]
+      summary: Obtaining the details of a repository.
+      description: Obtaining the detailed configuration information of a specified repository.
+      operationId: getHelmRepo
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Repository name.
+          example: bitnami
+        - $ref: '#/components/parameters/PageParam'
+        - $ref: '#/components/parameters/LimitParam'
+      responses:
+        '200':
+          description: Repository details obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: bitnami
+                        description: Repository name.
+                      url:
+                        type: string
+                        example: https://charts.bitnami.com/bitnami
+                        description: Repository address.
+                      chartCount:
+                        type: integer
+                        example: 150
+                        description: Number of charts.
+                      lastSyncStatus:
+                        type: string
+                        enum: [success, failed, syncing]
+                        description: Latest synchronization status.
+                    required: [name, url]
+
+    put:
+      tags: [Helm Repos]
+      summary: Updating the configuration of a repository.
+      description: Modifying the configuration of a specified repository.
+      operationId: updateHelmRepo
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Repository name.
+          example: bitnami
+      requestBody:
+        description: Repository configuration after update.
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                url:
+                  type: string
+                  example: https://new-repo-url.com
+                  description: URL of the new repository.
+                authType:
+                  type: string
+                  enum: [none, basic, token]
+                  description: Authentication type.
+                username:
+                  type: string
+                  description: Username (for basic authentication).
+                password:
+                  type: string
+                  description: Password (for basic authentication).
+                token:
+                  type: string
+                  description: Access token (for token authentication).
+      responses:
+        '200':
+          description: Configuration updated successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                required: [code, msg]
+
+    delete:
+      tags: [Helm Repos]
+      summary: Deleting a repository.
+      description: Removing a specified Helm repository from the system.
+      operationId: deleteHelmRepo
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Repository name.
+          example: bitnami
+      responses:
+        '200':
+          description: Repository deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                required: [code, msg]
+
+  /helm-repos/{repo}/sync:
+    get:
+      tags: [Helm Repos]
+      summary: Obtaining the synchronization status of a repository.
+      description: Querying the latest synchronization status and last synchronization time of a specified repository.
+      operationId: getRepoSyncStatus
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Repository name.
+          example: bitnami
+      responses:
+        '200':
+          description: Status obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                  data:
+                    type: object
+                    properties:
+                      status:
+                        type: string
+                        enum: [syncing, success, failed]
+                        description: Synchronization status.
+                      lastSyncTime:
+                        type: string
+                        format: date-time
+                        description: Last synchronization time.
+
+  /helm-repos/{repo}/charts/{chart}:
+    get:
+      tags: [Chart Files]
+      summary: Obtaining all versions of a chart.
+      description: Obtaining all available versions of a chart in a specified repository.
+      operationId: getChartVersions
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Repository name.
+          example: bitnami
+        - name: chart
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Chart name.
+          example: nginx
+      responses:
+        '200':
+          description: Version list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        version:
+                          type: string
+                          example: 1.2.3
+                          description: Version number.
+                        appVersion:
+                          type: string
+                          example: 1.25.0
+                          description: Application version.
+                        created:
+                          type: string
+                          format: date-time
+                          description: Creation time.
+                      required: [version]
+
+  /helm-repos/{repo}/charts/{chart}/versions/{version}:
+    get:
+      tags: [Chart Files]
+      summary: Obtaining details about a specified version.
+      description: Obtaining details about a specified chart version.
+      operationId: getChartVersion
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Repository name.
+          example: bitnami
+        - name: chart
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Chart name.
+          example: nginx
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version number.
+          example: 1.2.3
+      responses:
+        '200':
+          description: Version details obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                  data:
+                    type: object
+                    properties:
+                      metadata:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: Chart name.
+                          version:
+                            type: string
+                            description: Version number.
+                          description:
+                            type: string
+                            description: Description.
+                        required: [name, version]
+                      dependencies:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Dependency name.
+                            version:
+                              type: string
+                              description: Dependency version.
+                        description: Dependency list.
+                      files:
+                        type: array
+                        items:
+                          type: string
+                          example: README.md
+                        description: List of included files.
+
+  /helm-repos/{repo}/charts/{chart}/versions/{version}/files:
+    get:
+      tags: [Chart Files]
+      summary: Obtaining the content of a chart file.
+      description: Obtaining the content of a specified file in a chart.
+      operationId: getChartFiles
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Repository name.
+          example: bitnami
+        - name: chart
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Chart name.
+          example: nginx
+        - name: version
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Version number.
+          example: 1.2.3
+        - name: fileType
+          in: query
+          schema:
+            type: string
+            enum: [values, readme, chart]
+          description: Filtering by file type.
+      responses:
+        '200':
+          description: File content obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: Status code.
+                  msg:
+                    type: string
+                    example: success
+                    description: Status message.
+                  data:
+                    type: string
+                    description: Original file content.
+
+components:
+  parameters:
+    RepositoryFilter:
+      name: repository
+      in: query
+      schema:
+        type: string
+      description: Filtering by repository name.
+      required: false
+    ChartFilter:
+      name: chart
+      in: query
+      schema:
+        type: string
+      description: Filtering by chart name.
+      required: false
+    SceneFilter:
+      name: scene
+      in: query
+      schema:
+        type: string
+        enum: [AI, BigData, Database]
+      description: Filtering by scene.
+      required: false
+    AppTypeFilter:
+      name: appType
+      in: query
+      schema:
+        type: string
+        enum: [stateless, stateful, operator]
+      description: Filtering by application type.
+      required: false
+    SortType:
+      name: sortType
+      in: query
+      schema:
+        type: string
+        enum: [updateTime, name, downloads]
+        default: updateTime
+      description: Sorting type.
+      required: false
+    PageParam:
+      name: page
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        default: 1
+      description: Page number.
+      required: false
+    LimitParam:
+      name: limit
+      in: query
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 100
+        default: 20
+      description: Number of items on each page.
+      required: false
+
+  responses:
+    BasicSuccess:
+      description: Common response success.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 200
+                description: Status code.
+              msg:
+                type: string
+                example: success
+                description: Status message.
+            required: [code, msg]
+
+    InvalidFile:
+      description: Invalid file format.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 400
+                description: Error code.
+              msg:
+                type: string
+                example: invalid chart package
+                description: Error message.
+            required: [code, msg]
+
+    InternalError:
+      description: Internal server error.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: integer
+                example: 500
+                description: Error code.
+              msg:
+                type: string
+                example: internal server error
+                description: Error message.
+            required: [code, msg]
+
+security:
+  - bearerAuth: []

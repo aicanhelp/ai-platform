@@ -1,0 +1,9 @@
+name: e2e-auto-test
+type: public
+description: '该仓库用于自动化性能与集成测试'
+branches:
+  - name: main
+    type: protected
+  - name: v25.09
+    type: protected
+    create_from: main

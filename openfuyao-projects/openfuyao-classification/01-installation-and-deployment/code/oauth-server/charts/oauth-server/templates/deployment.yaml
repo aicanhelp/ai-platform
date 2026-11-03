@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth-server
+  namespace: openfuyao-system
+  labels:
+    application: "oauth-server"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: "oauth-server"
+  template:
+    metadata:
+      labels:
+        application: "oauth-server"
+    spec:
+      serviceAccountName: oauth-server
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 65532
+      initContainers:
+        - name: init-permission
+          image: {{ .Values.thirdPartyImages.busyBox.repository }}:{{ .Values.thirdPartyImages.busyBox.tag }}
+          command: ["sh", "-c", "chmod -R 700 /var/log/oauth-server && chown -R 65532:65532 /var/log/oauth-server"]
+          volumeMounts:
+            - name: log-path
+              mountPath: /var/log/oauth-server
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      containers:
+        - name: oauth-server
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          ports:
+            - name: https
+              containerPort: {{ .Values.config.httpServerConfig.port }}
+          args:
+            - --configFile=config.json
+          volumeMounts:
+            {{- if .Values.config.httpServerConfig.enableHttps }}
+            - name: oauth-server-tls
+              mountPath: /ssl/ca.pem
+              subPath: ca.crt
+            - name: oauth-server-tls
+              readOnly: true
+              mountPath: /ssl/server.key
+              subPath: tls.key
+            - name: oauth-server-tls
+              readOnly: true
+              mountPath: /ssl/server.crt
+              subPath: tls.crt
+            {{- end }}
+            - name: config-volume
+              readOnly: true
+              subPath: config.json
+              mountPath: /config.json
+            - name: log-path
+              mountPath: /var/log/oauth-server
+          {{- if .Values.resources }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+      volumes:
+        {{- if .Values.config.httpServerConfig.enableHttps }}
+        - name: oauth-server-tls
+          secret:
+            defaultMode: 0600
+            secretName: oauth-server-tls
+        {{- end }}
+        - name: config-volume
+          configMap:
+            defaultMode: 0600
+            name: oauth-server-config
+        - name: log-path
+          hostPath:
+            path: /var/log/oauth-server
+            type: DirectoryOrCreate

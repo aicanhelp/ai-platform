@@ -1,0 +1,1091 @@
+openapi: 3.0.0
+info:
+  title: Cluster Lifecycle Management API
+  description: Provides interfaces for cluster creation and management.
+  version: v26.03
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /rest/cluster/v1/configs:
+    get:
+      summary: Get installation and deployment configuration information.
+      description: Get installation and deployment configuration information.
+      responses:
+        '200':
+          description: Successfully retrieved installation and deployment configuration information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      imageRepo:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            example: "cr.openfuyao.cn"
+                          ip:
+                            type: string
+                            example: "119.3.216.97"
+                          port:
+                            type: string
+                            example: "443"
+                          prefix:
+                            type: string
+                            example: "openfuyao"
+                      httpRepo:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            example: "http.bocloud.k8s"
+                          prefix:
+                            type: string
+                            example: ""
+                      ip:
+                        type: string
+                        example: "192.168.100.10"
+                      kubernetesVersion:
+                        type: string
+                        example: "v1.33.1-of.1"
+                      containerRuntime:
+                        type: string
+                        example: "containerd-v2.1.1-linux-{.arch}.tar.gz"
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters:
+    get:
+      summary: Get cluster list.
+      description: Display the list of business clusters created in the cluster.
+      responses:
+        '200':
+          description: Successfully retrieved cluster list.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Cluster name.
+                              example: isntaller-bke
+                            kubernetesVersion:
+                              type: string
+                              description: Cluster K8s version.
+                              example: v1.28.8
+                            openFuyaoVersion:
+                              type: string
+                              description: Cluster openFuyao version.
+                              example: v25.09.1sp2
+                            status:
+                              type: string
+                              description: Cluster health status.
+                              example: Healthy
+                            createTime:
+                              type: string
+                              description: Cluster creation time.
+                              example: "2025-03-07 03:53:10"
+                            nodeSum:
+                              type: integer
+                              description: Number of nodes in the cluster.
+                              example: 2
+                            isAmd:
+                              type: boolean
+                              description: Whether the CPU architecture is AMD.
+                              example: true
+                            isArm:
+                              type: boolean
+                              description: Whether the CPU architecture is ARM.
+                              example: false
+                            osList:
+                              type: array
+                              items:
+                                type: string
+                              description: Cluster OS version.
+                              example: ["openEuler 22.03 LTS"]
+                            containerRuntime:
+                              type: string
+                              description: Cluster runtime type.
+                              example: containerd
+                            isAdminCluster:
+                              type: boolean
+                              description: Whether it is a management cluster. The backend determines this based on whether the cluster specification includes cluster-api, or whether the annotation bke.bocloud.com/cluster-api-manager-applied is true (covering the management cluster self-management scenario).
+                              example: true
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+    post:
+      summary: Create cluster.
+      description: Create a business cluster on the OpenFuyao management plane.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cluster:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: bke-cluster
+                    openfuyaoVersion:
+                      type: string
+                      example: v1.0.4
+                    imageRepo:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          example: cr.openfuyao.cn
+                        ip:
+                          type: string
+                          example: 10.10.10.10
+                controlPlaneEndpoint:
+                  type: string
+                  example: 192.168.100.10
+                addons:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: openFuyao-cores
+                      params:
+                        type: object
+                        description: Configurable item fields related to addon, not standardized.
+                        example:
+                          helmRepo: https://helm.openfuyao.cn/_core
+                nodes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hostname:
+                        type: string
+                        example: master
+                      ip:
+                        type: string
+                        example: 192.168.100.10
+                      port:
+                        type: string
+                        example: 22
+                      username:
+                        type: string
+                        example: root
+                      password:
+                        type: string
+                        example: password
+                      role:
+                        type: array
+                        items:
+                          type: string
+                        example: ["master", "etcd"]
+      responses:
+        '200':
+          description: Cluster deployed successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "success"
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+    
+  /rest/cluster/v1/clusters/{cluster-name}:
+    get:
+      summary: Get cluster configuration information.
+      description: Get the configuration information of the cluster, including cluster configuration information and node configuration information.
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: Cluster name.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved cluster configuration information.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      clusterName:
+                        type: string
+                        description: Cluster name.
+                        example: "bke-cluster"
+                      clusterStatus:
+                        type: string
+                        description: Cluster status.
+                        example: "Healthy"
+                      createTime:
+                        type: string
+                        description: Cluster creation time.
+                        example: "2025-12-17 09:45:01"
+                      hostname:
+                        type: string
+                        description: Cluster control plane address.
+                        example: "1"
+                      isHA:
+                        type: boolean
+                        description: Whether it is a high-availability cluster.
+                        example: false
+                      defaultRepo:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            description: Image repository.
+                            example: "deploy.bocloud.k8s"
+                          prefix:
+                            type: string
+                            description: Path prefix.
+                            example: ""
+                      httpRepo:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            description: File repository.
+                            example: "http.bocloud.k8s"
+                          prefix:
+                            type: string
+                            description: Path prefix.
+                            example: ""
+                      ip:
+                        type: string
+                        description: Bootstrap node address.
+                        example: "2"
+                      kubernetesVersion:
+                        type: string
+                        description: Cluster K8s version.
+                        example: "v1.33.1-of.1"
+                      openFuyaoVersion:
+                        type: string
+                        description: Cluster openFuyao version.
+                        example: v25.09.1sp2 
+                      containerRuntime:
+                        type: string
+                        description: containerd file.
+                        example: "containerd-v2.1.1-linux-{.arch}.tar.gz"
+                      nodes:
+                        type: array
+                        description: Cluster node list.
+                        items:
+                          type: object
+                          properties:
+                            hostname:
+                              type: string
+                              description: Node name.
+                              example: master1
+                            ip:
+                              type: string
+                              description: Node IP address.
+                              example: 192.168.100.150
+                            role:
+                              type: array
+                              items:
+                                type: string
+                              example: ["master", "etcd"]
+                            cpu:
+                              type: integer
+                              description: Number of CPUs.
+                              example: 8
+                            memory:
+                              type: integer
+                              description: Memory size.
+                              example: 14
+                            architecture:
+                              type: string
+                              description: CPU architecture.
+                              example: arm64
+                            status:
+                              type: string
+                              description: Node status.
+                              example: Ready
+                            os:
+                              type: string
+                              description: Node OS version.
+                              example: openEuler 22.03 LTS
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+    delete:
+      summary: Delete cluster.
+      description: Delete the selected cluster.
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: Cluster name.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Cluster deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: delete the cluster successfully.
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/auto-upgrade:
+    post:
+      summary: Cluster offline patch upgrade preparation.
+      description: Trigger cluster offline patch upgrade preparation.
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: Cluster name.
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patchDir:
+                  type: string
+                  description: Directory path where the patch installation package is located.
+                  example: /etc/openFuyao/
+                patchName:
+                  type: string
+                  description: Name of the patch installation package.
+                  example: patchV1
+      responses:
+        '200':
+          description: Cluster offline patch upgrade preparation successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/scale-down:
+    post:
+      summary: Scale down cluster.
+      description: Cluster scale-down operation.
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: Cluster name.
+          schema:
+            type: string
+      operationId: scaleDownCluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodes:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                  - "node1"
+                  - "node2"
+      responses:
+        '200':
+          description: Cluster scale-down successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/scale-up:
+    post:
+      summary: Scale up cluster.
+      description: Cluster scale-up operation.
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: Cluster name.
+          schema:
+            type: string
+      operationId: scaleUpCluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hostname:
+                        type: string
+                        example: master
+                      ip:
+                        type: string
+                        example: 192.168.100.10
+                      port:
+                        type: string
+                        example: 22
+                      username:
+                        type: string
+                        example: root
+                      password:
+                        type: string
+                        example: password
+                      role:
+                        type: array
+                        items:
+                          type: string
+                          description: Node type.
+                          example: ["node"]
+      responses:
+        '200':
+          description: Cluster scale-up successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/upgrade:
+    post:
+      summary: Upgrade openFuyao cluster.
+      description: openFuyao cluster upgrade operation. Original Post /rest/cluster/v1/upgrade
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: Cluster name.
+          schema:
+            type: string
+      operationId: upgradeK8sCluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: string
+                  example: v25.09.1
+      responses:
+        '200':
+          description: Cluster upgrade successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/upgrade-versions:
+    get:
+      summary: Query available upgrade version list for the cluster.
+      description: Query available upgrade version list for the cluster. Original Post /rest/cluster/v1/upgrade-versions
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: Cluster name.
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully retrieved upgrade versions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      versions:
+                        type: array
+                        items:
+                          type: string
+                          example: v25.09.1
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/nodes/validate:
+    post:
+      summary: Node validation.
+      description: Validate node information for cluster operations.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                namespace:
+                  type: string
+                  example: test
+                nodes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hostname:
+                        type: string
+                        example: 'master-1'
+                      ip:
+                        type: string
+                        example: '192.168.100.150'
+                      port:
+                        type: string
+                        example: 22
+                      username:
+                        type: string
+                        example: 'root'
+                      password:
+                        type: string
+                        example: '123456'
+                balanceIp:
+                  type: string
+                  example: '192.168.100.20'
+            examples:
+              Example 1:
+                value:
+                  namespace: test
+                  nodes:
+                    - name: 'master-1'
+                      ip: '192.168.100.150'
+                      port: 22
+                      username: 'root'
+                      password: '123456'
+                  balanceIp: '192.168.100.20'
+      responses:
+        '200':
+          description: Node validation successful.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: Node validation failed.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 192.168.100.150 ip is not ok
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: remote server busy
+
+  /rest/cluster/v1/patches:
+    post:
+      summary: Upload cluster offline upgrade patch.
+      operationId: upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patchFileName:
+                  type: string
+                  description: Patch file name.
+                  example: v25.09.yaml
+                patchFileContent:
+                  type: string
+                  description: Patch file content.
+                  example: "..."
+      responses:
+        '200':
+          description: File uploaded successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/versions:
+    get:
+      summary: Query available installation version list.
+      description: Query available installation version list.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully retrieved installation versions.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      versions:
+                        type: array
+                        items:
+                          type: string
+                        example: ["latest", "v25.09"]
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /ws/cluster/v1/logs:
+    get:
+      summary: Get cluster logs.
+      description: Used for real-time log display during creation.
+      responses:
+        '200':
+          description: Logs queried successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: get the log of cluster.
+        '400':
+          description: Request data exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: Service request exception.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"

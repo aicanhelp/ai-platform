@@ -1,0 +1,12 @@
+# npm dependency
+node_modules
+
+# vite build output
+dist
+
+# IDE config directory
+.idea
+.vscode
+
+# misc
+stats.html

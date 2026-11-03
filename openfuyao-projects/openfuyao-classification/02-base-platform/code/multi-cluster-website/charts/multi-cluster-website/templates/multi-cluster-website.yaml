@@ -1,0 +1,86 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multi-cluster-website
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: multi-cluster-website
+spec:
+  selector:
+    matchLabels:
+      app: multi-cluster-website
+  template:
+    metadata:
+      labels:
+        app: multi-cluster-website
+    spec:
+      containers:
+        - name: multi-cluster-website
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: false
+            - name: ca
+              mountPath: /etc/nginx/cert/ca.crt
+              subPath: ca.crt
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: multi-cluster-nginx
+            defaultMode: 0600
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: ca
+          secret:
+            secretName: ca-tls
+            defaultMode: 0600
+            items:
+              - key: ca.crt
+                path: ca.crt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: multi-cluster-website
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: multi-cluster-website
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: http
+      {{- if eq .Values.service.type  "NodePort" }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+  selector:
+    app: multi-cluster-website
+---
+{{- if .Values.openFuyao -}}
+apiVersion: console.openfuyao.com/v1beta1
+kind: ConsolePlugin
+metadata:
+  name: multicluster
+spec:
+  pluginName: multicluster
+  displayNameI18n:
+    en-US: Multi-Cluster Management
+    zh-CN: 多集群管理
+  entrypoint: /
+  backend:
+    type: Service
+    service:
+      name: multi-cluster-website
+      namespace: {{ .Values.namespace }}
+      port: {{ .Values.service.port }}
+  enabled: true
+{{- end -}}

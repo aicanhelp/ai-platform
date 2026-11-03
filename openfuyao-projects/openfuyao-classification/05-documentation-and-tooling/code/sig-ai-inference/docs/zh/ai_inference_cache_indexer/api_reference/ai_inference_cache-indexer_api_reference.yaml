@@ -1,0 +1,186 @@
+openapi: 3.0.0
+info:
+  title: AI推理KVCache索引管理API参考
+  description: 提供cache-indexer的KVCache命中率查询接口以及健康检查接口。
+  version: 1.0.0
+servers:
+  - url: http://cache-indexer-service:28080
+paths:
+  /kv-cache/hit-rate:
+    post:
+      summary: 查询KVCache命中率。
+      description: 根据目标服务IP、token序列和块大小计算各服务的L1/L3 KVCache命中率。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - server_ip
+                - body
+              properties:
+                server_ip:
+                  type: array
+                  description: 需要评估命中率的服务IP列表。
+                  items:
+                    type: string
+                    example: "10.10.10.aa"
+                  example:
+                    - "10.10.10.aa"
+                    - "10.10.10.bb"
+                body:
+                  type: object
+                  required:
+                    - block_size
+                  properties:
+                    token_ids:
+                      type: array
+                      description: 用于匹配KVCache的token ID序列。
+                      items:
+                        type: integer
+                        format: int32
+                      example: [1, 2, 3, 4]
+                    cache_salt:
+                      type: string
+                      description: 缓存隔离盐值；未设置时使用空字符串。
+                      example: ""
+                    block_size:
+                      type: integer
+                      format: int64
+                      description: KVCache block大小，必须大于0。
+                      example: 4
+            examples:
+              Example 1:
+                value:
+                  server_ip:
+                    - "10.10.10.aa"
+                    - "10.10.10.bb"
+                  body:
+                    token_ids:
+                      - 1
+                      - 2
+                      - 3
+                      - 4
+                    cache_salt: ""
+                    block_size: 4
+      responses:
+        '200':
+          description: 命中率计算成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  server_score_list:
+                    type: array
+                    description: 各服务的命中率结果列表。
+                    items:
+                      type: object
+                      properties:
+                        server_ip:
+                          type: string
+                          description: 服务IP。
+                          example: "10.10.10.aa"
+                        l1_hit_ratio:
+                          type: number
+                          format: double
+                          description: L1缓存命中率。
+                          example: 0.75
+                        l3_hit_ratio:
+                          type: number
+                          format: double
+                          description: L3缓存命中率。
+                          example: 0.0
+                  message:
+                    type: string
+                    description: 预留响应字段，当前实现固定返回空字符串。
+                    example: ""
+                  status:
+                    type: integer
+                    description: 预留响应字段，当前实现固定返回0。
+                    example: 0
+        '400':
+          description: 请求数据异常，例如空请求体、非法JSON、包含未知字段、缺少server_ip或block_size小于等于0。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: server_ip is required
+                  status:
+                    type: integer
+                    example: 400
+        '405':
+          description: 请求方法不被允许，仅支持POST。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: method not allowed
+                  status:
+                    type: integer
+                    example: 405
+        '413':
+          description: 请求体超过服务端配置的大小限制。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: request body too large
+                  status:
+                    type: integer
+                    example: 413
+        '500':
+          description: 命中率计算失败。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: score evaluation failed
+                  status:
+                    type: integer
+                    example: 500
+
+  /healthz:
+    get:
+      summary: 健康检查。
+      description: 检查cache-indexer进程是否存活。服务端当前未限制请求方法，通常使用GET探活。
+      responses:
+        '200':
+          description: 服务健康。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok
+
+  /readyz:
+    get:
+      summary: 就绪检查。
+      description: 检查cache-indexer是否已就绪接收流量。服务端当前未限制请求方法，通常使用GET探活。
+      responses:
+        '200':
+          description: 服务已就绪。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: ok

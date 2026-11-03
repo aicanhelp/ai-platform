@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: harbor-chart-ingress
+  namespace: openfuyao-system
+  annotations:
+    # Nginx Ingress 特有配置
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"  # 允许大文件上传
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"  # 允许大文件上传
+    nginx.ingress.kubernetes.io/rewrite-target: /$2   # 路径重写
+    # 通用配置（其他控制器需调整）
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /local-harbor(/|$)(.*)  # 捕获路径参数
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: local-harbor
+                port:
+                  number: 80

@@ -1,0 +1,91 @@
+{
+  "module": {
+    "title": "Namespaces",
+    "description": "Manage namespace and related resources"
+  },
+  "namespace": {
+    "title": "Namespace",
+    "create": "Create Namespace",
+    "name": "Name",
+    "nameLabel": "Namespace Name",
+    "status": "Status",
+    "labels": "Labels",
+    "annotations": "Annotations",
+    "memory": "Memory (MB)",
+    "cpu": "CPU (Core)",
+    "createdAt": "Created At"
+  },
+  "limitRange": {
+    "title": "LimitRange",
+    "create": "Create LimitRange",
+    "name": "Name",
+    "nameLabel": "LimitRange Name",
+    "namespace": "Namespace",
+    "createdAt": "Created At",
+    "container": "Container Limits",
+    "pod": "Pod Limits",
+    "persistentVolumeClaim": "Storage Limits",
+    "min": "Min",
+    "max": "Max",
+    "default": "Default",
+    "defaultRequest": "Default Request"
+  },
+  "resourceQuota": {
+    "title": "ResourceQuota",
+    "create": "Create ResourceQuota",
+    "name": "Name",
+    "nameLabel": "ResourceQuota Name",
+    "namespace": "Namespace",
+    "labels": "Labels",
+    "annotations": "Annotations",
+    "status": "Status",
+    "createdAt": "Created At",
+    "hard": "Hard",
+    "used": "Used",
+    "scopes": "Scopes",
+    "statusQuotaExceeded": "Quota exceeded for some resources",
+    "statusQuotaNormal": "Quota not exceeded for any resource"
+  },
+  "info": {
+    "basicInfo": "Basic Info",
+    "labels": "Labels",
+    "annotations": "Annotations",
+    "countZero": "0 items",
+    "limits": "Limits",
+    "quotaDetails": "Quota Details",
+    "usedQuota": "Used Quota",
+    "quotaLimit": "Quota Limit"
+  },
+  "fields": {
+    "name": "Name",
+    "namespace": "Namespace",
+    "createdAt": "Created At",
+    "status": "Status"
+  },
+  "table": {
+    "type": "Type",
+    "resource": "Resource",
+    "min": "Min",
+    "max": "Max",
+    "defaultRequest": "Default Request",
+    "defaultLimit": "Default Limit",
+    "ratio": "Max Limit/Request Ratio"
+  },
+  "actions": {
+    "detail": "Details",
+    "yaml": "YAML",
+    "operation": "Operation",
+    "modify": "Modify",
+    "editLabel": "Edit Label",
+    "editAnnotation": "Edit Annotation",
+    "delete": "Delete",
+    "deleteConfirm": "Delete {{resource}}",
+    "deleteWarning": "The {{resource}} cannot be recovered after deletion, please proceed with caution.",
+    "deleteConfirmMessage": "Are you sure you want to delete {{resource}} {{name}}?",
+    "deleteNamespaceWarning": "The {{resource}} cannot be recovered after deletion. All pods, services and other resources under the namespace will also be deleted. Please proceed with caution."
+  },
+  "messages": {
+    "deleteSuccess": "Deleted successfully! Please refresh manually",
+    "getCpuMemoryFailed": "Failed to get namespace memory & CPU: {{reason}}"
+  }
+}

@@ -1,0 +1,191 @@
+openapi: 3.0.0
+info:
+  title: 
+  version: 1.0.0
+  description: Monitoring-related APIs.
+
+paths:
+  /cluster-metrics:
+    get:
+      tags: [Cluster monitoring]
+      summary: Querying cluster-level metrics.
+      description: "Supporting two query modes: instantaneous vector and range vector."
+      parameters:
+        - in: query
+          name: metrics_filter
+          schema:
+            type: string
+            example: "cpu_usage|memory_total"
+          description: Filters of metric names separated by vertical bars (|).
+        - in: query
+          name: time
+          schema:
+            type: string
+            pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+            example: "2024-05-01 10:13:30"
+          description: "Instantaneous query time (format: YYYY-MM-DD HH:MM:SS)."
+        - in: query
+          name: start
+          schema:
+            type: string
+            pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+            example: "2024-05-01 10:00:30"
+          description: Start time of range query.
+        - in: query
+          name: end
+          schema:
+            type: string
+            pattern: "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+            example: "2024-05-01 10:13:30"
+          description: End time of range query.
+        - in: query
+          name: step
+          schema:
+            type: string
+            pattern: "^(\\d+)(ms|s|m|h)$"
+            example: "15s"
+          description: "Sampling interval (unit: millisecond, second, minute, or hour)."
+      responses:
+        200:
+          description: Metric data returned successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [results]
+                properties:
+                  results:
+                    type: array
+                    items:
+                      type: object
+                      required: [metricName, data]
+                      properties:
+                        metricName:
+                          type: string
+                          example: cluster_cpu_usage
+                        data:
+                          oneOf:
+                            - type: object
+                              required: [resultType, result]
+                              properties:
+                                resultType:
+                                  type: string
+                                  enum: [vector]
+                                result:
+                                  type: array
+                                  items:
+                                    type: object
+                                    required: [labels, sample]
+                                    properties:
+                                      labels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                      sample:
+                                        type: object
+                                        required: [timestamp, value]
+                                        properties:
+                                          timestamp:
+                                            type: integer
+                                            format: int64
+                                          value:
+                                            type: number
+                                            format: double
+                            - type: object
+                              required: [resultType, result]
+                              properties:
+                                resultType:
+                                  type: string
+                                  enum: [matrix]
+                                result:
+                                  type: array
+                                  items:
+                                    type: object
+                                    required: [labels, series]
+                                    properties:
+                                      labels:
+                                        type: object
+                                        additionalProperties:
+                                          type: string
+                                      series:
+                                        type: array
+                                        items:
+                                          type: object
+                                          required: [timestamp, value]
+                                          properties:
+                                            timestamp:
+                                              type: integer
+                                              format: int64
+                                            value:
+                                              type: number
+                                              format: double
+              examples:
+                instantVector:
+                  value:
+                    results:
+                      - metricName: cluster_cpu_usage
+                        data:
+                          resultType: vector
+                          result:
+                            - labels:
+                                namespace: monitoring
+                              sample:
+                                timestamp: 1714529610
+                                value: 0.785
+                rangeVector:
+                  value:
+                    results:
+                      - metricName: cluster_memory_total
+                        data:
+                          resultType: matrix
+                          result:
+                            - labels: {}
+                              series:
+                                - timestamp: 1714529590
+                                  value: 66894458880
+                                - timestamp: 1714529605
+                                  value: 66894458880
+        400:
+          description: Client request parameter error.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ code, message ]
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 400
+                    description: HTTP status code.
+                  message:
+                    type: string
+                    example: "Invalid parameters"
+                    description: Error description.
+              examples:
+                invalidParam:
+                  value:
+                    code: 400
+                    message: "Invalid time parameter format"
+        503:
+          description: Service unavailable.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ code, message ]
+                properties:
+                  code:
+                    type: integer
+                    format: int32
+                    example: 503
+                    description: HTTP status code.
+                  message:
+                    type: string
+                    example: "Service unavailable"
+                    description: Error description.
+              examples:
+                maintenance:
+                  value:
+                    code: 503
+                    message: "System maintenance is in progress. Please try again later."

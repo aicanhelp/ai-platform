@@ -1,0 +1,7 @@
+images:
+  core:
+    repository: cr.openfuyao.cn/openfuyao/npu-feature-discovery
+    tag: latest
+    pullPolicy: Never
+
+namespace: test

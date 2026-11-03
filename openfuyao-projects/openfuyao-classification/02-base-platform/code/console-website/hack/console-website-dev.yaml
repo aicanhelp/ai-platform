@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: console-website-dev
+  namespace: openfuyao-system
+  labels:
+    app: console-website-dev
+spec:
+  containers:
+    - name: console-website
+      image: node:20-slim
+      command: ["tail"]
+      args: ["-f", "/dev/null"]
+      env:
+        - name: DEV_POD
+          value: "true"
+      workingDir: /app
+      ports:
+        - name: vite
+          containerPort: 8080
+      resources: {}
+      volumeMounts:
+        - name: code
+          mountPath: /app
+        - mountPath: /cert/ca.crt
+          name: console-website-tls
+          readOnly: true
+          subPath: ca.crt
+        - mountPath: /cert/server.key
+          name: console-website-tls
+          readOnly: true
+          subPath: tls.key
+        - mountPath: /cert/server.crt
+          name: console-website-tls
+          readOnly: true
+          subPath: tls.crt
+  volumes:
+    - name: code
+      hostPath:
+        path: /path/to/code
+        type: DirectoryOrCreate
+    - name: console-website-tls
+      secret:
+        defaultMode: 256
+        secretName: console-website-tls
+  nodeName: master

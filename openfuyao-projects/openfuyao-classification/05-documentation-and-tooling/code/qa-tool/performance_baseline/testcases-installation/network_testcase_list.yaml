@@ -1,0 +1,38 @@
+- category: installation
+  testcases:
+    dir: testcases-installation/installation/
+    modules:
+      - name: installation_testcases.py
+        functions:
+          - name: e2e
+            targetAPIs:
+              - path: /rest/cluster/v1/nodes/judgements
+                method: post
+              - path: /rest/cluster/v1/creation
+                method: post
+              - path: /rest/cluster/v1/clusters/{name}/configs
+                method: get
+              - path: /rest/cluster/v1/versions
+                method: get
+              - path: /rest/cluster/v1/upgrade-versions
+                method: post
+              - path: /rest/cluster/v1/upgrade
+                method: post
+              - path: /rest/cluster/v1/clusters/{name}
+                method: delete
+              - path: /rest/cluster/v1/clusters/{name}/BC
+                method: post
+              - path: /rest/cluster/v1/configs
+                method: get
+              - path: /rest/cluster/v1/clusters
+                method: post
+          - name: scale_node
+            targetAPIs:
+              - path: /rest/cluster/v1/clusters/{name}/nodes
+                method: get
+              - path: /rest/cluster/v1/scale-up
+                method: post
+              - path: /rest/cluster/v1/scale-down
+                method: post
+              - path: /rest/cluster/v1/clusters/{name}/BC
+                method: post

@@ -1,0 +1,184 @@
+# RBAC authn and authz
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: marketplace-service
+  namespace: openfuyao-system
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: marketplace-role
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - '*'
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - '*'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: marketplace-service-webhook-auth
+subjects:
+  - kind: ServiceAccount
+    name: marketplace-service
+    namespace: openfuyao-system
+roleRef:
+  kind: ClusterRole
+  name: webhook-auth
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: marketplace-service
+subjects:
+- kind: ServiceAccount
+  name: marketplace-service
+  namespace: openfuyao-system
+roleRef:
+  kind: ClusterRole
+  name: marketplace-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# marketplace-service deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: marketplace-service
+  namespace: openfuyao-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: marketplace-service
+  template:
+    metadata:
+      labels:
+        app: marketplace-service
+    spec:
+      securityContext:
+        fsGroup: 65532
+        runAsUser: 65532
+        runAsGroup: 65532
+      serviceAccountName: marketplace-service
+      initContainers:
+        - name: init-permission
+          image: {{ .Values.thirdPartyImages.busyBox.repository }}:{{ .Values.thirdPartyImages.busyBox.tag }}
+          command: ["sh","-c","chmod -R 700 /var/log/marketplace-service && chown -R 65532:65532 /var/log/marketplace-service"]
+          volumeMounts:
+            - mountPath: /var/log/marketplace-service
+              name: varlog
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      containers:
+      {{- if .Values.enableOAuth }}
+      - name: oauth-proxy
+        image: '{{ list . "oauthProxy" | include "helpers.image.name" }}'
+        imagePullPolicy: {{.Values.images.oauthProxy.pullPolicy}}
+        ports:
+          - containerPort: {{ .Values.oauthProxy.containerPort }}
+            name: proxy
+        args:
+        {{- if .Values.oauthProxy.enableTLS }}
+        - '--https-address=:{{ .Values.oauthProxy.containerPort }}'
+        - --http-address=
+        - --tls-cert=/ssl/sever.crt
+        - --tls-key=/ssl/server.key
+        - --tls-client-ca=/ssl/ca.pem
+        {{- else }}
+        - --https-address=
+        - '--http-address=:{{ .Values.oauthProxy.containerPort }}'
+        {{- end }}
+        - --email-domain=*
+        - --provider=openfuyao
+        - --client-id={{ .Values.oauthProxy.client.id }}
+        - --client-secret={{ .Values.oauthProxy.client.secret }}
+        - '--upstream=http://localhost:{{ .Values.config.httpServerConfig.port }}'
+        - '--openfuyao-delegate-urls={"/":{"resource": "services/proxy", "group": ""}}'
+        - --redirect-url={{ .Values.oauthProxy.urls.host }}
+        - --login-url={{ .Values.oauthProxy.urls.loginURI }}
+        - --redeem-url={{ .Values.oauthProxy.urls.redeemURI }}
+        - --root-prefix={{ .Values.oauthProxy.urls.rootPrefix }}
+        - --cookie-httponly
+        volumeMounts:
+          - name: host-time
+            mountPath: /etc/localtime
+            readOnly: true
+          {{- if .Values.oauthProxy.enableTLS }}
+          - mountPath: /ssl/ca.pem
+            name: marketplace-service-tls
+            subPath: ca.crt
+          - mountPath: /ssl/server.key
+            name: marketplace-service-tls
+            readOnly: true
+            subPath: tls.key
+          - mountPath: /ssl/server.crt
+            name: marketplace-service-tls
+            readOnly: true
+            subPath: tls.crt
+          {{- end }}
+      {{- end }}
+      - name: marketplace-service
+        image: '{{ list . "core" | include "helpers.image.name" }}'
+        imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+        env:
+          - name: SERVICE_PORT
+            value: {{ .Values.config.httpServerConfig.port | quote}}
+          - name: ENABLE_TLS
+            value: {{ .Values.config.httpServerConfig.enableHttps | quote }}
+        ports:
+          - containerPort: {{ .Values.config.httpServerConfig.port }}
+        volumeMounts:
+          {{- if .Values.config.httpServerConfig.enableHttps }}
+          - name: marketplace-service-tls
+            mountPath: /ssl/ca.pem
+            subPath: ca.crt
+          - name: marketplace-service-tls
+            readOnly: true
+            mountPath: /ssl/server.key
+            subPath: tls.key
+          - name: marketplace-service-tls
+            readOnly: true
+            mountPath: /ssl/server.crt
+            subPath: tls.crt
+          {{- end }}
+          - name: log-config-volume
+            mountPath: /etc/marketplace-service/log-config
+          - name: varlog
+            mountPath: /var/log/marketplace-service
+          - name: host-time
+            mountPath: /etc/localtime
+            readOnly: true
+          - name: config-volume
+            mountPath: /etc/marketplace-service/fuyao-config
+      volumes:
+        {{- if or .Values.config.httpServerConfig.enableHttps .Values.oauthProxy.enableTLS }}
+        - name: marketplace-service-tls
+          secret:
+            defaultMode: 0600
+            secretName: marketplace-service-tls
+        {{- end }}
+        - name: varlog
+          hostPath:
+            path: /var/log/marketplace-service
+            type: DirectoryOrCreate
+        - name: log-config-volume
+          configMap:
+            defaultMode: 420
+            name: marketplace-service-logcfg
+        - name: config-volume
+          configMap:
+            defaultMode: 420
+            name: marketplace-service-config
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""

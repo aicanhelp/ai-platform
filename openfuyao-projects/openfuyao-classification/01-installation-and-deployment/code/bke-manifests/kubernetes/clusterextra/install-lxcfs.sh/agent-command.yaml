@@ -1,0 +1,33 @@
+{{ $scriptDir := "/etc/openFuyao/bkeagent/scripts/" }}
+
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: install-lxcfs
+  namespace: {{.namespace}}
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/install-lxcfs.sh:ro:{{$scriptDir}}install-lxcfs.sh"
+      id: save-install-lxcfs-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}install-lxcfs.sh"
+      id: chmod-install-lxcfs-script
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}install-lxcfs.sh"
+      id: install-lxcfs
+      type: Shell
+  backoffLimit: 3
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}

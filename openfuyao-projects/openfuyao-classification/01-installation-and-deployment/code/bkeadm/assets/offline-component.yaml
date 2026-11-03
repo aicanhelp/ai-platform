@@ -1,0 +1,42 @@
+registry:
+  imageAddress: cr.openfuyao.cn/openfuyao/registry:2.8.1
+  architecture:
+    - amd64
+    - arm64
+repos:
+  - architecture: # openfuyao logging 扩展组件
+      - amd64
+      - arm64
+    needDownload: true # logging 扩展组件所需镜像是否下载开关，false-关闭不下载，true-开启下载
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao
+        targetRepo: openfuyao
+        images:
+          - name: logging-operator
+            tag:
+              - latest
+          - name: logging-website
+            tag:
+              - latest
+          - name: oauth-proxy
+            tag:
+              - latest
+      - sourceRepo: docker.io
+        targetRepo: /
+        images:
+          - name: grafana/loki
+            tag:
+              - 2.9.1
+          - name: grafana/promtail
+            tag:
+              - 2.9.3
+          - name: bats/bats
+            tag:
+              - 1.8.2
+rpms: []
+debs: []
+files: []
+charts:
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/charts/releases/download/
+    files:
+      - fileName: logging-package-1.0.1.tgz

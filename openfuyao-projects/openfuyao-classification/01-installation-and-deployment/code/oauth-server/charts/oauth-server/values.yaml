@@ -1,0 +1,64 @@
+config:
+  httpServerConfig:
+    port: 9096
+    enableHttps: true
+    tlsCert: |
+      -----BEGIN CERTIFICATE-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END CERTIFICATE-----
+    tlsKey: |
+      -----BEGIN PRIVATE KEY-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END PRIVATE KEY-----
+    rootCA: |
+      -----BEGIN CERTIFICATE-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END CERTIFICATE-----
+
+  loginSessionConfig:
+    name: "idpLogin"
+    csrfCookieName: "csrf"
+    maxSeconds: 7200
+    # signingKey和encryptionKey会在openFuyao安装的时候由installer生成并覆盖
+    signingKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    encryptionKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+
+  ipProtectorConfig:
+    failTimes: "5"
+    failDuration: "5m"
+    lockDuration: "20m"
+
+  oauthServerConfig:
+    authCodeExp: "5m"
+    accessTokenExp: "5m"
+    refreshTokenExp: "2h"
+    # JWTPrivateKey会在在openFuyao安装的时候由installer生成并覆盖
+    JWTPrivateKey: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX"
+    # clientIDSecret中的每一项的key为ID，格式为string，val为secret，由 openssl rand -base64 32 生成
+    clientIDSecret: | 
+      {
+        "console": "loI8mEPaPriZw7TdDnZDT5YRY5BB2kaTVkJn+dI0qKw=",
+        "oauthProxy": "SECRETSS"
+      }
+
+images:
+  core:
+    repository: "cr.openfuyao.cn/openfuyao/oauth-server"
+    tag: "latest"
+    pullPolicy: "Always"
+  kubectl:
+    repository: "cr.openfuyao.cn/openfuyao/kubectl-openfuyao"
+    tag: "latest"
+
+thirdPartyImages:
+  busyBox:
+    repository: hub.oepkgs.net/openfuyao/busybox
+    tag: "1.36.1"
+
+resources:
+  requests:
+    cpu: 50m
+    memory: 100Mi
+  limits:
+    cpu: 100m
+    memory: 200Mi

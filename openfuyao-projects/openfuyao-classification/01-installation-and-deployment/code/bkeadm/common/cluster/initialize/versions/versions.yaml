@@ -1,0 +1,12 @@
+apiVersion: bke.bocloud.com/v1
+kind: VersionManifest
+spec:
+  manifestVersion: "1"
+  componentVersions:
+    kubernetes: "v1.34.3-of.1"
+    etcd: "v3.6.7-of.1"
+    containerd: "v2.1.1"
+    openFuyao: "latest"
+  imageTags:
+    etcd: "3.6.7-of.1"
+    pause: "3.9"

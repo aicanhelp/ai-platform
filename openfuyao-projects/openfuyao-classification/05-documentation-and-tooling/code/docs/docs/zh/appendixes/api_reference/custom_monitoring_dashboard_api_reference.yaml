@@ -1,0 +1,692 @@
+﻿openapi: 3.0.0
+info:
+  title: 
+  version: 1.0.0
+paths:
+  /dashboards:
+    post:
+      summary: 创建单个Dashboard资源。
+      description: 用户创建自定义dashboard资源。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  description: 看板的名称。
+                creator:
+                  type: string
+                  description: 看板的创建者。
+              required:
+                - displayName
+                - creator
+            example:
+              displayName: "监控看板A"
+              creator: "admin"
+      responses:
+        '200':
+          description: 创建dashboard资源成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+                  data:
+                    type: object
+                    properties:
+                      dashboardID:
+                        type: string
+                        description: 看板ID格式为{UTC}-{UUID}，其中：UTC格式为：yyyy-mm-dd-hh-mm-ss-UUID；UUID格式为标准格式。
+                      displayName:
+                        type: string
+                        description: 看板名称。
+                      creator:
+                        type: string
+                        description: 看板创建者。
+                      totalWidgets:
+                        type: integer
+                        description: 看板包含的组件Widget总数量。
+                      widgets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            dashboardID:
+                              type: string
+                              description: 组件所属的监控看板的ID。
+                            displayName:
+                              type: string
+                              description: 组件名称。
+                            widgetType:
+                              type: string
+                              description: Widget的图表类型。
+                            dataSource:
+                              type: string
+                              description: Widget的数据来源。
+                            instances:
+                              type: array
+                              items:
+                                type: string
+                              description: Widget要展示指标项的名称列表。
+                            graphType:
+                              type: object
+                              properties:
+                                graphType:
+                                  type: integer
+                                  description: widget的图表类型，与widgetType相同。
+                                instancesMax:
+                                  type: integer
+                                  description: 该图表类型能包含的监控实例instance的最大数量。
+                                boardMin:
+                                  type: integer
+                                  description: 仪表盘数据最小值，整数，widgetType类型为仪表盘时必选。
+                                boardMax:
+                                  type: integer
+                                  description: 仪表盘数据最大值，整数，widgetType类型为仪表盘时必选。
+                      lastUpdateTime:
+                        type: string
+                        description: 看板上次更新时间(创建/修改行为)，以UTC形式提供。
+        '401':
+          description: 客户端请求体不合法。
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '403':
+          description: dashboard的displayName已存在。
+        '507':
+          description: 创建dashboard资源失败。
+    get:
+      summary: 获取Dashboard列表。
+      description: 返回当前集群内的所有Dashboard资源。
+      responses:
+        '200':
+          description: 获取dashboard资源列表成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dashboardID:
+                          type: string
+                          description: 看板ID。
+                        displayName:
+                          type: string
+                          description: 看板名称。
+                        creator:
+                          type: string
+                          description: 看板创建者。
+                        totalwidgets:
+                          type: integer
+                          description: 看板包含的组件Widget总数量。
+        '509':
+          description: 获取dashboard资源列表失败。
+  /dashboards/{dashboardID}:
+    get:
+      summary: 获取单个Dashboard资源。
+      description: 根据dashboardID返回当前集群内对应的dashboard资源。
+      parameters:
+        - name: dashboardID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: 需要获取的Dashboard的ID格式为{UTC}-{UUID}。
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: string
+            description: 查询开始时间，以UTC的形式提供，闭区间。
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: string
+            description: 查询结束时间，以UTC的形式提供，闭区间。
+        - name: step
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: 查询的采样间隔，单位秒。
+      responses:
+        '200':
+          description: 获取dashboard资源成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+                  data:
+                    type: object
+                    properties:
+                      dashboardID:
+                        type: string
+                        description: 看板ID格式为{UTC}-{UUID}，其中：UTC格式为：yyyy-mm-dd-hh-mm-ss-UUID；UUID格式为标准格式。
+                      displayName:
+                        type: string
+                        description: 看板名称。
+                      creator:
+                        type: string
+                        description: 看板创建者。
+                      totalWidgets:
+                        type: integer
+                        description: 看板包含的组件Widget总数量。
+                      widgets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            dashboardID:
+                              type: string
+                              description: 组件所属的监控看板的ID。
+                            displayName:
+                              type: string
+                              description: 组件名称。
+                            widgetType:
+                              type: string
+                              description: Widget的图表类型。
+                            dataSource:
+                              type: string
+                              description: Widget的数据来源。
+                            instances:
+                              type: array
+                              items:
+                                type: string
+                              description: Widget要展示指标项的名称列表。
+                            graphType:
+                              type: object
+                              properties:
+                                graphType:
+                                  type: integer
+                                  description: widget的图表类型，与widgetType相同。
+                                instancesMax:
+                                  type: integer
+                                  description: 该图表类型能包含的监控实例instance的最大数量。
+                                boardMin:
+                                  type: integer
+                                  description: 仪表盘数据最小值，整数，widgetType类型为仪表盘时必选。
+                                boardMax:
+                                  type: integer
+                                  description: 仪表盘数据最大值，整数，widgetType类型为仪表盘时必选。
+                      lastUpdateTime:
+                        type: string
+                        description: 看板上次更新时间(创建/修改行为)，以UTC形式提供。
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '508':
+          description: 获取dashboard资源失败。
+    patch:
+      summary: 修改单个Dashboard资源。
+      description: 根据dashboradID修改Dashboard资源的部分属性。
+      parameters:
+        - name: dashboardID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: 看板ID。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  description: 看板的名称。
+              required:
+                - displayName
+            example:
+              displayName: "监控看板B"
+      responses:
+        '200':
+          description: 修改dashboard资源成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+        '401':
+          description: 客户端请求体不合法。
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '403':
+          description: dashboard的displayName已存在。
+        '510':
+          description: 修改dashboard资源失败。
+    delete:
+      summary: 删除单个Dashboard资源。
+      description: 根据dashboradID删除对应的dashboard资源。
+      parameters:
+        - name: dashboardID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: 需要获取的Dashboard的ID格式为{UTC}-{UUID}，其中UTC格式为：yyyy-mm-dd-hh-mm-ss-UUID；UUID格式为标准格式。
+      responses:
+        '200':
+          description: 删除dashboard资源成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '511':
+          description: 删除dashboard资源失败。
+  /widgets:
+    post:
+      summary: 创建单个Widget资源。
+      description: 用户根据dashboardID为对应监控面板dashboard创建单个widget资源。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dashboardID:
+                  type: string
+                  description: 组件所属的监控看板的ID格式为{UTC}-{UUID}，其中UTC格式为：yyyy-mm-dd-hh-mm-ss-UUID；UUID格式为标准格式。
+                displayName:
+                  type: string
+                  description: 组件名称。
+                widgetType:
+                  type: string
+                  description: Widget的图表类型0 - 5分别对应不同类型的图表，依次为：0为线形图；1是堆叠面积图；2是数字；3是仪表盘；4是环图；5是柱状图。
+                dataSource:
+                  type: string
+                  description: Widget的数据来源。
+                instances:
+                  type: array
+                  items:
+                    type: string
+                  description: Widget要展示指标项的名称列表，需要将指标的metrics内容从Json转换到String格式。
+                boardMin:
+                  type: string
+                  description: 仪表盘数据最小值，字符串，widgetType类型为仪表盘时必选。
+                boardMax:
+                  type: string
+                  description: 仪表盘数据最大值，字符串，widgetType类型为仪表盘时必选。
+              required:
+                - dashboardID
+                - displayName
+                - widgetType
+                - dataSource
+                - instances
+            example:
+              dashboardID: "2024-09-03-02-56-59-fec79262-xxxx-4836-xxxx-1832434bb7c2"
+              displayName: "某柱状图"
+              widgetType: "0"
+              dataSource: "http://promethus"
+              instances:
+                - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.100.10:10250\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+                - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.100.10:10250\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics/aaa\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+              boardMin: "0"
+              boardMax: "20"
+      responses:
+        '200':
+          description: 创建widget资源成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+                  data:
+                    type: object
+                    properties:
+                      dashboardID:
+                        type: string
+                        description: 组件所属的监控看板的ID。
+                      displayName:
+                        type: string
+                        description: 组件名称。
+                      widgetType:
+                        type: string
+                        description: Widget的图表类型。
+                      dataSource:
+                        type: string
+                        description: Widget的数据来源。
+                      instances:
+                        type: array
+                        items:
+                          type: string
+                        description: Widget要展示指标项的名称列表。
+                      graphType:
+                        type: object
+                        properties:
+                          graphType:
+                            type: integer
+                            description: widget的图表类型，与widgetType相同。
+                          instancesMax:
+                            type: integer
+                            description: 该图表类型能包含的监控实例instance的最大数量。
+                          boardMin:
+                            type: integer
+                            description: 仪表盘数据最小值，整数，widgetType类型为仪表盘时必选。
+                          boardMax:
+                            type: integer
+                            description: 仪表盘数据最大值，整数，widgetType类型为仪表盘时必选。
+        '401':
+          description: 客户端请求体不合法。
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '501':
+          description: 创建widget资源失败。
+  /widgets/{widgetID}:
+    patch:
+      summary: 修改单个Widget资源。
+      description: 用户根据widgetID修改对应的widget资源。
+      parameters:
+        - name: widgetID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Widget的ID。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  description: Widget名称。
+                widgetType:
+                  type: string
+                  description: Widget的图表类型0-5分别对应不同类型的图表，依次为：0是线形图；1是堆叠面积图；2是数字；3是仪表盘；4是环图；5是柱状图。
+                dataSource:
+                  type: string
+                  description: Widget的数据来源。
+                instances:
+                  type: array
+                  items:
+                    type: string
+                  description: Widget要展示的指标项的列表。
+                boardMin:
+                  type: string
+                  description: 仪表盘数据最小值，整数，widgetType类型为仪表盘时必选。
+                boardMax:
+                  type: string
+                  description: 仪表盘数据最大值，整数，widgetType类型为仪表盘时必选。
+              required:
+                - displayName
+                - widgetType
+                - dataSource
+                - instances
+            example:
+              displayName: "某柱状图"
+              widgetType: "0"
+              dataSource: "http://prometheus:8080"
+              instances:
+                - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.100.10:10250\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+                - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.100.10:10250\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics/aaa\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+              boardMin: "0"
+              boardMax: "20"
+      responses:
+        '200':
+          description: 修改widget资源成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+        '401':
+          description: 客户端请求体不合法。
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '502':
+          description: 修改widget资源失败。
+    delete:
+      summary: 删除单个Widget资源。
+      description: 用户根据widgetID删除对应的Widget资源。
+      parameters:
+        - name: widgetID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: 要删除的Widget资源的ID格式为{UTC}-{UUID}，其中UTC格式为：yyyy-mm-dd-hh-mm-ss-UUID；UUID格式为标准格式。
+      responses:
+        '200':
+          description: 删除widget资源成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '503':
+          description: 删除widget资源失败。
+  /widgets/indicators:
+    get:
+      summary: 获取指标名称列表。
+      description: 用户创建/修改Widget时，根据数据源(dataSource)获取该数据源包含的所有指标的名称列表。
+      parameters:
+        - name: dataSource
+          in: query
+          required: true
+          schema:
+            type: string
+            description: 数据源的URI。
+      responses:
+        '200':
+          description: 获取指标名称列表成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+                  data:
+                    type: array
+                    items:
+                      type: string
+                    description: 返回的指标名称列表。
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '504':
+          description: 获取指标名称列表失败。
+  /widgets/indicators/{displayName}:
+    get:
+      summary: 根据指标名称获取实例列表。
+      description: 用户创建/修改Widget时，根据数据源(dataSource)和指标名称(displayName)获取该指标包含的所有实例(instance)。
+      parameters:
+        - name: dataSource
+          in: query
+          required: true
+          schema:
+            type: string
+            description: 数据源的URI。
+        - name: displayName
+          in: path
+          required: true
+          schema:
+            type: string
+            description: 指标名称一个指标(indicator)下会包含多个实例(instance)。
+      responses:
+        '200':
+          description: 获取实例列表成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+                  data:
+                    type: object
+                    properties:
+                      displayName:
+                        type: string
+                        description: 指标名称一个指标(indicator)下会包含多个实例(instance)。
+                      instances:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            metric:
+                              type: object
+                              description: 包含多个标签键值对，整个metric是监测对象的唯一标识。
+                            values:
+                              type: array
+                              description: (时间戳,数值)的数组，表示时间序列上的采样结果。
+                              items:
+                                type: array
+                                items:
+                                  oneOf:
+                                    - type: integer
+                                    - type: string
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '505':
+          description: 获取实例列表失败。
+  /widgets/indicators/instances:
+    post:
+      summary: 获取实例列表中每个实例的数据。
+      description: 用户创建/修改Widget时，根据数据源(dataSource)、时间范围([start,end])、采样间隔(step)以及用户选择的实例列表(instances)返回对应的指标数据列表。
+      parameters:
+        - name: dataSource
+          in: query
+          required: true
+          schema:
+            type: string
+            description: 数据源的URI。
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: 查询的开始时间，以UTC的形式提供，闭区间。
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: 查询的结束时间，以UTC的形式提供，闭区间。
+        - name: step
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: 查询的采样间隔，单位秒。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              description: 用户选择的指标实例的列表，实例转为JSON字符串。
+            example:
+              - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.xxx.xx:port\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+              - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.xxx.xx:port\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics/aaa\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+      responses:
+        '200':
+          description: 获取实例数据成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: 状态码。
+                  msg:
+                    type: string
+                    description: 返回消息。
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        metric:
+                          type: object
+                          description: 包含多个标签键值对，整个metric是监测对象的唯一标识。
+                        values:
+                          type: array
+                          description: (时间戳,数值)的数组，表示时间序列上的采样结果。
+                          items:
+                            type: array
+                            items:
+                              oneOf:
+                                - type: integer
+                                - type: string
+        '401':
+          description: 客户端请求体不合法。
+        '402':
+          description: 客户端请求中包含不合法参数。
+        '506':
+          description: 获取实例数据失败。

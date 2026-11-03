@@ -1,0 +1,132 @@
+logging-operator:
+    namespace:
+      backend: openfuyao-system
+
+    images:
+      core:
+        repository: "cr.openfuyao.cn/openfuyao/logging-operator"
+        pullPolicy: Always
+      
+loki-stack:
+    namespace: loki
+    promtail:
+      defaultVolumes:
+        - name: containers
+          hostPath:
+            path: /var/lib/docker/containers
+        - name: pods
+          hostPath:
+            path: /var/log/pods
+        - name: random
+          hostPath:
+            path: /var/log/random
+
+      defaultVolumeMounts:
+        - name: containers
+          mountPath: /var/lib/docker/containers
+          readOnly: true
+        - name: pods
+          mountPath: /var/log/pods
+          readOnly: true
+        - name: random
+          mountPath: /var/log/random
+          readOnly: true
+
+    loki:
+      config:
+        limits_config:
+          reject_old_samples_max_age: 168h
+        table_manager:
+          retention_deletes_enabled: true
+          retention_period: 240h
+      alerting_groups:
+        - name: GenericHighErrorRate
+          rules:
+            - alert: GenericHighErrorRate
+              expr: |
+                sum by (job, instance) (rate({job=~".+"} |= "error" [5m])) > 0
+              for: 5m
+              labels:
+                severity: critical
+                loki: logging/k8s.io
+              annotations:
+                summary: "High error rate detected in {{ $labels.job }} instance {{ $labels.instance }}"
+                description: "Job {{ $labels.job }} on instance {{ $labels.instance }} has a high rate of error logs."
+
+
+        - name: GenericExceptionDetected
+          rules:
+            - alert: GenericExceptionDetected
+              expr: |
+                sum by (job, instance) (rate({job=~".+"} |= "Exception" [5m])) > 0
+              for: 5m
+              labels:
+                severity: warning
+                loki: logging/k8s.io
+              annotations:
+                summary: "Exception detected in {{ $labels.job }} instance {{ $labels.instance }}"
+                description: "Job {{ $labels.job }} on instance {{ $labels.instance }} has logs containing 'Exception'."
+
+        - name: GenericLogVolumeSpike
+          rules:
+            - alert: GenericLogVolumeSpike
+              expr: |
+                sum by (job, instance) (rate({job=~".+"}[5m])) > 1
+              for: 5m
+              labels:
+                severity: warning
+                loki: logging/k8s.io
+              annotations:
+                summary: "Log volume spike detected in {{ $labels.job }} instance {{ $labels.instance }}"
+                description: "Job {{ $labels.job }} on instance {{ $labels.instance }} has a spike in log volume."
+
+        - name: GenericErrorRateThresholdExceeded
+          rules:
+            - alert: GenericErrorRateThresholdExceeded
+              expr: |
+                (sum by (job, instance) (rate({job=~".+"} |= "error" [5m])) / sum by (job, instance) (rate({job=~".+"}[5m]))) > 0.05
+              for: 5m
+              labels:
+                severity: critical
+                loki: logging/k8s.io
+              annotations:
+                summary: "High error rate threshold exceeded in {{ $labels.job }} instance {{ $labels.instance }}"
+                description: "Job {{ $labels.job }} on instance {{ $labels.instance }} has an error rate exceeding the threshold."
+        - name: GenericServiceUnavailable
+          rules:
+            - alert: GenericServiceUnavailable
+              expr: |
+                sum by (job, instance) (rate({job=~".+"} |= "service unavailable" [5m])) > 0
+              for: 5m
+              labels:
+                severity: critical
+                loki: logging/k8s.io
+              annotations:
+                summary: "Service unavailable detected in {{ $labels.job }} instance {{ $labels.instance }}"
+                description: "Job {{ $labels.job }} on instance {{ $labels.instance }} has logs indicating 'service unavailable'."
+        - name: GenericApplicationStartupFailure
+          rules:
+            - alert: GenericApplicationStartupFailure
+              expr: |
+                sum by (job, instance) (rate({job=~".+"} |= "startup failure" [5m])) > 0
+              for: 5m
+              labels:
+                severity: critical
+                loki: logging/k8s.io
+              annotations:
+                summary: "Application startup failure detected in {{ $labels.job }} instance {{ $labels.instance }}"
+                description: "Job {{ $labels.job }} on instance {{ $labels.instance }} has logs indicating 'startup failure'."
+
+
+proxy-logging:
+    namespace: openfuyao-system
+    enableOAuth: true
+
+    images:
+      core:
+        repository: "cr.openfuyao.cn/openfuyao/logging-website"
+        pullPolicy: Always
+      oauth:
+        repository: "cr.openfuyao.cn/openfuyao/oauth-proxy"
+        pullPolicy: Always
+

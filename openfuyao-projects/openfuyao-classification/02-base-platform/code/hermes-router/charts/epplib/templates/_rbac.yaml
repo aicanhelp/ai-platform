@@ -1,0 +1,148 @@
+{{- define "inference-extension.rbac" -}}
+{{- /*
+Auto-detect plugins that need cross-namespace pod read access and emit the
+matching Role + RoleBinding in each foreign namespace. Today this only covers
+"npu-exporter-data-source" (reads metrics pods in a separate namespace),
+but the structure is extensible — extend $crossNsPluginRules with more
+{plugin type -> parameter holding the namespace} entries as new plugins land.
+*/ -}}
+{{- $crossNsPluginRules := dict
+  "npu-exporter-data-source" "exporterNamespace"
+-}}
+{{- $crossNsNamespaces := list -}}
+{{- range $filename, $content := (default (dict) .Values.inferenceExtension.pluginsCustomConfig) }}
+  {{- /* Run the same tpl pass as _config.yaml so values referenced with
+         {{ .Release.Namespace }} or other template expressions resolve to
+         the same string the ConfigMap will see at runtime. */ -}}
+  {{- if kindIs "string" $content }}
+    {{- $parsed := tpl $content $ | fromYaml }}
+    {{- $plugins := $parsed.plugins }}
+    {{- if kindIs "slice" $plugins }}
+      {{- range $plugin := $plugins }}
+        {{- if kindIs "map" $plugin }}
+          {{- $type := $plugin.type | default "" }}
+          {{- $nsKey := index $crossNsPluginRules $type }}
+          {{- if $nsKey }}
+            {{- $params := $plugin.parameters }}
+            {{- if kindIs "map" $params }}
+              {{- $ns := index $params $nsKey }}
+              {{- if and (kindIs "string" $ns) $ns }}
+                {{- $crossNsNamespaces = append $crossNsNamespaces $ns }}
+              {{- end }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}
+    {{- $routing := default (dict) .Values.inferenceExtension.routing -}}
+    {{- $npuExporter := default (dict) $routing.npuExporter -}}
+    {{- if and (eq (default "" $routing.profile) "prediction") (not (empty $npuExporter.exporterNamespace)) }}
+      {{- $crossNsNamespaces = append $crossNsNamespaces $npuExporter.exporterNamespace }}
+    {{- end }}
+{{- $crossNsNamespaces = uniq (compact $crossNsNamespaces) -}}
+{{- if .Values.inferenceExtension.monitoring.prometheus.enabled }}
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "gateway-api-inference-extension.cluster-rbac-name" . }}
+  labels:
+    {{- include "gateway-api-inference-extension.labels" . | nindent 4 }}
+rules:
+- apiGroups:
+    - authentication.k8s.io
+  resources:
+    - tokenreviews
+  verbs:
+    - create
+- apiGroups:
+    - authorization.k8s.io
+  resources:
+    - subjectaccessreviews
+  verbs:
+    - create
+- nonResourceURLs:
+    - "/metrics"
+  verbs:
+    - get
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "gateway-api-inference-extension.cluster-rbac-name" . }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "gateway-api-inference-extension.name" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "gateway-api-inference-extension.cluster-rbac-name" . }}
+{{- end }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ printf "%s-sa" (include "gateway-api-inference-extension.name" .) }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gateway-api-inference-extension.labels" . | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ printf "%s-sa" (include "gateway-api-inference-extension.name" .) }}
+  namespace: {{ .Release.Namespace }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "gateway-api-inference-extension.name" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ printf "%s-sa" (include "gateway-api-inference-extension.name" .) }}
+{{- range $namespace := $crossNsNamespaces }}
+{{- if ne $namespace $.Release.Namespace }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ printf "%s-pods-reader" (include "gateway-api-inference-extension.name" $) }}
+  namespace: {{ $namespace }}
+  labels:
+    {{- include "gateway-api-inference-extension.labels" $ | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources: ["pods"]
+  verbs: ["get", "watch", "list"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: {{ printf "%s-pods-reader" (include "gateway-api-inference-extension.name" $) }}
+  namespace: {{ $namespace }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "gateway-api-inference-extension.name" $ }}
+  namespace: {{ $.Release.Namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: {{ printf "%s-pods-reader" (include "gateway-api-inference-extension.name" $) }}
+{{- end }}
+{{- end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: {{ include "gateway-api-inference-extension.name" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "gateway-api-inference-extension.labels" . | nindent 4 }}
+---
+{{- end }}

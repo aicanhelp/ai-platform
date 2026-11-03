@@ -1,0 +1,12 @@
+apiVersion: terminal.openfuyao.com/v1beta1
+kind: WebterminalTemplate
+metadata:
+  labels:
+    app.kubernetes.io/name: webterminaltemplate
+    app.kubernetes.io/instance: webterminaltemplate-sample
+    app.kubernetes.io/part-of: 1108
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/created-by: 1108
+  name: webterminaltemplate-sample
+spec:
+  # TODO(user): Add fields here

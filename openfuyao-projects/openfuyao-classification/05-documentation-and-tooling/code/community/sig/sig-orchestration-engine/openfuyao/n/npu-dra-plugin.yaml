@@ -1,0 +1,8 @@
+name: npu-dra-plugin
+type: private
+description: '昇腾NPU的DRA调度插件'
+branches:
+  - name: master
+    type: protected
+  - name: br_init_dev
+    type: protected

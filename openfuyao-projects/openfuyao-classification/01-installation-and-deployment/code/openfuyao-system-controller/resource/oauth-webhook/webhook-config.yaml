@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Config
+clusters:
+  - name: oauth-webhook
+    cluster:
+      certificate-authority: /etc/webhook/ca.pem    # 用来验证远程服务的CA
+      server: https://oauth-webhook.openfuyao-system.svc.cluster.local:9095/oauth/tokenauth/fuyao         # 远程服务URL
+# users指代APIServer的Webhook配置
+users:
+  - name: kubernetes
+    user:
+      client-certificate: /etc/webhook/server.crt     # Webhook插件使用的证书
+      client-key: /etc/webhook/server.key         # 与证书匹配的密钥
+current-context: webhook
+contexts:
+  - context:
+      cluster: oauth-webhook
+      user: kubernetes
+    name: webhook

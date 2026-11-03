@@ -1,0 +1,134 @@
+@import '@/styles/common.less';
+
+.user_set_box{
+  display: flex;
+  flex-direction: column;
+  align-items:  flex-start;
+  width: 1200px;
+  margin: 0 auto;
+  height: calc(100vh - 64px);
+  .user_title{
+    color:#333333;
+    font-size: 14px;
+    margin:16px 0;
+    align-self: flex-start;
+  }
+  .user_set_content{
+    width: 100%;
+    background-color: @page-container-color;
+    display: flex;
+    flex-direction: row;
+    border-radius: 4px;
+    .user_info_content{
+      padding: 32px 40px;
+      width: 100%;
+      h3{
+        color: #333333;
+        font-size: 16px;
+        font-weight: bold;
+        margin:0;
+      }
+      .init_title{
+        margin-left:220px;
+        margin-top:64px;
+        font-size:20px;
+      }
+      .init_subtitle{
+        margin:0;
+        margin-left:220px;
+        margin-top:14px;
+      }
+      .password_subtitle{
+        font-size: 14px;
+        color: #89939b;
+      }
+      .formList{
+        margin: 0 auto;
+        width: 450px;
+        padding: 64px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+        justify-content: center;
+        .@{container-prefix}-form-item{
+          margin:0px;
+        }
+        
+        .prompt-line{
+          width: 100%;
+          color:#89939b;
+          margin:.5em 0;
+          display: flex;
+        }
+
+        .prompt-icon {
+          width: 1em;
+          height: 1em;
+          margin-right: 0.25em;
+        }
+        .prompt-default::before{
+          content:"";
+          display:inline-block;
+          width:1em;
+          height:1em;
+          position:absolute;
+          top:.25em;
+          left:-1.25em;
+          margin-right:1em;
+        }
+        .avatar_pic{
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          align-items: flex-end;
+          .@{container-prefix}-avatar{
+            border-radius: 4px;
+          }
+          .upload{
+            cursor: pointer;
+            color: @button-normal-color;
+            margin-left:25px;
+            .upload_word{
+              margin-left:10px;
+              line-height: 24px;
+              font-size: 14px;
+            }
+          }
+        }
+        .user_input{
+          width: 100%;
+        }
+        .@{container-prefix}-form-item-explain-error{
+          width: 400px;
+        }
+        .modify_password_btn{
+          margin-top:32px;
+          display: flex;
+          align-self: flex-end;
+        }
+      }
+    }
+  }
+}
+.init_set_password_box{
+  margin: 0 524px;
+}
+
+
+@media screen  and (max-width: 1280px) {
+  .user_set_box{
+    margin: 0 auto;
+    .init_title{
+      margin-left:150px !important;
+    }
+    .init_subtitle{
+      margin-left:150px !important;
+    }
+    .btn_end{
+      margin-top:50px !important;
+    }
+    .update_form{
+      margin: 0  25px 0 0 !important;
+    }
+  }
+}

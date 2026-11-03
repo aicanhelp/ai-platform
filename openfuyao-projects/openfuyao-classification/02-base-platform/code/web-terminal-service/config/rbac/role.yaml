@@ -1,0 +1,32 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manager-role
+rules:
+- apiGroups:
+  - terminal.openfuyao.com
+  resources:
+  - webterminaltemplates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - terminal.openfuyao.com
+  resources:
+  - webterminaltemplates/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - terminal.openfuyao.com
+  resources:
+  - webterminaltemplates/status
+  verbs:
+  - get
+  - patch
+  - update

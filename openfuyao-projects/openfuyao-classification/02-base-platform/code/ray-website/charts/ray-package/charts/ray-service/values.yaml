@@ -1,0 +1,17 @@
+namespace:
+  backend: vcjob
+
+images:
+  core:
+    repository: cr.openfuyao.cn/openfuyao/ray-service
+    pullPolicy: Always
+
+grafana:
+  grafana.ini:
+    server:
+      domain: 192.168.100.144
+
+  service:
+    nodePort: 30003
+
+  openFuyao: true

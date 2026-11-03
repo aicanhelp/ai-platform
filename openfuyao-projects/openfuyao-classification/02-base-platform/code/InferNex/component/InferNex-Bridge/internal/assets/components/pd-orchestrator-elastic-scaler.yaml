@@ -1,0 +1,30 @@
+template:
+  spec:
+    serviceAccountName: elastic-scaler-sa
+    containers:
+      - name: elastic-scaler
+        image: cr.openfuyao.cn/openfuyao/elastic-scaler:latest
+        imagePullPolicy: IfNotPresent
+        args:
+          - --leader-elect
+          - --health-probe-bind-address=:8081
+          - --enable-admission-webhook
+          - --webhook-cert-path=/tmp/k8s-webhook-server/serving-certs
+          - --webhook-cert-name=tls.crt
+          - --webhook-cert-key=tls.key
+        ports:
+          - name: webhook-server
+            containerPort: 9443
+            protocol: TCP
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10

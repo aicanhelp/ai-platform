@@ -1,0 +1,54 @@
+/*
+ * Copyright (c) 2026 Huawei Technologies Co., Ltd.
+ * openFuyao is licensed under Mulan PSL v2.
+ * You can use this software according to the terms and conditions of the Mulan PSL v2.
+ * You may obtain a copy of Mulan PSL v2 at:
+ *          http://license.coscl.org.cn/MulanPSL2
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PSL v2 for more details.
+ */
+
+syntax = "proto3";
+
+package crimultiplex.admin.v1;
+
+option go_package = "flux-sandbox/api/proto/v1;sandboxv1";
+
+// E2BSandboxAdminService exposes the E2B Sandbox Runtime admin extensions
+// (PauseSandbox, CheckpointSandbox) served on the admin socket
+// /run/cri-multiplex/admin.sock. These methods are NOT part of the Kubernetes
+// CRI RuntimeService; they are E2B-specific.
+service E2BSandboxAdminService {
+  // PauseSandbox pauses the microVM and creates a memory snapshot, releasing
+  // CPU/memory while preserving disk and memory state.
+  rpc PauseSandbox(PauseSandboxControlRequest) returns (PauseSandboxControlResponse);
+
+  // CheckpointSandbox performs pause->snapshot->resume, leaving the sandbox
+  // running while producing a reusable snapshot template.
+  rpc CheckpointSandbox(CheckpointRequest) returns (CheckpointResponse);
+}
+
+message PauseSandboxControlRequest {
+  string operation_id = 1;
+  string cri_sandbox_id = 2;
+  string e2b_sandbox_id = 3;
+  string team_id = 4;
+  string template_id = 5;
+  string build_id = 6;
+  int64 timeout_seconds = 7;
+}
+
+message PauseSandboxControlResponse {}
+
+message CheckpointRequest {
+  string operation_id = 1;
+  string cri_sandbox_id = 2;
+  string e2b_sandbox_id = 3;
+  string team_id = 4;
+  string build_id = 5;
+  int64 timeout_seconds = 6;
+}
+
+message CheckpointResponse {}

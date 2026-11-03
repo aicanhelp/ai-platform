@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: xpu-exporter-daemonset
+  namespace: xpu
+  labels:
+    app: xpu-exporter
+spec:
+  selector:
+    matchLabels:
+      name: xpu-exporter
+      app: xpu-exporter
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        name: xpu-exporter
+        app: xpu-exporter
+    spec:
+      hostNetwork: true
+      containers:
+        - name: xpu-exporter
+          image: FILLED_BY_OPERATOR
+          imagePullPolicy: IfNotPresent
+          command: ["FILLED_BY_OPERATOR"]
+          args: ["FILLED_BY_OPERATOR"]
+          env:
+            - name: HTTPS_ENABLE
+              value: "off"
+            - name: HOST_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.hostIP
+          volumeMounts:
+            - name: xpu-log
+              mountPath: /var/log/xpu
+            - name: xpu-sock
+              mountPath: /var/lib/xpu
+            - name: tls-secret
+              mountPath: /opt/xpu/certs
+              readOnly: true
+      volumes:
+        - name: xpu-log
+          hostPath:
+            path: /var/log/xpu
+            type: DirectoryOrCreate
+        - name: xpu-sock
+          hostPath:
+            path: /var/lib/xpu
+        - name: tls-secret
+          secret:
+            secretName: exporter-tls
+            optional: true

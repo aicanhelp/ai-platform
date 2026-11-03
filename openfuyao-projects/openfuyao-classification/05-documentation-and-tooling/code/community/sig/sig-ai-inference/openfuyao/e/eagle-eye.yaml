@@ -1,0 +1,6 @@
+name: eagle-eye
+type: public
+description: '提供业务运行态、系统运行态、硬件健康等不同粒度关键指标的近实时监控，支持推理场景动态扩缩容、策略选择、容灾等能力。'
+branches:
+  - name: master
+    type: protected

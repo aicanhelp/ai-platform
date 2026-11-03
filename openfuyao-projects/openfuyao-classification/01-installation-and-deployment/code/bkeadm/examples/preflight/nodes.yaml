@@ -1,0 +1,62 @@
+apiVersion: bke.bocloud.com/v1beta1
+kind: BKENodeList
+metadata:
+  name: demo-cluster-nodes
+  namespace: default
+items:
+  - apiVersion: bke.bocloud.com/v1beta1
+    kind: BKENode
+    metadata:
+      name: master-1
+      namespace: default
+      labels:
+        cluster.x-k8s.io/cluster-name: demo-cluster
+    spec:
+      role: [master, etcd]
+      ip: 192.168.10.11
+      port: "22"
+      username: root
+      password: "<REPLACE_WITH_REAL_PASSWORD>"
+      hostname: master-1
+  - apiVersion: bke.bocloud.com/v1beta1
+    kind: BKENode
+    metadata:
+      name: master-2
+      namespace: default
+      labels:
+        cluster.x-k8s.io/cluster-name: demo-cluster
+    spec:
+      role: [master, etcd]
+      ip: 192.168.10.12
+      port: "22"
+      username: root
+      password: "<REPLACE_WITH_REAL_PASSWORD>"
+      hostname: master-2
+  - apiVersion: bke.bocloud.com/v1beta1
+    kind: BKENode
+    metadata:
+      name: master-3
+      namespace: default
+      labels:
+        cluster.x-k8s.io/cluster-name: demo-cluster
+    spec:
+      role: [master, etcd]
+      ip: 192.168.10.13
+      port: "22"
+      username: root
+      password: "<REPLACE_WITH_REAL_PASSWORD>"
+      hostname: master-3
+  - apiVersion: bke.bocloud.com/v1beta1
+    kind: BKENode
+    metadata:
+      name: worker-1
+      namespace: default
+      labels:
+        cluster.x-k8s.io/cluster-name: demo-cluster
+    spec:
+      role: [node]
+      ip: 192.168.10.21
+      port: "22"
+      username: root
+      password: "<REPLACE_WITH_REAL_PASSWORD>"
+      hostname: worker-1

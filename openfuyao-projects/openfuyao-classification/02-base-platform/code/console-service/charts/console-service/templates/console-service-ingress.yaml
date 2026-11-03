@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: console-service-ingress
+  namespace: openfuyao-system
+  annotations:
+    {{- if .Values.config.enableHttps }}
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/proxy-ssl-secret: {{.Values.ingress.secretName}}
+    nginx.ingress.kubernetes.io/proxy-ssl-name: console-service.openfuyao-system.svc.cluster.local
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "off"
+    nginx.ingress.kubernetes.io/proxy-ssl-verify-depth: "1"
+    nginx.ingress.kubernetes.io/proxy-ssl-protocols: {{.Values.ingress.sslProtocols}}
+    {{- else }}
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    {{- end}}
+    nginx.ingress.kubernetes.io/limit-rps: "{{.Values.ingress.limitRPS}}"
+    nginx.ingress.kubernetes.io/limit-connections: "{{.Values.ingress.limitConnections}}"
+    nginx.ingress.kubernetes.io/limit-burst: "{{.Values.ingress.limitBurst}}"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "{{.Values.ingress.limitBurstMultiplier}}"
+spec:
+  rules:
+    - http:
+        paths:
+          - path: '/'
+            pathType: Prefix
+            backend:
+              service:
+                name: console-service
+                port:
+                  number: 80
+  ingressClassName: nginx

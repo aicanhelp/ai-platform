@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: haproxy
+  namespace: kube-system
+spec:
+  containers:
+  - image: {{ .thirdImageRepo }}{{ .haproxyImageName }}:{{ .haproxyImageTag }}
+    name: haproxy-{{ randomString 5}}
+    livenessProbe:
+      failureThreshold: 8
+      httpGet:
+        host: localhost
+        path: /healthz
+        port: {{ .controlPlaneEndpointPort }}
+        scheme: HTTPS
+    volumeMounts:
+    - mountPath: /usr/local/etc/haproxy
+      name: haproxyconf
+    - mountPath: /dev/log
+      name: log
+  hostNetwork: true
+  volumes:
+  - hostPath:
+      path: {{ .haproxyConfigDir }}
+    name: haproxyconf
+  - hostPath:
+      path: /dev/log
+    name: log
+status: {}

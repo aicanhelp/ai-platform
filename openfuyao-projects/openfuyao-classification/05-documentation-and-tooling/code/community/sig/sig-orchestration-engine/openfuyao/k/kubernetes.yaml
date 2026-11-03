@@ -1,0 +1,6 @@
+name: kubernetes
+type: private
+description: '容器编排平台，用于自动化的部署、扩展和管理容器化应用，并提供服务发现、负载均衡能力'
+branches:
+  - name: master
+    type: protected

@@ -1,0 +1,26 @@
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: reset
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - Reset
+        - bkeConfig=bke-ccc:ccc
+        - extra=172.28.100.250
+      id: reset
+      type: BuiltIn
+  # 失败后最大重试次数
+  backoffLimit: 3
+  # 超过此时间后，不在执行。默认600
+  # activeDeadlineSecond: 1000
+  # 运行完成后，超过此清理的时间则清理该任务
+  ttlSecondsAfterFinished: 1000
+  nodeSelector:
+    matchLabels:
+      master-1: "master-1"
+      #      worker-1: "worker-1"
+#      master-2: "master-2"

@@ -1,0 +1,136 @@
+{
+  "module": {
+    "title": "告警",
+    "description": "管理集群告警资源"
+  },
+  "currentAlert": {
+    "title": "当前告警"
+  },
+  "silentAlert": {
+    "title": "静默告警",
+    "createSilence": "创建静默",
+    "silentName": "静默名称",
+    "silentNameLabel": "静默名称",
+    "label": "标签",
+    "selectLabel": "请选择标签",
+    "reset": "重置",
+    "search": "查询",
+    "silencedAlerts": "已静默告警"
+  },
+  "table": {
+    "name": "告警名称",
+    "description": "告警描述",
+    "namespace": "命名空间",
+    "pod": "Pod",
+    "level": "告警等级",
+    "duration": "持续时间",
+    "triggerTime": "触发时间",
+    "source": "告警源",
+    "silence": "静默告警",
+    "status": "状态",
+    "labels": "标签",
+    "silentStatus": "静默状态",
+    "beginTime": "开始时间",
+    "endTime": "结束时间",
+    "creator": "创建者",
+    "matchedAlerts": "匹配告警数",
+    "remarks": "备注",
+    "operation": "操作"
+  },
+  "level": {
+    "critical": "严重",
+    "warning": "警告",
+    "info": "提示",
+    "all": "全部"
+  },
+  "status": {
+    "active": "已激活",
+    "pending": "待定",
+    "inactive": "未触发",
+    "firing": "触发"
+  },
+  "durationFilter": {
+    "all": "全部",
+    "within1d": "1天以内",
+    "within1to5d": "1-5天以内",
+    "within5to10d": "5-10天以内",
+    "over10d": "10天以上"
+  },
+  "detail": {
+    "basicInfo": "基本信息",
+    "alertRule": "告警规则：",
+    "description": "描述：",
+    "triggerTime": "触发时间：",
+    "alertLevel": "告警等级：",
+    "summary": "实情：",
+    "labels": "标签：",
+    "silentName": "静默名称：",
+    "silentStatus": "静默状态：",
+    "creator": "创建者：",
+    "remark": "备注：",
+    "silentBeginTime": "静默开始时间：",
+    "silentEndTime": "静默结束时间：",
+    "lastUpdateTime": "最后更新时间：",
+    "silencedAlerts": "已静默告警",
+    "detail": "详情"
+  },
+  "form": {
+    "alertName": "告警名称",
+    "alertLevel": "告警等级",
+    "duration": "持续时间",
+    "alertSource": "告警源",
+    "labels": "标签",
+    "selectLabels": "请选择标签",
+    "silentBeginTime": "静默开始时间",
+    "defaultCurrentTime": "默认时间为当前时间",
+    "silentDuration": "静默持续时间",
+    "durationPlaceholder": "请输入1-100的整数",
+    "durationRequired": "静默持续时间不能为空",
+    "durationRange": "数值必须在1到100之间",
+    "durationInteger": "请输入正确的整数",
+    "creator": "创建者",
+    "creatorRequired": "创建者不能为空",
+    "remarks": "备注",
+    "remarksRequired": "备注不能为空",
+    "remarksMaxLength": "备注长度不能超过64",
+    "labelKey": "键",
+    "labelValue": "值",
+    "labelRequired": "标签值不能为空",
+    "atLeastOneLabel": "至少有一项标签项",
+    "addLabel": "添加标签",
+    "enterPlaceholder": "请输入",
+    "fillPlaceholder": "请填写"
+  },
+  "timeUnit": {
+    "minute": "分",
+    "hour": "时",
+    "day": "天"
+  },
+  "actions": {
+    "modify": "修改",
+    "delete": "删除",
+    "operation": "操作",
+    "cancel": "取消",
+    "confirm": "确定"
+  },
+  "modal": {
+    "setSilentAlert": "设置静默告警",
+    "createSilence": "创建静默",
+    "modifySilence": "修改静默",
+    "deleteSilence": "删除静默",
+    "deleteWarning": "删除静默后，相关告警会恢复至当前告警列表。",
+    "deleteConfirm": "确定删除静默 {{name}} 吗？"
+  },
+  "messages": {
+    "setSilentSuccess": "设置静默成功！",
+    "editSilentSuccess": "编辑静默成功！",
+    "createSilentSuccess": "创建静默成功！",
+    "deleteSuccess": "删除{{name}}成功！",
+    "editSilentFailed": "编辑静默失败！",
+    "createSilentFailed": "创建静默失败，原因：{{reason}}！",
+    "deleteFailed": "删除{{name}}失败！",
+    "noPermission": "操作失败，当前用户没有操作权限，请联系管理员添加权限!",
+    "beginTimeError": "编辑静默失败，静默开始时间不能小于当前时间！",
+    "fetchLokiFailed": "获取 Loki 状态失败！{{message}}"
+  }
+}

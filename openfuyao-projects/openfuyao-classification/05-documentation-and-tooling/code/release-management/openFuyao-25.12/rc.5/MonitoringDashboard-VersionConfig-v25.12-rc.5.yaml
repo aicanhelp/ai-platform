@@ -1,0 +1,36 @@
+registry:
+  imageAddress: cr.openfuyao.cn/openfuyao/registry:2.8.1
+  architecture:
+    - amd64
+    - arm64
+repos:
+  - architecture: # openfuyao monitoring dashboard 扩展组件
+      - amd64
+      - arm64
+    needDownload: true # monitoring-dashboard 扩展组件所需镜像是否下载开关，false-关闭不下载，true-开启下载
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao
+        targetRepo: openfuyao
+        images:
+          - name: monitoring-dashboard-service
+            tag:
+              - 1.0.1
+          - name: monitoring-dashboard-website
+            tag:
+              - 1.0.1
+          - name: oauth-proxy
+            usedPodInfo:
+              - podPrefix: monitoring-dashboard-website
+                namespace: default
+            tag:
+              - 1.0.2
+          - name: busybox
+            tag:
+              - 1.36.1
+rpms:
+debs: []
+files: []
+charts:
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/charts/releases/download/
+    files:
+      - fileName: monitoring-dashboard-1.0.1.tgz

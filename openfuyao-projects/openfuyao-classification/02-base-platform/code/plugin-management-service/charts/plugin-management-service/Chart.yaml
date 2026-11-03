@@ -1,0 +1,7 @@
+apiVersion: v2
+name: plugin-management-service
+description: It enables the integration and orchestration of additional functionalities into the system, allowing for enhanced modularity and adaptability to specific requirements
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-component"]

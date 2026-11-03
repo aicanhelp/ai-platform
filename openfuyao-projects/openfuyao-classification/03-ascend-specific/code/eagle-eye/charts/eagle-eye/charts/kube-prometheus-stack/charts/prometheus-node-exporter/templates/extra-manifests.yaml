@@ -1,0 +1,6 @@
+{{- if eq (include "prometheus.installed" .) "false" }}
+{{ range .Values.extraManifests }}
+---
+{{ tpl . $ }}
+{{ end }}
+{{- end }}

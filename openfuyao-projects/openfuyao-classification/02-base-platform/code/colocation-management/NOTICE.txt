@@ -1,0 +1,44 @@
+OPEN SOURCE SOFTWARE NOTICE
+
+The open source software notice for the open source software used in openFuyao is provided in this document. The open source software licenses are granted by the respective right holders. With regard to the respective open source software contained in the openFuyao, the applicable open source software license will prevail all other license agreement, including but not limited to the Mulan PSL v2 License, in case of any conflicts. 
+
+Warranty Disclaimer    
+THE OPEN SOURCE SOFTWARE IN THIS OPENEULER DISTRIBUTION IS PROVIDED ON AN "AS IS" BASIS, WITHOUT ANY WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. 
+See the applicable licenses for more details.
+
+Copyright Notice and License Texts 
+
+Software: kubebuilder
+Copyright notice: Copyright 2024 The Kubernetes authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: autoscaler
+Copyright notice: Copyright 2020 The Kubernetes authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: metrics-server
+Copyright notice: Copyright 2021 The Kubernetes authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+
+Software: Helm
+Copyright notice: Copyright The Helm Authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: Kubernetes
+Copyright notice: Copyright 2024 The Kubernetes authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: kubewebhook
+Copyright notice: Copyright 2022 Xabier Larrakoetxea.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: rubik
+Copyright notice: Copyright (c) Huawei Technologies Co., Ltd. 2021.
+
+License: Mulan PSL v2（http://license.coscl.org.cn/MulanPSL2）

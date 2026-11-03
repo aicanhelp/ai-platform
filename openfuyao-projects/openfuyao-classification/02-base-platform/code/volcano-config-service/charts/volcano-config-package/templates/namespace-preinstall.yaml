@@ -1,0 +1,23 @@
+{{- if not .Values.volcano.components.enabled }}
+{{- $schedulerConfig := index .Values "scheduler-config" | default dict -}}
+{{- $namespaceCfg := index $schedulerConfig "namespace" | default dict -}}
+{{- $backendNamespace := index $namespaceCfg "backend" | default "volcano-system" -}}
+{{- $backendNamespaceExists := lookup "v1" "Namespace" "" $backendNamespace -}}
+{{- if not $backendNamespaceExists }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: {{ $backendNamespace }}
+  labels:
+    kubernetes.io/metadata.name: {{ $backendNamespace }}
+  annotations:
+    meta.helm.sh/release-name: {{ .Release.Name }}
+    meta.helm.sh/release-namespace: {{ .Release.Namespace }}
+    openfuyao.io/namespace-owner-release-name: {{ .Release.Name }}
+    openfuyao.io/namespace-owner-release-namespace: {{ .Release.Namespace }}
+    openfuyao.io/namespace-owner-chart: volcano-config-package
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "-10"
+    "helm.sh/hook-delete-policy": before-hook-creation
+{{- end }}
+{{- end }}

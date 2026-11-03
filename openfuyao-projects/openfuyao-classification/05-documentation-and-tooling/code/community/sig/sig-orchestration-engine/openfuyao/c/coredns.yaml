@@ -1,0 +1,6 @@
+name: coredns
+type: private
+description: '灵活可扩展的DNS服务组件，提供集群内的服务发现与域名解析能力'
+branches:
+  - name: master
+    type: protected

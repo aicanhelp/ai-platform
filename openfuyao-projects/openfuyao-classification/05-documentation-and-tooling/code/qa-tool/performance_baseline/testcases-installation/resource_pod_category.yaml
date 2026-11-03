@@ -1,0 +1,60 @@
+- category: distribution
+  rules:
+    - namespace: kube-system
+      labelSelectors: 
+        - k8s-app=calico-kube-controllers
+        - k8s-app=calico-node
+        - k8s-app=kube-dns
+        - component=etcd
+        - component=kube-scheduler
+        - component=kube-apiserver
+        - component=kube-controller-manager
+        - component=kube-proxy
+        - k8s-app=metrics-server
+    - namespace: ingress-nginx
+      labelSelectors: 
+        - app.kubernetes.io/component=controller,app.kubernetes.io/instance=ingress-nginx
+    - namespace: openfuyao-system
+      labelSelectors:
+        - app=application-management-service
+        - app=console-service
+        - app=console-website
+        - app=harbor
+        - app=marketplace-service
+        - app=monitoring-service
+        - app=plugin-management-service
+        - app=user-management-operator
+        - app=web-terminal-service
+        - application=oauth-server
+        - application=oauth-webhook
+    - namespace: openfuyao-system-controller
+      labelSelectors:
+        - app=openfuyao-system-controller
+    - namespace: monitoring
+      labelSelectors: 
+        - app.kubernetes.io/name=alertmanager
+        - app.kubernetes.io/name=blackbox-exporter
+        - app.kubernetes.io/name=kube-state-metrics
+        - app.kubernetes.io/name=node-exporter
+        - app.kubernetes.io/name=prometheus
+        - app.kubernetes.io/name=prometheus-operator
+- category: installation
+  rules:
+    - namespace: ingress-nginx
+      labelSelectors: 
+        - app.kubernetes.io/component=controller,app.kubernetes.io/instance=ingress-nginx
+    - namespace: cluster-system
+      labelSelectors:
+        - cluster.x-k8s.io/provider=cluster-api
+        - cluster.x-k8s.io/provider=infrastructure-bke
+    - namespace: openfuyao-system
+      labelSelectors:
+        - app=console-service
+        - app=console-website
+        - app=plugin-management-service
+        - app=user-management-operator
+        - application=oauth-server
+        - application=oauth-webhook
+        - app.kubernetes.io/name=installer-website
+        - app.kubernetes.io/name=installer-service
+        

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: console-website
+  namespace: openfuyao-system
+  labels:
+    app: console-website
+spec:
+  type: ClusterIP
+  ports:
+    - name: transport
+      port: 80
+      protocol: TCP
+      targetPort: 8080
+  selector:
+    app: console-website
+  sessionAffinity: None

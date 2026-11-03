@@ -1,0 +1,7 @@
+apiVersion: v2
+name: volcano-config-website
+description: This is a user-facing interface designed for configuraing and managing the volcano system, providing a streamlined and intuitive experience for users to customize settings and monitor the system.
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-extension"]

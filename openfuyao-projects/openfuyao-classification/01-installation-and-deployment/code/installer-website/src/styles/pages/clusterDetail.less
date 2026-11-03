@@ -1,0 +1,86 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+
+.cluster_desc {
+  .left_cluster {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+
+    .cluster_status {
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 14px;
+      display: flex;
+      gap: 5px;
+      svg {
+        height: 15px;
+        width: 15px;
+      }
+    }
+
+    .cluster_status_bg_deleting,
+    .cluster_status_bg_deploying,
+    .cluster_status_bg_scalingWorkerNodesUp,
+    .cluster_status_bg_scalingWorkerNodesDown,
+    .cluster_status_bg_scalingMasterNodesUp,
+    .cluster_status_bg_scalingMasterNodesDown,
+    .cluster_status_bg_upgrading,
+    .cluster_status_bg_checking,
+    .cluster_status_bg_dryRun {
+      background: #eaeced;
+      color: #4B8CEA
+    }
+
+    .cluster_status_bg_healthy {
+      background: rgb(214, 247, 240);
+      color: #09aa71;
+    }
+
+    .cluster_status_bg_unhealthy,
+    .cluster_status_bg_deleteFailed,
+    .cluster_status_bg_deployFailed,
+    .cluster_status_bg_scaleFailed,
+    .cluster_status_bg_upgradeFailed,
+    .cluster_status_bg_pauseFailed,
+    .cluster_status_bg_dryRunFailed,
+    .cluster_status_bg_unknown {
+      background: #fdeced;
+      color: #E7434A;
+    }
+
+    .cluster_status_bg_paused {
+      background: #eaeced;
+      color: #89939B;
+    }
+
+    .cluster_ha_bg {
+      padding: 6px 12px;
+      border-radius: 6px;
+      background-color: rgb(207, 231, 255);
+      font-size: 14px;
+      font-weight: 400;
+    }
+  }
+}
+
+.resource_flex_gap {
+  display: flex;
+  flex-direction: row !important;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 20%;
+
+  .base_value {
+    word-break: keep-all !important;
+  }
+}

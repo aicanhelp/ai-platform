@@ -1,0 +1,6 @@
+name: precheck
+type: private
+description: '安装部署环境前置检查校验工具'
+branches:
+  - name: master
+    type: protected

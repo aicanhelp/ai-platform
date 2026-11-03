@@ -1,0 +1,12 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: npu-dra-kubeletplugin
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: npu-dra-kubeletplugin
+subjects:
+  - kind: ServiceAccount
+    name: npu-dra-kubeletplugin
+    namespace: FILLED_BY_OPERATOR

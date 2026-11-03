@@ -1,0 +1,189 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN 'AS IS' BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+.terminal_box{
+  position: relative;
+  bottom: 0;
+  width: 100%;
+  z-index: 9999;  
+  .@{container-prefix}-modal-mask,
+  .@{container-prefix}-modal-wrap {
+    position: absolute !important;
+}
+  .terminal_header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background: #E5E5E5;
+    border: 1px solid #ccc;
+    .terminal_host_name{
+      color: #666666;
+      font-size: 14px;
+      line-height: 20px;
+      .host_desc{
+        margin-left: 5px;
+      }
+    }
+    .terminal_tools{
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 20px;
+      svg{
+        cursor: pointer;
+        width: 16px;
+        height: 16px;
+        color: #666;
+      }
+    }
+  }
+  .terminal_content{
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    background: #2A2D34;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    .terminal_console_actually{
+      background: #2A2D34;
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      .terminal_console_box{
+        .xterm-viewport{
+          overflow-y: hidden !important;
+          background: #2A2D34;
+        }
+        .xterm .xterm-screen{
+          display: flex;
+          flex: 1;
+        }
+      }
+    }
+    .terminal_example_menu{
+      transition: all 0.8s;
+      background: #171A1F;
+      padding: 20px 32px;
+      padding-left: 0;
+      padding-right: 8px;
+      padding-top:4px;
+      display: flex;
+      align-self: stretch;
+      .terminal_handle_menu{
+        position: fixed;
+        color: #89939B;
+        width: 24px;
+        height: 14px;
+        align-self: center;
+      }
+      .terminal_handle_menu:hover{
+          color: #4B8CEA;
+      }
+      .terminal_menu_content{
+        overflow-y: auto;
+        margin-left: 25px;
+        display: flex;
+        flex-direction: column;
+        .terminal_handle_box{
+          display: flex;
+          flex-direction: column;
+          padding: 0 8px 20px 0;
+          border-bottom: 1px solid #444444;
+          .desc_word{
+            display: flex;
+            margin-top: 16px;
+            flex-direction: row;
+            align-items: center;
+            p{
+              font-size: 14px;
+              line-height: 20px;
+              word-break: break-all;
+            }
+            p:nth-child(1){
+              color: #89939B;
+              width: 98px;
+            }
+            p:nth-child(2){
+              color: #ccc;
+              margin-left: 24px;
+            }
+          }
+        } 
+        .more_terminal_aim{
+          color: #89939B;
+          font-size: 14px;
+          line-height: 20px; 
+          margin-top: 20px;
+          span{
+            color: #4B8CEA;
+            a{
+              color: #4B8CEA;
+              text-decoration: none;
+            }
+          }
+        }  
+      }
+    }
+    .collapse_terminal_example_menu{
+      transition: all 0.8s;
+      width: 20px; 
+    }
+  }
+}
+.middle_screen_window{
+  height: 340px;
+  transition: all 0.4s;
+  .terminal_console_box{
+    height: 255px;
+  }
+}
+.small_screen_window{
+  height: 40px;
+  transition: all 0.4s;
+  .terminal_content{
+    height: 0;
+  }
+}
+.large_screen_window{
+  height: calc(100vh - 64px);
+  transition: all 0.4s;
+  .terminal_console_box{
+    height: calc(100vh - 150px);
+  }
+}
+.middle_terminal_msg{
+  top: 65vh;
+  left: 35%;
+}
+.large_terminal_msg{
+  top: 14vh;
+  left: 35%;
+}
+.small_terminal_msg{
+  top: 100vh;
+}
+.terminal_info_msg{
+  position: absolute;
+  .@{container-prefix}-message-notice-content{
+    background: #2A2D34 !important;
+    color: #f7f7f7;
+    font-size: 12px;
+    line-height: 16px;
+    box-shadow: 0 2px 16px 0 rgba(247,247,247,0.2) !important;
+    .anticon-info-circle{
+      color:#3f66f5 !important;
+      background: #fff;
+      border-radius: 50%;
+    }
+  }
+}

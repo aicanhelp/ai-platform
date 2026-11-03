@@ -1,0 +1,126 @@
+apiVersion: bke.bocloud.com/v1beta1
+kind: KubeletConfig
+metadata:
+  name: bke-kubelet
+  namespace: bke-kubelet
+  labels:
+    test: "true"
+    component: "kubelet"
+spec:
+
+  kubeletConfig:
+    kubelet.conf:
+      raw: |
+        apiVersion: kubelet.config.k8s.io/v1beta1
+        kind: KubeletConfiguration
+        authentication:
+          anonymous:
+            enabled: false
+          webhook:
+            cacheTTL: 0s
+            enabled: true
+          x509:
+            clientCAFile: /etc/kubernetes/pki/ca.crt
+        authorization:
+          mode: Webhook
+          webhook:
+            cacheAuthorizedTTL: 0s
+            cacheUnauthorizedTTL: 0s
+        address: 0.0.0.0
+        cgroupDriver: systemd
+        clusterDNS:
+          - "10.96.0.10"
+        clusterDomain: "cluster.local"
+        healthzBindAddress: 127.0.0.1
+        healthzPort: 10248
+        rotateCertificates: true
+        staticPodPath: /etc/kubernetes/manifests
+        streamingConnectionIdleTimeout: 4h0m0s
+        syncFrequency: 1m0s
+        volumeStatsAggPeriod: 1m0s
+
+  kubeletService:
+    enabled: true
+    serviceName: "kubelet"
+    unit:
+      description: "Kubernetes Kubelet (Test)"
+      documentation: "https://kubernetes.io/docs/concepts/overview/components/#kubelet"
+      after:
+        - "containerd.service"
+        - "network-online.target"
+      wants:
+        - "network-online.target"
+      requires:
+        - "containerd.service"
+    service:
+      execStart: "/usr/bin/kubelet \
+      --bootstrap-kubeconfig=/etc/kubernetes/bootstrap-kubelet.conf \
+      --kubeconfig=/etc/kubernetes/kubelet.conf \
+      --config=/var/lib/kubelet/config.yaml \
+      --container-runtime-endpoint=unix:///run/containerd/containerd.sock \
+      --pod-infra-container-image=registry.k8s.io/pause:3.9 \
+      --cgroup-driver=systemd \
+      --register-node=true \
+      --v=2"
+      restart: "always"
+      restartSec: 10
+      startLimitBurst: 5
+      killMode: "process"
+      standardOutput: "journal+console"
+      standardError: "journal+console"
+      syslogIdentifier: "kubelet-test"
+      workingDirectory: "/var/lib/kubelet"
+      user: "root"
+      group: "root"
+
+    install:
+      wantedBy:
+        - "multi-user.target"
+      requiredBy: []
+
+    variables:
+      kubeletBinaryPath: "/usr/bin/kubelet"
+      kubeletConfigPath: "/etc/kubernetes/kubelet.conf"
+      nodeName: "test-node-01"
+      nodeIP: "xx"
+      containerdEndpoint: "unix:///run/containerd/containerd.sock"
+      pauseImage: "registry.aliyuncs.com/google_containers/pause:3.9"
+
+
+  files:
+    - path: "/etc/kubernetes/test-kubelet-extra.conf"
+      content: |
+        maxPods: ${maxPods}
+        logLevel: ${logLevel}
+        clusterDomain: ${clusterDomain}
+        nodeHostname: "${EXPR:hostname}"
+        nodePrimaryIP: "${EXPR:hostname -I | awk '{print $1}'}"
+      permissions: "0644"
+      owner: "root:root"
+    - path: "/var/lib/kubelet/test-config-flag.txt"
+      content: |
+        createdAt: ${EXPR:date +%Y-%m-%d_%H:%M:%S}
+        configSource: test-kubelet-config
+      permissions: "0600"
+      owner: "root:root"
+
+  commands:
+    - command: "/bin/bash"
+      args:
+        - "-c"
+        - |
+          echo "=== KubeletConfig CR 测试命令执行 ===" >> /var/log/test-kubelet-commands.log
+          echo "执行时间: $(date +%Y-%m-%d_%H:%M:%S)" >> /var/log/test-kubelet-commands.log
+          echo "节点 IP: ${nodeIP}" >> /var/log/test-kubelet-commands.log
+          echo "kubelet 配置路径: ${kubeletConfigPath}" >> /var/log/test-kubelet-commands.log
+          if [ -f "${kubeletConfigPath}" ]; then
+            echo "kubelet.conf 存在，大小: $(du -sh ${kubeletConfigPath} | awk '{print $1}')" >> /var/log/test-kubelet-commands.log
+          else
+            echo "警告：kubelet.conf 不存在" >> /var/log/test-kubelet-commands.log
+          fi
+      workingDir: "/var/log"
+    - command: "/usr/bin/systemctl"
+      args:
+        - "is-active"
+        - "containerd.service"
+      workingDir: "/"

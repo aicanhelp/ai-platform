@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: vcannrt-installer
+  namespace: FILLED_BY_OPERATOR
+  labels:
+    name: vcannrt-installer
+spec:
+  selector:
+    matchLabels:
+      name: vcannrt-installer
+  template:
+    metadata:
+      labels:
+        name: vcannrt-installer
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: vcannrt-installer
+          image: FILLED_BY_OPERATOR
+          imagePullPolicy: IfNotPresent
+          command: ["FILLED_BY_OPERATOR"]
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: xpu-lib
+              mountPath: /opt/xpu/lib
+            - name: xpu-bin
+              mountPath: /opt/xpu/bin
+      volumes:
+        - name: xpu-lib
+          hostPath:
+            path: /opt/xpu/lib
+            type: DirectoryOrCreate
+        - name: xpu-bin
+          hostPath:
+            path: /opt/xpu/bin
+            type: DirectoryOrCreate

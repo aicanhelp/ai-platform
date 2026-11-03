@@ -1,0 +1,40 @@
+{{- if .Values.global.tracingEnabled }}
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ include "inference-gateway.gatewayName" . }}-tracing
+  namespace: {{ .Release.Namespace }}
+spec:
+  workloadSelector:
+    labels:
+      gateway.networking.k8s.io/gateway-name: {{ include "inference-gateway.gatewayName" . }}
+  configPatches:
+  - applyTo: NETWORK_FILTER
+    match:
+      context: GATEWAY
+      listener:
+        filterChain:
+          filter:
+            name: "envoy.filters.network.http_connection_manager"
+    patch:
+      operation: MERGE
+      value:
+        typed_config:
+          "@type": "type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager"
+          generate_request_id: true
+          tracing:
+            provider:
+              name: envoy.tracers.opentelemetry
+              typed_config:
+                "@type": type.googleapis.com/envoy.config.trace.v3.OpenTelemetryConfig
+                http_service:
+                  http_uri:
+                    uri: http://eagle-eye-tracing-collector.{{ .Release.Namespace }}.svc.cluster.local:4318/v1/traces
+                    cluster: outbound|4318||eagle-eye-tracing-collector.{{ .Release.Namespace }}.svc.cluster.local
+                    timeout: 1s
+                service_name: "{{ include "inference-gateway.gatewayName" . }}"
+            spawn_upstream_span: true
+            random_sampling:
+              value: 100.0
+            max_path_tag_length: 256
+{{- end }}

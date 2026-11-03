@@ -1,0 +1,26 @@
+# Copyright (c) 2026 Huawei Technologies Co., Ltd.
+# openFuyao is licensed under Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#          http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the Mulan PSL v2 for more details.
+
+"""
+This module defines the function of auto_import_all_submodules.
+"""
+
+import importlib
+import pkgutil
+import types
+
+
+def auto_import_all_submodules(package: types.ModuleType):
+    """
+    Automatically imports all submodules of the given package.
+    """
+    for _, name, _ in pkgutil.walk_packages(package.__path__, package.__name__ + "."):
+        importlib.import_module(name)
+

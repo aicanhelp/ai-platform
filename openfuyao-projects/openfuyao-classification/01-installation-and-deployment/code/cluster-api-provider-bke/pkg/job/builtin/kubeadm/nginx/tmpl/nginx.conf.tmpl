@@ -1,0 +1,24 @@
+error_log stderr notice;
+worker_processes 1;
+
+events {
+  multi_accept on;
+  use epoll;
+  worker_connections 1024;
+}
+
+stream {
+    upstream kube_apiserver {
+        least_conn;
+        {{ range .MasterNodes }}
+        server {{ . }}:{{ $.APIServerPort }};
+        {{ end }}
+    }
+
+    server {
+        listen        127.0.0.1:{{ .APIServerPort }};
+        proxy_pass    kube_apiserver;
+        proxy_timeout 10m;
+        proxy_connect_timeout 10s;
+    }
+}

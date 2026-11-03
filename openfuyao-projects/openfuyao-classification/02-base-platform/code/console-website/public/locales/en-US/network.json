@@ -1,0 +1,64 @@
+{
+  "module": {
+    "title": "Network",
+    "description": "Manage network resources"
+  },
+  "service": {
+    "title": "Service",
+    "create": "Create Service",
+    "name": "Service Name",
+    "namespace": "Namespace",
+    "type": "Type",
+    "clusterIP": "Cluster IP",
+    "externalIP": "External IP",
+    "ports": "Ports",
+    "externalPort": "External Port",
+    "internalIP": "Internal IP",
+    "selector": "Selector",
+    "created": "Created"
+  },
+  "ingress": {
+    "title": "Ingress",
+    "create": "Create Ingress",
+    "name": "Service Name",
+    "namespace": "Namespace",
+    "service": "Service",
+    "host": "Host",
+    "path": "Path",
+    "backend": "Backend",
+    "tls": "TLS",
+    "created": "Created"
+  },
+  "actions": {
+    "detail": "Details",
+    "yaml": "YAML",
+    "operation": "Operation",
+    "modify": "Modify",
+    "editLabel": "Edit Label",
+    "editAnnotation": "Edit Annotation",
+    "delete": "Delete",
+    "deleteConfirm": "Delete {{resource}}",
+    "deleteWarning": "The {{resource}} cannot be recovered after deletion, please proceed with caution.",
+    "deleteConfirmMessage": "Are you sure you want to delete {{resource}} {{name}}?"
+  },
+  "info": {
+    "basicInfo": "Basic Information",
+    "labels": "Labels:",
+    "annotations": "Annotations:",
+    "countZero": "0",
+    "servicePortMapping": "Service Port Mapping",
+    "ingressRules": "Ingress Rules",
+    "ingressRulesDescription": "Ingress defines a collection of rules that allow inbound connections to reach endpoints defined by the backend"
+  },
+  "table": {
+    "name": "Name",
+    "port": "Port",
+    "protocol": "Protocol",
+    "targetPort": "Target Port",
+    "host": "Host",
+    "path": "Path",
+    "pathType": "Path Type",
+    "service": "Service",
+    "servicePort": "Service Port"
+  }
+}

@@ -1,0 +1,5 @@
+inferenceExtension:
+  pluginsConfigFile: default-plugins.yaml
+  routing:
+    deploymentMode: aggregate
+    profile: random

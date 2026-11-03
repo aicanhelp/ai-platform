@@ -1,0 +1,29 @@
+#!/bin/bash
+###############################################################
+# Copyright (c) 2024 Huawei Technologies Co., Ltd.
+# installer is licensed under Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#          http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the Mulan PSL v2 for more details.
+###############################################################
+
+source ../../utils/log.sh "nerdctl"
+source ./consts.sh
+source ../../utils/consts.sh
+
+ARCH=$(uname -m)
+case $ARCH in
+    x86_64) ARCH="amd64";;
+    aarch64) ARCH="arm64";;
+esac
+
+NERDCTL_URL="${FUYAO_OBS}/containerd/nerdctl/releases/download/v${VERSION}/nerdctl-${VERSION}-linux-${ARCH}.tar.gz"
+
+curl -sOL ${NERDCTL_URL}
+tar Cxzvvf /usr/local/bin nerdctl-${VERSION}-linux-${ARCH}.tar.gz
+
+source ./postinstall.sh

@@ -1,0 +1,8 @@
+name: openfuyao-sandbox
+type: public
+description: '在openFuyao集群中管理AI agent沙箱工作负载的Operator，提供隔离环境、资源池化、休眠/检查点和E2B兼容API'
+branches:
+  - name: master
+    type: protected
+  - name: release-v0.2
+    type: protected

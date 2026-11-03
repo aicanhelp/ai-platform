@@ -1,0 +1,6 @@
+name: log-parser
+type: public
+description: 智能日志解析工具，支持多种日志格式的解析与结构化，用于AI训推场景的故障诊断和根因分析。
+branches:
+  - name: master
+    type: protected

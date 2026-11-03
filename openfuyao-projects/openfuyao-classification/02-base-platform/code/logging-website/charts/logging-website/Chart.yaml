@@ -1,0 +1,9 @@
+apiVersion: v2
+name: proxy-logging
+description: >
+  A Helm chart for the frontend of the OpenFuyao logging extension. It 
+  integrated with OAuth proxy for secure authentication and access management.
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-extension"]

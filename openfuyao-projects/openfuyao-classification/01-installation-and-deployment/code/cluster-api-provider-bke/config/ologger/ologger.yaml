@@ -1,0 +1,14 @@
+level: INFO
+format: json
+timezone: local
+include_ip: true
+max_size_mb: 100
+max_backups: 30
+max_age_days: 14
+compress: true
+custom_levels: {}
+sensitive_words: []
+enable_console: true
+enable_file: true
+watch_level: true
+enable_sanitize: true

@@ -1,0 +1,5 @@
+## Append samples of your project ##
+resources:
+- infernex_v1alpha1_infernexserviceconfig_aggregate_template.yaml
+- infernex_v1alpha1_infernexserviceconfig_pd_template.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

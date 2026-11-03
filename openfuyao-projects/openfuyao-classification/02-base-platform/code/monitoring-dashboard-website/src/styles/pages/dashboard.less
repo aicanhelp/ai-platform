@@ -1,0 +1,170 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+.dashboard_box{
+  padding: 20px 32px 12px 32px;
+  .dashboard_header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    h2{
+      margin:0;
+      font-weight: 700;
+      font-size: 16px;
+      line-height: 24px;
+      color: @title-color;
+      span{
+        margin-left:6px;
+        font-weight: 400;
+        font-size: 14px;
+        line-height: 20px;
+        color: #89939B; 
+      }
+    }
+    .toogle_btn{
+      margin-right: 16px;
+      height: 32px;
+      svg{
+        width: 16px;
+        height: 16px;
+      }
+    }
+    .@{container-prefix}-radio-group {
+      label:first-child {
+        border-start-start-radius: 6px;
+        border-end-start-radius: 6px;
+      }
+  
+      label:last-child {
+        border-start-end-radius: 6px;
+        border-end-end-radius: 6px;
+      }
+  
+      .@{container-prefix}-radio-button-wrapper-checked {
+        background: @button-normal-color;
+        color: #fff;
+        border: 1px solid @button-normal-color;
+      }
+    }
+  }
+  .dashboard_content{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .dashboard_card{
+    margin-top:24px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: flex-start;
+    align-content: space-between;
+    .card_item{
+      cursor: pointer;
+      height: 180px;
+      display: flex;
+      width: 306px;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 26px;
+      border: 1px solid rgb(220,220,220);
+      box-shadow: 0px 2px 10px 0px rgba(51,51,51,0.1);
+      background: linear-gradient(180deg,rgb(224,240,255),rgb(255,255,255) 52.699%);
+      .card_header{
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        h4{
+          margin:0;
+          font-size: 16px;
+          width: 213px;
+          font-weight: 700;
+          line-height: 24px;
+          overflow: hidden;
+          display: -webkit-box;
+          -webkit-box-orient: vertical;
+          word-break: break-all;
+          text-overflow: ellipsis;
+          -webkit-line-clamp: 2;
+          letter-spacing: 0px;
+          color: rgb(51,51,51);
+        }
+        svg{
+          width: 20px;
+          height: 20px;
+        }
+      }
+      .card_body{
+        .monitor_component{
+          span{
+            font-size: 14px;
+            line-height: 20px;
+            font-weight: 400;
+            color: #89939B;
+          }
+         .word{
+            margin-left:8px;
+            color: @title-color;
+          }
+        }
+        .monitor_description{
+          font-size: 14px;
+          margin-top:16px;
+          display: flex;
+          flex-direction: row;
+          color: #89939B;
+          .name{
+            word-break: keep-all;
+            max-width: 90px;
+            overflow:hidden;
+            text-overflow:ellipsis; 
+          }
+          .time{
+            margin-left:8px;
+          }
+        }
+      }
+    }
+    .card_item:hover{
+      box-shadow: 0 0 10px 0 rgba(51,51,51,0.18);
+    }
+  }
+  .dashboard_table{
+    margin-top:20px;
+    display: flex;
+    flex:1;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #fff;
+    padding: 32px 32px 0 32px;
+  }
+}
+.pop_modal{
+  width: 84px;
+  height: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 22px;
+}
+
+@media screen and (max-width: 1280px) {
+  .dashboard_box{
+    .dashboard_card{
+      .card_item{
+        width: 318px; 
+      }
+    }
+  }
+}

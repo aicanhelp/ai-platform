@@ -1,0 +1,20 @@
+{{- if eq (include "prometheus.installed" .) "false" }}
+{{- if eq (include "npu.exporter.installed" .) "false" }}
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: npu-exporter
+  name: npu-exporter-service
+  labels:
+    app: npu-exporter-svc
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8082
+      targetPort: 8082
+      protocol: TCP
+      name: http
+  selector:
+    app: npu-exporter
+{{- end }}
+{{- end }}

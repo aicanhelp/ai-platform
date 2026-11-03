@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: Job 
+metadata:
+  namespace: default
+  name: test-job
+  labels:
+    app: test-job
+  annotations:
+    example.com/created-by: e2e
+spec:
+  template:
+    spec:
+      containers:
+        - name: test-container
+          image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          command:
+            - sh
+            - -c
+            - |
+              trap "exit 0" TERM INT
+              while true; do sleep 1; done
+      restartPolicy: Never

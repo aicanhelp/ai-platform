@@ -1,0 +1,6 @@
+name: infrastructure
+type: public
+description: "本仓库用于托管社区基础设施团队的公开信息，包括不限于服务文档和配置等信息"
+branches:
+  - name: master
+    type: protected

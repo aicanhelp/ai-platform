@@ -1,0 +1,118 @@
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: {{.name}}
+  namespace: {{.namespace}}
+spec:
+  clusterNetwork:
+    services:
+      cidrBlocks: [ "{{.servicesCIDR}}" ]
+    pods:
+      cidrBlocks: [ "{{.podsCIDR}}" ]
+    serviceDomain: "{{.serviceDomain}}"
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+    kind: KubeadmControlPlane
+    name: {{.name}}-controlplane
+    namespace: {{.namespace}}
+  infrastructureRef:
+    apiVersion: bke.bocloud.com/v1beta1
+    kind: BKECluster
+    name: {{.name}}
+    namespace: {{.namespace}}
+
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta1
+kind: KubeadmControlPlane
+metadata:
+  name: {{.name}}-controlplane
+  namespace: {{.namespace}}
+  annotations:
+    controlplane.cluster.x-k8s.io/skip-kube-proxy: "true"
+    controlplane.cluster.x-k8s.io/skip-coredns: "true"
+spec:
+  replicas: {{.masterReplicas}}
+  version: {{.kubernetesVersion}}
+  machineTemplate:
+    infrastructureRef:
+      apiVersion: bke.bocloud.com/v1beta1
+      kind: BKEMachineTemplate
+      name: {{.name}}-machine-controlplane
+      namespace: {{.namespace}}
+  kubeadmConfigSpec:
+    clusterConfiguration:
+      clusterName: {{.name}}
+      controlPlaneEndpoint: "fake"
+      networking:
+        dnsDomain: {{.serviceDomain}}
+        podSubnet: {{.podsCIDR}}
+        serviceSubnet: {{.servicesCIDR}}
+      kubernetesVersion: {{.kubernetesVersion}}
+      apiServer:
+        certSANs:
+          {{.SANS}}
+      imageRepository: {{.repo}}
+      {{- if eq .externalEtcd "true"}}
+      etcd:
+        external:
+          endpoints:
+          {{- $ips := split .etcdEndpoints "," }}
+            {{- range $ips }}
+            - {{ . }}
+          {{- end }}
+          caFile: {{.etcdCAFile}}
+          certFile: {{.etcdCertFile}}
+          keyFile: {{.etcdKeyFile}}
+      {{- end}}
+    initConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+          cgroup-driver: systemd
+    joinConfiguration:
+      nodeRegistration:
+        kubeletExtraArgs:
+          cgroup-driver: systemd
+
+---
+apiVersion: bke.bocloud.com/v1beta1
+kind: BKEMachineTemplate
+metadata:
+  name: {{.name}}-machine-controlplane
+  namespace: {{.namespace}}
+spec:
+  template:
+    spec: { }
+
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachineDeployment
+metadata:
+  namespace: {{.namespace}}
+  name: {{.name}}-worker
+spec:
+  clusterName: {{.name}}
+  replicas: {{.workerReplicas}}
+  selector:
+    matchLabels:
+      cluster.x-k8s.io/cluster-name: {{.name}}
+  template:
+    spec:
+      version: {{.workerVersion}}
+      clusterName: {{.name}}
+      bootstrap:
+        dataSecretName: "fake"
+      infrastructureRef:
+        apiVersion: bke.bocloud.com/v1beta1
+        kind: BKEMachineTemplate
+        name: {{.name}}-machine-worker
+
+---
+apiVersion: bke.bocloud.com/v1beta1
+kind: BKEMachineTemplate
+metadata:
+  name: {{.name}}-machine-worker
+  namespace: {{.namespace}}
+spec:
+  template:
+    spec: { }

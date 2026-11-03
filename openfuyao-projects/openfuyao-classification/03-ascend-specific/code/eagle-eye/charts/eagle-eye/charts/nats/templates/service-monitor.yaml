@@ -1,0 +1,19 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: nats-exporter
+  namespace: {{ .Values.namespaceOverride }}
+  labels:
+    app: nats-exporter
+    release: {{ .Release.Name }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: nats
+  endpoints:
+    - port: metrics
+      interval: 10s
+      path: /metrics
+  namespaceSelector:
+    matchNames:
+      - nats

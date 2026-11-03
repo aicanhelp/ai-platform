@@ -1,0 +1,196 @@
+# RBAC authn and authz
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: monitoring-service
+  namespace: openfuyao-system
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitoring-service
+  namespace: openfuyao-system
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitoring-service-webhook-auth			# 组件的serviceaccount名称 + webhook-auth后缀
+subjects:
+  - kind: ServiceAccount
+    name: monitoring-service					# 组件的serviceaccount名称
+    namespace: openfuyao-system
+roleRef:
+  kind: ClusterRole
+  name: webhook-auth
+  apiGroup: rbac.authorization.k8s.io
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitoring-service
+  namespace: openfuyao-system
+subjects:
+  - kind: ServiceAccount
+    name: monitoring-service
+    namespace: openfuyao-system
+roleRef:
+  kind: ClusterRole
+  name: monitoring-service
+  apiGroup: rbac.authorization.k8s.io
+---
+# monitoring-service deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitoring-service
+  namespace: openfuyao-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitoring-service
+  template:
+    metadata:
+      labels:
+        app: monitoring-service
+    spec:
+      serviceAccountName: monitoring-service
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          effect: "NoSchedule"
+          operator: "Exists"
+      securityContext:
+        fsGroup: 65532
+        runAsUser: 65532
+        runAsGroup: 65532
+      initContainers:
+        - name: init-permission
+          image: '{{ list . "busybox" | include "helpers.image.name" }}'
+          command: ["sh","-c","chmod -R 700 /var/log/monitoring-service && chown -R 65532:65532 /var/log/monitoring-service"]
+          volumeMounts:
+            - mountPath: /var/log/monitoring-service
+              name: varlog
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      containers:
+        {{- if .Values.enableOAuth }}
+        - name: oauth-proxy
+          image: '{{ list . "oauth" | include "helpers.image.name" }}'
+          imagePullPolicy: {{.Values.images.oauth.pullPolicy}}
+          ports:
+          - containerPort: {{ .Values.oauthProxy.containerPort }}
+            name: proxy
+          args:
+          {{- if .Values.oauthProxy.enableTLS }}
+          - '--https-address=:{{ .Values.oauthProxy.containerPort }}'
+          - --http-address=
+          - --tls-cert=/ssl/sever.crt
+          - --tls-key=/ssl/server.key
+          - --tls-client-ca=/ssl/ca.pem
+          {{- else }}
+          - --https-address=
+          - '--http-address=:{{ .Values.oauthProxy.containerPort }}'
+          {{- end }}
+          - --email-domain=*
+          - --provider=openfuyao
+          - --client-id={{ .Values.oauthProxy.client.id }}
+          - --client-secret={{ .Values.oauthProxy.client.secret }}
+          - '--upstream=http://localhost:{{ .Values.config.httpServerConfig.port }}'
+          - '--openfuyao-delegate-urls={"/":{"resource": "services/proxy", "group": ""}}'
+          - --redirect-url={{ .Values.oauthProxy.urls.host }}
+          - --login-url={{ .Values.oauthProxy.urls.loginURI }}
+          - --redeem-url={{ .Values.oauthProxy.urls.redeemURI }}
+          - --root-prefix={{ .Values.oauthProxy.urls.rootPrefix }}
+          - --cookie-httponly
+          volumeMounts:
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            {{- if .Values.oauthProxy.enableTLS }}
+            - name: monitoring-service-tls
+              mountPath: /ssl/ca.pem
+              subPath: ca.crt
+            - name: monitoring-service-tls
+              readOnly: true
+              mountPath: /ssl/server.key
+              subPath: tls.key
+            - name: monitoring-service-tls
+              readOnly: true
+              mountPath: /ssl/server.crt
+              subPath: tls.crt
+            {{- end }}
+        {{- end }}
+        - name: monitoring-service
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{.Values.images.core.pullPolicy}}
+          env:
+            - name: PROMETHEUS_HOST
+              value: {{ .Values.prometheus.host | quote }}
+            - name: PROMETHEUS_INSECURE_SKIP_VERIFY
+              value: {{ .Values.prometheus.insecureSkipVerify | quote }}
+            - name: SERVICE_PORT
+              value: {{ .Values.config.httpServerConfig.port | quote }}
+          ports:
+            - containerPort: {{ .Values.config.httpServerConfig.port }}
+              protocol: TCP
+          volumeMounts:
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            {{- if .Values.config.httpServerConfig.enableHttps }}
+            - name: monitoring-service-tls
+              mountPath: /ssl/ca.pem
+              subPath: ca.crt
+            - name: monitoring-service-tls
+              readOnly: true
+              mountPath: /ssl/server.key
+              subPath: tls.key
+            - name: monitoring-service-tls
+              readOnly: true
+              mountPath: /ssl/server.crt
+              subPath: tls.crt
+            {{- end }}
+            - name: varlog
+              mountPath: /var/log/monitoring-service
+            - name: monitoring-service-config
+              readOnly: true
+              subPath: config.json
+              mountPath: /config.json
+            - name: monitoring-service-log-config
+              mountPath: /etc/monitoring-service
+          {{- if .Values.resources }}
+          resources: {{- toYaml .Values.resources | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        - name: varlog
+          hostPath:
+            path: /var/log/monitoring-service
+            type: DirectoryOrCreate
+        - name: monitoring-service-config
+          configMap:
+            defaultMode: 0600
+            name: monitoring-service-config
+        - name: monitoring-service-log-config
+          configMap:
+            defaultMode: 0600
+            name: monitoring-service-log-config
+        {{- if or .Values.config.httpServerConfig.enableHttps .Values.oauthProxy.enableTLS }}
+        - name: monitoring-service-tls
+          secret:
+            defaultMode: 0600
+            secretName: monitoring-service-tls
+        {{- end }}

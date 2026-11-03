@@ -1,0 +1,30 @@
+#ingress-instance-start
+vrrp_script check_ingress {
+   script "/usr/local/etc/keepalived/check-ingress.sh"
+   weight -{{ .nodes | computeWeight }}
+}
+
+vrrp_instance ingress {
+{{- if .nodes | isMaster }}
+    state MASTER
+    priority 100
+{{- else }}
+    state BACKUP
+    priority {{ .nodes | priority }}
+    preempt_delay 5
+{{- end }}
+    interface {{ .interface }}
+    virtual_router_id {{ .virtualRouterId }}
+    advert_int {{ .keepalivedAdvertInt}}
+    authentication {
+        auth_type PASS
+        auth_pass {{ .keepalivedAuthPass }}
+    }
+    virtual_ipaddress {
+        {{ .vip }}
+    }
+    track_script {
+        check_ingress
+    }
+}
+#ingress-instance-end

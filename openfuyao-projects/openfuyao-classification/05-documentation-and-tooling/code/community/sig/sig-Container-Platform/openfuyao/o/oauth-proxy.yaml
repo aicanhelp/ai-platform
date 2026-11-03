@@ -1,0 +1,6 @@
+name: oauth-proxy
+type: public
+description: '用于openFuyao的扩展组件认证鉴权，以边车的形式随扩展组件一同部署'
+branches:
+  - name: master
+    type: protected

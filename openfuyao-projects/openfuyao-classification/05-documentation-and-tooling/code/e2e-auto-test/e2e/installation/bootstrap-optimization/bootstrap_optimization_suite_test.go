@@ -1,0 +1,21 @@
+package bootstrap_optimization
+
+import (
+	"log"
+	"testing"
+
+	"gitcode.com/openFuyao/e2e-auto-test/e2e/framework/env"
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+)
+
+func init() {
+	if err := env.LoadEnv(".env"); err != nil {
+		log.Fatalf("Failed to load .env file: %v", err)
+	}
+}
+
+func TestBootstrapOptimization(t *testing.T) {
+	RegisterFailHandler(Fail)
+	RunSpecs(t, "Bootstrap Optimization Suite")
+}

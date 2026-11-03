@@ -1,0 +1,6 @@
+name: docs
+type: public
+description: 'openFuyao相关的文档和知识。'
+branches:
+  - name: master
+    type: protected

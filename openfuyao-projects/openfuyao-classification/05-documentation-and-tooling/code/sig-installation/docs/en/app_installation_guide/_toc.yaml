@@ -1,0 +1,6 @@
+label: Application/Component Installation
+sections:
+  - label: Offline Incremental Application/Extension Installation
+    href: ./offline_incremental_component_installation.md
+  - label: Online Incremental Application/Extension Installation
+    href: ./online_incremental_component_installation.md

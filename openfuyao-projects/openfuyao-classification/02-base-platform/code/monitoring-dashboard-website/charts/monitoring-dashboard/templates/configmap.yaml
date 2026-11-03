@@ -1,0 +1,85 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+    name: monitoring-dashboard-website-config
+    namespace: monitoring-dashboard
+data:
+  nginx.conf: |
+    worker_processes  auto;
+
+    error_log  /var/log/nginx/error.log notice;
+    error_log  /dev/stderr notice;
+    pid        /tmp/nginx.pid;
+
+
+    events {
+        worker_connections  1024;
+    }
+
+
+    http {
+        proxy_temp_path /tmp/proxy_temp;
+        client_body_temp_path /tmp/client_temp;
+        fastcgi_temp_path /tmp/fastcgi_temp;
+        uwsgi_temp_path /tmp/uwsgi_temp;
+        scgi_temp_path /tmp/scgi_temp;
+
+        include       /etc/nginx/mime.types;
+        default_type  application/octet-stream;
+
+        log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                          '$status $body_bytes_sent "$http_referer" '
+                          '"$http_user_agent" "$http_x_forwarded_for"';
+
+        access_log  /var/log/nginx/access.log  main;
+        access_log  /dev/stdout main;
+
+        sendfile        on;
+        #tcp_nopush     on;
+
+        keepalive_timeout  65;
+
+        #gzip  on;
+        gzip on;
+        gzip_min_length 10k;
+        gzip_buffers 4 32k;
+        gzip_http_version 1.1;
+        gzip_comp_level 6;
+        gzip_types text/plain text/css text/html text/xml text/javascript application/json application/x-javascript application/xml application/xml+rss application/javascript font/ttf font/woff font/woff2 image/png image/svg+xml video/mp4;
+        gzip_vary on;
+
+        server {
+            listen 8080 default_server;
+            root /usr/share/nginx/html/;
+            index index.html index.htm;
+
+            add_header Content-Security-Policy "connect-src 'self' https:;frame-ancestors 'none';object-src 'none'" always;
+            add_header Cache-Control "no-cache, no-store, must-revalidate" always;
+            add_header X-Frame-Options DENY always;
+            add_header X-Content-Type-Options nosniff always;
+            add_header X-XSS-Protection 1 always;
+            add_header Strict-Transport-Security "max-age=31536000" always;
+
+            location / {
+                try_files $uri /index.html;
+            }
+
+            location ~* ^/monitoring-dashboard/.*\.(js|cjs|mjs)$ {
+                default_type text/javascript;
+                rewrite ^ /dist/monitoring-dashboard.mjs break;
+            }
+
+            location /monitoring-dashboard/ {
+                rewrite ^/monitoring-dashboard(/.*)$ $1 break;
+                proxy_pass http://monitoring-dashboard-service-service.monitoring-dashboard.svc.cluster.local:80;
+            }
+
+            location ~* \.(js|cjs|mjs)$ {
+                default_type text/javascript;
+            }
+            
+            location /rest/monitoring-dashboard {
+                proxy_pass http://monitoring-dashboard-service-service.monitoring-dashboard.svc.cluster.local:80;
+            }
+        }
+    }

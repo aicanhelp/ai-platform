@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "e2e-helm-release.fullname" . }}
+  labels:
+    app: {{ include "e2e-helm-release.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "e2e-helm-release.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "e2e-helm-release.name" . }}
+    spec:
+      containers:
+        - name: e2e-helm-release
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                echo "{{ .Values.logger.message }}"
+                sleep {{ .Values.logger.intervalSeconds }}
+              done
+        - name: e2e-helm-release-sidecar
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.pullPolicy }}
+          command:
+            - /bin/sh
+            - -c
+            - |
+              while true; do
+                sleep 3600
+              done

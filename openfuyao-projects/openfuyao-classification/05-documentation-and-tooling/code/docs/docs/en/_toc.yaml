@@ -1,0 +1,38 @@
+label: Documentation
+sections:
+  - label: Legal Statement
+    href: ./legal_statement.md
+  - label: Release Notes
+    href: ./release_notes/_toc.yaml
+  - label: Quick Start
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-installation/blob/master/docs/en/quick_start/quick_start.md
+      path: ./
+  - label: Cluster Installation
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-installation/blob/master/docs/en/cluster_installation_guide/_toc.yaml
+      path: ./cluster_installation_guide
+  - label: Application/Component Installation
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-installation/blob/master/docs/en/app_installation_guide/_toc.yaml
+      path: ./app_installation_guide
+  - label: Cluster Scale-out/Scale-in
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-installation/blob/master/docs/en/cluster_scaling/_toc.yaml
+      path: ./cluster_scaling
+  - label: Cluster Upgrade
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-installation/blob/master/docs/en/upgrade_guide/_toc.yaml
+      path: ./upgrade_guide
+  - label: Cluster Uninstallation
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-installation/blob/master/docs/en/cluster_uninstallation/_toc.yaml
+      path: ./cluster_uninstallation
+  - label: Management Plane Operations
+    href: ./management_plane_operations/_toc.yaml
+  - label: Developer Guide
+    href: ./developer_guide/_toc.yaml
+  - label: User Guide
+    href: ./user_guide/_toc.yaml
+  - label: Appendixes
+    href: ./appendixes/_toc.yaml

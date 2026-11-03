@@ -1,0 +1,6 @@
+name: vNPU
+type: private
+description: 'vNPU项目基于CANN ACL Runtime API劫持技术和volcano调度器实现NPU虚拟化，提升资源利用率'
+branches:
+  - name: master
+    type: protected

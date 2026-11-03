@@ -1,0 +1,6 @@
+name: monitoring-service
+type: private
+description: 'openFuyao监控服务与Prometheus深度集成，内置常用指标查询能力，并提供监控目标（targets）和告警规则（alerting rules）的查看功能。'
+branches:
+  - name: master
+    type: protected

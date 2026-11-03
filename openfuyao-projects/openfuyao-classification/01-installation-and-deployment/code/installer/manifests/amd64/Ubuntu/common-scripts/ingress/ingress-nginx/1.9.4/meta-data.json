@@ -1,0 +1,11 @@
+{
+  "name": "ingress-nginx",
+  "version": "1.9.4",
+  "required": true,
+  "hide": false,
+  "bootstrap-node": "master",
+  "dependencies": [{
+    "name": "kubernetes",
+    "version": "[1.28.0,)"
+  }]
+}

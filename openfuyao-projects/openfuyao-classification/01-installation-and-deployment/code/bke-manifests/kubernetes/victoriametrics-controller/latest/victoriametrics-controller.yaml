@@ -1,0 +1,166 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/instance: victoriametric-controller
+    app.kubernetes.io/name: victoriametric-controller
+  name: victoriametric-controller
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: victoriametric-controller
+  namespace: victoriametric-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: victoriametric-controller
+  template:
+    metadata:
+      labels:
+        app: victoriametric-controller
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/os
+                operator: In 
+                values:
+                  - linux
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              preference:
+                matchExpressions:
+                - key: node-role.kubernetes.io/node
+                  operator: Exists
+      tolerations:
+        - key: node-role.kubernetes.io/node
+          effect: NoSchedule
+      hostNetwork: true
+      hostPID: true
+      initContainers:
+        - name: installer
+          image: {{ if .repo }}{{ .repo }}{{ else }}cr.openfuyao.cn/openfuyao/{{ end }}victoriametrics-controller:latest
+          imagePullPolicy: Always
+          securityContext:
+            privileged: true
+          env:
+            - name: VERSION
+              value: "0.58.2"
+            - name: OPENFUYAO_REGISTRY
+              value: "{{ if .repo }}{{ .repo }}{{ else }}cr.openfuyao.cn/openfuyao/{{ end }}"
+            - name: useVMSingle
+              value: "{{ .useVMSingle }}"
+            - name: vmSingleStorageSize
+              value: "{{ .vmSingleStorageSize }}"
+            - name: vmAgentAllowStatefulSet
+              value: "{{ .vmAgentAllowStatefulSet }}"
+            - name: vmAgentCpuCount
+              value: "{{ .vmAgentCpuCount }}"
+            - name: vmAgentMemorySize
+              value: "{{ .vmAgentMemorySize }}"
+            - name: vmAgentStorageSize
+              value: "{{ .vmAgentStorageSize }}"
+            - name: vmAgentReplicaCount
+              value: "{{ .vmAgentReplicaCount }}"
+            - name: vmAgentShareCount
+              value: "{{ .vmAgentShareCount }}"
+            - name: vmAgentScrapeInterval
+              value: "{{ .vmAgentScrapeInterval }}"
+            - name: vmSelectCpuCount
+              value: "{{ .vmSelectCpuCount }}"
+            - name: vmSelectMemorySize
+              value: "{{ .vmSelectMemorySize }}"
+            - name: vmSelectStorageSize
+              value: "{{ .vmSelectStorageSize }}"
+            - name: vmSelectReplicaCount
+              value: "{{ .vmSelectReplicaCount }}"
+            - name: vmStorageCPUCount
+              value: "{{ .vmStorageCPUCount }}"
+            - name: vmStorageMemorySize
+              value: "{{ .vmStorageMemorySize }}"
+            - name: vmStorageStorageSize
+              value: "{{ .vmStorageStorageSize }}"
+            - name: vmStorageReplicaCount
+              value: "{{ .vmStorageReplicaCount }}"
+            - name: vmInsertReplicaCount
+              value: "{{ .vmInsertReplicaCount }}"
+            - name: vmInsertCpuCount
+              value: "{{ .vmInsertCpuCount }}"
+            - name: vmInsertMemorySize
+              value: "{{ .vmInsertMemorySize }}"
+            - name: vmAlertReplicaCount
+              value: "{{ .vmAlertReplicaCount }}"
+            - name: vmAlertCpuCount
+              value: "{{ .vmAlertCpuCount }}"
+            - name: vmAlertMemorySize
+              value: "{{ .vmAlertMemorySize }}"
+            - name: vmAlertManagerReplicaCount
+              value: "{{ .vmAlertManagerReplicaCount }}"
+            - name: vmAlertManagerCpuCount
+              value: "{{ .vmAlertManagerCpuCount }}"
+            - name: vmAlertManagerMemorySize
+              value: "{{ .vmAlertManagerMemorySize }}"
+            - name: vmClusterRetentionPeriod
+              value: "{{ .vmClusterRetentionPeriod }}"
+            - name: vmClusterReplicationFactor
+              value: "{{ .vmClusterReplicationFactor }}"
+            - name: grafanaNodePort
+              value: "{{ .grafanaNodePort }}"
+            - name: kubeStateMetricsAutoSharding
+              value: "{{ .kubeStateMetricsAutoSharding }}"
+            - name: kubeStateMetricsReplicaCount
+              value: "{{ .kubeStateMetricsReplicaCount }}"
+            - name: kubeStateMetricsCpuCount
+              value: "{{ .kubeStateMetricsCpuCount }}"
+            - name: kubeStateMetricsMemorySize
+              value: "{{ .kubeStateMetricsMemorySize }}"
+          command:
+            - /bin/sh
+            - -c
+            - sh /home/victoriametric/entrypoint.sh -o install
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: root-mount
+              mountPath: /mnt
+      containers:
+        - name: victoriametric-controller
+          env:
+            - name: OPENFUYAO_REGISTRY
+              value: {{ if .repo }}{{ .repo }}{{ else }}cr.openfuyao.cn/openfuyao/{{ end }}
+          securityContext:
+            privileged: true
+          image: {{ if .repo }}{{ .repo }}{{ else }}cr.openfuyao.cn/openfuyao/{{ end }}victoriametrics-controller:latest
+          imagePullPolicy: Always
+          command:
+            - /bin/sh
+            - -c
+            - while true; do sleep 3600; done
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: root-mount
+              mountPath: /mnt
+      volumes:
+        - name: dev
+          hostPath: 
+            path: /dev
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        - name: root-mount
+          hostPath:
+            path: /
+      
+           

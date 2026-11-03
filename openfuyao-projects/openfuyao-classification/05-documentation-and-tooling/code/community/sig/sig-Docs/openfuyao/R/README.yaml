@@ -1,0 +1,6 @@
+name: README
+type: public
+description: 'openFuyao组织、资源平台、如何参与社区贡献、联系我们等信息介绍。'
+branches:
+  - name: master
+    type: protected

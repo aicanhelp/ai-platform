@@ -1,0 +1,14 @@
+apiVersion: v2
+name: numa-affinity-package
+description: This is a user-facing interface designed for configuraing the volcano system, providing a streamlined and intuitive experience for users to customize settings and monitor the system.
+dependencies:
+  - name: volcano-config-package
+    version: 0.0.0-latest
+    repository: oci://cr.openfuyao.cn/charts
+  - name: volcano-config-website
+    version: 0.0.0-latest
+    repository: oci://cr.openfuyao.cn/charts
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-extension"]

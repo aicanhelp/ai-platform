@@ -1,0 +1,18 @@
+# Enable or disable istio installation
+enabled: true
+
+# istio 安装的命名空间
+namespace: istio-system
+
+# 传递给 base 子 chart
+base:
+  global:
+    istioNamespace: istio-system
+
+# 传递给 istiod 子 chart
+istiod:
+  global:
+    istioNamespace: istio-system
+  pilot:
+    env:
+      ENABLE_GATEWAY_API_INFERENCE_EXTENSION: "true"

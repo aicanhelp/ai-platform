@@ -1,0 +1,169 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
+  name: consoleplugins.console.openfuyao.com
+spec:
+  group: console.openfuyao.com
+  names:
+    kind: ConsolePlugin
+    listKind: ConsolePluginList
+    plural: consoleplugins
+    shortNames:
+      - cp
+    singular: consoleplugin
+  scope: Cluster
+  versions:
+    - name: v1beta1
+      schema:
+        openAPIV3Schema:
+          description: ConsolePlugin is the Schema for the consoleplugins API
+          properties:
+            apiVersion:
+              description: |-
+                APIVersion defines the versioned schema of this representation of an object.
+                Servers should convert recognized schemas to the latest internal value, and
+                may reject unrecognized values.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+              type: string
+            kind:
+              description: |-
+                Kind is a string value representing the REST resource this object represents.
+                Servers may infer this from the endpoint the client submits requests to.
+                Cannot be updated.
+                In CamelCase.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: ConsolePluginSpec defines the desired state of ConsolePlugin
+              properties:
+                backend:
+                  description: Backend holds the configuration of backend which is serving
+                    console's plugin.
+                  properties:
+                    service:
+                      description: Service is the kubernetes service that exposes the
+                        plugin UI resources using a deployment with an HTTP server.
+                      properties:
+                        basePath:
+                          description: |-
+                            BasePath is the base path to the plugin UI resource in the HTTP server.
+                            This field is optional, default to be /
+                          maxLength: 256
+                          minLength: 1
+                          pattern: ^/[a-zA-Z0-9-]*$
+                          type: string
+                        name:
+                          description: Name of the service serving the plugin UI resources.
+                          maxLength: 256
+                          minLength: 1
+                          pattern: ^[a-zA-Z0-9-]+$
+                          type: string
+                        namespace:
+                          description: Namespace of the service serving the plugin UI
+                            resources.
+                          maxLength: 256
+                          minLength: 1
+                          pattern: ^[a-zA-Z0-9-]+$
+                          type: string
+                        port:
+                          default: 80
+                          description: |-
+                            Port on which the service serving the plugin is listening to.
+                            This field is optional, default to be 80
+                          format: int32
+                          maximum: 65535
+                          minimum: 1
+                          type: integer
+                      required:
+                        - name
+                        - namespace
+                      type: object
+                    type:
+                      description: |-
+                        Type is the type of the backend that supplies the plugin UI resources. Currently only service is supported.
+                        Current supported types are [Service]
+                      enum:
+                        - Service
+                      type: string
+                  required:
+                    - type
+                  type: object
+                displayName:
+                  description: DisplayName is the display name of the plugin on the
+                    UI entrypoint, should be between 1 and 128 characters.
+                  maxLength: 256
+                  minLength: 1
+                  type: string
+                enabled:
+                  default: true
+                  description: |-
+                    Enabled specifies whether the plugin would be loaded on console webpage.
+                    Default tto be true (would be loaded)
+                  type: boolean
+                entrypoint:
+                  description: Entrypoint is the path where the entrypoint of the plugin
+                    will be rendered on the console webpage.
+                  maxLength: 256
+                  minLength: 1
+                  pattern: ^/[a-zA-Z0-9-_/]*$
+                  type: string
+                order:
+                  description: display index of the plugin, only work if the plugin
+                    is rendered on the left navigation menu. Negative and out of bounds
+                    number will be treated as last index in the menu
+                  type: integer
+                pluginName:
+                  description: PluginName is the unique name of the plugin. The name
+                    should only include alphabets, digits and '-'
+                  maxLength: 256
+                  minLength: 1
+                  pattern: ^[a-zA-Z0-9-]+$
+                  type: string
+                subPages:
+                  description: SubPages stands for the pages under the main console
+                    plugin. Only applicable for "Side" Entrypoint
+                  items:
+                    properties:
+                      displayName:
+                        description: DisplayName is the display name of the plugin on
+                          the UI entrypoint, should be between 1 and 128 characters.
+                        maxLength: 256
+                        minLength: 1
+                        type: string
+                      pageName:
+                        description: PageName is the unique name of the page. The name
+                          should only include alphabets, digits and '-'
+                        maxLength: 256
+                        minLength: 1
+                        pattern: ^[a-zA-Z0-9-]+$
+                        type: string
+                    required:
+                      - displayName
+                      - pageName
+                    type: object
+                  type: array
+              required:
+                - backend
+                - displayName
+                - entrypoint
+                - pluginName
+              type: object
+            status:
+              description: ConsolePluginStatus defines the observed state of ConsolePlugin
+              properties:
+                link:
+                  description: Link is the URL with which the front-end load the plugin
+                    UI resource
+                  type: string
+              required:
+                - link
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: { }

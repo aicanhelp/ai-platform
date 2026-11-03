@@ -1,0 +1,341 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+
+// 初始化p标签
+p {
+  margin: 0;
+}
+
+/**tab 全局样式**/
+.@{container-prefix}-tabs {
+  width: auto;
+}
+
+.@{container-prefix}-tabs-tab {
+  margin: 0 0 0 64px !important;
+  font-size: 14px;
+  color: @title-color;
+  padding-bottom: 15px;
+}
+
+.@{container-prefix}-tabs-nav {
+  margin: 0px !important;
+  padding-left: 32px;
+  box-shadow: inset 0px -1px 0px rgba(229, 229, 229, 1);
+  background-color: @page-container-color;
+}
+
+.@{container-prefix}-tabs-tab:nth-child(1) {
+  margin: 0 0 0 0 !important;
+}
+
+.workload_detail_content {
+  background-color: #f7f7f7;
+  padding: 0 32px 20px 32px;
+  min-height: calc(100vh - 112px - 48px - 100px);
+
+  .cant_show {
+    display: none;
+  }
+
+  .workload_detail_content_top {
+    display: flex;
+    background-color: #ffffff;
+    height: 180px;
+    align-items: center;
+    margin-bottom: 20px;
+
+    .workload_detail_top_node_manage_content {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      height: 64px;
+      margin-left: 128px;
+
+      .workload_detail_top_node_manage_content_count {
+        display: flex;
+        flex-direction: column;
+        align-items: self-start;
+        justify-content: center;
+
+        .workload_detail_top_node_manage_content_count_top {
+          margin-bottom: 16px;
+
+          .nomarl_span {
+            margin-left: 5px;
+            line-height: 24px;
+            font-size: 32px;
+          }
+
+          .first_span {
+            line-height: 24px;
+            font-size: 32px;
+            color: @del-button-normal-color;
+            margin-left: 0;
+          }
+        }
+
+        .workload_detail_top_node_manage_content_count_bottom {
+          margin-top: 6px;
+
+          .nomarl_span {
+            line-height: 22px;
+            font-size: 14px;
+            color: #89939b;
+          }
+        }
+      }
+    }
+
+    .workload_detail_top_echart_content {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      // height: 64px;
+      margin-left: 128px;
+
+      .workload_flex_node_progress_chart {
+        width: 100%;
+
+        .overviewEcharts {
+          top: -16px;
+        }
+      }
+    }
+  }
+
+  .workload_detail_content_box {
+    background-color: #ffffff;
+    min-height: calc(100vh - 112px - 48px - 160px);
+    margin-top: 20px;
+  }
+
+  .cant_showworkload_detail_content_box {
+    background-color: #ffffff;
+    min-height: calc(100vh - 112px - 48px - 100px);
+    margin-top: 20px;
+  }
+
+  .workload_detail_form {
+    .workload-searchForm {
+      padding: 32px 32px 0px 32px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      .workload-searchForm-box {
+        display: flex;
+      }
+
+      .workload-search-input {
+        width: 300px;
+        height: 32px;
+        border-radius: @button-radius;
+      }
+
+      .workload_detail_form_button {
+        width: 128px;
+        background-color: #3f66f5;
+        color: #ffffff;
+      }
+
+      .workload_detail_form_button:hover {
+        background-color: @button-hover-color !important;
+      }
+
+      .@{container-prefix}-input-affix-wrapper {
+        border-radius: @button-radius !important;
+      }
+
+      .@{container-prefix}-input-suffix {
+        svg {
+          width: 16px;
+          height: 17px;
+          color: #686868;
+        }
+      }
+    }
+  }
+
+  .workLoad-colocation-table-no-padding {
+    padding-bottom: 0px !important;
+  }
+
+  .workLoad-colocation-table-has-padding {
+    padding-bottom: 60px !important;
+  }
+
+  .workload_detail_content_table {
+    background-color: #ffffff;
+    padding: 0 32px 0 32px;
+
+    .table_tuning_box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table_single_box {
+      display: flex;
+      align-items: center;
+
+      .table_single_box_number_format {
+        font-size: 14px;
+        color: #333333;
+      }
+
+      .table_single_box_chartnumber_down {
+        font-size: 14px;
+        color: #09aa71;
+      }
+
+      .table_single_box_chartnumber_up {
+        font-size: 14px;
+        color: #e7434a;
+      }
+
+      .table_single_box_chart_format {
+        width: 130px;
+        height: 32px;
+        position: relative;
+
+        .line_chart {
+          max-width: 200px;
+          width: 100%;
+          height: 100px;
+          max-height: 100px;
+          display: flex;
+          align-self: flex-start;
+          position: absolute;
+          top: -24px;
+          left: 10px;
+        }
+      }
+    }
+
+    .table_handle {
+      color: #3f66f5;
+      cursor: pointer;
+    }
+
+    .table_hope_status {
+      width: 100px;
+    }
+
+    // .@{container-prefix}-table{
+    //   min-height: calc(100vh - 64px - 54px - 54px - 88px);
+    // }
+    .@{container-prefix}-select-selector {
+      background: none;
+      box-shadow: none !important;
+    }
+
+    .@{container-prefix}-select-arrow {
+      color: rgb(196, 196, 196);
+      height: 8px;
+      width: 15px;
+    }
+  }
+
+}
+
+.workload_pageBottom {
+  margin-bottom: 80px;
+}
+
+.status_group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  span:nth-child(2) {
+    margin-left: 8px;
+  }
+
+  .online_circle:before {
+    content: " ";
+    width: 12px;
+    height: 12px;
+    display: block;
+    border-radius: 50%;
+    margin-right: 6px;
+    background-color: #09AA71;
+  }
+
+  .offline_circle:before {
+    content: " ";
+    width: 12px;
+    height: 12px;
+    display: block;
+    border-radius: 50%;
+    margin-right: 6px;
+    background-color: #E2F8CC;
+  }
+
+  .oversold_circle:before {
+    content: " ";
+    width: 12px;
+    height: 12px;
+    display: block;
+    border-radius: 50%;
+    margin-right: 6px;
+    background-color: #CEC4FF;
+  }
+}
+
+.workload_pop_modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  button {
+    color: @button-normal-color;
+  }
+
+  button:hover {
+    color: @button-hover-color !important;
+  }
+}
+
+.child_content_workload_footer {
+  position: fixed;
+  bottom: 0;
+  width: calc(100vw - 220px);
+  height: 82px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  box-shadow: 0px -3px 6px rgba(5, 4, 4, 0.1);
+  gap: 16px;
+
+  .workload_btn_footer_text {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 32px;
+
+    p {
+      color: #333333;
+      font-size: 16px;
+      font-weight: 700;
+    }
+  }
+
+  .workload_btn_footer_button {
+    margin-right: 64px;
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      margin-left: 20px;
+    }
+  }
+}

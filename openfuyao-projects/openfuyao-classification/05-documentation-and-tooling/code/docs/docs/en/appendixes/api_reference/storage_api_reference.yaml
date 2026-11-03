@@ -1,0 +1,1367 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: Providing APIs related to Kubernetes storage resource management.
+  version: 1.0.0
+servers:
+  - url: /
+    description: Default server.
+paths:
+  /api/kubernetes/api/v1/persistentvolumes/{name}:
+    get:
+      tags:
+        - Volume
+      summary: Reading a specified volume.
+      description: Obtaining the content of a volume.
+      operationId: getPersistentVolume
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume object.
+        '401':
+          description: Request unauthorized or invalid credential.
+    put:
+      tags:
+        - Volume
+      summary: Updating a specified volume.
+      description: Updating a specified volume.
+      operationId: updatePersistentVolume
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: Volume content to be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Volume configuration object.
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume object.
+        '201':
+          description: Request processed successfully, and new resource created.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume object.
+        '401':
+          description: Request unauthorized or invalid credential.
+    delete:
+      tags:
+        - Volume
+      summary: Deleting a specified volume.
+      description: Deleting a volume.
+      operationId: deletePersistentVolume
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: Duration before the object is deleted, in seconds.
+          required: false
+          schema:
+            type: integer
+        - name: propagationPolicy
+          in: query
+          description: Determining whether and how to perform garbage collection.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume object.
+        '202':
+          description: Request accepted but not yet finished.
+        '401':
+          description: Request unauthorized or invalid credential.
+    patch:
+      tags:
+        - Volume
+      summary: Partially updating a specified volume.
+      description: Partially updating a specified volume.
+      operationId: patchPersistentVolume
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: Forcibly applying the request.
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        description: Patch operation to be applied.
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON patch operation list.
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: Operation type.
+                    enum:
+                      - add
+                      - remove
+                      - replace
+                      - move
+                      - copy
+                      - test
+                  path:
+                    type: string
+                    description: JSON pointer path to be operated.
+                  value:
+                    description: Value used for the add, replace, or test operation.
+                  from:
+                    type: string
+                    description: Path of the source JSON pointer used for the move or copy operation.
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume object.
+        '201':
+          description: Already updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume object.
+        '401':
+          description: Request unauthorized or invalid credential.
+
+  /api/kubernetes/api/v1/persistentvolumes:
+    get:
+      tags:
+        - Volume
+      summary: Obtaining a volume list.
+      description: Obtaining a volume list.
+      operationId: listPersistentVolumes
+      parameters:
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: Constraining the target resource version of the request.
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: Determining the application of resourceVersion to the list call.
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: Watching changes to the specified resource.
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: The watch stream begins with synthetic events to produce the current state of objects in the collection.
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: Timeout for listing or watching calls, in seconds.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume list object.
+        '401':
+          description: Request unauthorized or invalid credential.
+    post:
+      tags:
+        - Volume
+      summary: Creating a volume.
+      description: Creating a volume.
+      operationId: createPersistentVolume
+      parameters:
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: Content of the volume to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Volume configuration object.
+          application/yaml:
+            schema:
+              type: object
+              description: Volume configuration object.
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume object.
+        '201':
+          description: Request processed successfully, and new resource created.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume object.
+        '202':
+          description: Request accepted but not yet finished.
+        '401':
+          description: Request unauthorized or invalid credential.
+
+  /api/kubernetes/api/v1/namespaces/{namespace}/persistentvolumeclaims/{name}:
+    get:
+      tags:
+        - Volume claim
+      summary: Reading a specified volume claim.
+      description: Obtaining the content of a volume claim.
+      operationId: getPersistentVolumeClaim
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume claim object.
+        '401':
+          description: Request unauthorized or invalid credential.
+    put:
+      tags:
+        - Volume claim
+      summary: Updating a specified volume claim.
+      description: Updating a specified volume claim.
+      operationId: updatePersistentVolumeClaim
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: Volume claim content to be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Volume claim configuration object.
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume claim object.
+        '201':
+          description: Request processed successfully, and new resource created.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume claim object.
+        '401':
+          description: Request unauthorized or invalid credential.
+    delete:
+      tags:
+        - Volume claim
+      summary: Deleting a specified volume claim.
+      description: Deleting a volume claim.
+      operationId: deletePersistentVolumeClaim
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: Duration before the object is deleted, in seconds.
+          required: false
+          schema:
+            type: integer
+        - name: propagationPolicy
+          in: query
+          description: Determining whether and how to perform garbage collection.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume claim object.
+        '202':
+          description: Request accepted but not yet finished.
+        '401':
+          description: Request unauthorized or invalid credential.
+    patch:
+      tags:
+        - Volume claim
+      summary: Partially updating a specified volume claim.
+      description: Partially updating a specified volume claim.
+      operationId: patchPersistentVolumeClaim
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: Forcibly applying the request.
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        description: Patch operation to be applied.
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON patch operation list.
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: Operation type.
+                    enum:
+                      - add
+                      - remove
+                      - replace
+                      - move
+                      - copy
+                      - test
+                  path:
+                    type: string
+                    description: JSON pointer path to be operated.
+                  value:
+                    description: Value used for the add, replace, or test operation.
+                  from:
+                    type: string
+                    description: Path of the source JSON pointer used for the move or copy operation.
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume claim object.
+        '201':
+          description: Already updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume claim object.
+        '401':
+          description: Request unauthorized or invalid credential.
+
+  /api/kubernetes/api/v1/namespaces/{namespace}/persistentvolumeclaims:
+    get:
+      tags:
+        - Volume claim
+      summary: Obtaining a volume claim list.
+      description: Obtaining a volume claim list.
+      operationId: listPersistentVolumeClaims
+      parameters:
+        - name: namespace
+          in: path
+          description: Namespace.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: Constraining the target resource version of the request.
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: Determining the application of resourceVersion to the list call.
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: Watching changes to the specified resource.
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: The watch stream begins with synthetic events to produce the current state of objects in the collection.
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: Timeout for listing or watching calls, in seconds.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume claim list object.
+        '401':
+          description: Request unauthorized or invalid credential.
+    post:
+      tags:
+        - Volume claim
+      summary: Creating a volume claim.
+      description: Creating a volume claim.
+      operationId: createPersistentVolumeClaim
+      parameters:
+        - name: namespace
+          in: path
+          description: Namespace.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: Content of the volume claim to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Volume claim configuration object.
+          application/yaml:
+            schema:
+              type: object
+              description: Volume claim configuration object.
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume claim object.
+        '201':
+          description: Request processed successfully, and new resource created.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Volume claim object.
+        '202':
+          description: Request accepted but not yet finished.
+        '401':
+          description: Request unauthorized or invalid credential.
+
+  /api/kubernetes/apis/storage.k8s.io/v1/storageclasses/{name}:
+    get:
+      tags:
+        - Storage pool
+      summary: Reading a specified storage pool.
+      description: Obtaining the content of a storage pool.
+      operationId: getStorageClass
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Storage pool object.
+        '401':
+          description: Request unauthorized or invalid credential.
+    put:
+      tags:
+        - Storage pool
+      summary: Updating a specified storage pool.
+      description: Updating a specified storage pool.
+      operationId: updateStorageClass
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: query
+          description: Namespace.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: Content of the storage pool to be updated.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Storage pool configuration object.
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Storage pool object.
+        '201':
+          description: Request processed successfully, and new resource created.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Storage pool object.
+        '401':
+          description: Request unauthorized or invalid credential.
+    delete:
+      tags:
+        - Storage pool
+      summary: Deleting a specified storage pool.
+      description: Deleting a storage pool.
+      operationId: deleteStorageClass
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: query
+          description: Namespace.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: Duration before the object is deleted, in seconds.
+          required: false
+          schema:
+            type: integer
+        - name: propagationPolicy
+          in: query
+          description: Determining whether and how to perform garbage collection.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Storage pool object.
+        '202':
+          description: Request accepted but not yet finished.
+        '401':
+          description: Request unauthorized or invalid credential.
+    patch:
+      tags:
+        - Storage pool
+      summary: Partially updating a specified storage pool.
+      description: Partially updating a specified storage pool.
+      operationId: patchStorageClass
+      parameters:
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: query
+          description: Namespace.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: Forcibly applying the request.
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        description: Patch operation to be applied.
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON patch operation list.
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: Operation type.
+                    enum:
+                      - add
+                      - remove
+                      - replace
+                      - move
+                      - copy
+                      - test
+                  path:
+                    type: string
+                    description: JSON pointer path to be operated.
+                  value:
+                    description: Value used for the add, replace, or test operation.
+                  from:
+                    type: string
+                    description: Path of the source JSON pointer used for the move or copy operation.
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Storage pool object.
+        '201':
+          description: Already updated.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Storage pool object.
+        '401':
+          description: Request unauthorized or invalid credential.
+
+  /api/kubernetes/apis/storage.k8s.io/v1/storageclasses:
+    get:
+      tags:
+        - Storage pool
+      summary: Obtaining a storage pool list.
+      description: Obtaining a storage pool list.
+      operationId: listStorageClasses
+      parameters:
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: Constraining the target resource version of the request.
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: Determining the application of resourceVersion to the list call.
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: Watching changes to the specified resource.
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: The watch stream begins with synthetic events to produce the current state of objects in the collection.
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: Timeout for listing or watching calls, in seconds.
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Storage pool list object.
+        '401':
+          description: Request unauthorized or invalid credential.
+    post:
+      tags:
+        - Storage pool
+      summary: Creating a storage pool.
+      description: Creating a storage pool.
+      operationId: createStorageClass
+      parameters:
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: Content of the storage pool to be created.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Storage pool configuration object.
+          application/yaml:
+            schema:
+              type: object
+              description: Storage pool configuration object.
+      responses:
+        '200':
+          description: Request processed successfully and requested data returned.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Storage pool object.
+        '201':
+          description: Request processed successfully, and new resource created.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Storage pool object.
+        '202':
+          description: Request accepted but not yet finished.
+        '401':
+          description: Request unauthorized or invalid credential.

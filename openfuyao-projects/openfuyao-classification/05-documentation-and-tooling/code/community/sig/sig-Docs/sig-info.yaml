@@ -1,0 +1,29 @@
+name: sig-Docs
+description: docs SIG旨在为用户提供与openFuyao相关的文档和知识。
+descriptionEn: Provide documents and knowledge related to openFuyao.
+mailing_list: docs@list.openfuyao.cn
+maintainers:
+  - gitcode_id: andxibei
+    name: JIA Zhenzhen
+    email: jiazhenzhen2@huawei.com
+  - gitcode_id: dingtingyu
+    name: dingtingyu
+    email: dingtingyu1@huawei.com
+  - gitcode_id: foxbit
+    name: QJWang
+    email: qingjunwang@huawei.com
+  - gitcode_id: regandy
+    name: Gao Bo
+    email: huawei.gaobo@huawei.com
+  - gitcode_id: yaoxiaozhong
+    name: Yao Xiaozhong
+    email: yaoxiaozhong@huawei.com
+repositories:
+  - repo:
+      - openfuyao/docs 
+      - openfuyao/docs-website
+      - openfuyao/README       
+    members:
+      - gitcode_id: Xilyqaz
+        name: XI Jing
+        email: xijing7@h-partners.com

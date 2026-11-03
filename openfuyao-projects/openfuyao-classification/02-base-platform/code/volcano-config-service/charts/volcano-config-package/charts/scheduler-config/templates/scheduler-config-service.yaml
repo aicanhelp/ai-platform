@@ -1,0 +1,17 @@
+{{- if not .Values.apiDisabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: scheduler-config-service
+  namespace: {{ .Values.namespace.backend }}
+spec:
+  type: ClusterIP
+  ports:
+    - name: transport
+      port: 9202
+      protocol: TCP
+      targetPort: {{ .Values.web.listenAddress }}
+  publishNotReadyAddresses: true
+  selector:
+    app: scheduler-config
+{{- end }}

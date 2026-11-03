@@ -1,0 +1,393 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+
+// 初始化p标签
+p {
+  margin: 0;
+}
+
+.cant_show {
+  display: none;
+}
+
+.rules_detail_content {
+  background-color: #f7f7f7;
+  min-height: calc(100vh - 112px - 48px - 55px);
+  padding: 20px 32px;
+
+  .rules_detail_form {
+    .rules-searchForm {
+      padding: 32px 32px 0px 32px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      .rules-search-input {
+        width: 300px;
+        height: 32px;
+        border-radius: @button-radius;
+      }
+
+      .rules_detail_form_button {
+        width: 128px;
+        background-color: #3f66f5;
+        color: #ffffff;
+      }
+
+      .rules_detail_form_button:hover {
+        background-color: @button-hover-color !important;
+      }
+
+      .@{container-prefix}-input-affix-wrapper {
+        border-radius: @button-radius !important;
+      }
+
+      .@{container-prefix}-input-suffix {
+        svg {
+          width: 16px;
+          height: 17px;
+          color: #686868;
+        }
+      }
+    }
+  }
+
+  .rules_detail_content_table {
+    background-color: #ffffff;
+    padding: 0 32px 0 32px;
+
+    .table_tuning_box {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .table_single_box {
+      display: flex;
+      align-items: center;
+
+      .table_single_box_number_format {
+        font-size: 14px;
+        color: #333333;
+      }
+
+      .table_single_box_chartnumber_down {
+        font-size: 14px;
+        color: #09aa71;
+      }
+
+      .table_single_box_chartnumber_up {
+        font-size: 14px;
+        color: #e7434a;
+      }
+
+      .table_single_box_chart_format {
+        width: 130px;
+        height: 32px;
+        position: relative;
+
+        .line_chart {
+          max-width: 200px;
+          width: 100%;
+          height: 100px;
+          max-height: 100px;
+          display: flex;
+          align-self: flex-start;
+          position: absolute;
+          top: -24px;
+          left: 10px;
+        }
+      }
+    }
+
+    .table_handle {
+      color: #3f66f5;
+      width: 16px;
+      height: 16px;
+      cursor: pointer;
+    }
+  }
+
+  .rules_detail_content_box {
+    background-color: #ffffff;
+    min-height: calc(100vh - 64px - 54px - 48px - 153px);
+  }
+
+  .normal_rules_detail_content_box {
+    background-color: #ffffff;
+    min-height: calc(calc(100vh - 64px - 54px - 48px - 90px));
+  }
+}
+
+.rules_detail_title {
+  padding: 12px 32px 12px 32px;
+  display: flex;
+  background-color: #ffffff;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: row;
+
+  h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 28px;
+    color: @title-color;
+  }
+
+  button {
+    display: flex;
+    padding: 6px 21px;
+    font-size: 14px;
+    align-items: center;
+
+    .small_margin_adjust {
+      margin-left: 8px;
+    }
+  }
+
+  .rules_column_pop {
+    .col_button {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+      justify-content: center !important;
+    }
+  }
+}
+
+.rules_form_detail_content {
+  background-color: #f7f7f7;
+  padding: 20px 32px 20px 32px;
+  // min-height: calc(100vh - 128px);
+
+  .rules_exact_detail_content_top {
+    display: flex;
+    background-color: #ffffff;
+    height: 72px;
+    // align-items: end;
+    margin-bottom: 20px;
+    padding: 20px 32px;
+
+    .rules_exact_detail_content_top_flex {
+      display: flex;
+      width: 780px;
+      justify-content: space-between;
+    }
+
+    .rules_exact_detail_content_top_select {
+      width: 300px;
+    }
+  }
+
+  .rules_overflow_height {
+    min-height: calc(100vh - 220px - 100px);
+  }
+
+  .normal_rules_overflow_height {
+    min-height: calc(100vh - 220px - 190px - 72px);
+  }
+
+  .rules_nocreate_overflow_height {
+    min-height: calc(100vh - 220px - 50px);
+  }
+
+  .normal_nocreate_rules_overflow_height {
+    min-height: calc(100vh - 220px - 190px - 72px);
+  }
+
+  .rules_exact_detail_content_box {
+    background-color: #ffffff;
+    padding: 32px;
+    min-height: calc(100vh - 480px);
+
+    .rules_exact_detail_content_box_title {
+      color: #333333;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 32px;
+    }
+
+    .rules_exact_detail_content_box_form {
+      // padding: 0 140px;
+      max-height: calc(100vh - 580px);
+      overflow-x: scroll;
+
+      .@{container-prefix}-space-item :last-child {
+        .@{container-prefix}-form-item-label>label::after {
+          color: #fff;
+        }
+      }
+
+      .@{container-prefix}-space {
+        width: 100%;
+        margin-bottom: 20px;
+
+        .@{container-prefix}-space-item {
+          margin-right: 20px;
+          width: 33%;
+        }
+
+        .@{container-prefix}-space-item:last-child {
+          width: 0;
+        }
+      }
+
+      .@{container-prefix}-form-item {
+        margin-top: 20px !important;
+        margin-bottom: 20px !important;
+
+        // .@{container-prefix}form-item-label>label {
+        //   color: #ffffff !important;
+        // }
+      }
+    }
+
+    .rules_exact_detail_content_box_table {
+      max-height: calc(100vh - 220px - 120px - 104px);
+      overflow-x: scroll;
+
+      .table_add_button_group {
+        display: flex;
+        flex-wrap: nowrap;
+        margin: 20px 0;
+
+        .table_add_button_icon {
+          svg {
+            color: #3f66f5;
+            height: 20px;
+            width: 20px;
+          }
+
+          margin-right: 8px;
+        }
+
+        .table_add_button_text {
+          color: #3f66f5;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+
+  .rules_exact_detail_content_onlyRead_box {
+    background-color: #ffffff;
+    min-height: calc(100vh - 428px);
+    padding: 32px;
+
+    .rules_exact_detail_content_box_title {
+      color: #333333;
+      font-size: 20px;
+      font-weight: 700;
+      line-height: 32px;
+    }
+
+    .rules_exact_detail_content_box_form {
+      // padding: 0 140px;
+      max-height: calc(100vh - 528px);
+      overflow-x: scroll;
+
+      .@{container-prefix}-space-item :last-child {
+        .@{container-prefix}-form-item-label>label::after {
+          color: #fff;
+        }
+      }
+
+      .@{container-prefix}-space {
+        width: 100%;
+        margin-bottom: 20px;
+
+        .@{container-prefix}-space-item {
+          margin-right: 20px;
+          width: 33%;
+        }
+
+        .@{container-prefix}-space-item:last-child {
+          width: 0;
+        }
+      }
+
+      .@{container-prefix}-form-item {
+        margin-top: 20px !important;
+        margin-bottom: 20px !important;
+      }
+    }
+
+    .rules_exact_detail_content_box_table {
+      max-height: calc(100vh - 220px - 120px - 104px);
+      overflow-x: scroll;
+
+      .table_add_button_group {
+        display: flex;
+        flex-wrap: nowrap;
+        margin: 20px 0;
+
+        .table_add_button_icon {
+          svg {
+            color: #3f66f5;
+            height: 20px;
+            width: 20px;
+          }
+
+          margin-right: 8px;
+        }
+
+        .table_add_button_text {
+          color: #3f66f5;
+          font-size: 14px;
+        }
+      }
+    }
+  }
+}
+
+
+.child_content_label_footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: calc(100vw);
+  height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  box-shadow: 0px -3px 6px rgba(5, 4, 4, 0.1);
+  gap: 16px;
+
+  .label_btn_footer_text {
+    display: flex;
+    justify-content: flex-start;
+    margin-left: 32px;
+
+    p {
+      color: #333333;
+      font-size: 16px;
+      font-weight: 700;
+    }
+  }
+
+  .label_btn_footer_button {
+    margin-right: 64px;
+    display: flex;
+    justify-content: flex-end;
+
+    button {
+      margin-left: 20px;
+    }
+  }
+}
+
+.rules-table-cell {
+  .@{container-prefix}-form-item {
+    margin-bottom: 0px !important;
+  }
+}

@@ -1,0 +1,7 @@
+apiVersion: v2
+name: application-management-service
+description: Application-management-service involves the deployment, monitoring, and lifecycle management of applications within the ecosystem.
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-component"]

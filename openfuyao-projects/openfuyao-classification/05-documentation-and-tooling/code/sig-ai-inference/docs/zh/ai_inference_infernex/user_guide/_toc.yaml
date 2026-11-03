@@ -1,0 +1,8 @@
+label: AI推理集成部署
+sections:
+    - label: AI推理集成部署
+      href: ./ai_inference_infernex.md
+    - label: Infernex软件前置依赖校验
+      href: ./ai_inference_infernex_checker.md
+    - label: AI推理InferNex Bridge
+      href: ./ai_inference_infernex_bridge.md

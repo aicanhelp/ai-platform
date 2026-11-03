@@ -1,0 +1,9 @@
+apiVersion: v2
+name: inference-gateway-crds
+description: A Helm chart for Custom Resource Definitions (CRDs) used by infernex
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords:
+  - crd
+  - custom-resource-definition

@@ -1,0 +1,33 @@
+{{ $scriptDir := "/etc/openFuyao/bkeagent/scripts/" }}
+
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: install-nfs-utils
+  namespace: {{.namespace}}
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/install-nfsutils.sh:ro:{{$scriptDir}}install-nfsutils.sh"
+      id: save-install-nfsutils-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}install-nfsutils.sh"
+      id: chmod-install-nfsutils-script
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}install-nfsutils.sh"
+      id: install-nfsutils
+      type: Shell
+  backoffLimit: 3
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}

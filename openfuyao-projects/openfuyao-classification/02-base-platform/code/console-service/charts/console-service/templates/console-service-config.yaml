@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: console-service-config
+  namespace: openfuyao-system
+  annotations:
+    usage: svc name and host for built-in harbor
+    user-modify: forbidden
+data:
+  oauth-server-host: {{.Values.serverHost.oauthServer}}
+  console-service-host: {{.Values.serverHost.consoleService}}
+  console-website-host: {{.Values.serverHost.consoleWebsite}}
+  alert-host: {{.Values.serverHost.alertManager}}
+  monitoring-host: {{.Values.serverHost.monitoring}}
+  webterminal-host: {{.Values.serverHost.webTerminal}}
+  application-management-host: {{.Values.serverHost.applicationManagement}}
+  marketplace-host: {{.Values.serverHost.marketplace}}
+  plugin-management-host: {{.Values.serverHost.pluginManagement}}
+  user-management-host: {{.Values.serverHost.userManagement}}
+  insecure-skip-verify: "{{ .Values.config.insecureSkipVerify }}"
+  server-name: ""

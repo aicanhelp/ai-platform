@@ -1,0 +1,559 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: APIs related to NUMA-aware scheduling.
+  version: 1.0.0
+tags:
+  - name: CustomResources
+    description: Custom resource operations.
+  - name: Monitoring
+    description: Monitoring data query.
+  - name: SchedulingPolicies
+    description: Scheduling policy configuration.
+
+paths:
+  /api/kubernetes/apis/{group}/{version}/{plural}/{name}:
+    get:
+      tags:
+        - CustomResources
+      summary: Reading a specified custom resource instance.
+      description: Obtaining NUMA resource-related instances.
+      operationId: getCustomResource
+      parameters:
+        - name: group
+          in: path
+          description: API group for the CRD.
+          required: true
+          schema:
+            type: string
+          example: nodeinfo.volcano.sh
+        - name: version
+          in: path
+          description: Version.
+          required: true
+          schema:
+            type: string
+          example: v1alpha1
+        - name: plural
+          in: path
+          description: Specified plural resource name.
+          required: true
+          schema:
+            type: string
+          example: numatopologies
+        - name: name
+          in: path
+          description: Load name.
+          required: true
+          schema:
+            type: string
+          example: fuyao-master
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Custom resource object.
+        '401':
+          description: Unauthorized.
+
+  /api/kubernetes/apis/{group}/{version}/{plural}:
+    get:
+      tags:
+        - CustomResources
+      summary: List of custom resource instances.
+      description: Obtaining NUMA resource-related instance list.
+      operationId: listCustomResources
+      parameters:
+        - name: group
+          in: path
+          description: API group for the CRD.
+          required: true
+          schema:
+            type: string
+          example: nodeinfo.volcano.sh
+        - name: version
+          in: path
+          description: Version.
+          required: true
+          schema:
+            type: string
+          example: v1alpha1
+        - name: plural
+          in: path
+          description: Specified plural resource name.
+          required: true
+          schema:
+            type: string
+          example: numatopologies
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: Constraining the target resource version of the request.
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: Determining the application of resourceVersion to the list call.
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: Watching changes to the specified resource.
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: The watch stream begins with synthetic events to produce the current state of objects in the collection.
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: Timeout for listing or watching calls, in seconds.
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Custom resource list object.
+        '401':
+          description: Unauthorized.
+
+  /api/v1/query:
+    get:
+      tags:
+        - Monitoring
+      summary: Instantaneous vector expression query.
+      description: Obtaining the corresponding monitoring metric data, with each time series containing only one data point.
+      operationId: queryInstantVector
+      parameters:
+        - name: query
+          in: query
+          description: Prometheus expression query string.
+          required: true
+          schema:
+            type: string
+          example: online_numa_nodes_count
+        - name: time
+          in: query
+          description: Evaluation timestamp.
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: timeout
+          in: query
+          description: Evaluation timeout.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Vector query response object.
+        '400':
+          description: No response.
+        '422':
+          description: Access failed.
+        '503':
+          description: The server is not ready to receive requests.
+
+  /api/v1/query_range:
+    get:
+      tags:
+        - Monitoring
+      summary: Range vector expression query.
+      description: Obtaining the corresponding monitoring metric data, with each time series containing multiple data points.
+      operationId: queryRangeVector
+      parameters:
+        - name: query
+          in: query
+          description: Prometheus expression query string.
+          required: true
+          schema:
+            type: string
+          example: online_numa_nodes_count
+        - name: start
+          in: query
+          description: Start timestamp (inclusive).
+          required: true
+          schema:
+            type: string
+            format: date-time
+          example: 2015-07-01T20:10:30.781Z
+        - name: end
+          in: query
+          description: End timestamp (inclusive).
+          required: true
+          schema:
+            type: string
+            format: date-time
+          example: 2015-07-01T20:11:00.781Z
+        - name: step
+          in: query
+          description: Query resolution step, provided as a duration or a floating-point number in seconds.
+          required: true
+          schema:
+            type: string
+          example: 15s
+        - name: timeout
+          in: query
+          description: Evaluation timeout.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Matrix query response object.
+        '400':
+          description: No response.
+        '422':
+          description: Access failed.
+        '503':
+          description: The server is not ready to receive requests.
+
+  /rest/scheduling/v1/numaaware:
+    get:
+      tags:
+        - SchedulingPolicies
+      summary: Querying the NUMA-aware scheduling policy.
+      description: Obtaining the NUMA-aware scheduling policy.
+      operationId: getNUMAAwarePolicy
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Policy response object.
+              example:
+                code: 200
+                msg: get NumaAware state success
+                data: open
+        '500':
+          description: Execution failed.
+    put:
+      tags:
+        - SchedulingPolicies
+      summary: Updating the NUMA-aware scheduling policy.
+      description: Updating the NUMA-aware scheduling policy.
+      operationId: updateNUMAAwarePolicy
+      requestBody:
+        description: Scheduling policy configuration.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - policy
+              properties:
+                policy:
+                  type: string
+                  description: Enabling or disabling the policy.
+                  enum: [open, close]
+            example:
+              policy: open
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Simple response object.
+              example:
+                code: 200
+                msg: update NumaAware policy success
+        '500':
+          description: Execution failed.
+
+  /rest/scheduling/v1/numaDistance:
+    get:
+      tags:
+        - SchedulingPolicies
+      summary: Querying the NUMA distance policy.
+      description: Obtaining the NUMA distance policy.
+      operationId: getNUMADistancePolicy
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Policy response object.
+              example:
+                code: 200
+                msg: get numaDistance state success
+                data: open
+        '500':
+          description: Execution failed.
+    put:
+      tags:
+        - SchedulingPolicies
+      summary: Updating the NUMA distance policy.
+      description: Updating the NUMA distance policy.
+      operationId: updateNUMADistancePolicy
+      requestBody:
+        description: Scheduling policy configuration.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - policy
+              properties:
+                policy:
+                  type: string
+                  description: Enabling or disabling the policy.
+                  enum: [open, close]
+            example:
+              policy: open
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Simple response object.
+              example:
+                code: 200
+                msg: update NUMA Distance policy success
+        '406':
+          description: The request is rejected because the kubelet version does not support this feature.
+        '500':
+          description: Execution failed.
+
+  /rest/scheduling/v1/nri:
+    get:
+      tags:
+        - SchedulingPolicies
+      summary: Querying the pod affinity optimization policy during runtime.
+      description: Obtaining the pod affinity optimization policy during runtime.
+      operationId: getNRIPolicy
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Policy response object.
+              example:
+                code: 200
+                msg: get nri state success
+                data: open
+        '500':
+          description: Execution failed.
+    put:
+      tags:
+        - SchedulingPolicies
+      summary: Updating the pod affinity optimization policy during runtime.
+      description: Updating the pod affinity optimization policy during runtime.
+      operationId: updateNRIPolicy
+      requestBody:
+        description: Scheduling policy configuration.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - policy
+              properties:
+                policy:
+                  type: string
+                  description: Enabling or disabling the policy.
+                  enum: [open, close]
+            example:
+              policy: open
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Simple response object.
+              example:
+                code: 200
+                msg: update nri policy success
+        '500':
+          description: Execution failed.
+
+  /rest/scheduling/v1/default:
+    put:
+      tags:
+        - SchedulingPolicies
+      summary: Restoring the default configuration.
+      description: Restoring the default configuration.
+      operationId: restoreDefaultPolicy
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Simple response object.
+              example:
+                code: 200
+                msg: update default policy success
+        '500':
+          description: Execution failed.
+
+  /rest/scheduling/v1/nodeList:
+    get:
+      tags:
+        - SchedulingPolicies
+      summary: Getting the node list.
+      description: Getting the node list.
+      operationId: getNodeList
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Data response object.
+              example:
+                code: 200
+                msg: ok
+                data: "..."
+        '500':
+          description: Execution failed.
+
+  /rest/scheduling/v1/cr/{name}:
+    get:
+      tags:
+        - SchedulingPolicies
+      summary: Getting numatopologies information.
+      description: Getting numatopologies information.
+      operationId: getNumatopologies
+      parameters:
+        - name: name
+          in: path
+          description: CR instance name.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Data response object.
+              example:
+                code: 200
+                msg: ok
+                data: "..."
+        '500':
+          description: Execution failed.
+
+  /rest/scheduling/v1/uuidToName/{uuid}:
+    get:
+      tags:
+        - SchedulingPolicies
+      summary: Obtaining the pod name by UUID.
+      description: Obtaining the pod name by UUID.
+      operationId: getPodNameByUUID
+      parameters:
+        - name: uuid
+          in: path
+          description: UUID of the pod.
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Data response object.
+              example:
+                code: 200
+                msg: ok
+                data: podName
+        '500':
+          description: Execution failed.

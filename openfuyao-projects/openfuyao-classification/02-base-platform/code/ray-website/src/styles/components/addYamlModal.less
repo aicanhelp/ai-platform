@@ -1,0 +1,40 @@
+.modal_flex_addyaml{
+  .addYamlContent{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    .addYamlContentTitle{
+      font-size: 16px;
+      color: #333;
+    }
+    .yaml_tools {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+      .tool_word_group {
+        margin-right: 24px;
+        font-size: 14px;
+        line-height: 22px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        svg {
+          height: 18px !important;
+          width: 18px !important;
+          margin-right: 3px;
+        }
+        span {
+          color: #3f66f5;
+        }
+      }
+      .tool_word_group:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+  .addYamlCode_mirror{
+    height: 400px !important;
+  }
+}

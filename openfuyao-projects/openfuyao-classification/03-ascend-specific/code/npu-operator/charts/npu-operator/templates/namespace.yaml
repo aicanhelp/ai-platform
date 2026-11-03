@@ -1,0 +1,6 @@
+{{- if .Values.mindxNamespace }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: mindx-dl
+{{- end }}

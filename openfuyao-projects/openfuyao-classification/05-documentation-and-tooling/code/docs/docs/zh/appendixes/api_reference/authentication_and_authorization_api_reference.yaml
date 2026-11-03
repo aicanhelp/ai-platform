@@ -1,0 +1,631 @@
+openapi: 3.0.0
+info:
+  title: 
+  version: 1.0.0
+  description: 认证鉴权部分的后台API接口，包含OAuth2.0流程接口
+
+servers:
+  - url: https://console-service.example.com
+    description: 示例服务器
+
+paths:
+  /rest/auth/login:
+    get:
+      summary: 触发登录
+      description: 触发openFuyao管理面的登录功能
+      responses:
+        '302':
+          description: 重定向响应
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                withCookie:
+                  value: https://console-service.example.com
+                withoutCookie:
+                  value: https://oauth-server.example.com/oauth2/oauth/authorize?client_id=console&identity_provider=fuyaoPasswordProvider&redirect_uri=https%3A%2F%2F192.168.100.81%3A31616%2Frest%2Fauth%2Fcallback&response_type=code&state=4ee93eef
+            Set-Cookie:
+              schema:
+                type: string
+              example: state=4ee93eef; Path=/; HttpOnly; Secure; Max-Age=3600
+          content:
+            text/html:
+              schema:
+                type: string
+
+  /rest/auth/callback:
+    get:
+      summary: 处理授权回调
+      description: OAuth2.0标准中处理认证服务器传回授权码的回调接口
+      parameters:
+        - name: code
+          in: query
+          schema:
+            type: string
+          description: 授权码，代表用户确认授权的暂时性凭证
+        - name: state
+          in: query
+          schema:
+            type: string
+          description: 登录状态，callback中会校验该state是否改变
+        - name: error
+          in: query
+          schema:
+            type: string
+          description: 错误简略信息
+        - name: error_description
+          in: query
+          schema:
+            type: string
+          description: 具备可读性的错误描述信息
+      responses:
+        '302':
+          description: 成功获取token，重定向到主页
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              example: sessionID=e001a66f9136d9f4111d0b6068a00b82; Path=/; Expires=Thu, 06 Jun 2024 12:02:50 GMT; HttpOnly; Secure
+            Location:
+              schema:
+                type: string
+              example: https://console-service.example.com/
+        '401':
+          description: oauth-server调用时返回错误或者state参数校验未通过
+          content:
+            text/html:
+              schema:
+                type: string
+              example: invalid_client
+        '500':
+          description: 内部服务解析错误
+          content:
+            text/html:
+              schema:
+                type: string
+              example: Fail to create session store for cookie
+
+  /password/modify:
+    post:
+      summary: 修改用户密码
+      description: 响应界面上密码修改的接口，将请求转发给oauth-server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  example: admin
+                original_password:
+                  type: string
+                  example: test@123
+                new_password:
+                  type: string
+                  example: test@1234
+              required:
+                - username
+                - original_password
+                - new_password
+      responses:
+        '302':
+          description: 成功获取token，重定向到主页
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              example: sessionID=e001a66f9136d9f4111d0b6068a00b82; Path=/; Expires=Thu, 06 Jun 2024 12:02:50 GMT; HttpOnly; Secure
+            Location:
+              schema:
+                type: string
+              example: https://console-service.com/
+        '401':
+          description: oauth-server调用时返回错误或者state参数校验未通过
+          content:
+            text/html:
+              schema:
+                type: string
+              example: invalid_client
+        '500':
+          description: 内部服务解析错误
+          content:
+            text/html:
+              schema:
+                type: string
+              example: Fail to create session store for cookie
+
+  /rest/auth/logout:
+    post:
+      summary: 用户登出
+      description: 响应界面上用户登出的接口，将请求转发给oauth-server
+      responses:
+        '307':
+          description: console-service内部删除session，重定向给oauth-server做单点登出
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+              example: sessionID=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT; HttpOnly; Secure
+            Location:
+              schema:
+                type: string
+              example: https://oauth-server.example.com/oauth2/auth/logout/fuyaoPasswordProvider?redirect_uri=https%3A%2F%2F192.168.100.81%3A31616%2Frest%2Fauth%2Flogin
+  /oauth2/oauth/authorize:
+    get:
+      summary: 生成用户授权码
+      description: OAuth2.0标准中认证服务器进行用户授权，用于产生authorization_code
+      parameters:
+        - name: response_type
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [code]
+          description: 授权模式，固定为code
+        - name: client_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 客户端ID
+        - name: state
+          in: query
+          required: true
+          schema:
+            type: string
+          description: 用于防止CSRF攻击的状态参数
+        - name: identity_provider
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [fuyaoPasswordProvider]
+          description: 身份提供者名称
+        - name: redirect_uri
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
+          description: 授权回调重定向URI
+      responses:
+        '302':
+          description: 重定向响应
+          headers:
+            Location:
+              schema:
+                type: string
+              examples:
+                notLoggedIn:
+                  value: /oauth2/auth/login/fuyaoPasswordProvider?then=%2Foauth2%2Foauth%2Fauthorize%3Fclient_id%3Dconsole%26identity_provider%3DfuyaoPasswordProvider%26redirect_uri%3Dhttps%253A%252F%252Fconsole-service.example.com%252Frest%252Fauth%252Fcallback%26response_type%3Dcode%26state%3D4ee93eef
+                firstLogin:
+                  value: /oauth2/auth/password/confirm/fuyaoPasswordProvider?then=%2Foauth2%2Foauth%2Fauthorize%3Fclient_id%3Dconsole%26identity_provider%3DfuyaoPasswordProvider%26redirect_uri%3Dhttps%253A%252F%252Fconsole-service.example.com%252Frest%252Fauth%252Fcallback%26response_type%3Dcode%26state%3D4ee93eef
+                success:
+                  value: https://console-service.example.com/rest/auth/callback?code=mznmztlizgetntmxns0zzgy0ltgyytitmgq4zdk0odgzmzc4&state=4ee93eef
+                failure:
+                  value: https://console-service.example.com/rest/auth/callback?error=invalid_client&error_description=Client%20authentication%20failed&state=4ee93eef
+            Set-Cookie:
+              schema:
+                type: string
+              example: idpLogin=<idpLogin_value>; Path=/; Expires=Thu, 06 Jun 2024 11:50:24 GMT; Max-Age=7200; HttpOnly; Secure
+
+  /oauth2/oauth/token:
+    post:
+      summary: 生成access-token
+      description: OAuth2.0标准中认证服务器生成access_token
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                grant_type:
+                  type: string
+                  enum: [authorization_code]
+                redirect_uri:
+                  type: string
+                  format: uri
+                code:
+                  type: string
+                client_id:
+                  type: string
+                client_secret:
+                  type: string
+                session_id:
+                  type: string
+                logout_endpoint:
+                  type: string
+              required:
+                - grant_type
+                - redirect_uri
+                - code
+                - client_id
+                - client_secret
+      responses:
+        '200':
+          description: 成功获取access_token
+          headers:
+            Pragma:
+              schema:
+                type: string
+              example: no-cache
+            Cache-Control:
+              schema:
+                type: string
+              example: no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  access_token:
+                    type: string
+                  token_type:
+                    type: string
+                  expires_in:
+                    type: integer
+                  user_id:
+                    type: string
+        '401':
+          description: client认证未通过
+          headers:
+            Pragma:
+              schema:
+                type: string
+              example: no-cache
+            Cache-Control:
+              schema:
+                type: string
+              example: no-store
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  error_description:
+                    type: string
+                  error_code:
+                    type: integer
+
+  /oauth2/auth/login/{identity_provider}:
+    get:
+      summary: 获取用户登录页面
+      description: OAuth-Server获取用户登录页面
+      parameters:
+        - name: identity_provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [fuyaoPasswordProvider]
+        - name: then
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: error
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功获取登录页面
+          content:
+            text/html:
+              schema:
+                type: string
+
+    post:
+      summary: 提交用户登录凭证
+      description: OAuth-Server验证用户登录凭证
+      parameters:
+        - name: identity_provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [fuyaoPasswordProvider]
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              type: object
+              properties:
+                then:
+                  type: string
+                username:
+                  type: string
+                password:
+                  type: string
+                gorilla.csrf.Token:
+                  type: string
+              required:
+                - then
+                - username
+                - password
+                - gorilla.csrf.Token
+      responses:
+        '302':
+          description: 重定向响应
+          headers:
+            Location:
+              schema:
+                type: string
+            Set-Cookie:
+              schema:
+                type: string
+
+  /oauth2/auth/password/modify/{identity_provider}:
+    post:
+      summary: 修改用户密码
+      description: 处理用户密码修改的后端，包括旧密码正确性校验和新密码复杂度校验
+      parameters:
+        - name: identity_provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [fuyaoPasswordProvider]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                original_password:
+                  type: string
+                new_password:
+                  type: string
+              required:
+                - username
+                - original_password
+                - new_password
+      responses:
+        '200':
+          description: 密码修改成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Code:
+                    type: integer
+                  Msg:
+                    type: string
+        '400':
+          description: 请求缺少必要参数或弱密码设置
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Code:
+                    type: integer
+                  Msg:
+                    type: string
+        '401':
+          description: 未授权访问
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Code:
+                    type: integer
+                  Msg:
+                    type: string
+
+  /oauth2/auth/password/confirm/{identity_provider}:
+    get:
+      summary: 获取首次登录修改密码页面
+      description: OAuth-Server获取首次登录界面修改密码页面
+      parameters:
+        - name: identity_provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [fuyaoPasswordProvider]
+        - name: then
+          in: query
+          required: true
+          schema:
+            type: string
+        - name: error
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功获取页面
+          content:
+            text/html:
+              schema:
+                type: string
+        '500':
+          description: 服务器内部错误
+    post:
+      summary: 首次发送界面修改密码
+      description: OAuth-Server首次发送界面修改密码
+      parameters:
+        - name: identity_provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [fuyaoPasswordProvider]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                then:
+                  type: string
+                new_password:
+                  type: string
+              required:
+                - then
+                - new_password
+      responses:
+        '302':
+          description: 重定向响应
+          headers:
+            Location:
+              schema:
+                type: string
+            Set-Cookie:
+              schema:
+                type: string
+
+    delete:
+      summary: 取消首次修改密码
+      description: OAuth-Server删除cookie，取消首次修改密码回退登录界面
+      parameters:
+        - name: identity_provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [fuyaoPasswordProvider]
+      responses:
+        '302':
+          description: 取消成功，重定向到登录页面
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+            Location:
+              schema:
+                type: string
+
+  /oauth2/auth/logout/{identity_provider}:
+    post:
+      summary: 单点登出
+      description: OAuth-Server单点登出接口，负责将所有注册的oauth-proxy组件登出
+      parameters:
+        - name: identity_provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [fuyaoPasswordProvider]
+        - name: redirect_uri
+          in: query
+          required: true
+          schema:
+            type: string
+            format: uri
+      responses:
+        '204':
+          description: 登出成功
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+        '401':
+          description: 单点登出session-id错误
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  Code:
+                    type: integer
+                  Msg:
+                    type: string
+
+  /oauth/tokenauth/{identity_provider}:
+    post:
+      summary: 校验access_token
+      description: OAuth-Webhook校验access_token接口，由kube-apiserver调用
+      parameters:
+        - name: identity_provider
+          in: path
+          required: true
+          schema:
+            type: string
+            enum: [fuyaoPasswordProvider]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                apiVersion:
+                  type: string
+                  example: authentication.k8s.io/v1
+                kind:
+                  type: string
+                  example: TokenReview
+                spec:
+                  type: object
+                  properties:
+                    token:
+                      type: string
+              required:
+                - apiVersion
+                - kind
+                - spec
+      responses:
+        '200':
+          description: 验证成功
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiVersion:
+                    type: string
+                  kind:
+                    type: string
+                  status:
+                    type: object
+                    properties:
+                      authenticated:
+                        type: boolean
+                      user:
+                        type: object
+                        properties:
+                          username:
+                            type: string
+                          uid:
+                            type: string
+                          groups:
+                            type: array
+                            items:
+                              type: string
+                          extra:
+                            type: object
+        '401':
+          description: 验证失败
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  apiVersion:
+                    type: string
+                  kind:
+                    type: string
+                  status:
+                    type: object
+                    properties:
+                      authenticated:
+                        type: boolean

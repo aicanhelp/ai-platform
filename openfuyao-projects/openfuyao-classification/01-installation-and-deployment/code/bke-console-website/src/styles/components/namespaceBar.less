@@ -1,0 +1,100 @@
+@import '@/styles/common.less';
+@namespace-box-shadow: inset 0px -1px 0px rgba(220,220,220,1);
+
+.namespace_total{
+  display: flex;
+  flex-direction: row;
+  align-content: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  height:40px;
+  background:#ffffff;
+  .theme_switch{
+    align-self: center;
+  }
+}
+.@{container-prefix}-switch-checked{
+  .@{container-prefix}-switch-inner{
+    background-color: @button-normal-color ! important;
+  }
+}
+
+.namespace_bar{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .label{
+    font-size: 14px;
+    color: @title-color;
+    text-align: left;
+  }
+  .namespace_popup_options{
+    width: 360px;
+    overflow-y: hidden;
+  }
+  .@{container-prefix}-select-selection-item{
+    padding-inline-end: 32px !important;
+  }
+  .@{container-prefix}-select{
+    min-width: 100px;
+    max-width: 300px;
+    width: auto;
+    .@{container-prefix}-select-selector{
+      border:none !important;
+      box-shadow: none !important;
+      background-color: @page-container-color;
+      border-radius: 4px !important;
+    }
+    .@{container-prefix}-select-selection:focus, .@{container-prefix}-select-selection:active{
+      border:none;
+    }
+    .@{container-prefix}-select-selection-item{
+      font-weight: normal;
+    }
+    .@{container-prefix}-select-selection-search{
+      input{
+        width: 75%;
+      }
+    }
+    .@{container-prefix}-select-arrow{
+      color: @navbar-and-content-color !important;
+    }
+  }
+}
+
+.dark_box {
+  .namespace_bar{
+    .@{container-prefix}-select-selector{
+      background-color: @dark-background-color;
+    }
+  }
+}
+
+.rc-virtual-list-holder::-webkit-scrollbar {
+  /*滚动条整体样式*/
+  width: 6px;
+  background: #fff;
+  }
+  .rc-virtual-list-holder::-webkit-scrollbar-thumb {
+  /*滚动条里面小方块*/
+  position: absolute;
+  background: #e5e5e5;
+  box-shadow: inset 1px 1px 5px #e5e5e5;
+  border-radius: 99px;
+  cursor: pointer;
+  user-select: none;
+  height: 5px;
+  width: 100%;
+  }
+  .rc-virtual-list-holder::-webkit-scrollbar-thumb:hover,.rc-virtual-list-holder::-webkit-scrollbar-thumb:active {
+    background: #bbbbbb; 
+    box-shadow: inset 1px 1px 5px #bbbbbb;
+  }
+
+  .@{container-prefix}-select-dropdown.namespace_popup_options{
+    .@{container-prefix}-select-item-option{
+      max-width: 450px !important;
+    }
+  }
+
+  

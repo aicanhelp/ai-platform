@@ -1,0 +1,32 @@
+{{ $scriptDir := "/etc/openFuyao/bkeagent/scripts/" }}
+
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: install-etcdctl
+  namespace: {{.namespace}}
+spec:
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/install-etcdctl.sh:ro:{{$scriptDir}}install-etcdctl.sh"
+      id: save-install-etcdctl-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}install-etcdctl.sh"
+      id: chmod-install-etcdctl-script
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}install-etcdctl.sh {{.httpRepo}}"
+      id: install-etcdctl
+      type: Shell
+  backoffLimit: 3
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}

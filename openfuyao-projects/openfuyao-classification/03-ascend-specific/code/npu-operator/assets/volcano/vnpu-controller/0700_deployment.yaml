@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: volcano-controllers
+  namespace: volcano-system
+  labels:
+    app: volcano-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: volcano-controller
+  template:
+    metadata:
+      labels:
+        app: volcano-controller
+    spec:
+      serviceAccount: volcano-controllers
+      priorityClassName: system-cluster-critical
+      securityContext:
+        seLinuxOptions:
+          level: s0:c123,c456
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: init-permission
+          image: hub.oepkgs.net/openfuyao/busybox:1.36.1
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /var/log/volcano-controller
+              chown 1000:1000 /var/log/volcano-controller
+              chmod 750 /var/log/volcano-controller
+          volumeMounts:
+            - name: device-volcanocontroller
+              mountPath: /var/log/volcano-controller
+          securityContext:
+            privileged: true
+            runAsUser: 0
+            runAsGroup: 0
+      containers:
+        - name: volcano-controllers
+          image: cr.openfuyao.cn/openfuyao/vnpu/vc-controller-manager:__NPU_OPERATOR_RELEASE_TAG__
+          args:
+            - --logtostderr=false
+            - --enable-healthz=true
+            - --enable-metrics=true
+            - --leader-elect=false
+            - --kube-api-qps=50
+            - --kube-api-burst=100
+            - --worker-threads=3
+            - --worker-threads-for-gc=5
+            - --worker-threads-for-podgroup=5
+            - --log_dir=/var/log/volcano-controller
+            - --log_file=/var/log/volcano-controller/volcano-controller.log
+            - --sharding-configmap=volcano-sharding-configmap
+            - --sharding-configmap-namespace=volcano-system
+            - -v=4
+            - 2>&1
+          env:
+            - name: KUBE_POD_NAMESPACE
+              value: volcano-system
+            - name: HELM_RELEASE_NAME
+              value: volcano
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: device-volcanocontroller
+              mountPath: /var/log/volcano-controller
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              add:
+                - DAC_OVERRIDE
+              drop:
+                - ALL
+            runAsNonRoot: true
+            runAsUser: 1000
+      volumes:
+        - name: device-volcanocontroller
+          hostPath:
+            path: /var/log/volcano-controller
+            type: DirectoryOrCreate

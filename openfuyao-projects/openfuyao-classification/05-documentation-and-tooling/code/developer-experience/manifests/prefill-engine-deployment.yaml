@@ -1,0 +1,132 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qwen-qwen3-8b-prefill
+  namespace: router-dev
+  labels:
+    inference-backend: "true"
+    openfuyao.com/model: qwen-qwen3-8b
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      inference-backend: "true"
+      openfuyao.com/model: qwen-qwen3-8b
+      openfuyao.com/engine: vllm
+      openfuyao.com/pdRole: prefill
+      openfuyao.com/pdGroupID: "qwen3-8b-pd-01"
+      openfuyao.com/tpSize: "1"
+  template:
+    metadata:
+      labels:
+        inference-backend: "true"
+        openfuyao.com/model: qwen-qwen3-8b
+        openfuyao.com/engine: vllm
+        openfuyao.com/pdRole: prefill
+        openfuyao.com/pdGroupID: "qwen3-8b-pd-01"
+        openfuyao.com/tpSize: "1"
+    spec:
+      nodeName: node
+      containers:
+      - name: prefill-engine
+        image: vllm-mooncake-ascend:v0.10.0rc1-dev
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: BATCH_BY_REQUEST_LENGTH
+          value: "true"
+        - name: HF_HUB_OFFLINE
+          value: "1"
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          # PHYSICAL_DEVICES stands for the physical devices assigned to the container
+          export PHYSICAL_DEVICES=$(ls /dev/davinci* 2>/dev/null | grep -o '[0-9]\+' | sort -n | paste -sd',' -)
+          
+          # 生成JSON配置文件
+          JSON_CONTENT="{\"local_hostname\": \"$POD_IP\", \"device_name\": \"\",\"protocol\":\"ascend\"}"
+          echo "$JSON_CONTENT" > /app/mooncake.json
+          
+          # 启动vllm服务
+          MOONCAKE_CONFIG_PATH=/app/mooncake.json VLLM_USE_V1=1 python3 -m vllm.entrypoints.openai.api_server \
+            --model Qwen/Qwen3-8B \
+            --enable-prefix-caching \
+            --port 8100 \
+            --tensor-parallel-size 1 \
+            --max-model-len 10000 \
+            --max-num-batched-tokens 2000 \
+            --data-parallel-size 1 \
+            --data-parallel-address localhost \
+            --data-parallel-rpc-port 9100 \
+            --gpu-memory-utilization 0.8 \
+            --block-size 128 \
+            --scheduling-policy "priority" \
+            --kv-events-config '{"enable_kv_cache_events": true, "publisher":"zmq", "topic":"kv-events"}' \
+            --kv-transfer-config '{"kv_connector":"MooncakeConnectorV1","kv_role":"kv_producer","kv_buffer_device":"npu","kv_connector_module_path":"vllm_ascend.distributed.mooncake_connector","kv_parallel_size": 1,"kv_port": "20001","engine_id": "'$POD_NAME'","kv_rank": 0,"kv_connector_extra_config":{"prefill":{"tp_size":1,"dp_size":1},"decode":{"tp_size":1,"dp_size":1}}}'
+        resources:
+          requests:
+            huawei.com/Ascend910: "1"
+          limits:
+            huawei.com/Ascend910: "1"
+        ports:
+        - containerPort: 8100
+          name: prefill-port
+        - containerPort: 5557
+          name: zmq-pub # fix by @qinwen
+        volumeMounts:
+        - name: shm
+          mountPath: /dev/shm
+        - name: dcmi
+          mountPath: /usr/local/dcmi
+        - name: npusmi
+          mountPath: /usr/local/bin/npu-smi
+        - name: lib64
+          mountPath: /usr/local/Ascend/driver/lib64
+        - name: version
+          mountPath: /usr/local/Ascend/driver/version.info
+        - name: installinfo
+          mountPath: /etc/ascend_install.info
+        - name: rootcache
+          mountPath: /root/.cache
+        - name: hccntool
+          mountPath: /usr/bin/hccn_tool
+        - name: hccnconf
+          mountPath: /etc/hccn.conf
+      volumes:
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: "24Gi"
+      - name: dcmi
+        hostPath:
+          path: /usr/local/dcmi
+      - name: npusmi
+        hostPath:
+          path: /usr/local/bin/npu-smi
+          type: File
+      - name: lib64
+        hostPath:
+          path: /usr/local/Ascend/driver/lib64
+      - name: version
+        hostPath:
+          path: /usr/local/Ascend/driver/version.info
+          type: File
+      - name: installinfo
+        hostPath:
+          path: /etc/ascend_install.info
+          type: File
+      - name: rootcache
+        hostPath:
+          path: /home/llm_cache
+      - name: hccntool
+        hostPath:
+          path: /usr/bin/hccn_tool
+      - name: hccnconf
+        hostPath:
+          path: /etc/hccn.conf

@@ -1,0 +1,52 @@
+inferenceExtension:
+  pluginsConfigFile: default-plugins.yaml
+  routing:
+    deploymentMode: pd
+    profile: decode-first
+    tokenizer:
+      model: Qwen/Qwen3-8B
+      socketPath: /tmp/tokenizer/tokenizer-uds.socket
+      # tokenizerSource: /models/glm-base-tok   # set only when the tokenizer
+      # source differs from model (quantized/renamed served models). Empty
+      # falls back to model.
+    pd:
+      pdLabelName: openfuyao.com/pdRole
+      pdGroupLabelName: openfuyao.com/pdGroupID
+      prefillValue: prefill
+      decodeValue: decode
+      leaderValue: leader
+    requestTracking:
+      storeName: hermes-inflight
+      persistence:
+        enabled: false
+    cacheIndexer:
+      address: http://cache-indexer-service:8080
+      blockSize: 128
+      prefill:
+        l1Weight: 0.7
+        l3Weight: 0.3
+      decode:
+        l1Weight: 1.0
+        l3Weight: 0.0
+    decodeFirst:
+      prefillDecider:
+        type: prefix-based
+        minHitRatio: 0.8
+        maxUncachedTokens: 128
+      decodeKVCacheAware:
+        prefixWeight: 1.0
+        runningWeight: 1.0
+        kvUsageWeight: 1.0
+        queueWeight: 1.0
+        inflightWeight: 1.0
+    kvCacheAware:
+      prefillKVUsageWeight: 1.0
+      prefillPrefixWeight: 1.0
+      prefillQueueWeight: 1.0
+      prefillInflightWeight: 1.0
+      decodeRunningWeight: 1.0
+      decodeKVUsageWeight: 1.0
+      decodeQueueWeight: 1.0
+      decodeInflightWeight: 1.0
+      prefillScoreWeight: 1.0
+      decodeScoreWeight: 1.0

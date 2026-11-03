@@ -1,0 +1,21 @@
+{{- if and .Values.enabled (include "inference-gateway.nodePortEnabled" .) }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "inference-gateway.configMapName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inference-gateway.labels" . | nindent 4 }}
+data:
+  service: |
+    spec:
+      type: NodePort
+      ports:
+      {{- range .Values.listeners }}
+      {{- $port := index $.Values.service.nodePorts .name }}
+      {{- if $port }}
+      - port: {{ .port }}
+        nodePort: {{ $port }}
+      {{- end }}
+      {{- end }}
+{{- end }}

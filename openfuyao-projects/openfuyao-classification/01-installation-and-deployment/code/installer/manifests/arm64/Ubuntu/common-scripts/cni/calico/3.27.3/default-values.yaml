@@ -1,0 +1,10 @@
+apiVersion: openfuyao.io/v1beta1
+kind: params
+metadata:
+  name: calico-params
+spec:
+  params:
+    - name: registry
+      value: harbor.openfuyao.com/openfuyao
+      type: string
+      describe: "镜像仓地址"

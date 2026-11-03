@@ -1,0 +1,52 @@
+# /etc/openFuyao/haproxy/haproxy.cfg
+#---------------------------------------------------------------------
+# Global settings
+#---------------------------------------------------------------------
+global
+    maxconn 65536
+#    log /dev/log local0 err
+#    log /dev/log local1 err
+#    daemon
+
+#---------------------------------------------------------------------
+# common defaults that all the 'listen' and 'backend' sections will
+# use if not designated in their block
+#---------------------------------------------------------------------
+defaults
+    mode                    tcp
+#    log                     global
+    option                  dontlognull
+    option http-server-close
+    option forwardfor       except 127.0.0.0/8
+    option                  redispatch
+    retries                 3
+    option  redispatch
+    timeout http-request    10s
+    timeout queue           20s
+    timeout connect         5s
+    timeout client          45s
+    timeout server          45s
+    timeout http-keep-alive 10s
+    timeout check           10s
+
+#---------------------------------------------------------------------
+# apiserver frontend which proxys to the masters
+#---------------------------------------------------------------------
+frontend apiserver
+    bind *:{{ .controlPlaneEndpointPort }}
+    mode tcp
+    option tcplog
+    default_backend apiserver
+
+#---------------------------------------------------------------------
+# roundrobin balancing for apiserver
+#---------------------------------------------------------------------
+backend apiserver
+    option httpchk GET /healthz
+    http-check expect status 200
+    mode tcp
+    # option ssl-hello-chk
+    balance     roundrobin
+    {{- range $node := .nodes }}
+    server {{ .Hostname }} {{ .IP }}:6443 check check-ssl verify none
+    {{- end }}

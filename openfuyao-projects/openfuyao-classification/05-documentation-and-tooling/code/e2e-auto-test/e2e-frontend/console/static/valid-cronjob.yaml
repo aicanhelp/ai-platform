@@ -1,0 +1,26 @@
+apiVersion: batch/v1
+kind: CronJob 
+metadata:
+  namespace: default
+  name: test-cronjob
+  labels:
+    app: test-cronjob
+  annotations:
+    example.com/created-by: e2e
+spec:
+  schedule: "* * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+            - name: test-container
+              image: busybox:latest
+              imagePullPolicy: IfNotPresent
+              command:
+                - sh
+                - -c
+                - |
+                  trap "exit 0" TERM INT
+                  while true; do sleep 1; done
+          restartPolicy: Never

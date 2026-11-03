@@ -1,0 +1,8 @@
+apiVersion: test.org/v1
+kind: TestResource
+metadata:
+  name: test-testresource
+  namespace: default
+spec:
+  field1: test
+  field2: 1

@@ -1,0 +1,72 @@
+{{- if and (include "vllm.hasMooncake" .) (include "vllm.mooncake.master.create" .) }}
+{{- $masterConfig := include "vllm.mooncake.master.config" . | fromYaml | default (dict) }}
+# Mooncake Master Deploy
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mooncake-master-deployment
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: mooncake-master
+    openfuyao.com/kvmanager: mooncake
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mooncake-master
+  template:
+    metadata:
+      labels:
+        app: mooncake-master
+        openfuyao.com/kvmanager: mooncake
+    spec:
+      {{- if $.Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- $.Values.global.imagePullSecrets | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: mooncake-master
+        image: {{ include "vllm.image" $ | quote }}
+        imagePullPolicy: {{ include "vllm.image.pullPolicy" $ }}
+        ports:
+        - name: rpc
+          containerPort: {{ index $masterConfig "rpcPort" | default 50051 }}
+        - name: http
+          containerPort: {{ index $masterConfig "httpPort" | default 9003 }}
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          # vLLM Ascend 0.18.0+ may ship without some bundled deps; ensure shared libs under /usr/local/lib are on the loader path.
+          export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH
+          
+          if [ -f /usr/local/Ascend/ascend-toolkit/set_env.sh ]; then
+            echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/Ascend/ascend-toolkit/latest/$(uname -i)-linux/devlib' >> /usr/local/Ascend/ascend-toolkit/set_env.sh
+            source /usr/local/Ascend/ascend-toolkit/set_env.sh
+          fi
+          mooncake_master \
+            --port {{ index $masterConfig "rpcPort" | default 50051 }} \
+            --metrics_port {{ index $masterConfig "httpPort" | default 9003 }}{{- with index $masterConfig "extraArgs" }}{{- range . }} \
+            {{ . }}{{- end }}{{- end }}
+        {{- with (include "vllm.mooncake.master.resources" .) }}
+        resources:
+          {{- . | nindent 10 }}
+        {{- end }}
+---
+# Mooncake Master Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: mooncake-master-service
+  namespace: {{ $.Release.Namespace }}
+spec:
+  selector:
+    app: mooncake-master
+  ports:
+  - name: rpc
+    port: {{ index $masterConfig "servicePort" | default 30089 }}
+    targetPort: rpc
+  - name: http
+    port: {{ index $masterConfig "httpPort" | default 9003 }}
+    targetPort: http
+  type: ClusterIP
+{{- end }}

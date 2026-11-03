@@ -1,0 +1,6 @@
+name: sig-distributed-framework
+type: private
+description: 'openFuyao社区distributed framework sig组仓库。'
+branches:
+  - name: master
+    type: protected

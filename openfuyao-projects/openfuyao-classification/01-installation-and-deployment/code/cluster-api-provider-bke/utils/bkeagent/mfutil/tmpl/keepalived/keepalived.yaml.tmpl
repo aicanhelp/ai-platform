@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  name: keepalived
+  namespace: kube-system
+spec:
+  containers:
+  - image: {{ .fuyaoImageRepo }}{{ .keepAlivedImageName }}:{{ .keepAlivedImageTag }}
+    imagePullPolicy: IfNotPresent
+    name: keepalived-{{ randomString 5}}
+    args:
+    - --dont-fork
+    - --log-console
+    - --log-detail
+    - --dump-conf
+    - --use-file=/usr/local/etc/keepalived/keepalived.conf
+    resources: {}
+    securityContext:
+      capabilities:
+        add:
+        - NET_ADMIN
+        - NET_BROADCAST
+        - NET_RAW
+    volumeMounts:
+    - mountPath: /usr/local/etc/keepalived/
+      name: config
+    - mountPath: /lib/modules
+      name: lib-modules
+  hostNetwork: true
+  volumes:
+  - hostPath:
+      path: {{ .keepAlivedConfigDir }}
+    name: config
+  - hostPath:
+      path: /lib/modules
+    name: lib-modules
+status: {}

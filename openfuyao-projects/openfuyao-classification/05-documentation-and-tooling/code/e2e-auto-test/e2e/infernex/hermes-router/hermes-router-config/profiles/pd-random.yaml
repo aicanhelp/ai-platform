@@ -1,0 +1,18 @@
+hermes-router:
+  inferenceExtension:
+    pluginsConfigFile: default-plugins.yaml
+    prediction:
+      enabled: false
+    routing:
+      deploymentMode: pd
+      profile: random
+      pd:
+        pdLabelName: openfuyao.com/pdRole
+        pdGroupLabelName: openfuyao.com/pdGroupID
+        prefillValue: prefill
+        decodeValue: decode
+        leaderValue: leader
+      requestTracking:
+        persistence:
+          enabled: true
+          flushThreshold: 1

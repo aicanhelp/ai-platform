@@ -1,0 +1,20 @@
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/kubernetes/kubernetes
+After=containerd.service
+
+[Service]
+ExecStart=/usr/bin/kubelet --hostname-override={{ .hostName }}  \
+    --config={{ .kubeletConfig }}
+{{- if ne .extraArgs ""  }}
+    {{- .extraArgs }} \
+{{- end }}
+    --container-runtime-endpoint={{ .runtimeEndpoint }} \
+    --pod-infra-container-image={{ .podInfraContainerImage }} \
+    --kubeconfig=/etc/kubernetes/admin.conf --node-ip={{ .hostIP }}
+Restart=always
+StartLimitInterval=0
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

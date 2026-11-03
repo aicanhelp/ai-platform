@@ -1,0 +1,164 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "harbor-registry-pv"
+  labels:
+    name: harbor-registry-pv
+    release: stable
+spec:
+  capacity:
+    storage: ""
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/harbor/registry
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-registry-pvc
+  namespace: openfuyao-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: ""
+  selector:
+    matchLabels:
+      name: harbor-registry-pv
+      release: stable
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "harbor-chartmuseum-pv"
+  labels:
+    name: harbor-chartmuseum-pv
+    release: stable
+spec:
+  capacity:
+    storage: ""
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/harbor/chartmuseum
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-chartmuseum-pvc
+  namespace: openfuyao-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: ""
+  selector:
+    matchLabels:
+      name: harbor-chartmuseum-pv
+      release: stable
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "harbor-redis-pv"
+  labels:
+    name: harbor-redis-pv
+    release: stable
+spec:
+  capacity:
+    storage: ""
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/harbor/redis
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-redis-pvc
+  namespace: openfuyao-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: ""
+  selector:
+    matchLabels:
+      name: harbor-redis-pv
+      release: stable
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "harbor-jobservice-pv"
+  labels:
+    name: harbor-jobservice-pv
+    release: stable
+spec:
+  capacity:
+    storage: ""
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/harbor/jobservice
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-jobservice-pvc
+  namespace: openfuyao-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: ""
+  selector:
+    matchLabels:
+      name: harbor-jobservice-pv
+      release: stable
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: "harbor-database-pv"
+  labels:
+    name: harbor-database-pv
+    release: stable
+spec:
+  capacity:
+    storage: ""
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  hostPath:
+    path: /data/harbor/database
+    type: DirectoryOrCreate
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: harbor-database-pvc
+  namespace: openfuyao-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: ""
+  selector:
+    matchLabels:
+      name: harbor-database-pv
+      release: stable

@@ -1,0 +1,31 @@
+# permissions for end users to edit webterminaltemplates.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrole
+    app.kubernetes.io/instance: webterminaltemplate-editor-role
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: 1108
+    app.kubernetes.io/part-of: 1108
+    app.kubernetes.io/managed-by: kustomize
+  name: webterminaltemplate-editor-role
+rules:
+- apiGroups:
+  - terminal.openfuyao.com
+  resources:
+  - webterminaltemplates
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - terminal.openfuyao.com
+  resources:
+  - webterminaltemplates/status
+  verbs:
+  - get

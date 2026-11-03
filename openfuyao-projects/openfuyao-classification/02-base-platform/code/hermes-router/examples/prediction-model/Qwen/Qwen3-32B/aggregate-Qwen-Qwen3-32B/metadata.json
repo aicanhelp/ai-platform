@@ -1,0 +1,118 @@
+{
+  "backend": "xgboost",
+  "holdout": {
+    "bucketCap": 2000,
+    "ratio": 0.2
+  },
+  "hyperparams": {},
+  "modelVersion": "aggregate-Qwen-Qwen3-32B",
+  "monotoneConstraintsEnabled": true,
+  "quantile": 0.9,
+  "slotFeatureColumns": {
+    "aggregate_tpot": [
+      "inputTokenLength",
+      "numRequestWaiting",
+      "numRequestRunning",
+      "kvCacheUsage",
+      "inflightTokens",
+      "hbmUtilization",
+      "aiCoreUtilization",
+      "bandwidthUtilization",
+      "queueBucket",
+      "kvCacheUsageBucket",
+      "isQueued"
+    ],
+    "aggregate_ttft": [
+      "inputTokenLength",
+      "prefixCacheScore",
+      "numRequestWaiting",
+      "numRequestRunning",
+      "kvCacheUsage",
+      "inflightTokens",
+      "hbmUtilization",
+      "aiCoreUtilization",
+      "bandwidthUtilization",
+      "effectiveInputTokens",
+      "prefixCacheBucket",
+      "queueBucket",
+      "kvCacheUsageBucket",
+      "isQueued"
+    ]
+  },
+  "slotMonotoneConstraints": {
+    "aggregate_tpot": [
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      1
+    ],
+    "aggregate_ttft": [
+      1,
+      -1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      1,
+      -1,
+      1,
+      0,
+      1
+    ]
+  },
+  "slots": {
+    "aggregate_tpot": {
+      "coverage": 0.891606080634501,
+      "failingThreshold": "",
+      "holdoutSamples": 1513,
+      "mae": 99.25155925180309,
+      "pinballLoss": 19.96766678912984,
+      "rmse": 165.77296285068428,
+      "samples": 7563,
+      "status": "promoted",
+      "trainSamples": 6050,
+      "violationRate": 0.10839391936549903
+    },
+    "aggregate_ttft": {
+      "coverage": 0.8785292186474064,
+      "failingThreshold": "",
+      "holdoutSamples": 1523,
+      "mae": 42100.69005535645,
+      "pinballLoss": 6082.516503486137,
+      "rmse": 50650.56727057378,
+      "samples": 7614,
+      "status": "promoted",
+      "trainSamples": 6091,
+      "violationRate": 0.1214707813525936
+    },
+    "disagg_tpot": {
+      "failingThreshold": "min_samples_per_slot",
+      "holdoutSamples": 0,
+      "samples": 0,
+      "status": "below_threshold",
+      "trainSamples": 0
+    },
+    "disagg_ttft": {
+      "failingThreshold": "min_samples_per_slot",
+      "holdoutSamples": 0,
+      "samples": 0,
+      "status": "below_threshold",
+      "trainSamples": 0
+    }
+  },
+  "targetModel": "Qwen/Qwen3-32B",
+  "thresholds": {
+    "minHoldoutSamplesPerSlot": 200,
+    "minSamplesPerSlot": 1000
+  }
+}

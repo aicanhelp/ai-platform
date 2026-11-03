@@ -1,0 +1,13 @@
+isManual: true
+label: 观测中心
+sections:
+  - label: 监控
+    href: ./monitoring.md
+  - label: 日志
+    href: ./logs.md 
+  - label: 告警
+    href: ./alerts.md
+  - label: 事件
+    href: ./events.md 
+  - label: 自定义监控看板
+    href: ./custom_monitoring_dashboard.md

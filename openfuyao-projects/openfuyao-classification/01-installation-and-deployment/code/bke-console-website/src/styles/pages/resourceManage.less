@@ -1,0 +1,347 @@
+@import '@/styles/common.less';
+
+.@{container-prefix}-tabs {
+  width: auto;
+}
+
+.@{container-prefix}-tabs-tab {
+  margin: 0 0 0 64px !important;
+  font-size: 16px;
+  color: @title-color;
+  padding-bottom: 15px;
+}
+
+.@{container-prefix}-tabs-nav {
+  margin: 0px !important;
+  padding-left: 32px;
+  padding-top: 0px;
+  box-shadow: inset 0px -1px 0px rgba(229, 229, 229, 1);
+  background-color: @page-container-color;
+}
+
+.@{container-prefix}-tabs-tab:nth-child(1) {
+  margin: 0 0 0 0 !important;
+}
+
+.resource-storge-tab-container {
+  margin: 20px 32px 20px 32px;
+  background: @page-container-color;
+  min-height: calc(100vh - 64px - 32px - 100px); //减去导航栏 面包屑 tab 容器margin
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+
+  .resource-storge-searchForm {
+    padding: 32px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .resource-storge-search-input {
+      width: 300px;
+      height: 32px;
+      border-radius: @button-radius;
+    }
+
+    .@{container-prefix}-input-affix-wrapper {
+      border-radius: @button-radius !important;
+    }
+
+    .@{container-prefix}-input-suffix {
+      svg {
+        width: 16px;
+        height: 17px;
+        color: #686868;
+      }
+    }
+  }
+}
+
+.pop_modal {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  button {
+    color: @button-normal-color;
+  }
+
+  button:hover {
+    color: @button-hover-color !important;
+  }
+}
+
+.status_group {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  span:nth-child(2) {
+    margin-left: 8px;
+  }
+}
+
+.resource-storge_title {
+  padding: 6px 32px 0 32px;
+  display: flex;
+  background-color: @page-container-color;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-direction: row;
+
+  h3 {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+    line-height: 28px;
+    color: @title-color;
+  }
+
+  .detail_title_btn {
+    display: flex;
+    padding: 6px 21px;
+    font-size: 14px;
+    align-items: center;
+
+    .small_margin_adjust {
+      margin-left: 8px;
+    }
+  }
+}
+
+.column_pop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/**detail**/
+.tooltip {
+  margin: 16px 32px 20px 32px;
+  padding: 15px 32px 14px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #f0f8ff;
+  border: 1px solid #A3CEFF;
+  border-radius: 4px;
+  height: 48px;
+}
+
+.cant_show {
+  display: none;
+}
+
+.resource-storge_tab_container {
+  margin: 20px 32px 16px 32px;
+  background: @page-container-color;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.resource-storge_normal_container_height {
+  min-height: calc(100vh - 64px - 50px - 146px);
+}
+
+.resource-storge_tooltip_container_height {
+  min-height: calc(100vh - 64px - 54px - 40px - 146px);
+}
+
+.resource-storge-detail-table-box {
+  margin-top: 40px;
+
+  .hint {
+    display: flex;
+    margin-top: 16px;
+    align-items: flex-start;
+
+    .hint_icon {
+      svg {
+        height: 20px;
+        width: 20px;
+        color: #3f66f5;
+      }
+
+      margin-right: 10px;
+    }
+
+    .hint_text {
+      line-height: 22px;
+      font-size: 14px;
+      color: #89939b;
+      text-align: left;
+    }
+  }
+
+  .resource-storge-detail-table {
+    padding: 20px 16px 0 16px;
+  }
+}
+
+/** yaml**/
+.yaml_card {
+  padding: 32px 32px 25px 32px;
+
+  h3 {
+    color: @title-color;
+    margin: 0;
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: bold;
+  }
+
+  .yaml_flex_box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .yaml_tools {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: flex-start;
+
+      .tool_word_group {
+        margin-right: 24px;
+        font-size: 14px;
+        line-height: 22px;
+        cursor: pointer;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        svg {
+          margin-right: 3px;
+        }
+
+        span {
+          color: @icon-normal_color;
+        }
+      }
+
+      .tool_word_group:last-child {
+        margin-right: 0;
+      }
+    }
+  }
+}
+
+.yaml_space_box {
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+  min-height: 450px;
+  margin: 0 32px 32px 32px;
+}
+
+.resource-storge_btn_footer {
+  // padding-right: 32px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 20px;
+  gap: 16px;
+}
+
+
+/**detailInfo**/
+.resource-storge-detail-card {
+  background-color: #ffffff;
+  // margin-bottom: 20px;
+
+  .resource-storge-detail_info_box {
+    font-size: 14px;
+    padding: 0 0 0 32px;
+
+    .base_info_list {
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+      flex-direction: column;
+
+      .flex_item_opt {
+        display: flex;
+        width: 100%;
+        align-items: flex-start;
+
+        .base_description {
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+          font-size: 14px;
+          line-height: 22px;
+          margin-bottom: 16px;
+          width: 50%;
+
+          p {
+            margin: 0;
+          }
+
+          .base_key {
+            color: #89939b;
+            width: 120px;
+            word-break: keep-all;
+          }
+
+          .base_value {
+            margin-left: 24px;
+            color: @title-color;
+            display: flex;
+            word-break: break-all;
+            align-items: center;
+          }
+
+          p:nth-child(2) {
+            margin-left: 24px;
+          }
+
+          .status_pod {
+            margin-left: 24px;
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+
+            p {
+              width: auto !important;
+            }
+
+            p:nth-child(2) {
+              margin-left: 8px;
+            }
+
+            .special {
+              color: #333333;
+            }
+          }
+        }
+      }
+    }
+
+    .annotation {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      margin-bottom: 16px;
+
+      .ann_title {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .text {
+          margin: 0;
+          color: #89939b;
+          margin-right: 16px;
+        }
+      }
+
+    }
+  }
+}

@@ -1,0 +1,97 @@
+# RBAC authn and authz
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: monitoring-dashboard-service
+  namespace: monitoring-dashboard
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitoring-dashboard-role
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - '*'
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - '*'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: monitoring-dashboard-service
+subjects:
+- kind: ServiceAccount
+  name: monitoring-dashboard-service
+  namespace: monitoring-dashboard
+roleRef:
+  kind: ClusterRole
+  name: monitoring-dashboard-role
+  apiGroup: rbac.authorization.k8s.io
+---
+# monitoring-dashboard-service deployment
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: monitoring-dashboard-service
+  namespace: monitoring-dashboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: monitoring-dashboard-service
+  template:
+    metadata:
+      labels:
+        app: monitoring-dashboard-service
+    spec:
+      securityContext:
+        fsGroup: 65532
+        runAsUser: 65532
+        runAsGroup: 65532
+      serviceAccountName: monitoring-dashboard-service
+      initContainers:
+        - name: init-permission
+          image: {{ .Values.thirdPartyImages.busyBox.repository }}:{{ .Values.thirdPartyImages.busyBox.tag }}
+          command: ["sh","-c","chmod -R 700 /var/log/monitoring-dashboard-service && chown -R 65532:65532 /var/log/monitoring-dashboard-service"]
+          volumeMounts:
+            - mountPath: /var/log/monitoring-dashboard-service
+              name: varlog
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      containers:
+      - name: monitoring-dashboard-service
+        image: '{{ list . "core" | include "helpers.image.name" }}'
+        imagePullPolicy: {{.Values.images.core.pullPolicy}}
+        ports:
+          - containerPort: 9037
+        volumeMounts:
+          - name: log-config-volume
+            mountPath: /etc/monitoring-dashboard-service/log-config
+          - name: varlog
+            mountPath: /var/log/monitoring-dashboard-service
+          - name: host-time
+            mountPath: /etc/localtime
+            readOnly: true
+        {{- if .Values.resources}}
+        resources: {{- toYaml .Values.resources | nindent 12}}
+        {{- end}}
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log/monitoring-dashboard-service
+            type: DirectoryOrCreate
+        - name: log-config-volume
+          configMap:
+            defaultMode: 420
+            name: monitoring-dashboard-service-logcfg
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""

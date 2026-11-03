@@ -1,0 +1,102 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: numa-namespace-cleanup
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+    "helm.sh/hook-weight": "5"
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: numa-namespace-cleaner-sa
+      containers:
+        - name: kubectl
+          image: '{{ list . "kubectl" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.kubectl.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              NAMESPACE="{{ .Values.namespace.backend | default .Release.Namespace }}"
+              RELEASE_NAME="{{ .Release.Name }}"
+              RELEASE_NAMESPACE="{{ .Release.Namespace }}"
+              OWNER_ANN_NAME="openfuyao.io/namespace-owner-release-name"
+              OWNER_ANN_NAMESPACE="openfuyao.io/namespace-owner-release-namespace"
+              OWNER_ANN_CHART="openfuyao.io/namespace-owner-chart"
+
+              if kubectl get namespace "$NAMESPACE" >/dev/null 2>&1; then
+                NS_JSON="$(kubectl get namespace "$NAMESPACE" -o json)"
+                NS_OWNER_RELEASE_NAME="$(echo "$NS_JSON" | jq -r --arg k "$OWNER_ANN_NAME" '.metadata.annotations[$k] // empty')"
+                NS_OWNER_RELEASE_NAMESPACE="$(echo "$NS_JSON" | jq -r --arg k "$OWNER_ANN_NAMESPACE" '.metadata.annotations[$k] // empty')"
+                NS_OWNER_CHART="$(echo "$NS_JSON" | jq -r --arg k "$OWNER_ANN_CHART" '.metadata.annotations[$k] // empty')"
+                NS_META_RELEASE_NAME="$(echo "$NS_JSON" | jq -r '.metadata.annotations[\"meta.helm.sh/release-name\"] // empty')"
+                NS_META_RELEASE_NAMESPACE="$(echo "$NS_JSON" | jq -r '.metadata.annotations[\"meta.helm.sh/release-namespace\"] // empty')"
+
+                if [ -z "$NS_OWNER_RELEASE_NAME" ]; then
+                  NS_OWNER_RELEASE_NAME="$NS_META_RELEASE_NAME"
+                fi
+                if [ -z "$NS_OWNER_RELEASE_NAMESPACE" ]; then
+                  NS_OWNER_RELEASE_NAMESPACE="$NS_META_RELEASE_NAMESPACE"
+                fi
+
+                if [ "$NS_OWNER_RELEASE_NAME" != "$RELEASE_NAME" ] || [ "$NS_OWNER_RELEASE_NAMESPACE" != "$RELEASE_NAMESPACE" ] || { [ -n "$NS_OWNER_CHART" ] && [ "$NS_OWNER_CHART" != "volcano-config-package" ]; }; then
+                  echo "Namespace $NAMESPACE is not owned by this release. Skipping deletion."
+                  exit 0
+                fi
+
+                echo "Deleting namespace: $NAMESPACE"
+                kubectl delete namespace "$NAMESPACE" --ignore-not-found --wait=false
+                sleep 10
+
+                if kubectl get namespace "$NAMESPACE" -o jsonpath='{.status.phase}' | grep -q Terminating; then
+                  echo "Forcing termination: $NAMESPACE"
+                  kubectl get namespace "$NAMESPACE" -o json | \
+                    jq 'del(.spec.finalizers[])' | \
+                    kubectl replace --raw "/api/v1/namespaces/$NAMESPACE/finalize" -f -
+                fi
+              else
+                echo "Namespace $NAMESPACE not found. Skipping deletion."
+              fi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: numa-namespace-cleaner-sa
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: namespace-cleaner-role
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "delete"]
+  - apiGroups: [""]
+    resources: ["namespaces/finalize"]
+    verbs: ["update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: namespace-cleaner-binding
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "-4"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: namespace-cleaner-role
+subjects:
+  - kind: ServiceAccount
+    name: numa-namespace-cleaner-sa
+    namespace: default

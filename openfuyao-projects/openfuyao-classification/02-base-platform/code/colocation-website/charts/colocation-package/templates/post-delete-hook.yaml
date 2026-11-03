@@ -1,0 +1,83 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: colocation-namespace-cleanup
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+    "helm.sh/hook-weight": "5"
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: namespace-cleaner-sa
+      containers:
+        - name: kubectl
+          image: {{ .Values.images.kubectl.repository }}:{{ .Values.images.kubectl.tag }}
+          imagePullPolicy: {{ .Values.images.kubectl.pullPolicy }}
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              # 获取动态命名空间名称
+              NAMESPACE="{{ .Values.namespace | default .Release.Namespace }}"
+
+              # 检查命名空间是否存在
+              if kubectl get namespace "$NAMESPACE"; then
+                echo "Deleting namespace: $NAMESPACE"
+
+                # 删除命名空间（强制删除卡住的资源）
+                kubectl delete namespace "$NAMESPACE" --ignore-not-found --wait=false
+                sleep 10
+
+                # 清除finalizer（针对卡在Terminating状态的命名空间）
+                if kubectl get namespace "$NAMESPACE" -o jsonpath='{.status.phase}' | grep -q Terminating; then
+                  echo "Forcing termination: $NAMESPACE"
+                  kubectl get namespace "$NAMESPACE" -o json | \
+                    jq 'del(.spec.finalizers[])' | \
+                    kubectl replace --raw "/api/v1/namespaces/$NAMESPACE/finalize" -f -
+                fi
+              else
+                echo "Namespace $NAMESPACE not found. Skipping deletion."
+              fi
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: namespace-cleaner-sa
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: namespace-cleaner-role
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "-5"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+rules:
+  - apiGroups: [""]
+    resources: ["namespaces"]
+    verbs: ["get", "delete"]
+  - apiGroups: [""]
+    resources: ["namespaces/finalize"]
+    verbs: ["update"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: namespace-cleaner-binding
+  annotations:
+    "helm.sh/hook": post-delete
+    "helm.sh/hook-weight": "-4"
+    "helm.sh/hook-delete-policy": hook-succeeded,hook-failed
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: namespace-cleaner-role
+subjects:
+  - kind: ServiceAccount
+    name: namespace-cleaner-sa
+    namespace: default

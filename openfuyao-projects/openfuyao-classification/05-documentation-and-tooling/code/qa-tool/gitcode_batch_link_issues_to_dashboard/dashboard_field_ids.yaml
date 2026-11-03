@@ -1,0 +1,34 @@
+v25.09:
+  dashboard_id: '1946143906921259010'  # 对应看板id。当前id对应“openFuyao - v25.09问题单”
+  dashboard_field_id_regress_test_failure_info: '1947194539156570114'  # “回归不通过次数”字段
+v25.06:
+  dashboard_id: '1923565306647805953'  # 对应看板id。当前id对应“openFuyao - v25.06问题单”
+  dashboard_field_id_creator: '1923568279038951425'  # “创建人”字段
+  dashboard_field_id_issue_create_date: '1923568217771606018'  # “创建时间”字段
+  dashboard_field_id_issue_update_date: '1923568249182748673'  # “更新时间”字段
+  dashboard_field_id_regress_test_failure_info: '1940664237938110465'  # “回归不通过次数”字段
+all:
+  dashboard_id: '1920045539931136002'  # 对应看板id。当前id对应“openFuyao - 问题单”
+  dashboard_field_id_creator: '1922536552499699714'  # “创建人”字段
+  dashboard_field_id_issue_create_date: '1922495589102313474'  # “创建时间”字段
+  dashboard_field_id_issue_update_date: '1922536469897076737'  # “更新时间”字段
+v25.03:
+  dashboard_id: '1923652272315826178'  # 对应看板id。当前id对应“openFuyao - v25.03问题单”
+  dashboard_field_id_creator: '1923652492031393793'  # “创建人”字段
+  dashboard_field_id_issue_create_date: '1923652519738966017'  # “创建时间”字段
+  dashboard_field_id_issue_update_date: '1923652545550712834'  # “更新时间”字段
+v24.12:
+  dashboard_id: '1923564934780813314'  # 对应看板id。当前id对应“openFuyao - v24.12问题单”
+  dashboard_field_id_creator: '1923568483594010625'  # “创建人”字段
+  dashboard_field_id_issue_create_date: '1923568434798624770'  # “创建时间”字段
+  dashboard_field_id_issue_update_date: '1923568458022486018'  # “更新时间”字段
+v24.09:
+  dashboard_id: '1923564832608714753'  # 对应看板id。当前id对应“openFuyao - v24.09问题单”
+  dashboard_field_id_creator: '1923568606685396994'  # “创建人”字段
+  dashboard_field_id_issue_create_date: '1923568551064731650'  # “创建时间”字段
+  dashboard_field_id_issue_update_date: '1923568578284617730'  # “更新时间”字段
+v24.06:
+  dashboard_id: '1923564643500130306'  # 对应看板id。当前id对应“openFuyao - v24.06问题单”
+  dashboard_field_id_creator: '1923568749123960834'  # “创建人”字段
+  dashboard_field_id_issue_create_date: '1923568677082595329'  # “创建时间”字段
+  dashboard_field_id_issue_update_date: '1923568706300116994'  # “更新时间”字段

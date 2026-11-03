@@ -1,0 +1,89 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cleanup-colocation-manager-cert
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  annotations:
+    "helm.sh/hook": pre-delete
+    "helm.sh/hook-weight": "5"
+    "helm.sh/hook-delete-policy": before-hook-creation, hook-succeeded
+spec:
+  # 防止新的Pod创建失败阻塞卸载过程
+  backoffLimit: 1
+  # 防止并发执行，确保只运行一个Pod
+  parallelism: 1
+  # 任务超时时间，避免Job卡住
+  activeDeadlineSeconds: 300
+  template:
+    spec:
+      restartPolicy: Never
+      serviceAccountName: colocation-manager-cert-cleanup
+      containers:
+        - name: kubectl-apply
+          image: {{ .Values.images.kubectl.repository }}:{{ .Values.images.kubectl.tag }}
+          imagePullPolicy: {{ .Values.images.kubectl.pullPolicy }}
+          command:
+            - "/bin/sh"
+            - "-c"
+            - |
+              set -e
+              {{- if .Values.namespace }}
+              NAMESPACE={{ .Values.namespace }}
+              {{- else }}
+              NAMESPACE={{ .Release.Namespace }}
+              {{- end }}
+              SECRET_NAME="colocation-manager-cert-secret"
+              MUTATEWEBHOOK_NAME="colocation-manager-webhook"
+              ROLE_NAME="colocation-manager-cert-role"
+              ROLE_BINDING_NAME="colocation-manager-cert-rolebinding"
+              SERVICE_ACCOUNT_NAME="colocation-manager-cert-generator"
+              CLUSTER_ROLE_NAME="colocation-manager-cert-clusterrole"
+              CLUSTER_ROLE_BINDING_NAME="colocation-manager-cert-clusterrolebinding"
+              echo "Remove Secret  and Mutatewebhook  ..."
+              if kubectl get secret ${SECRET_NAME} -n ${NAMESPACE} >/dev/null 2>&1; then
+              kubectl delete secret ${SECRET_NAME} -n ${NAMESPACE}
+              echo "Deleted secret: ${SECRET_NAME}"
+              else
+              echo "Secret ${SECRET_NAME} does not exist, skipping"
+              fi
+              if kubectl get mutatingWebhookConfiguration ${MUTATEWEBHOOK_NAME} >/dev/null 2>&1; then
+              kubectl delete mutatingWebhookConfiguration ${MUTATEWEBHOOK_NAME}
+              echo "Deleted mutatingWebhookConfiguration: ${MUTATEWEBHOOK_NAME}"
+              else
+              echo "MutatingWebhookConfiguration ${MUTATEWEBHOOK_NAME} does not exist, skipping"
+              fi
+              echo "Remove ServiceAccount ClusterRole ClusterRoleBinding Role RoleBinding ..."
+              if kubectl get role ${ROLE_NAME} -n ${NAMESPACE} >/dev/null 2>&1; then
+              kubectl delete role ${ROLE_NAME} -n ${NAMESPACE}
+              echo "Deleted role: ${ROLE_NAME}"
+              else
+              echo "Role ${ROLE_NAME} does not exist, skipping"
+              fi
+              if kubectl get rolebinding ${ROLE_BINDING_NAME} -n ${NAMESPACE} >/dev/null 2>&1; thenif kubectl get rolebinding ${ROLE_BINDING_NAME} -n ${NAMESPACE} >/dev/null 2>&1; thenif kubectl get rolebinding ${ROLE_BINDING_NAME} -n ${NAMESPACE} >/dev/null 2>&1; thenif kubectl get rolebinding ${ROLE_BINDING_NAME} -n ${NAMESPACE} >/dev/null 2>&1; thenif kubectl get rolebinding ${ROLE_BINDING_NAME} -n ${NAMESPACE} >/dev/null 2>&1; then
+              kubectl delete rolebinding ${ROLE_BINDING_NAME} -n ${NAMESPACE}
+              echo "Deleted rolebinding: ${ROLE_BINDING_NAME}"
+              else
+              echo "Rolebinding ${ROLE_BINDING_NAME} does not exist, skipping"
+              fi
+              if kubectl get serviceaccount ${SERVICE_ACCOUNT_NAME} -n ${NAMESPACE} >/dev/null 2>&1; thenif kubectl get serviceaccount ${SERVICE_ACCOUNT_NAME} -n ${NAMESPACE} >/dev/null 2>&1; then
+              kubectl delete serviceaccount ${SERVICE_ACCOUNT_NAME} -n ${NAMESPACE}
+              echo "Deleted serviceaccount: ${SERVICE_ACCOUNT_NAME}"
+              else
+              echo "Serviceaccount ${SERVICE_ACCOUNT_NAME} does not exist, skipping"
+              fi
+              if kubectl get clusterrole ${CLUSTER_ROLE_NAME} >/dev/null 2>&1; thenif kubectl get clusterrole ${CLUSTER_ROLE_NAME} >/dev/null 2>&1; then
+              kubectl delete clusterrole ${CLUSTER_ROLE_NAME}
+              echo "Deleted clusterrole: ${CLUSTER_ROLE_NAME}"
+              else
+              echo "Clusterrole ${CLUSTER_ROLE_NAME} does not exist, skipping"
+              fi
+              if kubectl get clusterrolebinding ${CLUSTER_ROLE_BINDING_NAME} >/dev/null 2>&1; thenif kubectl get clusterrolebinding ${CLUSTER_ROLE_BINDING_NAME} >/dev/null 2>&1; then
+              kubectl delete clusterrolebinding ${CLUSTER_ROLE_BINDING_NAME}
+              echo "Deleted clusterrolebinding: ${CLUSTER_ROLE_BINDING_NAME}"
+              else
+              echo "Clusterrolebinding ${CLUSTER_ROLE_BINDING_NAME}"
+              fi

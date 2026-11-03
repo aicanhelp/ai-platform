@@ -1,0 +1,226 @@
+global:
+  image:
+    pullPolicy: IfNotPresent
+  imagePullSecrets: [] # 私有镜像仓库的 Secret，例如: [{"name": "registry-secret"}]
+
+  env:
+    - name: HF_HUB_OFFLINE # HuggingFace Hub 离线开关（1=离线；0=在线）
+      value: "1"
+    - name: PYTHONHASHSEED # cache-indexer 要求与所有目标 vLLM Pod 保持一致
+      value: "0"
+    - name: VLLM_KV_EVENTS_USE_INT_BLOCK_HASHES # 与 cache-indexer 的 BlockHash 归一化规则保持一致
+      value: "1"
+
+  modelName: "Qwen/Qwen3-Coder-30B-A3B-Instruct" # 推理模型名称（用于 served-model-name 和标签）
+  modelPath: "" # 推理模型本地路径（可选）。若配置，则 vLLM 使用该路径启动模型，否则使用 modelName。
+  autoDownloadModel: false # 本地已有模型时建议关闭自动下载
+  cachePath: "/home/llm_cache" # 推理侧缓存目录（如 HuggingFace / vLLM 的下载与编译缓存）
+
+hermes-router: 
+  enabled: true
+
+  inferenceExtension:
+    replicas: 1
+    routing:
+      deploymentMode: pd
+      # Supported profiles: "" (disabled), random, kv-cache-aware, bucket (pd only), prediction.
+      profile: random
+      pd:
+        pdLabelName: openfuyao.com/pdRole
+        pdGroupLabelName: openfuyao.com/pdGroupID
+        prefillValue: prefill
+        decodeValue: decode
+        leaderValue: leader      
+    tokenizer:
+      enabled: false
+
+inference-backend:
+  images: 
+    inferenceEngine:
+      repository: "hub.oepkgs.net/openfuyao/ascend/vllm-ascend"
+      tag: "v0.18.0"
+    proxyServer:
+      repository: "cr.openfuyao.cn/openfuyao/proxy-server"
+      tag: "latest"
+
+  inferenceDevice: "huawei.com/Ascend910"
+
+  # 推理后端（vLLM/pd）通用环境变量注入
+  env:
+    - name: VLLM_USE_V1
+      value: "1"
+    - name: VLLM_CACHE_ROOT
+      value: "/vllm-workspace"
+    - name: HCCL_OP_EXPANSION_MODE
+      value: "AIV"
+    - name: GLOO_SOCKET_IFNAME
+      value: "eth0"
+    - name: TP_SOCKET_IFNAME
+      value: "eth0"
+    - name: HCCL_SOCKET_IFNAME
+      value: "eth0"
+    - name: OMP_PROC_BIND
+      value: "false"
+    - name: OMP_NUM_THREADS
+      value: "10"
+    - name: ASCEND_TRANSPORT_PRINT
+      value: "1"
+    - name: ACL_OP_INIT_MODE
+      value: "1"
+    - name: VLLM_NIXL_ABORT_REQUEST_TIMEOUT
+      value: "300000"
+    - name: HCCL_INTRA_ROCE_ENABLE
+      value: "1"
+
+  # 默认 volumeMounts（所有 vLLM deployment 共享）
+  volumeMounts:
+    ascend: # Ascend 设备相关的 volumeMounts
+      enable: true
+
+  # 默认 volumes（所有 vLLM deployment 共享）
+  volumes:
+    ascend: # Ascend 设备相关的 volumes
+      enable: true
+
+  services:
+  - name: qwen3-coder-pd-0
+    enabled: true
+    mode: pd
+    service:
+      port: 8000
+    pdGroupID: "qwen3-coder-30b-pd"
+    kvTransferConfig:
+      # kv_role、kv_rank、engine_id、tp_size、dp_size 等节点特定字段会自动填充，无需手动配置
+      connectorConfig:
+        kv_connector: "MultiConnector"
+        kv_connector_extra_config:
+          connectors:
+            - kv_connector: "MooncakeConnectorV1"
+              kv_buffer_device: "npu"
+              kv_parallel_size: 1
+              kv_connector_extra_config:
+                use_ascend_direct: true
+            - kv_connector: "AscendStoreConnector"
+              kv_buffer_device: "npu"
+              kv_parallel_size: 1
+              kv_connector_extra_config:
+                lookup_rpc_port: "0"
+                backend: "mooncake"
+      mooncake: # 使用mooncake的配置
+        use_store: true # 是否使用 mooncake store
+        master: # 共享 mooncake master 配置（多 service 启用时取首个已配置项）
+          rpcPort: 50051
+          servicePort: 30089
+          httpPort: 9003 # cache-indexer L3 依赖该 admin HTTP 端口（/get_all_keys、/query_key、/get_all_segments）
+        # mooncake 配置文件内容（YAML 格式，initContainer 会自动替换 $POD_IP 并转换为 JSON）
+        config: |
+          local_hostname: "$POD_IP"
+          metadata_server: "redis://redis-service:6379"
+          master_server_address: "mooncake-master-service:30089"
+          device_name: ""
+          protocol: "ascend"
+          global_segment_size: 42949672960
+          use_ascend_direct: true
+    pd:
+      prefill:
+        replicas: 1
+        # cardCount: 8
+        tensorParallelSize: 2
+        # 多DP部署时，data-parallel-size、data-parallel-size-local、data-parallel-start-rank、
+        # data-parallel-address、data-parallel-rpc-port、data-parallel-hybrid-lb 等由 chart 
+        # 自动填充，无需在 extraArgs 中手动配置。
+        dataParallelSize: 2
+        dataParallelSizeLocal: 1
+        dataParallelRpcPort: 12890
+        env:
+          - name: HCCL_IF_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+          - name: VLLM_ASCEND_ENABLE_FLASHCOMM1
+            value: "1"
+        volumeMounts: []
+        volumes: []
+        extraArgs:
+          - --enable-prefix-caching
+          - --max-model-len 65536
+          - --max-num-batched-tokens 16384
+          - --gpu-memory-utilization 0.95
+          - --block-size 128
+          - --enable-expert-parallel
+          - --enforce-eager
+          - --prefix-caching-hash-algo sha256_cbor
+          - --enable-prompt-tokens-details
+
+      decode:
+        replicas: 1
+        # cardCount: 4
+        tensorParallelSize: 2
+        dataParallelSize: 2
+        dataParallelSizeLocal: 1
+        dataParallelRpcPort: 12777
+        env:
+          - name: HCCL_IF_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        volumeMounts: []
+        volumes: []
+        extraArgs:
+          - --no-enable-prefix-caching
+          - --max-model-len 65536
+          - --max-num-batched-tokens 2048
+          - --gpu-memory-utilization 0.95
+          - --enable-expert-parallel
+          - --enforce-eager
+          - --seed 1024
+          - --prefix-caching-hash-algo sha256_cbor
+          - --enable-prompt-tokens-details
+
+      proxyServer:
+        enabled: true
+        discoveryInterval: 10
+    resources:
+      requests:
+        cpu: "4"
+        memory: "64Gi"
+      limits:
+        cpu: "8"
+        memory: "128Gi"
+
+# cache indexer
+cache-indexer:
+  enabled: false
+
+pd-orchestrator:
+  resourcescalinggroup:
+    enabled: true # resourcescalinggroup 组件的部署开关
+    image:
+      repository: cr.openfuyao.cn/openfuyao/resource-scaling-group
+      tag: latest
+
+    instanceConfig:
+      enabled: true # chart包中默认提供的 resource scaling group CR 实例开关，开启后会默认安装 CR 实例
+      name: rsg
+      targetResources:
+      - name: prefill
+        resourceRef:
+          apiVersion: leaderworkerset.x-k8s.io/v1
+          kind: LeaderWorkerSet
+          name: qwen3-coder-pd-0-prefill
+      - name: decode
+        resourceRef:
+          apiVersion: leaderworkerset.x-k8s.io/v1
+          kind: LeaderWorkerSet
+          name: qwen3-coder-pd-0-decode
+      scalingStrategy:
+        type: GroupReplication
+        groupConfig: 
+          groupName: pd 
+          scaleDown: 
+            metric: 
+              expr: "vllm:num_requests_running" 
+              type: "Gauge"
+              window: "2m"
+              aggregator: "avg"
+            order: ascending

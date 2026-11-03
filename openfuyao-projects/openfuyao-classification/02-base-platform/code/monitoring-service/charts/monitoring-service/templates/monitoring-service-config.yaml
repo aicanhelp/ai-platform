@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: monitoring-service-config
+  namespace: openfuyao-system
+data:
+  config.json: |
+    {
+      "Server": {
+        {{- if .Values.config.httpServerConfig.enableHttps }}
+        "SecurePort": {{ .Values.config.httpServerConfig.port }},
+        "CertFile": "/ssl/server.crt",
+        "PrivateKeyFile": "/ssl/server.key",
+        "RootCAFile": "/ssl/ca.pem"
+        {{- else }}
+        "InsecurePort": {{ .Values.config.httpServerConfig.port }}
+        {{- end }}
+      }
+    }

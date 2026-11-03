@@ -1,0 +1,10 @@
+# Source: volcano/templates/admission-init.yaml
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: volcano-admission-init
+  namespace: volcano-system
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["create", "patch", "get"]

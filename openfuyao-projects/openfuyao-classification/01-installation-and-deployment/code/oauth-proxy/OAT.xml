@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2024 Huawei Technologies Co., Ltd.
+  ~ openFuyao is licensed under Mulan PSL v2.
+  ~ You can use this software according to the terms and conditions of the Mulan PSL v2.
+  ~ You may obtain a copy of Mulan PSL v2 at:
+  ~          http://license.coscl.org.cn/MulanPSL2
+  ~ THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+  ~ EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+  ~ MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+  ~ See the Mulan PSL v2 for more details.
+  -->
+
+<configuration>
+    <oatconfig>
+
+        <policylist>
+            <policy name="projectPolicy">
+                <policyitem type="compatibility" name="MulanPSL-2.0" path=".*"/>
+                <policyitem type="license" name="MulanPSL-2.0" path=".*"/>
+                <policyitem type="copyright" name="Huawei Technologies Co., Ltd." path=".*" rule="may" group="defaultGroup" filefilter="copyrightPolicyFilter"/>
+            </policy>
+        </policylist>
+
+        <filefilterlist>
+            <filefilter name="defaultFilter" desc="Files not to check">
+                <filteritem type="filename" name="go.mod|go.sum"/>
+                <filteritem type="filename" name="*.yaml"/>
+            </filefilter>
+            <filefilter name="binaryFileTypePolicyFilter" desc="Filters for binary file policies">
+                <filteritem type="filename" name="LICENSE"/>
+            </filefilter>
+        </filefilterlist>
+
+        <licensematcherlist>
+            <licensematcher name="MulanPSL-2.0" desc="Mulan Permissive Software License, Version 2">
+                <licensetext name="is licensed under Mulan PSL v2"/>
+            </licensematcher>
+            <licensematcher name="MulanPSL-2.0" desc="Mulan Permissive Software License, Version 2">
+                <licensetext name="
+                    Mulan Permissive Software License，Version 2 (Mulan PSL v2)
+                    January 2020 http://license.coscl.org.cn/MulanPSL2
+                "/>
+            </licensematcher>
+            <licensematcher name="MulanPSL-2.0" desc="Mulan Permissive Software License, Version 2">
+                <licensetext name="
+                    木兰宽松许可证， 第2版
+                    2020年1月 http://license.coscl.org.cn/MulanPSL2
+                "/>
+            </licensematcher>
+        </licensematcherlist>
+
+    </oatconfig>
+</configuration>

@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: resilience-controller
+  namespace: mindx-dl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: resilience-controller
+  template:
+    metadata:
+      labels:
+        app: resilience-controller
+      ##### For Kubernetes versions lower than 1.19, seccomp is used with annotations.
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: runtime/default
+    spec:
+      ##### For Kubernetes versions 1.19 and above, seccomp is used with securityContext.
+      #      securityContext:
+      #        seccompProfile:
+      #          type: RuntimeDefault
+      nodeSelector:
+        masterselector: dls-master-node
+      serviceAccountName: resilience-controller
+      containers:
+        - name: resilience-controller
+          image: "FILLED_BY_OPERATOR"
+          resources:
+            requests:
+              memory: 300Mi
+              cpu: 500m
+            limits:
+              memory: 300Mi
+              cpu: 500m
+          imagePullPolicy: IfNotPresent
+          command: ["/bin/bash", "-c", "--"]
+          args: ["usermod -a -G HwHiAiUser,hwMindX hwMindX;chmod 750 /var/log/mindx-dl/resilience-controller;chown hwMindX:HwHiAiUser /var/log/mindx-dl/resilience-controller;umask 027;/home/hwMindX/resilience-controller -logFile=/var/log/mindx-dl/resilience-controller/run.log -logLevel=0"]
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          volumeMounts:
+            - name: log
+              mountPath: /var/log/mindx-dl/resilience-controller
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: log
+          hostPath:
+            path: /var/log/mindx-dl/resilience-controller
+        - name: localtime
+          hostPath:
+            path: /etc/localtime

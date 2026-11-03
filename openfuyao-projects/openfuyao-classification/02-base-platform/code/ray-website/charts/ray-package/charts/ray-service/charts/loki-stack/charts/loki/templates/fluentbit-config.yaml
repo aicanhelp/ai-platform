@@ -1,0 +1,171 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fluentbit-config
+  namespace: monitoring
+data:
+  script.lua: |-
+    function process_log(tag, timestamp, record)
+      local filename = record["filename"]
+      local cache_path = "/tmp/last_value.dat"
+
+      local function load_last_value()
+        local file = io.open(cache_path, "r")
+        if not file then return 0 end
+        local content = file:read("*a")
+        file:close()
+        return tonumber(content) or 0
+      end
+
+      local function save_last_value(value)
+        local file = io.open(cache_path, "w")
+        if file then
+            file:write(tostring(value))
+            file:close()
+        end
+      end
+      
+      if filename == "/tmp/ray/session_latest/logs/gcs_server.out" then
+        local log_msg = record.log
+        local current_str_1 = log_msg:match("Main%sservice%sEvent%sstats:")
+
+        if current_str_1 then
+          local current_str_2, current_str_3 = log_msg:match("Global%sstats:%s+(%d+)%s+total%s+%((%d+)%s+active%)")
+          if current_str_2 and current_str_3 then
+            local last_value = load_last_value()
+            local current_value = tonumber(current_str_2)
+
+            record["result"] = current_value - last_value
+            save_last_value(current_value)
+            record["result1"] = current_str_3
+          end
+          local value, unit = log_msg:match("Queueing%stime:%smean%s=%s([%d%.]+)%s([mun]?s)")
+          if value and unit then
+            local num = tonumber(value)
+            local conversion = {
+                ["ns"] = 0.001,
+                ["us"] = 0.001,
+                ["ms"] = 1,
+                ["s"]  = 1000
+            }
+            unit = unit:gsub("μs", "us"):lower()
+            record["result2"] = num * (conversion[unit] or 1)
+          end
+        end
+
+        if record["result"] or record["result2"] then
+          return 2, timestamp, record
+        end
+      end
+
+      if filename == "/tmp/ray/session_latest/logs/dashboard.log" or 
+          filename == "/tmp/ray/session_latest/logs/dashboard_agent.log" then
+        local log_msg = record.log
+        local value_str, unit = log_msg:match("bytes%s+(%d+)%s+(%a+)")
+        if value_str and unit then
+            local value = tonumber(value_str)
+            local new_value, new_unit
+            if unit == "us" then
+                new_value = value / 1000
+                new_unit = "ms"
+            elseif unit == "ms" then
+                new_value = value
+                new_unit = "ms"
+            elseif unit == "s" then
+                new_value = value * 1000
+                new_unit = "ms"
+            else
+                return 1, timestamp, record
+            end
+
+            local formatted_value = string.format("%.3f", new_value):gsub("0+$", ""):gsub("%.$", "")
+
+            local new_log, count = log_msg:gsub(
+                "bytes%s+"..value_str.."%s+"..unit,
+                "bytes "..formatted_value.." "..new_unit,
+                1
+            )
+            if count > 0 then
+                record.log = new_log
+                if record["filename"] == "/tmp/ray/session_latest/logs/dashboard_agent.log" then
+                    record[host] = tonumber(new_value) * 1.0
+                end
+                return 2, timestamp, record
+            end
+        end
+      end
+
+      return 1, timestamp, record
+    end
+  parsers.conf: |
+    [MULTILINE_PARSER]
+      Name          multiline_log
+      Type          regex
+      Rule          "start_state" "/^\[.*?Main service Event stats:\s*$/" "cont"
+      Rule          "cont"        "/^(?!\[).*(?<!Main service Event stats:)$/" "cont"
+      #Rule          "start_state" "/^$[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}\sI\s[0-9]+\s[0-9]+$\s$gcs_server$\sgcs_server\.cc:[0-9]+:\sMain\sservice\sEvent\sstats:/" "cont"
+      #Rule          "cont"        "/^(?!$[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2},[0-9]{3}\sI\s[0-9]+\s[0-9]+$\s$gcs_server$)/" "cont"
+
+  fluent-bit.conf: |
+    [SERVICE]
+      Log_Level      info
+      Parsers_File   /etc/fluent-bit/conf/parsers.conf
+
+    [INPUT]
+      Name              tail
+      Path              /tmp/ray/session_latest/logs/*.*
+      Path_Key          filename
+      Buffer_Max_Size   50MB
+      Skip_Long_Lines   On
+      Refresh_Interval  10
+      Read_from_Head    true
+      #Multiline         On
+      #Multiline.Parser  multiline_gcs
+      #Parser_Firstline  gcs_docker_parser
+      Tag               all_log
+
+    [INPUT]
+      Name              tail
+      Path              /tmp/ray/session_latest/logs/gcs_server.out
+      Path_Key          filename
+      Refresh_Interval  10
+      Read_from_Head    true
+      Tag               gcs_log
+    [INPUT]
+      Name              tail
+      Path              /tmp/ray/session_latest/logs/raylet.out
+      Path_Key          filename
+      Refresh_Interval  10
+      Read_from_Head    true
+      Tag               raylet_log
+
+    [FILTER]
+      name                  multiline
+      match                 gcs_log
+      multiline.key_content log
+      multiline.parser      multiline_log
+    [FILTER]
+      name                  multiline
+      match                 raylet_log
+      multiline.key_content log
+      multiline.parser      multiline_log
+
+    [FILTER]
+      name lua
+      Match *
+      Script /etc/fluent-bit/scripts/script.lua
+      Call process_log
+
+    #[OUTPUT]
+    #  name stdout
+    #  Match *
+    #  Format json
+
+    [OUTPUT]
+      name        loki
+      match       *
+      host        ray-loki.monitoring
+      port        3100            
+      labels      job=${RAY_JOB_NAME}
+      Label_Keys  $filename
+      #line_format   json

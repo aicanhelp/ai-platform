@@ -1,0 +1,6 @@
+# Default templates live in the controller install namespace (same as INFERNEX_TEMPLATE_NAMESPACE / POD_NAMESPACE).
+namespace: infernex-bridge-system
+
+resources:
+- ../samples/infernex_v1alpha1_infernexserviceconfig_aggregate_template.yaml
+- ../samples/infernex_v1alpha1_infernexserviceconfig_pd_template.yaml

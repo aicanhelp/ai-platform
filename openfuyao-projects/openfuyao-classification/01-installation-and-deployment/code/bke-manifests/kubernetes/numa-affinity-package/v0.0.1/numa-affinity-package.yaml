@@ -1,0 +1,159 @@
+# 依赖 openfuyao-system-controller 与 prometheus-operator，包含 numa-exporter 与前端
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/instance: numa-affinity-package
+    app.kubernetes.io/name: numa-affinity-package
+  name: numa-affinity-package
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: numa-affinity-package-installer
+  namespace: numa-affinity-package
+spec:
+  backoffLimit: 5
+  template:
+    metadata:
+      labels:
+        app: numa-affinity-package-installer
+    spec:
+      restartPolicy: OnFailure
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              preference:
+                matchExpressions:
+                  - key: node-role.kubernetes.io/master
+                    operator: Exists
+            - weight: 20
+              preference:
+                matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/control-plane"
+          effect: "NoSchedule"
+      serviceAccountName: numa-affinity-package-installer
+      containers:
+        - name: helm-installer
+          image: {{ .repo }}openfuyao-system-controller:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: OPENFUYAO_REGISTRY
+              value: "{{ .repo }}"
+            - name: NUMA_AFFINITY_VERSION
+              value: "0.0.0-latest"
+            - name: CHART_NAME
+              value: "numa-affinity-package"
+            - name: CHART_PATH
+              value: "chart"
+            - name: OPENFUYAO_REPO
+              value: "{{ .openfuyaoRepo }}"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              OS=$(uname | tr '[:upper:]' '[:lower:]')
+              ARCH=$(uname -m)
+              case $ARCH in
+                x86_64) ARCH="amd64";;
+                aarch64) ARCH="arm64";;
+              esac
+
+              echo "安装 helm..."
+              tar -zxvf /home/openfuyao-system/${ARCH}-bin/helm-v3.14.2-"${OS}"-${ARCH}.tar.gz
+              mv "${OS}"-$ARCH/helm /usr/local/bin/helm
+              echo "成功安装 helm..."
+              
+              substring="cr.openfuyao.cn"
+              if echo "${OPENFUYAO_REGISTRY}" | grep -q "${substring}"; then
+                  echo "online deploy"
+                  IS_ONLINE="true"
+              else
+                  echo "offline deploy"
+                  IS_ONLINE="false"
+              fi
+
+              if [ ! -d "${CHART_PATH}" ]; then
+                 mkdir -p "${CHART_PATH}"
+              fi
+
+              cur_path=$(pwd)
+              cd "${CHART_PATH}"  || echo "Failed to change directory to ${CHART_PATH}"
+              if [ -f "${CHART_NAME}-${NUMA_AFFINITY_VERSION}.tgz" ]; then
+                  echo "${CHART_NAME}-${NUMA_AFFINITY_VERSION}.tgz already exists, skip downloading"
+                  cd "${cur_path}" || echo "Failed to change directory to ${cur_path}"
+              else
+                  echo "Downloading ${CHART_NAME} chart"
+                  if [ "$IS_ONLINE" = "false" ]; then
+                      helm fetch "${CHART_NAME}" --repo "${OPENFUYAO_REPO}" --version "${NUMA_AFFINITY_VERSION}"
+                  else
+                      helm fetch "${OPENFUYAO_REPO}/${CHART_NAME}" --version "${NUMA_AFFINITY_VERSION}"
+                  fi
+                  cd "${cur_path}" || echo "Failed to change directory to ${cur_path}"
+              fi
+
+              numa_affinity_package_chart_path="./${CHART_PATH}/${CHART_NAME}-${NUMA_AFFINITY_VERSION}.tgz"
+              if [ ! -f "${numa_affinity_package_chart_path}" ]; then
+                  echo "Error: numa_affinity_package chart not found at ${numa_affinity_package_chart_path}"
+                  exit 1
+              fi
+
+              echo "安装 numa-affinity-package..."
+              helm install ${CHART_NAME} "${numa_affinity_package_chart_path}" \
+                -n volcano-system \
+                --create-namespace \
+                --version $NUMA_AFFINITY_VERSION \
+                --wait --timeout=600s
+              
+              echo "numa-affinity-package 安装流程结束"
+          volumeMounts:
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: numa-affinity-package-installer
+  namespace: numa-affinity-package
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: numa-affinity-package-installer
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: numa-affinity-package-installer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: numa-affinity-package-installer
+subjects:
+- kind: ServiceAccount
+  name: numa-affinity-package-installer
+  namespace: numa-affinity-package

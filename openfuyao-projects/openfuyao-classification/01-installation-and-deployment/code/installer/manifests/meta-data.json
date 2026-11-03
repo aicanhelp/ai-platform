@@ -1,0 +1,6 @@
+{
+  "cpu-arch": ["arm64", "amd64"],
+  "component_group": ["cri", "cni", "oci", "ha", "core", "pkg-manager", "manager", "tools", "ingress", "ai"],
+  "openfuyao-system-version": "latest",
+  "installer": "0.6.0"
+}

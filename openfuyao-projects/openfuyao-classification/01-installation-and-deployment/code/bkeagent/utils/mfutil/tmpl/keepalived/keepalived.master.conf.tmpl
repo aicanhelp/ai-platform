@@ -1,0 +1,30 @@
+#master-instance-start
+vrrp_script check_apiserver {
+   script "/usr/local/etc/keepalived/check-master.sh"
+   interval 2
+   weight -{{ .nodes | computeWeight }}
+}
+
+vrrp_instance apiserver {
+{{- if .nodes | isMaster }}
+    state MASTER
+    priority 100
+{{- else }}
+    state BACKUP
+    priority {{ .nodes | priority }}
+{{- end }}
+    interface {{ .interface }}
+    virtual_router_id {{ .virtualRouterId }}
+    advert_int {{ .keepalivedAdvertInt}}
+    authentication {
+        auth_type PASS
+        auth_pass {{ .keepalivedAuthPass }}
+    }
+    virtual_ipaddress {
+        {{ .vip }}
+    }
+    track_script {
+        check_apiserver
+    }
+}
+#master-instance-end

@@ -1,0 +1,6 @@
+{{- if eq (include "prometheus.installed" .) "false" }}
+---
+podLabels:
+  foo: bar
+  baz: '{{ .Chart.AppVersion }}'
+{{- end }}

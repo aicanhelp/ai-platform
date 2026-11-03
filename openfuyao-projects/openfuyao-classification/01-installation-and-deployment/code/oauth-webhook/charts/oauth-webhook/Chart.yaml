@@ -1,0 +1,9 @@
+apiVersion: v2
+name: oauth-webhook
+description: > 
+  A Helm chart for openFuyao OAuth webhook. It interacts with kube-apiserver and validates user identities using
+  webhook validation.
+type: application
+version: 0.0.0-latest
+appVersion: "latest"
+keywords: ["openfuyao-component"]

@@ -1,0 +1,17 @@
+isManual: true
+label: Resource Management
+sections:
+  - label: Workloads
+    href: ./workloads.md
+  - label: Network
+    href: ./network.md
+  - label: Storage
+    href: ./storage.md
+  - label: Nodes
+    href: ./nodes.md
+  - label: ConfigMaps and Secrets
+    href: ./configmap_and_secrets.md
+  - label: Namespaces
+    href: ./namespaces.md
+  - label: Custom Resources
+    href: ./custom_resources.md

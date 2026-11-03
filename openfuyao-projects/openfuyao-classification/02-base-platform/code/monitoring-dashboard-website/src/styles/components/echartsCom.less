@@ -1,0 +1,225 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+.dount_preview_chart{
+  width:calc((100vw - 64px - 64px - 220px )/2) !important;
+}
+.dount_display_chart{
+  width:calc((100vw - 64px - 64px - 220px )/2);
+  height: 250px !important;
+}
+.aim_word_chart{
+  position: relative;
+  color: #89939B;
+  background: #fff;
+  width: 194px;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 20px;
+  left:40%;
+  margin-top: -10%;
+  padding: 10px;
+  text-align: center;
+  word-break: keep-all;
+}
+.dount_chartBox {
+  .aim_word_chart{
+    top:-150px;
+  }
+}
+.dashboard_word,.number_line_word{
+  top:-150px;
+  left: 150%;
+}
+.dount_word{
+  left: 70%;
+}
+.dashboard_display_chartBox,.dashboard_preview_chartBox{
+  width: calc((100vw - 220px - 64px - 64px - 120px - 8px) / 4);
+  
+}
+.dashboard_preview_chart{
+  width: calc((100vw - 220px - 64px - 64px - 120px - 8px) / 4);
+  height: 320px;
+}
+.dashboard_display_chart{
+  width: calc((100vw - 220px - 64px - 64px - 120px - 8px) / 4);
+  height: 280px;
+  gap: 194px !important;
+}
+.preview_chart{
+  height: 300px;
+  width: 100%;
+}
+
+.display_content_box{
+  margin-top:-150px;
+}
+.display_chart,.line_list,.area_list,.bar_list{
+  width: 100%;
+  height: 320px;
+}
+.line_display_list,.area_display_list,.bar_display_list{
+  width: 100%;
+  margin: 0 32px 20px 32px;
+  background: #fff;
+  padding: 32px;
+}
+.dount_display_chartBox{
+  margin: 0 32px 20px 32px;
+  background: #fff;
+  padding: 32px;
+}
+.number_list,.dashboard_list,.dount_list{
+  display: flex;
+  flex-direction: column;
+}
+.dashboard_chart_header p{
+  width: calc((100vw - 220px - 64px - 64px - 120px + 12px + 44px) / 4);
+}
+.chart_header{
+ display: flex;
+ flex-direction: row;
+ align-items: center;
+ justify-content: space-between;
+ margin-bottom: 20px;
+ p{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin:0;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+ }
+ svg{
+  width: 20px;
+  height: 20px;
+ }
+ .@{container-prefix}--popover-placement-bottomLeft{
+  width: 180px;
+  .@{container-prefix}-website-popover-inner{
+    padding: 16px 14px;
+  }
+.@{container-prefix}-popconfirm-buttons{
+  margin-top:15px;
+}
+}
+}
+.number_display_list,.dashboard_display_list,.dount_display_list{
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin: 0 32px 20px 32px; 
+  padding: 32px;
+  min-height: 410px;
+  background: #fff;
+}
+.dount_display_list{
+  height: 410px;
+  width: calc((100vw - 220px - 64px - 64px - 10px) / 2);
+}
+.number_row{
+  margin-top:60px;
+}
+.number_row,.dashboard_row{
+  display: flex;
+  flex-direction: row;
+  gap: 35px;
+  flex-wrap: wrap;
+}
+
+
+.number_line_preview_chart{
+  height: 150px !important;
+}
+.preview_chartBox{
+   display: flex;
+   flex-direction: column;
+   width: 100%; 
+}
+.dashboard_preview_chartBox{
+  width:350px;
+}
+
+.aim_word_type{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  color: #89939B;
+  text-align: center;
+  font-size: 14px;
+  max-width: calc((100vw - 456px) / 4)
+}
+
+.number_aim_box{
+  display: flex;
+  flex-direction: column;
+  width: calc((100vw - 220px - 64px - 64px - 120px - 8px) / 4);
+  .aim_word_type{
+    margin-top:16px;
+    align-self: flex-start;
+  }
+  .bold_aim{
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow:ellipsis;
+    color: #333333;
+    font-size: 36px;
+    font-weight: 700;
+    line-height: 30px;
+  }
+}
+
+@media screen and (width: 1280px) {
+  .number_aim_box{
+    gap: 20px !important;
+    width: calc((100vw - 220px - 64px - 64px - 40px - 90px ) / 4) !important;
+  }
+  .dount_display_list{
+    width: calc((100vw - 220px - 64px - 64px - 10px) / 2) !important;
+  }
+  .dashboard_preview_chart,.dashboard_display_chart,.dashboard_display_chartBox{
+    width: calc((100vw - 220px - 64px - 64px - 40px - 90px ) / 4) !important;
+  }
+}
+
+@media screen and (max-width: 1279px) {
+  .big_data_header{
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+  .number_aim_box{
+    gap: 20px !important;
+    width: calc((100vw - 72px - 64px - 64px - 64px) / 2) !important;
+  }
+  .dount_display_list{
+    width: calc((100vw - 72px - 64px - 10px)) !important;
+  }
+  .dashboard_preview_chart,.dashboard_display_chart,.dashboard_display_chartBox{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: calc((100vw - 72px - 64px - 64px - 64px) / 2) !important;
+  }
+}
+@media screen and(min-width: 1280px) and (max-width: 1420px){
+  .dount_display_chartBox{
+    padding: 0 !important;
+  }
+}
+
+.number_line_chartBox {
+  div > div > canvas {
+    cursor: default;
+  }
+}

@@ -1,0 +1,20 @@
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: priority-hls
+value: 10000
+description: "This priority class should be used for HLS pods only."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: priority-ls
+value: 1000
+description: "This priority class should be used for LS pods only."
+---
+apiVersion: scheduling.k8s.io/v1
+kind: PriorityClass
+metadata:
+  name: priority-be
+value: -1000
+description: "This priority class should be used for BE pods only."

@@ -1,0 +1,111 @@
+{
+  "module": {
+    "title": "RBAC管理",
+    "description": "管理RBAC资源"
+  },
+  "serviceAccount": {
+    "title": "服务账号",
+    "create": "创建服务账号",
+    "name": "服务账号名称",
+    "namespace": "命名空间",
+    "createdTime": "创建时间"
+  },
+  "role": {
+    "roleTitle": "角色",
+    "clusterTitle": "集群角色",
+    "create": "创建角色",
+    "name": "名称",
+    "type": "类型",
+    "namespace": "命名空间",
+    "roleType": "角色",
+    "clusterRoleType": "集群角色",
+    "title": "角色"
+  },
+  "roleBinding": {
+    "roleBindingTitle": "角色绑定",
+    "clusterTitle": "集群角色绑定",
+    "create": "创建角色绑定",
+    "bindName": "绑定名称",
+    "bindType": "绑定类型",
+    "role": "角色",
+    "roleType": "角色类型",
+    "subjectKind": "主题种类",
+    "subjectName": "主题名称",
+    "namespace": "命名空间",
+    "roleBindingType": "角色绑定",
+    "clusterRoleBindingType": "集群角色绑定",
+    "title": "角色绑定"
+  },
+  "actions": {
+    "create": "创建",
+    "delete": "删除",
+    "detail": "详情",
+    "yaml": "YAML",
+    "operation": "操作",
+    "modify": "修改",
+    "editLabel": "修改标签",
+    "editAnnotation": "修改注解",
+    "deleteConfirm": "删除{{resource}}",
+    "deleteWarning": "删除{{resource}}后将无法恢复，请谨慎操作。",
+    "deleteConfirmMessage": "确定删除{{resource}} {{name}} 吗？"
+  },
+  "info": {
+    "basicInfo": "基本信息",
+    "labels": "标签：",
+    "annotations": "注解：",
+    "countZero": "0个"
+  },
+  "fields": {
+    "name": "名称：",
+    "namespace": "命名空间：",
+    "createdAt": "创建时间：",
+    "roleType": "角色类型：",
+    "bindingType": "绑定类型：",
+    "bindName": "角色绑定名称：",
+    "serviceAccountName": "服务账号名称："
+  },
+  "clusterRole": {
+    "title": "集群角色",
+    "table": {
+      "name": "角色名称",
+      "description": "描述"
+    }
+  },
+  "clusterMember": {
+    "title": "集群成员",
+    "table": {
+      "name": "成员名称",
+      "role": "角色",
+      "operation": "操作"
+    },
+    "actions": {
+      "invite": "邀请",
+      "modifyRole": "修改角色",
+      "remove": "移除"
+    },
+    "modal": {
+      "inviteTitle": "邀请成员",
+      "removeTitle": "移除成员",
+      "removeWarning": "移除用户后将会失去对应角色权限。",
+      "removeConfirm": "确定移除 {{name}} 吗？",
+      "modifyRoleTitle": "修改角色",
+      "roleLabel": "角色"
+    },
+    "messages": {
+      "removeSuccess": "移除{{name}}成员成功！",
+      "removeFailed": "移除{{name}}成员失败，原因：{{reason}}！",
+      "editSuccess": "编辑{{name}}成员成功！",
+      "editFailed": "编辑{{name}}成员失败！",
+      "inviteSuccess": "邀请{{name}}成员成功！",
+      "inviteFailed": "邀请{{name}}成员失败！"
+    },
+    "invitedModal": {
+      "table": {
+        "user": "用户",
+        "assignRole": "分配角色",
+        "operation": "操作"
+      },
+      "selectPlaceholder": "请选择"
+    }
+  }
+}

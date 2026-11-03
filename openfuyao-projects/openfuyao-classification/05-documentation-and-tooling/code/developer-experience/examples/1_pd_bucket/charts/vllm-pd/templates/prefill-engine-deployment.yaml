@@ -1,0 +1,154 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-prefill
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    inference-backend: "true"
+    openfuyao.com/model: {{ .Values.modelServer.name | replace "/" "-" | lower }}
+spec:
+  replicas: {{ $.Values.modelServer.disaggregated.prefill.replicaAmount }}
+  selector:
+    matchLabels:
+      inference-backend: "true"
+      openfuyao.com/model: {{ .Values.modelServer.name | replace "/" "-" | lower }}
+      openfuyao.com/engine: vllm
+      openfuyao.com/pdRole: prefill
+      openfuyao.com/pdGroupID: {{ $.Values.modelServer.disaggregated.groupID | quote }}
+      openfuyao.com/tpSize: {{ $.Values.modelServer.disaggregated.prefill.tensorParallelism | quote }}
+  template:
+    metadata:
+      labels:
+        inference-backend: "true"
+        openfuyao.com/model: {{ .Values.modelServer.name | replace "/" "-" | lower }}
+        openfuyao.com/engine: vllm
+        openfuyao.com/pdRole: prefill
+        openfuyao.com/pdGroupID: {{ $.Values.modelServer.disaggregated.groupID | quote }}
+        openfuyao.com/tpSize: {{ $.Values.modelServer.disaggregated.prefill.tensorParallelism | quote }}
+    spec:
+      nodeName: master
+      containers:
+      - name: prefill-engine
+        image: {{ $.Values.image.disaggregated.repository }}:{{ $.Values.image.disaggregated.tag }}
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: GLOO_SOCKET_IFNAME
+          value: "eth0"
+        - name: TP_SOCKET_IFNAME
+          value: "eth0"
+        - name: HCCL_SOCKET_IFNAME
+          value: "eth0"
+        - name: HF_HUB_OFFLINE
+          value: "{{ if $.Values.modelServer.useOnlineHuggingFace }}1{{ else }}0{{ end }}"
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          # PHYSICAL_DEVICES stands for the physical devices assigned to the container
+          export PHYSICAL_DEVICES=$(ls /dev/davinci* 2>/dev/null | grep -o '[0-9]\+' | sort -n | paste -sd',' -)
+          
+          # 生成JSON配置文件
+          JSON_CONTENT="{\"local_hostname\": \"$POD_IP\", \"device_name\": \"\",\"protocol\":\"ascend\"}"
+          echo "$JSON_CONTENT" > /app/mooncake.json
+          
+          # 启动vllm服务
+          MOONCAKE_CONFIG_PATH=/app/mooncake.json VLLM_USE_V1=1 python3 -m vllm.entrypoints.openai.api_server \
+            --model {{ $.Values.modelServer.model }} \
+            --enable-prefix-caching \
+            --port {{ $.Values.modelServer.disaggregated.prefill.vllmBasePort }} \
+            --tensor-parallel-size {{ $.Values.modelServer.disaggregated.prefill.tensorParallelism }} \
+            --max-model-len 10000 \
+            --max-num-batched-tokens 2000 \
+            --data-parallel-size {{ $.Values.modelServer.disaggregated.prefill.dataParallelism }} \
+            --data-parallel-address localhost \
+            --data-parallel-rpc-port 9100 \
+            --gpu-memory-utilization 0.8 \
+            --block-size 128 \
+            --kv-events-config '{"enable_kv_cache_events": true, "publisher":"zmq", "topic":"kv-events"}' \
+            --kv-transfer-config '{
+              "kv_connector": "{{ $.Values.modelServer.disaggregated.kvConnector }}",
+              "kv_role": "kv_producer",
+              "kv_buffer_device": "npu",
+              "kv_connector_module_path": "{{ $.Values.modelServer.disaggregated.kvConnectorModulePath }}",
+              "kv_parallel_size": 1,
+              "kv_port": "{{ $.Values.modelServer.disaggregated.prefill.connectorBasePort }}",
+              "engine_id": "'$POD_NAME'",
+              "kv_rank": 0,
+              "kv_connector_extra_config": {
+                "prefill": {
+                  "tp_size": {{ $.Values.modelServer.disaggregated.prefill.tensorParallelism }},
+                  "dp_size": {{ $.Values.modelServer.disaggregated.prefill.dataParallelism }}
+                },
+                "decode": {
+                  "tp_size": {{ $.Values.modelServer.disaggregated.decode.tensorParallelism }},
+                  "dp_size": {{ $.Values.modelServer.disaggregated.decode.dataParallelism }}
+                }
+              }
+            }'
+        resources:
+          requests:
+            {{ $.Values.resources.disaggregated.prefill.requests.deviceName }}: {{ mul $.Values.modelServer.disaggregated.prefill.tensorParallelism $.Values.modelServer.disaggregated.prefill.dataParallelism | quote }}
+          limits:
+            {{ $.Values.resources.disaggregated.prefill.limits.deviceName }}: {{ mul $.Values.modelServer.disaggregated.prefill.tensorParallelism $.Values.modelServer.disaggregated.prefill.dataParallelism | quote }}
+        ports:
+        - containerPort: {{ $.Values.modelServer.disaggregated.prefill.vllmBasePort }}
+          name: prefill-port
+        - containerPort: 5557
+          name: zmq-pub # fix by @qinwen
+        volumeMounts:
+        - name: shm
+          mountPath: /dev/shm
+        - name: dcmi
+          mountPath: /usr/local/dcmi
+        - name: npusmi
+          mountPath: /usr/local/bin/npu-smi
+        - name: lib64
+          mountPath: /usr/local/Ascend/driver/lib64
+        - name: version
+          mountPath: /usr/local/Ascend/driver/version.info
+        - name: installinfo
+          mountPath: /etc/ascend_install.info
+        - name: rootcache
+          mountPath: /root/.cache
+        - name: hccntool
+          mountPath: /usr/bin/hccn_tool
+        - name: hccnconf
+          mountPath: /etc/hccn.conf
+      volumes:
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: "24Gi"
+      - name: dcmi
+        hostPath:
+          path: /usr/local/dcmi
+      - name: npusmi
+        hostPath:
+          path: /usr/local/bin/npu-smi
+          type: File
+      - name: lib64
+        hostPath:
+          path: /usr/local/Ascend/driver/lib64
+      - name: version
+        hostPath:
+          path: /usr/local/Ascend/driver/version.info
+          type: File
+      - name: installinfo
+        hostPath:
+          path: /etc/ascend_install.info
+          type: File
+      - name: rootcache
+        hostPath:
+          path: {{ $.Values.modelServer.cachePath }}
+      - name: hccntool
+        hostPath:
+          path: /usr/bin/hccn_tool
+      - name: hccnconf
+        hostPath:
+          path: /etc/hccn.conf

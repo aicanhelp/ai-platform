@@ -1,0 +1,681 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: openFuyao平台Helm仓库管理接口文档。
+  version: v1beta1
+
+paths:
+  /helm-repos:
+    get:
+      summary: 查询Helm仓库列表。
+      description: 获取所有Helm仓库信息（支持分页和模糊搜索）。
+      parameters:
+        - name: repo
+          in: query
+          schema: { type: string }
+          description: 仓库名称模糊匹配。
+        - name: page
+          in: query
+          schema: { type: integer, example: 1 }
+          description: 分页页码。
+        - name: limit
+          in: query
+          schema: { type: integer, example: 20 }
+          description: 每页记录数。
+      responses:
+        '200':
+          description: 成功响应。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: "bitnami"
+                              description: 仓库名称。
+                            url:
+                              type: string
+                              example: "https://charts.bitnami.com/bitnami"
+                              description: 仓库地址。
+                      totalItems:
+                        type: integer
+                        example: 3
+                        description: 总记录数。
+                      currentPage:
+                        type: integer
+                        example: 1
+                        description: 当前页码。
+                      totalPage:
+                        type: integer
+                        example: 1
+                        description: 总页数。
+    post:
+      summary: 添加Helm仓库。
+      description: 创建新的Helm仓库配置。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, url]
+              properties:
+                name:
+                  type: string
+                  example: "test"
+                  description: 仓库名称。
+                url:
+                  type: string
+                  example: "https://charts.jetstack.io"
+                  description: 仓库地址。
+                username:
+                  type: array
+                  items: { type: integer }
+                  description: 用户名字节数组。
+                  example: [116, 101, 115, 116] # "test"
+                password:
+                  type: array
+                  items: { type: integer }
+                  description: 密码字节数组。
+                  example: [112, 97, 115, 115] # "pass"
+                certFile:
+                  type: string
+                  description: 证书文件。
+                keyFile:
+                  type: string
+                  description: 密钥文件。
+                caFile:
+                  type: string
+                  description: CA证书文件。
+                insecure_skip_tls_verify:
+                  type: boolean
+                  default: false
+                  description: 是否跳过TLS验证。
+                pass_credentials_all:
+                  type: boolean
+                  default: false
+                  description: 是否传递所有凭据。
+      responses:
+        '200':
+          description: 创建成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+                  data:
+                    type: object
+                    properties:
+                      apiVersion:
+                        type: string
+                        example: "openfuyao.com/v1beta1"
+                        description: API版本。
+                      kind:
+                        type: string
+                        example: "HelmChartRepository"
+                        description: 资源类型。
+                      metadata:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: 名称。
+                          creationTimestamp:
+                            type: string
+                            format: date-time
+                            description: 创建时间。
+                      spec:
+                        type: object
+                        properties:
+                          displayName:
+                            type: string
+                            description: 显示名称。
+                          url:
+                            type: string
+                            description: 仓库地址。
+                          basicAuth:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: 基本认证名称。
+                          tls:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: TLS配置名称。
+                          ca:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: CA证书名称。
+                          insecureSkipTLSVerify:
+                            type: boolean
+                            description: 是否跳过TLS验证。
+                          passCredentialsAll:
+                            type: boolean
+                            description: 是否传递所有凭据。
+
+  /helm-repos/{repo}:
+    get:
+      summary: 查询仓库详情。
+      description: 获取指定名称的Helm仓库详细配置信息。
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema: { type: string }
+          description: 仓库名称。
+      responses:
+        '200':
+          description: 成功返回仓库详细信息。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+                  data:
+                    type: object
+                    properties:
+                      apiVersion:
+                        type: string
+                        example: "openfuyao.com/v1beta1"
+                        description: API版本。
+                      kind:
+                        type: string
+                        example: "HelmChartRepository"
+                        description: 资源类型。
+                      metadata:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: 名称。
+                          creationTimestamp:
+                            type: string
+                            format: date-time
+                            description: 创建时间。
+                      spec:
+                        type: object
+                        properties:
+                          displayName:
+                            type: string
+                            description: 显示名称。
+                          url:
+                            type: string
+                            description: 仓库地址。
+                          basicAuth:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: 基本认证名称。
+                          tls:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: TLS配置名称。
+                          ca:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: CA证书名称。
+                          insecureSkipTLSVerify:
+                            type: boolean
+                            description: 是否跳过TLS验证。
+                          passCredentialsAll:
+                            type: boolean
+                            description: 是否传递所有凭据。
+    put:
+      summary: 更新仓库配置。
+      description: 修改现有Helm仓库配置。
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema: { type: string }
+          description: 仓库名称。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, url]
+              properties:
+                name:
+                  type: string
+                  example: "test"
+                  description: 仓库名称。
+                url:
+                  type: string
+                  example: "https://charts.jetstack.io"
+                  description: 仓库地址。
+                username:
+                  type: array
+                  items: { type: integer }
+                  description: 用户名字节数组。
+                  example: [116, 101, 115, 116] # "test"
+                password:
+                  type: array
+                  items: { type: integer }
+                  description: 密码字节数组。
+                  example: [112, 97, 115, 115] # "pass"
+                certFile:
+                  type: string
+                  description: 证书文件。
+                keyFile:
+                  type: string
+                  description: 密钥文件。
+                caFile:
+                  type: string
+                  description: CA证书文件。
+                insecure_skip_tls_verify:
+                  type: boolean
+                  default: false
+                  description: 是否跳过TLS验证。
+                pass_credentials_all:
+                  type: boolean
+                  default: false
+                  description: 是否传递所有凭据。
+      responses:
+        '200':
+          description: 仓库更新成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+                  data:
+                    type: object
+                    properties:
+                      apiVersion:
+                        type: string
+                        example: "openfuyao.com/v1beta1"
+                        description: API版本。
+                      kind:
+                        type: string
+                        example: "HelmChartRepository"
+                        description: 资源类型。
+                      metadata:
+                        type: object
+                        properties:
+                          name:
+                            type: string
+                            description: 名称。
+                          creationTimestamp:
+                            type: string
+                            format: date-time
+                            description: 创建时间。
+                      spec:
+                        type: object
+                        properties:
+                          displayName:
+                            type: string
+                            description: 显示名称。
+                          url:
+                            type: string
+                            description: 仓库地址。
+                          basicAuth:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: 基本认证名称。
+                          tls:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: TLS配置名称。
+                          ca:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: CA证书名称。
+                          insecureSkipTLSVerify:
+                            type: boolean
+                            description: 是否跳过TLS验证。
+                          passCredentialsAll:
+                            type: boolean
+                            description: 是否传递所有凭据。
+    delete:
+      summary: 删除仓库。
+      description: 删除指定名称的Helm仓库。
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema: { type: string }
+          description: 仓库名称。
+      responses:
+        '200':
+          description: 仓库删除成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+
+  /helm-repos/sync:
+    post:
+      summary: 同步全部仓库。
+      description: 触发所有Helm仓库的同步操作。
+      responses:
+        '200':
+          description: 同步操作已触发。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+
+  /helm-repos/{repo}/sync:
+    post:
+      summary: 同步指定仓库。
+      description: 触发指定Helm仓库的同步操作。
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema: { type: string }
+          description: 仓库名称。
+      responses:
+        '200':
+          description: 同步操作已触发。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+    get:
+      summary: 获取同步状态。
+      description: 查询指定仓库的当前同步状态。
+      parameters:
+        - name: repo
+          in: path
+          required: true
+          schema: { type: string }
+          description: 仓库名称。
+      responses:
+        '200':
+          description: 成功返回同步状态。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    enum: [in_progress, complete, failed]
+                    example: "complete"
+                    description: 同步状态。
+
+  /helm-charts:
+    get:
+      summary: 查询Chart列表。
+      description: 获取所有可用的Helm Chart（支持过滤）。
+      parameters:
+        - name: repo
+          in: query
+          schema: { type: string }
+          description: 仓库名称过滤。
+        - name: chart
+          in: query
+          schema: { type: string }
+          description: Chart名称过滤。
+        - name: scene
+          in: query
+          schema:
+            type: string
+            enum:
+              - compute-power-engine-plugin
+              - artificial-intelligence
+              - computing
+              - database
+              - developer-tool
+              - CI/CD
+              - monitor
+              - log
+              - network
+              - observability
+              - security
+              - storage
+          description: 使用场景过滤。
+        - name: appType
+          in: query
+          schema: { type: string }
+          description: 应用类型过滤。
+        - name: page
+          in: query
+          schema: { type: integer }
+          description: 分页页码。
+        - name: limit
+          in: query
+          schema: { type: integer }
+          description: 每页数量。
+      responses:
+        '200':
+          description: 成功返回Chart列表。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        metadata:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Chart名称。
+                            version:
+                              type: string
+                              description: 版本号。
+                            description:
+                              type: string
+                              description: 描述信息。
+                            apiVersion:
+                              type: string
+                              description: API版本。
+                            appVersion:
+                              type: string
+                              description: 应用版本。
+                            type:
+                              type: string
+                              description: 类型。
+                            urls:
+                              type: array
+                              items: { type: string }
+                              description: 下载URL列表。
+                            created:
+                              type: string
+                              format: date-time
+                              description: 创建时间。
+                            digest:
+                              type: string
+                              description: 摘要信息。
+                        repo:
+                          type: string
+                          description: 仓库名称。
+                        repoUrl:
+                          type: string
+                          description: 仓库地址。
+    post:
+      summary: 上传Chart。
+      description: 上传Chart包到本地仓库。
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                chart:
+                  type: string
+                  format: binary
+                  description: Helm Chart包(tgz格式)。
+      responses:
+        '201':
+          description: 文件上传成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+
+  /helm-charts/{chart}:
+    delete:
+      summary: 删除Chart所有版本。
+      description: 删除指定名称的所有Chart版本。
+      parameters:
+        - name: chart
+          in: path
+          required: true
+          schema: { type: string }
+          description: Chart名称。
+      responses:
+        '200':
+          description: 删除操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+
+  /helm-charts/{chart}/versions/{version}:
+    delete:
+      summary: 删除指定Chart版本。
+      description: 删除指定名称和版本的Chart。
+      parameters:
+        - name: chart
+          in: path
+          required: true
+          schema: { type: string }
+          description: Chart名称。
+        - name: version
+          in: path
+          required: true
+          schema: { type: string }
+          description: 版本号。
+      responses:
+        '200':
+          description: 删除操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                    description: 状态码。
+                  msg:
+                    type: string
+                    example: "success"
+                    description: 状态消息。
+
+security:
+  - BearerAuth: []

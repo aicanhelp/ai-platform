@@ -1,0 +1,6 @@
+name: many-core-orchestrator
+type: private
+description: '众核混部抗干扰隔离与调度组件：通过实时采集与分析宿主机微架构级指标（LLC、PSI、I/O 延迟等），并结合 Volcano 调度插件与可选的 Kata 虚拟机隔离机制，规避底层共享资源竞争，旨在保障在线业务请求延迟 SLA 的同时提升集群整体混部密度。'
+branches:
+  - name: master
+    type: protected

@@ -1,0 +1,32 @@
+{{ $scriptDir := "/etc/openFuyao/bkeagent/scripts/" }}
+
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: update-runc
+  namespace: {{.namespace}}
+spec:
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/update-runc.sh:ro:{{$scriptDir}}update-runc.sh"
+      id: save-update-runc-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}update-runc.sh"
+      id: chmod-update-runc-script
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}update-runc.sh {{.httpRepo}}"
+      id: update-runc
+      type: Shell
+  backoffLimit: 3
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}

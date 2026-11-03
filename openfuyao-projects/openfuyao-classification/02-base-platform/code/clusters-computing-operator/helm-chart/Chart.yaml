@@ -1,0 +1,5 @@
+apiVersion: v2
+name: clusters-computing-operator.openfuyao.com
+description: helm chart
+version: 0.1.0
+appVersion: "latest"

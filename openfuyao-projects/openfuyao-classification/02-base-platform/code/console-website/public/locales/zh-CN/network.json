@@ -1,0 +1,64 @@
+{
+  "module": {
+    "title": "网络",
+    "description": "管理网络资源"
+  },
+  "service": {
+    "title": "Service",
+    "create": "创建Service",
+    "name": "服务名称",
+    "namespace": "命名空间",
+    "type": "类型",
+    "clusterIP": "集群IP",
+    "externalIP": "外部IP",
+    "ports": "端口",
+    "externalPort": "外部端口",
+    "internalIP": "内部IP地址",
+    "selector": "选择器",
+    "created": "创建时间"
+  },
+  "ingress": {
+    "title": "Ingress",
+    "create": "创建Ingress",
+    "name": "服务名称",
+    "namespace": "命名空间",
+    "service": "服务",
+    "host": "主机名",
+    "path": "路径",
+    "backend": "后端服务",
+    "tls": "TLS",
+    "created": "创建时间"
+  },
+  "actions": {
+    "detail": "详情",
+    "yaml": "YAML",
+    "operation": "操作",
+    "modify": "修改",
+    "editLabel": "修改标签",
+    "editAnnotation": "修改注解",
+    "delete": "删除",
+    "deleteConfirm": "删除{{resource}}",
+    "deleteWarning": "删除{{resource}}后将无法恢复，请谨慎操作。",
+    "deleteConfirmMessage": "确定删除{{resource}} {{name}} 吗？"
+  },
+  "info": {
+    "basicInfo": "基本信息",
+    "labels": "标签：",
+    "annotations": "注解：",
+    "countZero": "0个",
+    "servicePortMapping": "服务端口映射",
+    "ingressRules": "Ingress规则",
+    "ingressRulesDescription": "Ingress定义了允许入站连接到达后端定义的端点的规则合集"
+  },
+  "table": {
+    "name": "名称",
+    "port": "端口",
+    "protocol": "协议",
+    "targetPort": "Pod端口或名称",
+    "host": "主机",
+    "path": "路径",
+    "pathType": "路径类型",
+    "service": "服务",
+    "servicePort": "服务端口"
+  }
+}

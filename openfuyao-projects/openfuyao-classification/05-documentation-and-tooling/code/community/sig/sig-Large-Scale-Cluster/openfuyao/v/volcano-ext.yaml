@@ -1,0 +1,6 @@
+name: volcano-ext
+type: private
+description: 'volcano调度器，在原有调度器的基础上增加批量调度接口'
+branches:
+  - name: master
+    type: protected

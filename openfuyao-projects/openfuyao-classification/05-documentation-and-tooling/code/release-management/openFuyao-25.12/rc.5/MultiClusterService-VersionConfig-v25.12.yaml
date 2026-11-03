@@ -1,0 +1,60 @@
+registry:
+  imageAddress: cr.openfuyao.cn/openfuyao/registry:2.8.1
+  architecture:
+    - amd64
+    - arm64
+repos:
+  - architecture: # openfuyao multi-cluster-service 扩展组件
+      - amd64
+      - arm64
+    needDownload: true # multi-cluster-service 扩展组件所需镜像是否下载开关，false-关闭不下载，true-开启下载
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao
+        targetRepo: openfuyao
+        images:
+          - name: multi-cluster-service
+            tag:
+              - 0.20.1
+          - name: multi-cluster-website
+            tag:
+              - 0.20.1
+          - name: etcd
+            tag:
+              - 3.5.13-0
+          - name: karmada/karmada-aggregated-apiserver
+            tag:
+              - v1.15.0
+          - name: kube-apiserver
+            tag:
+              - v1.30.4
+          - name: karmada/karmada-controller-manager
+            tag:
+              - v1.15.0
+          - name: kube-controller-manager
+            tag:
+              - v1.30.4
+          - name: karmada/karmada-scheduler
+            tag:
+              - v1.15.0
+          - name: bitnami/kubectl
+            tag:
+              - 1.33
+          - name: karmada/karmada-webhook
+            tag:
+              - v1.15.0
+          - name: cfssl/cfssl
+            tag:
+              - v1.6.5
+      - sourceRepo: docker.io
+        targetRepo: /
+        images:
+          - name: library/busybox
+            tag:
+              - 1.36.1
+rpms:
+debs: []
+files: []
+charts:
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/charts/releases/download/
+    files:
+      - fileName: multi-cluster-service-0.20.1.tgz

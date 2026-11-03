@@ -1,0 +1,1642 @@
+openapi: 3.0.0
+info:
+  title: 
+  version: 1.0.0
+  description: 用于Kubernetes RBAC权限控制和节点操作的API规范。
+  contact:
+    name: Kubernetes API技术支持
+    email: support@kubernetes.io
+
+servers:
+  - url: /api/kubernetes
+    description: Kubernetes API基础端点。
+
+tags:
+  - name: 角色绑定
+    description: 角色绑定相关操作。
+  - name: 集群角色
+    description: 集群角色相关操作。
+  - name: 集群角色绑定
+    description: 集群角色绑定相关操作。
+  - name: 事件
+    description: 集群事件相关操作。
+  - name: 节点
+    description: 集群节点相关操作。
+
+paths:
+  # RoleBinding APIs - 角色绑定API
+  /apis/rbac.authorization.k8s.io/v1/namespaces/{namespace}/rolebindings/{name}:
+    get:
+      summary: 读取指定的角色绑定。
+      description: 获取指定角色绑定的详细信息。
+      tags:
+        - 角色绑定
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 角色绑定对象。
+        '401':
+          description: 未授权访问。
+        '404':
+          description: 资源未找到。
+    put:
+      summary: 更新指定的角色绑定。
+      description: 更新指定的角色绑定配置。
+      tags:
+        - 角色绑定
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 角色绑定配置对象。
+      responses:
+        '200':
+          description: 更新成功。
+        '201':
+          description: 创建成功。
+        '401':
+          description: 未授权访问。
+    delete:
+      summary: 删除指定的角色绑定。
+      description: 删除指定的角色绑定。
+      tags:
+        - 角色绑定
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除前的宽限期时长（秒）。
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: propagationPolicy
+          in: query
+          description: 垃圾回收策略。
+          required: false
+          schema:
+            type: string
+            enum: [Orphan, Background, Foreground]
+      responses:
+        '200':
+          description: 删除成功。
+        '202':
+          description: 删除请求已接受。
+        '401':
+          description: 未授权访问。
+    patch:
+      summary: 部分更新指定的角色绑定。
+      description: 部分更新指定角色绑定的配置。
+      tags:
+        - 角色绑定
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制执行请求。
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                description: 单个补丁操作。
+      responses:
+        '200':
+          description: 更新成功。
+        '201':
+          description: 已更新。
+        '401':
+          description: 未授权访问。
+
+  /apis/rbac.authorization.k8s.io/v1/namespaces/{namespace}/rolebindings:
+    get:
+      summary: 列出角色绑定。
+      description: 获取指定命名空间下的角色绑定列表。
+      tags:
+        - 角色绑定
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 资源版本约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+            enum: [NotOlderThan, Exact]
+        - name: watch
+          in: query
+          description: 监视所描述资源的变化。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: sendInitialEvents
+          in: query
+          description: 监视流从当前状态的合成事件开始。
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: timeoutSeconds
+          in: query
+          description: 列表/监视调用的超时时间（秒）。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 角色绑定列表对象。
+        '401':
+          description: 未授权访问。
+    post:
+      summary: 创建角色绑定。
+      description: 在指定命名空间下创建新的角色绑定。
+      tags:
+        - 角色绑定
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 角色绑定配置对象。
+      responses:
+        '200':
+          description: 操作成功。
+        '201':
+          description: 创建成功。
+        '202':
+          description: 请求已接受。
+        '401':
+          description: 未授权访问。
+
+  # ClusterRole APIs - 集群角色API
+  /apis/rbac.authorization.k8s.io/v1/clusterroles/{name}:
+    get:
+      summary: 读取指定的集群角色。
+      description: 获取指定集群角色的详细信息。
+      tags:
+        - 集群角色
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 集群角色对象。
+        '401':
+          description: 未授权访问。
+        '404':
+          description: 资源未找到。
+    put:
+      summary: 更新指定的集群角色。
+      description: 更新指定集群角色的配置。
+      tags:
+        - 集群角色
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 集群角色配置对象。
+      responses:
+        '200':
+          description: 更新成功。
+        '201':
+          description: 创建成功。
+        '401':
+          description: 未授权访问。
+    delete:
+      summary: 删除指定的集群角色。
+      description: 删除指定的集群角色。
+      tags:
+        - 集群角色
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除前的宽限期时长（秒）。
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: propagationPolicy
+          in: query
+          description: 垃圾回收策略。
+          required: false
+          schema:
+            type: string
+            enum: [Orphan, Background, Foreground]
+      responses:
+        '200':
+          description: 删除成功。
+        '202':
+          description: 删除请求已接受。
+        '401':
+          description: 未授权访问。
+    patch:
+      summary: 部分更新指定的集群角色。
+      description: 部分更新指定集群角色的配置。
+      tags:
+        - 集群角色
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制执行请求。
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                description: 单个补丁操作。
+      responses:
+        '200':
+          description: 更新成功。
+        '201':
+          description: 已更新。
+        '401':
+          description: 未授权访问。
+
+  /apis/rbac.authorization.k8s.io/v1/clusterroles:
+    get:
+      summary: 列出集群角色。
+      description: 获取集群中所有集群角色的列表。
+      tags:
+        - 集群角色
+      parameters:
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 资源版本约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+            enum: [NotOlderThan, Exact]
+        - name: watch
+          in: query
+          description: 监视所描述资源的变化。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: sendInitialEvents
+          in: query
+          description: 监视流从当前状态的合成事件开始。
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: timeoutSeconds
+          in: query
+          description: 列表/监视调用的超时时间（秒）。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 集群角色列表对象。
+        '401':
+          description: 未授权访问。
+    post:
+      summary: 创建集群角色。
+      description: 创建新的集群角色。
+      tags:
+        - 集群角色
+      parameters:
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 集群角色配置对象。
+      responses:
+        '200':
+          description: 操作成功。
+        '201':
+          description: 创建成功。
+        '202':
+          description: 请求已接受。
+        '401':
+          description: 未授权访问。
+
+  # ClusterRoleBinding APIs - 集群角色绑定API
+  /apis/rbac.authorization.k8s.io/v1/clusterrolebindings/{name}:
+    get:
+      summary: 读取指定的集群角色绑定。
+      description: 获取指定集群角色绑定的详细信息。
+      tags:
+        - 集群角色绑定
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 集群角色绑定对象。
+        '401':
+          description: 未授权访问。
+        '404':
+          description: 资源未找到。
+    put:
+      summary: 更新指定的集群角色绑定。
+      description: 更新指定集群角色绑定的配置。
+      tags:
+        - 集群角色绑定
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 集群角色绑定配置对象。
+      responses:
+        '200':
+          description: 更新成功。
+        '201':
+          description: 创建成功。
+        '401':
+          description: 未授权访问。
+    delete:
+      summary: 删除指定的集群角色绑定。
+      description: 删除指定的集群角色绑定。
+      tags:
+        - 集群角色绑定
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除前的宽限期时长（秒）。
+          required: false
+          schema:
+            type: integer
+            minimum: 0
+        - name: propagationPolicy
+          in: query
+          description: 垃圾回收策略。
+          required: false
+          schema:
+            type: string
+            enum: [Orphan, Background, Foreground]
+      responses:
+        '200':
+          description: 删除成功。
+        '202':
+          description: 删除请求已接受。
+        '401':
+          description: 未授权访问。
+    patch:
+      summary: 部分更新指定的集群角色绑定。
+      description: 部分更新指定集群角色绑定的配置。
+      tags:
+        - 集群角色绑定
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制执行请求。
+          required: false
+          schema:
+            type: boolean
+            default: false
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                description: 单个补丁操作。
+      responses:
+        '200':
+          description: 更新成功。
+        '201':
+          description: 已更新。
+        '401':
+          description: 未授权访问。
+
+  /apis/rbac.authorization.k8s.io/v1/clusterrolebindings:
+    get:
+      summary: 列出集群角色绑定。
+      description: 获取集群中所有集群角色绑定的列表。
+      tags:
+        - 集群角色绑定
+      parameters:
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 资源版本约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+            enum: [NotOlderThan, Exact]
+        - name: watch
+          in: query
+          description: 监视所描述资源的变化。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: sendInitialEvents
+          in: query
+          description: 监视流从当前状态的合成事件开始。
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: timeoutSeconds
+          in: query
+          description: 列表/监视调用的超时时间（秒）。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 集群角色绑定列表对象。
+        '401':
+          description: 未授权访问。
+    post:
+      summary: 创建集群角色绑定。
+      description: 创建新的集群角色绑定。
+      tags:
+        - 集群角色绑定
+      parameters:
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: 集群角色绑定配置对象。
+      responses:
+        '200':
+          description: 操作成功。
+        '201':
+          description: 创建成功。
+        '202':
+          description: 请求已接受。
+        '401':
+          description: 未授权访问。
+
+  # Event APIs - 事件API
+  /apis/events.k8s.io/v1/namespaces/{namespace}/events/{name}:
+    get:
+      summary: 读取指定的事件。
+      description: 获取指定事件的详细信息。
+      tags:
+        - 事件
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 事件对象。
+        '401':
+          description: 未授权访问。
+        '404':
+          description: 事件未找到。
+
+  /apis/events.k8s.io/v1/namespaces/{namespace}/events:
+    get:
+      summary: 列出事件。
+      description: 获取指定命名空间下的事件列表。
+      tags:
+        - 事件
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 资源版本约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+            enum: [NotOlderThan, Exact]
+        - name: watch
+          in: query
+          description: 监视所描述资源的变化。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: sendInitialEvents
+          in: query
+          description: 监视流从当前状态的合成事件开始。
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: timeoutSeconds
+          in: query
+          description: 列表/监视调用的超时时间（秒）。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 事件列表对象。
+        '401':
+          description: 未授权访问。
+
+  # Node APIs - 节点API
+  /api/v1/nodes/{name}:
+    get:
+      summary: 读取指定的节点。
+      description: 获取指定节点的详细信息。
+      tags:
+        - 节点
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 节点对象。
+        '401':
+          description: 未授权访问。
+        '404':
+          description: 节点未找到。
+    patch:
+      summary: 部分更新指定的节点。
+      description: 部分更新指定节点的配置信息。
+      tags:
+        - 节点
+      parameters:
+        - name: name
+          in: path
+          description: 资源名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: dryRun
+          in: query
+          description: 指示修改操作不应持久化，仅进行验证。
+          required: false
+          schema:
+            type: string
+            enum: [All]
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                description: 单个补丁操作。
+      responses:
+        '200':
+          description: 更新成功。
+        '201':
+          description: 已更新。
+        '401':
+          description: 未授权访问。
+
+  /api/v1/nodes:
+    get:
+      summary: 列出节点。
+      description: 获取集群中所有节点的列表。
+      tags:
+        - 节点
+      parameters:
+        - name: pretty
+          in: query
+          description: 格式化输出。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: limit
+          in: query
+          description: 返回结果的最大数量。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 500
+        - name: page
+          in: query
+          description: 返回的页码。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+        - name: fieldSelector
+          in: query
+          description: 按字段选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 按标签选择器过滤返回的对象。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 资源版本约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+            enum: [NotOlderThan, Exact]
+        - name: watch
+          in: query
+          description: 监视所描述资源的变化。
+          required: false
+          schema:
+            type: boolean
+            default: false
+        - name: sendInitialEvents
+          in: query
+          description: 监视流从当前状态的合成事件开始。
+          required: false
+          schema:
+            type: boolean
+            default: true
+        - name: timeoutSeconds
+          in: query
+          description: 列表/监视调用的超时时间（秒）。
+          required: false
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        '200':
+          description: 操作成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: 节点列表对象。
+        '401':
+          description: 未授权访问。
+
+security:
+  - bearerAuth: []
+  - apiKey: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Bearer令牌认证。
+    apiKey:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: API密钥认证。

@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    component: kube-proxy
+    k8s-app: kube-proxy
+    kubernetes.io/cluster-service: "true"
+    name: kube-proxy
+    tier: node
+  name: kube-proxy
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      component: kube-proxy
+      k8s-app: kube-proxy
+      kubernetes.io/cluster-service: "true"
+      name: kube-proxy
+      tier: node
+  updateStrategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        component: kube-proxy
+        k8s-app: kube-proxy
+        kubernetes.io/cluster-service: "true"
+        name: kube-proxy
+        tier: node
+    spec:
+      priorityClassName: system-node-critical
+      containers:
+        - name: kube-proxy
+          image: {{ .repo }}kube-proxy:v1.25.6
+          imagePullPolicy: IfNotPresent
+          command:
+            - /usr/local/bin/kube-proxy
+            - --v=0
+            - --kubeconfig=/run/kubeconfig
+            {{- if ne .clusterNetworkMode "fabric" }}
+            - --cluster-cidr={{ .podSubnet }}
+            {{- end }}
+            {{- if and (ne .proxyMode nil ) ( ne .proxyMode "" ) }}
+            - --proxy-mode={{ .proxyMode }}
+            {{- end }}
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - mountPath: /run/xtables.lock
+              name: xtables-lock
+              readOnly: false
+            - mountPath: /lib/modules
+              name: lib-modules
+              readOnly: true
+            - mountPath: /run/kubeconfig
+              name: kubeconfig
+      hostNetwork: true
+      volumes:
+        - name: xtables-lock
+          hostPath:
+            path: /run/xtables.lock
+            type: FileOrCreate
+        - name: lib-modules
+          hostPath:
+            path: /lib/modules
+        - hostPath:
+            path: {{ .kubeConfigDir }}/admin.conf
+            type: File
+          name: kubeconfig
+      tolerations:
+        - operator: Exists
+      nodeSelector:
+        kubernetes.io/os: linux

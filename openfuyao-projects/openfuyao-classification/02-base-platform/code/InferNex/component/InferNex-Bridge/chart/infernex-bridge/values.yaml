@@ -1,0 +1,59 @@
+replicaCount: 1
+
+# Helm release name defaults to chart name (infernex-bridge). fullnameOverride pins all
+# resource names when release/chart names differ from what you want.
+nameOverride: ""
+fullnameOverride: ""
+
+global:
+  image:
+    pullPolicy: IfNotPresent
+
+images:
+  infernex-bridge:
+    repository: cr.openfuyao.cn/openfuyao/infernex-bridge
+    tag: latest
+  openssl:
+    repository: hub.oepkgs.net/openfuyao/alpine/openssl
+    tag: "3.5.0"
+  kubectl-openfuyao:
+    repository: cr.openfuyao.cn/openfuyao/kubectl-openfuyao
+    tag: "1.0.3"
+
+serviceAccount:
+  create: true
+  name: ""
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 128Mi
+  requests:
+    cpu: 10m
+    memory: 64Mi
+
+webhooks:
+  enabled: true
+  # Base64-encoded PEM of the CA (no newlines). Only used when certGenerator.enabled=false and certManager.enabled=false.
+  caBundle: ""
+  tls:
+    secretName: webhook-server-cert
+    certPath: /tmp/k8s-webhook-server/serving-certs
+  # Pre-install Job (openssl + kubectl apply) generates TLS Secret + Mutating/ValidatingWebhookConfiguration in-cluster.
+  # Set false to supply your own Secret and set webhooks.caBundle, or use certManager.
+  certGenerator:
+    enabled: true
+
+# Optional: requires cert-manager. When true, certGenerator is ignored for TLS; chart renders Issuer/Certificate + webhook configs with CA injection.
+certManager:
+  enabled: false
+  issuerName: selfsigned-issuer
+  certificateName: serving-cert
+  secretName: webhook-server-cert
+
+templates:
+  installDefaultConfigs: true
+  aggregate:
+    name: infernex-default-aggregate-template
+  pd:
+    name: infernex-default-pd-template

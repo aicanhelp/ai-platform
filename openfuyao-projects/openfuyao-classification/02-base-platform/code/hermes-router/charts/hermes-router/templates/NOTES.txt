@@ -1,0 +1,23 @@
+{{- $inferencePoolName := include "gateway-api-inference-extension.inferencepool.name" . }}
+InferencePool {{ $inferencePoolName }} deployed.
+
+The following resources have been created:
+- InferencePool: {{ $inferencePoolName }}
+- Endpoint Picker (EPP) Deployment: {{ include "gateway-api-inference-extension.name" . }}
+- EPP Service: {{ include "gateway-api-inference-extension.name" . }}
+{{- $provider := (index .Values "provider") | default (dict) -}}
+{{- if eq ((index $provider "name") | default "none") "istio" }}
+- Istio DestinationRule: {{ include "gateway-api-inference-extension.name" . }}
+{{- end }}
+{{- if .Values.httpRoute }}
+- HTTPRoute: {{ printf "%s-httproute" $inferencePoolName }}
+{{- end }}
+
+To check the status of the InferencePool:
+  kubectl get inferencepool {{ $inferencePoolName }} -n {{ .Release.Namespace }}
+
+To check the status of the EPP deployment:
+  kubectl get deployment {{ include "gateway-api-inference-extension.name" . }} -n {{ .Release.Namespace }}
+
+To view the EPP logs:
+  kubectl logs -l inferencepool={{ include "gateway-api-inference-extension.name" . }} -n {{ .Release.Namespace }}

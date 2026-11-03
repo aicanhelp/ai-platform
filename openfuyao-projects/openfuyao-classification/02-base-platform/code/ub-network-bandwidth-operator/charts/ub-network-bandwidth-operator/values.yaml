@@ -1,0 +1,65 @@
+namespace:
+  name: ""
+
+image:
+  repository: cr.openfuyao.cn/openfuyao/ub-network-bandwidth-operator
+  tag: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: []
+
+nameOverride: ""
+fullnameOverride: ""
+
+config:
+  name: ubs-bandwidth-config
+  optional: true
+  fileName: config.yaml
+  bandwidths:
+    - priority: 0
+      bandwidth: 25
+
+operator:
+  configPath: /etc/ub-network-bandwidth/config.yaml
+  configMountPath: /etc/ub-network-bandwidth
+  healthPort: 8089
+
+updateStrategy:
+  type: RollingUpdate
+  rollingUpdate:
+    maxUnavailable: 100%
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+  limits:
+    cpu: 100m
+    memory: 200Mi
+
+hostPaths:
+  ubseSock:
+    path: /run/ubse
+    type: Directory
+    mountPath: /var/run/ubse
+    readOnly: false
+
+livenessProbe:
+  httpGet:
+    path: /healthz
+    port: health
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /healthz
+    port: health
+  initialDelaySeconds: 5
+  periodSeconds: 10
+  failureThreshold: 3
+
+nodeSelector: {}
+tolerations: []
+affinity: {}

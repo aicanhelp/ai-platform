@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: application-management-service-config
+  namespace: openfuyao-system
+data:
+  marketplace-service-host: {{.Values.serverHost.marketplaceService}}
+  helm-timeout: {{ .Values.helm.timeout }}
+  helm-wait-charts: |
+    {{- range .Values.helm.waitCharts }}
+    - {{ . }}
+    {{- end }}

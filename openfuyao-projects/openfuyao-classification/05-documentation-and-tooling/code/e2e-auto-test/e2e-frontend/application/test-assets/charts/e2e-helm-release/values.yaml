@@ -1,0 +1,9 @@
+replicaCount: 1
+image:
+  repository: busybox
+  tag: "1.36"
+logger:
+  enabled: true
+  intervalSeconds: 5
+  message: "e2e test log from e2e-helm-release"
+pullPolicy: IfNotPresent

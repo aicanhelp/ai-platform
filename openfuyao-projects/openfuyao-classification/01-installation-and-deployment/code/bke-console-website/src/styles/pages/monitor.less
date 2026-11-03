@@ -1,0 +1,329 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+
+.chart_table_monitor{
+  padding: 32px;
+  background-color: @page-container-color;
+  .container-platform-table-cell{
+    word-break: break-all;
+  }
+}
+.chart_title {
+  color: #333333;
+  line-height: 24px;
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+.monitor_header {
+  position: relative;
+  background-color: @page-container-color;
+
+  .primary_btn {
+    display: inline;
+    position: absolute;
+    z-index: 2;
+    margin-right: 32px;
+    right: 0;
+    margin-top: 0px;
+  }
+}
+
+p {
+  margin: 0;
+}
+
+.monitor_namespace {
+  margin: 20px 32px;
+
+  .monitor_content_header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    .@{container-prefix}-radio-group {
+      label:first-child {
+        border-start-start-radius: 6px;
+        border-end-start-radius: 6px;
+      }
+
+      label:last-child {
+        border-start-end-radius: 6px;
+        border-end-end-radius: 6px;
+      }
+
+      .@{container-prefix}-radio-button-wrapper-checked {
+        background: @button-normal-color;
+        color: #fff;
+        border-color: @button-normal-color;
+      }
+    }
+  }
+
+  .monitor_search {
+    margin: 20px 0;
+    padding: 0 32px 20px 32px;
+    background-color: @page-container-color;
+
+    .@{container-prefix}-form-item {
+      margin-top:20px;
+      margin-bottom: 0;
+    }
+  }
+
+  .show_component_card {
+    margin: 20px 0;
+    padding: 20px 5%;
+    background-color: @page-container-color;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+
+    .monitor_aim_flex {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+
+      img {
+        width: 72px;
+        height: 72px;
+        margin-right: 20px;
+      }
+    }
+
+    .monitor_aim_flex_item {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: space-between;
+
+      p {
+        color: #89939b;
+        font-size: 14px;
+        font-weight: normal;
+        line-height: 22px;
+      }
+
+      p:nth-child(1) {
+        line-height: 24px;
+        margin-bottom: 13px;
+        color: #333333;
+        font-size: 32px;
+        font-weight: bold;
+      }
+    }
+  }
+.monitor_bk{
+  background-color: @page-container-color;
+  padding:32px;
+  .chart_title{
+    font-weight: normal !important;
+  }
+  .chart_table_monitor{
+    padding: 0;
+  }
+}
+.monitor_half {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  .chart_container:nth-child(1) {
+    margin-right: 20px;
+  }
+  .donut_chart{
+    width: 500px;
+    .chart_container{
+      margin-right: 0;
+    }
+  }
+}
+  .monitor_chart_container {
+    margin: 20px 0;
+
+    .chart_title {
+      color: #333333;
+      line-height: 24px;
+      font-weight: bold;
+      font-size: 20px;
+      margin-bottom: 12px;
+    }
+
+    .monitor_overview {
+      display: flex;
+      flex-direction: row;
+
+      .info_box {
+        padding: 32px;
+        background-color: @page-container-color;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        width: 70%;
+        height: 300px;
+        align-items: center;
+
+        .info_item {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+
+          .info_title {
+            color: #333333;
+            font-size: 16px;
+          }
+
+          .info_content {
+            display: flex;
+            margin-top:64px;
+            flex-direction: row;
+            align-items: center;
+
+            img {
+              width: 96px;
+              height: 96px;
+              margin-right: 16px;
+            }
+
+            .number_count {
+              color: #333333;
+              font-size: 56px;
+              font-weight: bold;
+            }
+          }
+        }
+      }
+      .donut_chart{
+        width: 28%;
+        margin-left: 2%;
+        margin-top:0;
+        height: 300px;
+      }
+    }
+  }
+
+  .each_half {
+    width: calc(100% / 2 + 10px);
+  }
+}
+
+.monitor_query_container {
+  margin: 20px 32px;
+
+  .monitor_query_header {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: space-between;
+  }
+
+  .monitor_query_box_all {
+
+    .monitor_query_box {
+      margin-top: 20px;
+      background-color: @page-container-color;
+      padding: 32px;
+
+      .monitor_query_item {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+
+        .arrow svg {
+          width: 20px;
+          height: 20px;
+          margin-right: 32px;
+          color: #89939B;
+        }
+
+        .monitor_query_btn {
+          margin: 0 20px 0 16px;
+          width: 72px;
+          height: 32px;
+        }
+
+        .delete svg {
+          width: 20px;
+          height: 20px;
+        }
+        .@{container-prefix}-input{
+          min-height: auto !important;
+        }
+      }
+
+      .chart_table {
+        display: flex;
+        flex-direction: column;
+
+        .monitor_table {
+          padding: 0 32px;
+          background-color: @page-container-color;
+        }
+      }
+
+      .monitor_container {
+        background-color: @page-container-color;
+        padding-top: 12px;
+
+        .monitor_error_box {
+          margin-left: 50px;
+          background-color: rgba(233, 69, 71, 0.10);
+          display: flex;
+          flex-direction: row;
+          align-items: flex-start;
+          padding: 12px 16px;
+
+          svg {
+            color: #e7434a;
+            width: 20px;
+            height: 20px;
+            margin-right: 8px;
+            margin-top: 2px;
+          }
+
+          .info_box {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+
+            p {
+              font-size: 14px;
+            }
+
+            p:nth-child(1) {
+              color: #333333;
+            }
+
+            p:nth-child(2) {
+              color: #666666;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+.dount_container{
+  // min-width: 400px;
+}
+.node_memory_utilisation{
+  height: 300px;
+}
+
+/** 骨架屏样式**/
+.no_select_check_box{
+  display: none;
+}
+.select_check_box,.no_select_check_box{
+  top: 20px;
+}

@@ -1,0 +1,150 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.19.0
+  name: releaseimages.config.openfuyao.com
+spec:
+  group: config.openfuyao.com
+  names:
+    kind: ReleaseImage
+    listKind: ReleaseImageList
+    plural: releaseimages
+    shortNames:
+    - ri
+    singular: releaseimage
+  scope: Namespaced
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.version
+      name: Version
+      type: string
+    - jsonPath: .status.phase
+      name: Phase
+      type: string
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: ReleaseImage describes an OCI release image and its install/upgrade
+          component manifests.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ReleaseImageSpec defines the desired release image state.
+            properties:
+              allowCacheFallback:
+                type: boolean
+              digest:
+                type: string
+              install:
+                description: ReleaseImageInstallSpec lists components to install from
+                  the release image.
+                properties:
+                  components:
+                    items:
+                      description: ReleaseImageInstallComponent is one installable
+                        component.
+                      properties:
+                        name:
+                          type: string
+                        version:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              signatureKey:
+                type: string
+              upgrade:
+                description: ReleaseImageUpgradeSpec lists components and upgrade
+                  handlers for a release.
+                properties:
+                  components:
+                    items:
+                      description: ReleaseImageUpgradeComponent is one upgradable
+                        component, optionally with an inline handler.
+                      properties:
+                        inline:
+                          description: ReleaseImageUpgradeInline references an inline
+                            upgrade handler implementation.
+                          properties:
+                            handler:
+                              type: string
+                            version:
+                              type: string
+                          type: object
+                        name:
+                          type: string
+                        version:
+                          type: string
+                      type: object
+                    type: array
+                type: object
+              verifySignature:
+                type: boolean
+              version:
+                type: string
+            type: object
+          status:
+            description: ReleaseImageStatus defines the observed release image state.
+            properties:
+              cacheFallback:
+                type: boolean
+              compatibilityReport:
+                type: string
+              componentCount:
+                type: integer
+              components:
+                items:
+                  description: ComponentStatus records component metadata parsed from
+                    the release image OCI manifest.
+                  properties:
+                    name:
+                      type: string
+                    type:
+                      description: ComponentType defines the type of component installation
+                      type: string
+                    version:
+                      type: string
+                  type: object
+                type: array
+              digest:
+                type: string
+              message:
+                type: string
+              phase:
+                description: ReleaseImagePhase is the validation/lifecycle phase of
+                  a ReleaseImage.
+                enum:
+                - Valid
+                - Invalid
+                - ManifestMissing
+                - CompatibilityFailed
+                type: string
+              source:
+                type: string
+              validatedAt:
+                format: date-time
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

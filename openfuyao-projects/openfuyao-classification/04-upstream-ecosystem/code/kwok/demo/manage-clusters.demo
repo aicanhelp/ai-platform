@@ -1,0 +1,23 @@
+# Let's getting started with kwokctl!
+kwokctl create cluster
+
+# Get all clusters.
+kwokctl get clusters
+
+# Create an nodes.
+kwokctl scale node --replicas 2
+
+# Get all nodes.
+kubectl get node
+
+# Apply a deployment.
+kubectl create deployment pod --image=pod --replicas=5
+
+# Get all pods.
+kubectl get pod -o wide
+
+# Delete the cluster.
+kwokctl delete cluster
+
+# That's all, enjoy it!
+clear

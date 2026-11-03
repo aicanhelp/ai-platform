@@ -1,0 +1,6 @@
+name: env-check
+type: public
+description: '安装部署环境前置检查校验工具，负责残留文件检查和清理以及指定应用安装情况检测'
+branches:
+  - name: master
+    type: protected

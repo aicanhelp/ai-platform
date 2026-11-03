@@ -1,0 +1,43 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+
+// 初始化p标签
+p {
+  margin: 0;
+}
+
+.service_content {
+  background-color: #f7f7f7;
+  min-height: calc(100vh - 114px - 48px - 55px);
+  padding: 20px 32px;
+  .service_table{
+    padding: 32px;
+    background-color: #fff;
+    min-height: calc(100vh - 114px - 48px - 55px - 64px);
+    .service_table_top{
+      display: flex;
+      justify-content: space-between;
+      .ml16{
+        margin-left: 16px;
+      }
+    }
+    .status_content{
+      display: flex;
+      align-items: center;
+      .status{
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        margin-right: 8px;
+      }
+    }
+  }
+}

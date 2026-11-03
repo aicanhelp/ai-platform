@@ -1,0 +1,9 @@
+name: release-image
+type: public
+description: '存放版本组件的清单列表，包含版本和组件yaml'
+branches:
+  - name: master
+    type: protected
+  - name: feat/self-upgrade
+    type: protected
+    create_from: master

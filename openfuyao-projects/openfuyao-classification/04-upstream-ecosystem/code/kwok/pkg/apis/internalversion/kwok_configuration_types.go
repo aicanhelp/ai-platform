@@ -1,0 +1,140 @@
+/*
+Copyright 2022 The Kubernetes Authors.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+package internalversion
+
+import (
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
+
+// KwokConfiguration provides configuration for the Kwok.
+type KwokConfiguration struct {
+	// Standard list metadata.
+	// More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+	metav1.ObjectMeta
+	// Options holds information about the default value.
+	Options KwokConfigurationOptions
+	// Tracing holds tracing configuration.
+	Tracing TracingConfiguration
+}
+
+// KwokConfigurationOptions holds information about the options.
+type KwokConfigurationOptions struct {
+	// AutoCreateNodes is the number of nodes to create automatically.
+	// Defaults to 0. If set, ManageAllNodes ManageSingleNode, ManageNodesWithAnnotationSelector,
+	// and ManageNodesWithLabelSelector no longer effective, but the node created by direct management
+	AutoCreateNodes int
+
+	// EnableKubeletListWatch enables the kubelet list watch for fake node.
+	EnableKubeletListWatch bool
+
+	// EnableCRDs is a list of CRDs to enable.
+	EnableCRDs []string
+
+	// The default IP assigned to the Pod on maintained Nodes.
+	CIDR string
+
+	// The ip of all nodes maintained by the Kwok
+	NodeIP string
+
+	// The name of all nodes maintained by the Kwok
+	NodeName string
+
+	// The port of all nodes maintained by the Kwok
+	NodePort int
+
+	// TLSCertFile is the file containing x509 Certificate
+	TLSCertFile string
+
+	// TLSPrivateKeyFile is the ile containing x509 private key
+	TLSPrivateKeyFile string
+
+	// ManageSingleNode is the option to manage a single node name
+	ManageSingleNode string
+
+	// Default option to manage (i.e., maintain heartbeat/liveness of) all Nodes or not.
+	ManageAllNodes bool
+
+	// Default annotations specified on Nodes to demand manage.
+	ManageNodesWithAnnotationSelector string
+
+	// Default labels specified on Nodes to demand manage.
+	ManageNodesWithLabelSelector string
+
+	// If a Node/Pod is on a managed Node and has this annotation status will not be modified
+	// Deprecated: use Stage API instead
+	DisregardStatusWithAnnotationSelector string
+
+	// If a Node/Pod is on a managed Node and has this label status will not be modified
+	// Deprecated: use Stage API instead
+	DisregardStatusWithLabelSelector string
+
+	// ServerAddress is server address of the Kwok.
+	ServerAddress string
+
+	// Experimental support for getting pod ip from CNI, for CNI-related components, Only works with Linux.
+	// Deprecated: It will be removed and will be supported in the form of plugins
+	EnableCNI bool
+
+	// EnableDebuggingHandlers enables server endpoints for log collection
+	// and local running of containers and commands
+	EnableDebuggingHandlers bool
+
+	// EnableContentionProfiling enables lock contention profiling, if enableDebuggingHandlers is true.
+	EnableContentionProfiling bool
+
+	// EnableProfiling enables /debug/pprof handler.
+	EnableProfilingHandler bool
+
+	// PodPlayStageParallelism is the number of PodPlayStages that are allowed to run in parallel.
+	PodPlayStageParallelism uint
+
+	// NodePlayStageParallelism is the number of NodePlayStages that are allowed to run in parallel.
+	NodePlayStageParallelism uint
+
+	// NodeLeaseDurationSeconds is the duration the Kubelet will set on its corresponding Lease.
+	NodeLeaseDurationSeconds uint
+
+	// NodeLeaseParallelism is the number of NodeLeases that are allowed to be processed in parallel.
+	NodeLeaseParallelism uint
+
+	// PodsOnNodeSyncParallelism is the number of workers to sync pods on nodes in parallel.
+	PodsOnNodeSyncParallelism uint
+
+	// EnablePodsOnNodeSyncListPager enables pager list for workers to sync pods on nodes.
+	EnablePodsOnNodeSyncListPager bool
+
+	// EnablePodsOnNodeSyncStreamWatch enables stream watch for workers to sync pods on nodes.
+	EnablePodsOnNodeSyncStreamWatch bool
+
+	// AdditionalListWatchClients is the number of additional List-watch clients to create.
+	AdditionalListWatchClients int
+
+	// AdditionalListWatchResources is the list of resources that additional List-watch clients will watch.
+	AdditionalListWatchResources []string
+}
+
+// TracingConfiguration provides versioned configuration for OpenTelemetry tracing clients.
+type TracingConfiguration struct {
+	// Endpoint of the collector this component will report traces to.
+	// The connection is insecure, and does not currently support TLS.
+	Endpoint string
+
+	// SamplingRatePerMillion is the number of samples to collect per million spans.
+	// Recommended is unset. If unset, sampler respects its parent span's sampling
+	// rate, but otherwise never samples.
+	SamplingRatePerMillion int32
+}

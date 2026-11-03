@@ -1,0 +1,319 @@
+# 独立部署 numa-affinity-package，不依赖 openfuyao-system-controller与 prometheus-operator，不包含 numa-exporter 与前端
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/instance: numa-affinity-package
+    app.kubernetes.io/name: numa-affinity-package
+  name: numa-affinity-package
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: numa-affinity-package-installer
+  namespace: numa-affinity-package
+spec:
+  backoffLimit: 5
+  template:
+    metadata:
+      labels:
+        app: numa-affinity-package-installer
+    spec:
+      restartPolicy: OnFailure
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              preference:
+                matchExpressions:
+                  - key: node-role.kubernetes.io/master
+                    operator: Exists
+            - weight: 20
+              preference:
+                matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/control-plane"
+          effect: "NoSchedule"
+      serviceAccountName: numa-affinity-package-installer
+      containers:
+        - name: helm-installer
+          image: {{ .repo }}openfuyao-system-controller:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: OPENFUYAO_REGISTRY
+              value: "{{ .repo }}"
+            - name: NUMA_AFFINITY_VERSION
+              value: "0.0.0-latest"
+            - name: CHART_NAME
+              value: "numa-affinity-package"
+            - name: CHART_PATH
+              value: "chart"
+            - name: OPENFUYAO_REPO
+              value: "{{ .openfuyaoRepo }}"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              CA_CERT_PATH="/etc/openFuyao/trust-chain.crt"
+
+              OS=$(uname | tr '[:upper:]' '[:lower:]')
+              ARCH=$(uname -m)
+              case $ARCH in
+                x86_64) ARCH="amd64";;
+                aarch64) ARCH="arm64";;
+              esac
+
+              echo "安装 helm..."
+              tar -zxvf /home/openfuyao-system/${ARCH}-bin/helm-v3.14.2-"${OS}"-${ARCH}.tar.gz
+              mv "${OS}"-$ARCH/helm /usr/local/bin/helm
+              echo "成功安装 helm..."
+              
+              REPO_TYPE="unknown"
+              HELM_REPO_NAME="openfuyao-repo"
+              IS_ONLINE="false"
+              
+              # 判断仓库类型
+              if echo "${OPENFUYAO_REPO}" | grep -q "^oci://"; then
+                  echo "检测到 OCI 格式仓库: ${OPENFUYAO_REPO}"
+                  REPO_TYPE="oci"
+                  IS_ONLINE="true"
+                  # OCI 仓库使用 --ca-file 参数进行证书认证
+                  if [ -f "${CA_CERT_PATH}" ]; then
+                      echo "使用 CA 证书进行 OCI 仓库认证: ${CA_CERT_PATH}"
+                      CA_FILE_ARGS="--ca-file ${CA_CERT_PATH}"
+                  else
+                      echo "未找到 CA 证书文件,使用不安全连接"
+                      CA_FILE_ARGS="--insecure-skip-tls-verify"
+                  fi
+              elif echo "${OPENFUYAO_REPO}" | grep -q "^https\?://"; then
+                  echo "检测到 HTTPS 格式仓库: ${OPENFUYAO_REPO}"
+                  REPO_TYPE="https"
+                  IS_ONLINE="true"
+
+                  CA_FILE_ARGS=""
+                  if [ -f "${CA_CERT_PATH}" ]; then
+                      echo "使用 CA 证书进行仓库认证: ${CA_CERT_PATH}"
+                      CA_FILE_ARGS="--ca-file ${CA_CERT_PATH}"
+                  else
+                      echo "未找到 CA 证书,使用不安全连接"
+                      CA_FILE_ARGS="--insecure-skip-tls-verify"
+                  fi
+                  
+                  echo "添加 Helm 仓库: ${HELM_REPO_NAME}"
+                  if helm repo add "${HELM_REPO_NAME}" "${OPENFUYAO_REPO}" ${CA_FILE_ARGS}; then
+                      echo "成功添加 Helm 仓库"
+                  else
+                      echo "添加仓库失败,尝试使用不安全连接"
+                      helm repo add "${HELM_REPO_NAME}" "${OPENFUYAO_REPO}" --insecure-skip-tls-verify || {
+                          echo "添加仓库失败,请检查仓库地址和证书配置"
+                          exit 1
+                      }
+                  fi
+                  helm repo update
+                  
+              else
+                  echo "离线部署模式"
+                  REPO_TYPE="offline"
+                  IS_ONLINE="false"
+              fi
+
+              echo "部署模式: $([ "$IS_ONLINE" = "true" ] && echo "在线" || echo "离线"), 仓库类型: ${REPO_TYPE}"
+
+              if [ ! -d "${CHART_PATH}" ]; then
+                 mkdir -p "${CHART_PATH}"
+              fi
+
+              cur_path=$(pwd)
+              cd "${CHART_PATH}"  || echo "Failed to change directory to ${CHART_PATH}"
+
+              if [ -f "${CHART_NAME}-${NUMA_AFFINITY_VERSION}.tgz" ]; then
+                  echo "${CHART_NAME}-${NUMA_AFFINITY_VERSION}.tgz 已存在,跳过下载"
+                  cd "${cur_path}" || { echo "Failed to change directory to ${cur_path}"; exit 1; }
+              else
+                  echo "下载 ${CHART_NAME} chart..."
+                  attempts=0
+                  max_attempts=3
+                  while [ $attempts -lt $max_attempts ]; do
+                      success=false
+                      
+                      if [ "$REPO_TYPE" = "oci" ]; then
+                          # OCI 仓库 - 在线模式
+                          if helm fetch "${OPENFUYAO_REPO}/${CHART_NAME}" --version "${NUMA_AFFINITY_VERSION}" ${CA_FILE_ARGS}; then
+                              success=true
+                          fi
+                      elif [ "$REPO_TYPE" = "https" ]; then
+                          # HTTPS 仓库 - 在线模式
+                          if helm fetch "${HELM_REPO_NAME}/${CHART_NAME}" --version "${NUMA_AFFINITY_VERSION}"; then
+                              success=true
+                          fi
+                      else
+                          # 离线模式
+                          if helm fetch "${CHART_NAME}" --repo "${OPENFUYAO_REPO}" --version "${NUMA_AFFINITY_VERSION}"; then
+                              success=true
+                          fi
+                      fi
+                      
+                      if [ "$success" = true ]; then
+                          echo "成功下载 ${CHART_NAME} chart (尝试 $((attempts + 1))/$max_attempts)"
+                          break
+                      else
+                          attempts=$((attempts + 1))
+                          if [ $attempts -lt $max_attempts ]; then
+                              echo "下载失败,重试 $attempts/$max_attempts..."
+                              sleep 2
+                          else
+                              echo "下载失败,已重试 $max_attempts 次"
+                              exit 1
+                          fi
+                      fi
+                  done
+                  
+                  cd "${cur_path}" || { echo "Failed to change directory to ${cur_path}"; exit 1; }
+              fi
+
+              numa_affinity_package_chart_path="./${CHART_PATH}/${CHART_NAME}-${NUMA_AFFINITY_VERSION}.tgz"
+              if [ ! -f "${numa_affinity_package_chart_path}" ]; then
+                  echo "Error: numa_affinity_package chart not found at ${numa_affinity_package_chart_path}"
+                  exit 1
+              fi
+
+              # 拉取并解包父 Chart 到目录
+              echo "解压 ${CHART_NAME} chart..."
+              rm -rf "${CHART_PATH:?}/${CHART_NAME}"
+              
+              attempts=0
+              max_attempts=3
+              while [ $attempts -lt $max_attempts ]; do
+                  success=false
+                  
+                  if [ "$REPO_TYPE" = "oci" ]; then
+                      # OCI 仓库 - 在线模式
+                      if helm pull "${OPENFUYAO_REPO}/${CHART_NAME}" --version "${NUMA_AFFINITY_VERSION}" --untar -d "${CHART_PATH}" ${CA_FILE_ARGS}; then
+                          success=true
+                      fi
+                  elif [ "$REPO_TYPE" = "https" ]; then
+                      # HTTPS 仓库 - 在线模式
+                      if helm pull "${HELM_REPO_NAME}/${CHART_NAME}" --version "${NUMA_AFFINITY_VERSION}" --untar -d "${CHART_PATH}"; then
+                          success=true
+                      fi
+                  else
+                      # 离线模式
+                      if helm pull "${CHART_NAME}" --repo "${OPENFUYAO_REPO}" --version "${NUMA_AFFINITY_VERSION}" --untar -d "${CHART_PATH}"; then
+                          success=true
+                      fi
+                  fi
+                  
+                  if [ "$success" = true ]; then
+                      echo "成功解压 ${CHART_NAME} chart (尝试 $((attempts + 1))/$max_attempts)"
+                      break
+                  else
+                      attempts=$((attempts + 1))
+                      if [ $attempts -lt $max_attempts ]; then
+                          echo "解压失败,重试 $attempts/$max_attempts..."
+                          sleep 2
+                      else
+                          echo "解压失败,已重试 $max_attempts 次"
+                          exit 1
+                      fi
+                  fi
+              done
+
+              CHART_DIR="${CHART_PATH}/${CHART_NAME}"
+
+              # 展开后端子 Chart 并移除其内的 numa-exporter 依赖
+              VC_PKG_TGZ=$(ls "${CHART_DIR}/charts"/volcano-config-package-*.tgz 2>/dev/null || true)
+              if [ -n "${VC_PKG_TGZ}" ]; then
+                tar -zxf "${VC_PKG_TGZ}" -C "${CHART_DIR}/charts/"
+                rm -f "${VC_PKG_TGZ}"
+              fi
+              if [ -d "${CHART_DIR}/charts/volcano-config-package/charts" ]; then
+                echo "Removing nested numa-exporter from volcano-config-package..."
+                rm -f "${CHART_DIR}/charts/volcano-config-package/charts/numa-exporter-"*.tgz 2>/dev/null || true
+                rm -rf "${CHART_DIR}/charts/volcano-config-package/charts/numa-exporter" 2>/dev/null || true
+              fi
+
+              # 从 Chart.yaml 中移除 volcano-config-website 依赖
+              echo "Removing volcano-config-website dependency from Chart.yaml..."
+              if [ -f "${CHART_DIR}/Chart.yaml" ]; then
+                sed -i '/volcano-config-website/d' "${CHART_DIR}/Chart.yaml"
+              fi
+
+              # 移除 volcano-config-website chart 文件
+              echo "Removing volcano-config-website chart files..."
+              rm -f "${CHART_DIR}/charts/volcano-config-website-"*.tgz 2>/dev/null || true
+              rm -rf "${CHART_DIR}/charts/volcano-config-website" 2>/dev/null || true
+
+              echo "安装 numa-affinity-package..."
+              helm install ${CHART_NAME} "${CHART_DIR}" \
+                -n volcano-system \
+                --create-namespace \
+                --version $NUMA_AFFINITY_VERSION \
+                --set volcano-config-website.openFuyao=false \
+                --set volcano-config-website.enableOAuth=false \
+                --set volcano-config-service.VCS_API_DISABLED=true \
+                --wait --timeout=600s
+              
+              echo "numa-affinity-package 安装流程结束"
+          volumeMounts:
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: ca-cert
+              mountPath: /etc/openFuyao
+              readOnly: true
+            - name: host-hosts
+              mountPath: /etc/hosts
+              readOnly: true
+      volumes:
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        - name: ca-cert
+          hostPath:
+            path: /etc/openFuyao
+            type: DirectoryOrCreate
+        - name: host-hosts
+          hostPath:
+            path: /etc/hosts
+            type: File
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: numa-affinity-package-installer
+  namespace: numa-affinity-package
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: numa-affinity-package-installer
+rules:
+- apiGroups: ["*"]
+  resources: ["*"]
+  verbs: ["*"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: numa-affinity-package-installer
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: numa-affinity-package-installer
+subjects:
+- kind: ServiceAccount
+  name: numa-affinity-package-installer
+  namespace: numa-affinity-package

@@ -1,0 +1,8 @@
+{
+  "name": "helm",
+  "version": "3.14.2",
+  "required": true,
+  "hide": false,
+  "bootstrap-node": "masters",
+  "dependencies": []
+}

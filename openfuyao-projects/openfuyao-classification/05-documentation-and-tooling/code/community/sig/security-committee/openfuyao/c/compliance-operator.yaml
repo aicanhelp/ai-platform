@@ -1,0 +1,6 @@
+name: compliance-operator
+type: public
+description: '安全扫描Operator，支持CIS、 STIG规则扫描'
+branches:
+  - name: main
+    type: public

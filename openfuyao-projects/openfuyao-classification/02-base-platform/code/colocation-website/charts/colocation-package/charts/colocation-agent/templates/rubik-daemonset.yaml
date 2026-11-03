@@ -1,0 +1,199 @@
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: colocation-rubik
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["list", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/eviction"]
+    verbs: ["create"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: colocation-rubik
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: colocation-rubik
+subjects:
+  - kind: ServiceAccount
+    name: colocation-rubik
+    {{- if .Values.namespace }}
+    namespace: {{ .Values.namespace }}
+    {{- else }}
+    namespace: {{ .Release.Namespace }}
+    {{- end }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: colocation-rubik
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: colocation-rubik-config
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+data:
+  config.json: |
+    {
+      "agent": {
+        "cgroupDriver": "systemd",
+        "logDriver": "stdio",
+        "logDir": "/var/log/rubik",
+        "logSize": 1024,
+        "logLevel": "info",
+        "cgroupRoot": "/sys/fs/cgroup",
+        "enabledFeatures": [
+          "preemption"
+        ]
+      },
+      "preemption": {
+        "resource": [
+          "cpu",
+          "memory"
+        ]
+      }
+    }
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: colocation-rubik
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  labels:
+    k8s-app: rubik-agent
+    app.kubernetes.io/name:  colocation-agent
+spec:
+  selector:
+    matchLabels:
+      name: colocation-rubik
+      app.kubernetes.io/name:  colocation-agent
+  template:
+    metadata:
+      {{- if .Values.namespace }}
+      namespace: {{ .Values.namespace }}
+      {{- else }}
+      namespace: {{ .Release.Namespace }}
+      {{- end }}
+      labels:
+        name: colocation-rubik
+        app.kubernetes.io/name:  colocation-agent
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: "node.openfuyao.com/colocation"
+                operator: "Exists"
+      serviceAccountName: colocation-rubik
+      hostPID: true
+      containers:
+      - command:
+          - /bin/sh
+          - -c
+          - |
+            echo "Starting colocation-agent..."
+
+            if [ -d "/sys/fs/resctrl" ]; then
+              if ! mountpoint -q /sys/fs/resctrl 2>/dev/null; then
+                echo "Attempting to mount resctrl..."
+                mount -t resctrl resctrl /sys/fs/resctrl 2>/dev/null && echo "resctrl mounted successfully" || echo "resctrl mount failed, continuing..."
+              else
+                echo "resctrl already mounted"
+              fi
+            else
+              echo "resctrl directory not found, skipping mount"
+            fi
+            
+            while true; do
+              echo "1" > /host/proc/sys/vm/memcg_qos_enable 2>/dev/null || echo "Failed to enable memcg_qos"
+              sleep 30
+            done
+        image: {{ .Values.thirdPartyImages.busyBox.repository }}:{{ .Values.thirdPartyImages.busyBox.tag }}
+        imagePullPolicy: {{ .Values.thirdPartyImages.busyBox.pullPolicy }}
+        name: colocation-agent
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: host-proc-sys
+          mountPath: /host/proc/sys
+        - name: sysfs  
+          mountPath: /sys/fs
+          mountPropagation: Bidirectional
+      - name: colocation-rubik
+        image:  '{{ list . "rubik" | include "helpers.image.name" }}'
+        imagePullPolicy: {{ .Values.images.rubik.pullPolicy }}
+        command:
+          - /rubik-manager
+        env:
+          - name: RUBIK_NODE_NAME
+            valueFrom:
+              fieldRef:
+                fieldPath: spec.nodeName
+        securityContext:
+          capabilities:
+            add:
+            - SYS_ADMIN
+        resources:
+          limits:
+            memory: 200Mi
+          requests:
+            cpu: 100m
+            memory: 200Mi
+        volumeMounts:
+        - name: rubiklog
+          mountPath: /var/log/rubik
+          readOnly: false
+        - name: runrubik
+          mountPath: /run/rubik
+          readOnly: false
+        - name: sysfs
+          mountPath: /sys/fs
+          readOnly: false
+        - name: devfs
+          mountPath: /dev
+          readOnly: false
+        - name: config-volume
+          mountPath: /var/lib/rubik
+      terminationGracePeriodSeconds: 30
+      volumes:
+      - name: rubiklog
+        hostPath:
+          path: /var/log/rubik
+      - name: runrubik
+        hostPath:
+          path: /run/rubik
+      - name: sysfs
+        hostPath:
+          path: /sys/fs
+      - name: devfs
+        hostPath:
+          path: /dev
+      - name: config-volume
+        configMap:
+          name: colocation-rubik-config
+          items:
+          - key: config.json
+            path: config.json
+      - name: host-proc-sys
+        hostPath:
+          path: /proc/sys
+          type: DirectoryOrCreate

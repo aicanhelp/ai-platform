@@ -1,0 +1,167 @@
+{
+  "generatedAt": "2026-04-02T03:07:15.977Z",
+  "packageCount": 26,
+  "distinctChartCount": 16,
+  "notes": [
+    "All generated packages are Helm application charts.",
+    "Extension-component package format is not inferred in this generator."
+  ],
+  "packages": [
+    {
+      "name": "alpha-demo",
+      "version": "0.1.0",
+      "packageFile": "alpha-demo-0.1.0.tgz",
+      "description": "Generated alpha demo chart."
+    },
+    {
+      "name": "beta-ops",
+      "version": "0.1.0",
+      "packageFile": "beta-ops-0.1.0.tgz",
+      "description": "Generated beta operations chart."
+    },
+    {
+      "name": "gamma-stack",
+      "version": "0.1.0",
+      "packageFile": "gamma-stack-0.1.0.tgz",
+      "description": "Generated gamma stack chart."
+    },
+    {
+      "name": "delta-service",
+      "version": "0.1.0",
+      "packageFile": "delta-service-0.1.0.tgz",
+      "description": "Generated delta service chart."
+    },
+    {
+      "name": "epsilon-tools",
+      "version": "0.1.0",
+      "packageFile": "epsilon-tools-0.1.0.tgz",
+      "description": "Generated epsilon tools chart."
+    },
+    {
+      "name": "zeta-observer",
+      "version": "0.1.0",
+      "packageFile": "zeta-observer-0.1.0.tgz",
+      "description": "Generated zeta observer chart."
+    },
+    {
+      "name": "eta-runner",
+      "version": "0.1.0",
+      "packageFile": "eta-runner-0.1.0.tgz",
+      "description": "Generated eta runner chart."
+    },
+    {
+      "name": "theta-web",
+      "version": "0.1.0",
+      "packageFile": "theta-web-0.1.0.tgz",
+      "description": "Generated theta web chart."
+    },
+    {
+      "name": "iota-api",
+      "version": "0.1.0",
+      "packageFile": "iota-api-0.1.0.tgz",
+      "description": "Generated iota API chart."
+    },
+    {
+      "name": "kappa-worker",
+      "version": "0.1.0",
+      "packageFile": "kappa-worker-0.1.0.tgz",
+      "description": "Generated kappa worker chart."
+    },
+    {
+      "name": "lambda-cache",
+      "version": "0.1.0",
+      "packageFile": "lambda-cache-0.1.0.tgz",
+      "description": "Generated lambda cache chart."
+    },
+    {
+      "name": "mu-gateway",
+      "version": "0.1.0",
+      "packageFile": "mu-gateway-0.1.0.tgz",
+      "description": "Generated mu gateway chart."
+    },
+    {
+      "name": "nu-scheduler",
+      "version": "0.1.0",
+      "packageFile": "nu-scheduler-0.1.0.tgz",
+      "description": "Generated nu scheduler chart."
+    },
+    {
+      "name": "pkg-2026-demo",
+      "version": "0.1.0",
+      "packageFile": "pkg-2026-demo-0.1.0.tgz",
+      "description": "Generated chart with digits in package name."
+    },
+    {
+      "name": "special-long-name-abcdefghijklmnopqrstuvwxyz0123456789abc",
+      "version": "0.1.0",
+      "packageFile": "special-long-name-abcdefghijklmnopqrstuvwxyz0123456789abc-0.1.0.tgz",
+      "description": "This package is intentionally generated for marketplace package-management tests. It exists to cover long-description display, search, pagination, and upload flows. The content is synthetic but packaged with Helm and valid for smoke-level upload checks. This package is intentionally generated for marketplace package-management tests. It exists to cover long-description display, search, pagination, and upload flows. The content is synthetic but packaged with Helm and valid for smoke-level upload checks."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.1.0",
+      "packageFile": "multi-version-demo-0.1.0.tgz",
+      "description": "Generated multi-version chart release 1."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.2.0",
+      "packageFile": "multi-version-demo-0.2.0.tgz",
+      "description": "Generated multi-version chart release 2."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.3.0",
+      "packageFile": "multi-version-demo-0.3.0.tgz",
+      "description": "Generated multi-version chart release 3."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.4.0",
+      "packageFile": "multi-version-demo-0.4.0.tgz",
+      "description": "Generated multi-version chart release 4."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.5.0",
+      "packageFile": "multi-version-demo-0.5.0.tgz",
+      "description": "Generated multi-version chart release 5."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.6.0",
+      "packageFile": "multi-version-demo-0.6.0.tgz",
+      "description": "Generated multi-version chart release 6."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.7.0",
+      "packageFile": "multi-version-demo-0.7.0.tgz",
+      "description": "Generated multi-version chart release 7."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.8.0",
+      "packageFile": "multi-version-demo-0.8.0.tgz",
+      "description": "Generated multi-version chart release 8."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.9.0",
+      "packageFile": "multi-version-demo-0.9.0.tgz",
+      "description": "Generated multi-version chart release 9."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.10.0",
+      "packageFile": "multi-version-demo-0.10.0.tgz",
+      "description": "Generated multi-version chart release 10."
+    },
+    {
+      "name": "multi-version-demo",
+      "version": "0.11.0",
+      "packageFile": "multi-version-demo-0.11.0.tgz",
+      "description": "Generated multi-version chart release 11."
+    }
+  ]
+}

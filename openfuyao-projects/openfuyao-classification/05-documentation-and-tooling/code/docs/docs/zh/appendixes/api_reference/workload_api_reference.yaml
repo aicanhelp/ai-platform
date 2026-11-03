@@ -1,0 +1,964 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: 提供Kubernetes工作负载资源管理相关API接口。
+  version: 1.0.0
+servers:
+  - url: /
+    description: 默认服务器。
+paths:
+  /api/kubernetes/api/v1/namespaces/{namespace}/pods/{name}:
+    get:
+      tags:
+        - 工作负载
+        - 容器组
+      summary: 读取指定的容器。
+      description: 获取容器具体内容。
+      operationId: getPod
+      parameters:
+        - name: name
+          in: path
+          description: 容器名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Pod对象。
+        '401':
+          description: 未鉴权。
+    put:
+      tags:
+        - 工作负载
+        - 容器组
+      summary: 更新指定的容器。
+      description: 更新指定的容器。
+      operationId: updatePod
+      parameters:
+        - name: name
+          in: path
+          description: 容器名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要更新的容器内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Pod配置对象。
+      responses:
+        '200':
+          description: 成功。
+        '201':
+          description: 已创建。
+        '401':
+          description: 未鉴权。
+    delete:
+      tags:
+        - 工作负载
+        - 容器组
+      summary: 删除指定的容器。
+      description: 删除一个容器。
+      operationId: deletePod
+      parameters:
+        - name: name
+          in: path
+          description: 容器名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除对象前的持续时间（秒数）。
+          required: false
+          schema:
+            type: integer
+        - name: propagationPolicy
+          in: query
+          description: 该字段决定是否以及如何执行垃圾收集。
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+    patch:
+      tags:
+        - 工作负载
+        - 容器组
+      summary: 部分更新指定的容器。
+      description: 部分更新指定的容器。
+      operationId: patchPod
+      parameters:
+        - name: name
+          in: path
+          description: 容器名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制应用该请求。
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        description: 要应用的补丁操作。
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: 操作类型。
+                    enum:
+                      - add
+                      - remove
+                      - replace
+                      - move
+                      - copy
+                      - test
+                  path:
+                    type: string
+                    description: 要操作的JSON指针路径。
+                  value:
+                    description: 用于add、replace或test操作的值。
+                  from:
+                    type: string
+                    description: 用于move或copy操作的源JSON指针路径。
+            examples:
+              addLabelNew:
+                summary: 新增标签（无label时）。
+                value:
+                  - op: add
+                    path: /metadata/labels
+                    value:
+                      data: value
+              addLabelExisting:
+                summary: 新增标签（有label时）。
+                value:
+                  - op: add
+                    path: /metadata/labels/env
+                    value: value
+              replaceLabel:
+                summary: 修改标签。
+                value:
+                  - op: replace
+                    path: /metadata/labels/env
+                    value: value1
+              removeLabel:
+                summary: 删除标签。
+                value:
+                  - op: remove
+                    path: /metadata/labels/env
+      responses:
+        '200':
+          description: 成功。
+        '201':
+          description: 已更新。
+        '401':
+          description: 未鉴权。
+
+  /api/kubernetes/api/v1/namespaces/{namespace}/pods:
+    get:
+      tags:
+        - 工作负载
+        - 容器组
+      summary: 获取容器列表。
+      description: 获取容器列表。
+      operationId: listPods
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 对请求所针对的资源版本设置约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 决定如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: 监视对所述资源的更改。
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: 监视通知流将从合成事件开始，以生成集合中对象的当前状态。
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: list/watch调用的超时秒数。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Pod列表对象。
+        '401':
+          description: 未鉴权。
+    post:
+      tags:
+        - 工作负载
+        - 容器组
+      summary: 创建一个容器。
+      description: 创建一个容器。
+      operationId: createPod
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要创建的容器内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Pod配置对象。
+            example:
+              metadata:
+                name: example-pod
+                labels:
+                  app: example-pod
+              spec:
+                containers:
+                  - name: example-containers
+                    image: nginx:1.19.3
+                    ports:
+                      - containerPort: 8090
+      responses:
+        '200':
+          description: 成功。
+        '201':
+          description: 已创建。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+
+  /api/kubernetes/apis/apps/v1/namespaces/{namespace}/deployments/{name}:
+    get:
+      tags:
+        - 工作负载
+        - 无状态负载
+      summary: 读取指定的无状态负载。
+      description: 获取无状态负载具体内容。
+      operationId: getDeployment
+      parameters:
+        - name: name
+          in: path
+          description: 无状态负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Deployment对象。
+        '401':
+          description: 未鉴权。
+    put:
+      tags:
+        - 工作负载
+        - 无状态负载
+      summary: 更新指定的无状态负载。
+      description: 更新指定的无状态负载。
+      operationId: updateDeployment
+      parameters:
+        - name: name
+          in: path
+          description: 无状态负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要更新的无状态负载内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Deployment配置对象。
+      responses:
+        '200':
+          description: 成功。
+        '201':
+          description: 已创建。
+        '401':
+          description: 未鉴权。
+    delete:
+      tags:
+        - 工作负载
+        - 无状态负载
+      summary: 删除指定的无状态负载。
+      description: 删除一个无状态负载。
+      operationId: deleteDeployment
+      parameters:
+        - name: name
+          in: path
+          description: 无状态负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: 删除对象前的持续时间（秒数）。
+          required: false
+          schema:
+            type: integer
+        - name: propagationPolicy
+          in: query
+          description: 该字段决定是否以及如何执行垃圾收集。
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。
+    patch:
+      tags:
+        - 工作负载
+        - 无状态负载
+      summary: 部分更新指定的无状态负载。
+      description: 部分更新指定的无状态负载。
+      operationId: patchDeployment
+      parameters:
+        - name: name
+          in: path
+          description: 无状态负载名称。
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: 强制应用该请求。
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        description: 要应用的补丁操作。
+        required: true
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              description: JSON Patch操作列表。
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: 操作类型。
+                    enum:
+                      - add
+                      - remove
+                      - replace
+                      - move
+                      - copy
+                      - test
+                  path:
+                    type: string
+                    description: 要操作的JSON指针路径。
+                  value:
+                    description: 用于add、replace或test操作的值。
+                  from:
+                    type: string
+                    description: 用于move或copy操作的源JSON指针路径。
+            examples:
+              addLabelNew:
+                summary: 新增标签（无label时）。
+                value:
+                  - op: add
+                    path: /metadata/labels
+                    value:
+                      data: value
+              addLabelExisting:
+                summary: 新增标签（有label时）。
+                value:
+                  - op: add
+                    path: /metadata/labels/env
+                    value: value
+              replaceLabel:
+                summary: 修改标签。
+                value:
+                  - op: replace
+                    path: /metadata/labels/env
+                    value: value1
+              removeLabel:
+                summary: 删除标签。
+                value:
+                  - op: remove
+                    path: /metadata/labels/env
+      responses:
+        '200':
+          description: 成功。
+        '201':
+          description: 已更新。
+        '401':
+          description: 未鉴权。
+
+  /api/kubernetes/apis/apps/v1/namespaces/{namespace}/deployments:
+    get:
+      tags:
+        - 工作负载
+        - 无状态负载
+      summary: 获取无状态负载列表。
+      description: 获取无状态负载列表。
+      operationId: listDeployments
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersion
+          in: query
+          description: 对请求所针对的资源版本设置约束。
+          required: false
+          schema:
+            type: string
+        - name: resourceVersionMatch
+          in: query
+          description: 决定如何将resourceVersion应用于列表调用。
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: 监视对所述资源的更改。
+          required: false
+          schema:
+            type: boolean
+        - name: sendInitialEvents
+          in: query
+          description: 监视通知流将从合成事件开始，以生成集合中对象的当前状态。
+          required: false
+          schema:
+            type: boolean
+        - name: timeoutSeconds
+          in: query
+          description: list/watch调用的超时秒数。
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                description: Deployment列表对象。
+        '401':
+          description: 未鉴权。
+    post:
+      tags:
+        - 工作负载
+        - 无状态负载
+      summary: 创建一个无状态负载。
+      description: 创建一个无状态负载。
+      operationId: createDeployment
+      parameters:
+        - name: namespace
+          in: path
+          description: 命名空间名称。
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: 整齐打印。
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: 列表调用返回的最大响应数。
+          required: false
+          schema:
+            type: integer
+        - name: page
+          in: query
+          description: 列表调用返回的指定页码。
+          required: false
+          schema:
+            type: integer
+        - name: dryRun
+          in: query
+          description: 表示不应该持久化所请求的修改。
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: 限制所返回对象的字段的选择器。
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: 通过标签限制返回对象列表的选择器。
+          required: false
+          schema:
+            type: string
+      requestBody:
+        description: 需要创建的无状态负载内容。
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: Deployment配置对象。
+            example:
+              metadata:
+                name: example-deployment
+                namespace: default
+              spec:
+                replicas: 1
+                selector:
+                  matchLabels:
+                    app: example-deployment
+                template:
+                  metadata:
+                    labels:
+                      app: example-deployment
+                  spec:
+                    containers:
+                      - name: example-deployment
+                        image: nginx:1.19.3
+                        ports:
+                          - containerPort: 8091
+      responses:
+        '200':
+          description: 成功。
+        '201':
+          description: 已创建。
+        '202':
+          description: 已接收。
+        '401':
+          description: 未鉴权。

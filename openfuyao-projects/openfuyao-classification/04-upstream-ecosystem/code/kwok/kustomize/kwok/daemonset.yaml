@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: kwok-controller
+spec:
+  template:
+    spec:
+      containers:
+      - name: kwok-controller
+        image: registry.k8s.io/kwok/kwok
+        imagePullPolicy: IfNotPresent
+        args:
+        - --config=/root/.kwok/kwok.yaml
+        - --node-ip=$(POD_IP)
+        env:
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: HOST_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: NODENAME
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        startupProbe:
+          httpGet:
+            path: /healthz
+            port: 10247
+            scheme: HTTP
+          initialDelaySeconds: 2
+          timeoutSeconds: 2
+          periodSeconds: 10
+          failureThreshold: 3
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10247
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 10
+          periodSeconds: 60
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10247
+            scheme: HTTP
+          initialDelaySeconds: 2
+          timeoutSeconds: 2
+          periodSeconds: 20
+          failureThreshold: 5
+        volumeMounts:
+        - name: kwok-config
+          subPath: kwok.yaml
+          mountPath: /root/.kwok/kwok.yaml
+          readOnly: true
+      volumes:
+      - name: kwok-config
+        configMap:
+          name: kwok
+      serviceAccountName: kwok-controller
+      restartPolicy: Always

@@ -1,0 +1,16 @@
+images:
+  core:
+    repository: "cr.openfuyao.cn/openfuyao/kae-device-plugin"
+    pullPolicy: "IfNotPresent"
+
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+        - matchExpressions:
+            - key: accelerator/kae.hpre
+              operator: Exists
+
+tolerations: []
+
+nodeSelector: {}

@@ -1,0 +1,163 @@
+# ----------------------------------------------------------------
+# 1. 创建 Secret，存储 Harbor 安装所需的敏感信息（Base64 编码后）
+# ----------------------------------------------------------------
+apiVersion: v1
+kind: Secret
+metadata:
+  name: harbor-credentials
+  namespace: openfuyao-system-controller
+type: Opaque
+data:
+  HARBOR_ADMIN_PASSWORD:    SGFyYm9yQDEyMzQ1
+  HARBOR_DATABASE_PASSWORD: ZGJSb290MTIzNDU=
+  HARBOR_REGISTRY_PASSWORD: cmVnUm9vdDEyMzQ1
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/instance: openfuyao-system-controller
+    app.kubernetes.io/name: openfuyao-system-controller
+  name: openfuyao-system-controller
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openfuyao-system-controller
+  namespace: openfuyao-system-controller
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openfuyao-system-controller
+  template:
+    metadata:
+      labels:
+        app: openfuyao-system-controller
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/os
+                    operator: In
+                    values:
+                      - linux
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 10
+              preference:
+                matchExpressions:
+                  - key: node-role.kubernetes.io/master
+                    operator: Exists
+            - weight: 20
+              preference:
+                matchExpressions:
+                  - key: node-role.kubernetes.io/control-plane
+                    operator: Exists
+      tolerations:
+        - key: "node-role.kubernetes.io/master"
+          effect: "NoSchedule"
+        - key: "node-role.kubernetes.io/control-plane"
+          effect: "NoSchedule"
+      hostNetwork: true
+      hostPID: true
+      initContainers:
+        - name: installer
+          image: {{ .repo }}openfuyao-system-controller:{{ .tagVersion }}
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            privileged: true
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: OPENFUYAO_REGISTRY
+              value: "{{ .repo }}"
+            - name: ENABLE_HTTPS
+              value: "true"
+            - name: HELM_REPORITORY_URL
+              value: "{{ .helmRepo }}"
+            - name: OAUTH_CERTS_EXPIRATION_TIME
+              value: "876000h"
+            - name: HARBOR_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-credentials
+                  key: HARBOR_ADMIN_PASSWORD
+            - name: HARBOR_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-credentials
+                  key: HARBOR_DATABASE_PASSWORD
+            - name: HARBOR_REGISTRY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-credentials
+                  key: HARBOR_REGISTRY_PASSWORD
+            - name: HARBOR_REGISTRY_PV_SIZE
+              value: "10Gi"
+            - name: HARBOR_JOBSERVICE_PV_SIZE
+              value: "10Gi"
+            - name: HARBOR_JOBSERVICE_PVC_SIZE
+              value: "10Gi"
+            - name: HARBOR_DATABASE_PV_SIZE
+              value: "10Gi"
+            - name: HARBOR_DATABASE_PVC_SIZE
+              value: "10Gi"
+            - name: HARBOR_REGISTRY_PVC_SIZE
+              value: "10Gi"
+            - name: HARBOR_CHARTMUSEUM_PV_SIZE
+              value: "10Gi"
+            - name: HARBOR_CHARTMUSEUM_PVC_SIZE
+              value: "10Gi"
+            - name: HARBOR_REDIS_PV_SIZE
+              value: "10Gi"
+            - name: HARBOR_REDIS_PVC_SIZE
+              value: "10Gi"
+          command:
+            - /bin/sh
+            - -c
+            - sh /home/openfuyao-system/entrypoint.sh -o install
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: root-mount
+              mountPath: /mnt
+      containers:
+        - name: openfuyao-system-controller
+          env:
+            - name: OPENFUYAO_REGISTRY
+              value: "{{ .repo }}"
+          securityContext:
+            privileged: true
+          image: {{ .repo }}openfuyao-system-controller:{{ .tagVersion }}
+          imagePullPolicy: IfNotPresent
+          command:
+            - /bin/sh
+            - -c
+            - while true; do sleep 3600; done
+          volumeMounts:
+            - name: dev
+              mountPath: /dev
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+            - name: root-mount
+              mountPath: /mnt
+      volumes:
+        - name: dev
+          hostPath:
+            path: /dev
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""
+        - name: root-mount
+          hostPath:
+            path: /

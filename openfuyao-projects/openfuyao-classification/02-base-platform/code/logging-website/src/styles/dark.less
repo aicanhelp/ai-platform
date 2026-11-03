@@ -1,0 +1,355 @@
+@import '@/styles/common.less';
+
+//暗色颜色
+.dark_box{
+  background: #171a1f;
+  //多集群
+  .@{container-prefix}-breadcrumb{
+    background-color: #2a2d34ff;
+    color: #F7F7F7;
+    box-shadow: @dark-box-shadow;
+    li{
+      span{
+        color: #F7F7F7 !important;
+      }
+    }
+  }
+  .cancel_btn{
+    color: #fff !important;
+    background: #2a2d34ff;
+    border: 1px solid #444444ff;
+  }
+  .cancel_btn:hover {
+    border: 1px solid #2167CF !important;
+    color: #2167cf !important;
+  }
+  .disabled_btn{
+    border-color: #424242;
+    color: #ffffff40;
+    background: #ffffff14;
+    box-shadow: none;
+  }
+  .child_content{
+    background-color: @dark-box-page-color !important;
+    .page_header{
+      background-color: @dark-background-color;
+     box-shadow: inset 0px -1px 0px #666666;
+      color:#fff;
+    }
+    .@{container-prefix}-breadcrumb{
+      background-color: @dark-background-color;
+      li{
+        // color:#fff;
+      }
+    }
+    .@{container-prefix}-tabs-nav{
+      background-color: @dark-background-color;
+      box-shadow: @dark-box-shadow;
+    }
+    .@{container-prefix}-tabs-nav:before{
+      border-color: #666666;
+    }
+    .@{container-prefix}-tabs-tab{
+      color:#fff;
+    }
+    .search_content{
+      background:@dark-background-color;
+      .@{container-prefix}-input-outlined{
+        background-color: @dark-background-color;
+        color: #fff;
+        border-color: #666666;
+      }
+      .@{container-prefix}-picker-outlined{
+        background-color: @dark-background-color;
+        color: #fff;
+        border-color: #666666;
+      }
+      .@{container-prefix}-input-outlined::placeholder{
+        color: #666666;
+      }
+      .@{container-prefix}-input-search-button{
+        color: #666666 !important;
+        background-color: @dark-background-color;
+        border-color: #666666;
+      }
+
+    }
+  }
+  .search_content{
+    background: #2a2d34ff;
+  }
+  .log_result{
+    background: #2a2d34ff;
+    .log_title{
+      color: #f7f7f7;
+    }
+    .logItems{
+      border: 1px solid #444444ff !important;
+      background: #171a1fff;
+      .right_arrow{
+        color: #cccccc;
+      }
+      .log_time{
+        color: #cccccc;
+      }
+      .log_content{
+        color: #cccccc;
+      }
+      .log_content:hover{
+        background: #2a2d34ff !important;
+      }
+      .logDetail_value{
+        color: #cccccc;
+      }
+    }
+  }
+
+  .@{container-prefix}-tabs-content-holder {
+    background: #171a1fff;
+  }
+  .logCollecting{
+    background: #2a2d34ff;
+    .logCollecting_title{
+      color: #f7f7f7;
+    }
+    .logCollecting_info{
+      border: 1px solid #444444ff;
+      background: #2a2d34ff;
+      .logCollecting_info_title{
+        color: #f7f7f7;
+      }
+      .logCollecting_info_address{
+        color: #f7f7f7 !important;
+      }
+    }
+    .logCollecting_time_num{
+      color: #f7f7f7 !important;
+    }
+  }
+  .logJob{
+    background: #2a2d34ff;
+  }
+  .logContext_top_info{
+    background: #2a2d34ff !important;
+    .logContext_top_info_content_value{
+      color: #f7f7f7 !important;
+    }
+  }
+  .logContext_search_content{
+    background: #2a2d34ff;
+  }
+  .logAlerts{
+    background: #2a2d34ff;
+    .@{container-prefix}-space-item{
+      p{
+        background: #234c9eff !important;
+        color: #f7f7f7 !important;
+      } 
+    }
+  }
+  .container_nav_bar{
+    background: @dark-background-color !important;
+    box-shadow: @dark-box-shadow !important;
+    .@{container-prefix}-menu{
+      background: @dark-background-color !important;
+      color: #fff;
+      .@{container-prefix}-menu-item{
+        color: #fff;
+      }
+      .@{container-prefix}-menu-submenu-title{
+        color:#fff;
+      }
+    }
+    .collapse_arrow{
+      background: @dark-background-color !important;
+      color: #fff;
+      border-color:#666666; 
+    }
+  }
+  .container_content{
+    background: @dark-background-color !important;
+    .namespace_total{
+      background: @dark-background-color !important;
+      box-shadow: inset 0px -1px 0px #666666;
+      color:#fff;
+      .namespace_bar{
+        .label{
+          color: #fff;
+        }
+      }
+    }
+  }
+  .tab_table_flex{
+    background: @dark-background-color;
+    table{
+      color:#fff;
+      background: @dark-background-color!important;
+      .@{container-prefix}-table-thead{
+        tr{
+          th{
+            color:#fff;
+            // background: @dark-background-color;
+          }
+          th::before{
+            background-color: @dark-background-color;
+          }
+          .anticon-filter{
+            color: #fff;
+          }
+          .@{container-prefix}-table-column-sorter{
+            color: #fff;
+          }
+        }
+     
+      }
+    }
+  }
+  .@{container-prefix}-select {
+    .@{container-prefix}-select-selector{
+      color: #fff !important;
+      background-color: @dark-background-color !important;
+    }
+    .@{container-prefix}-select-arrow{
+      color: #fff !important;
+    }
+  }
+  .@{container-prefix}-pagination-options-quick-jumper input{
+    color: #fff !important;
+    background-color: @dark-background-color !important;
+    border: 1px solid #666666;
+  }
+  .page .@{container-prefix}-select:hover .@{container-prefix}-select-selector{
+    background-color: @dark-background-color !important;
+  }
+  .@{container-prefix}-select-dropdown{
+    .@{container-prefix}-select-item-option-selected{
+      background-color: @button-hover-color !important;
+    }
+    .@{container-prefix}-select-item-option-active{
+      background-color: @button-hover-color !important;
+    }
+    .@{container-prefix}-select-item-option-active:hover{
+      background-color: @button-hover-color !important;
+    }
+  }
+  .@{container-prefix}-table-tbody{
+    .@{container-prefix}-table-row{
+      background: @dark-background-color !important;
+    }
+    tr{
+      td{
+        background: @dark-background-color !important;
+      }
+      
+    }
+  }
+  h3{
+    color: #fff !important;
+  }
+  .@{container-prefix}-input,.@{container-prefix}-input-search-button{
+    border-color: #444444ff;
+    background: #2a2d34ff;
+  }
+  .primary_btn{
+    border:none;
+  }
+
+  .@{container-prefix}-pagination-prev{
+    background: @dark-background-color;
+    border: 1px solid #666666;
+  }
+  .@{container-prefix}-pagination-prev:hover{
+    button{
+      background: @button-hover-color !important;
+      color: #fff; 
+    }
+  }
+  .@{container-prefix}-pagination-disabled:hover{
+    button{
+      background: @dark-background-color !important;
+    }
+  }
+  .@{container-prefix}-pagination-item{
+    background: @dark-background-color;
+    border: 1px solid #666666;
+    a:hover{
+      color: #fff !important;
+    }
+  }
+  .@{container-prefix}-pagination-item:hover{
+    background: @button-hover-color !important;
+    color: #fff;
+    button{
+      background: @button-hover-color !important;
+      color: #fff;
+    }
+  }
+  .@{container-prefix}-pagination-next{
+    background-color: @dark-background-color;
+    border: 1px solid #666666;
+  }
+  .@{container-prefix}-pagination-next:hover{
+    background: @button-hover-color !important;
+    color: #fff;
+    button{
+      background: @button-hover-color !important;
+    }
+  }
+  .@{container-prefix}-collapse{
+    background-color: #171a1f;
+  }
+  .@{container-prefix}-collapse-header{
+    background-color: @dark-background-color;
+  }
+  .@{container-prefix}-progress-text{
+    color: #fff !important;
+  }
+
+  .@{container-prefix}-tabs-nav{
+    background-color: @dark-background-color;
+  }
+  
+  //菜单栏颜色
+  .@{container-prefix}-menu-item a {
+    color: #89939b;
+  }
+  .@{container-prefix}-menu-item-selected{
+    color: @a-link-color !important;
+    background-color: #cfe7ff !important;
+    color: #3f66f5 !important;
+    a{
+      color:#3f66f5 !important;
+    }
+  }
+  .@{container-prefix}-menu-submenu-selected{
+    .@{container-prefix}-menu-submenu-title{
+      color: #fff !important;
+    }
+    .@{container-prefix}-menu-submenu-title:active{
+      background-color: #346ac4 !important;
+      color: #f7f7f7 !important;
+    }
+  }
+  .@{container-prefix}-menu-item a::before {
+    color: #fff !important;
+  }
+  .@{container-prefix}-menu-submenu-title >.@{container-prefix}-menu-title-content {
+    color: #89939b !important;
+  }
+  .ant-table-thead > tr > th {
+    color: white; /* 设置表头文字颜色为白色 */
+    background-color: #171a1f; /* 设置表头背景色为 Ant Design 的默认主色 */
+  }
+  .detail_card .detail_info_box .annotation .key_value .label_item .@{container-prefix}-tag {
+    color: white !important; /* 将标签文字颜色设置为白色 */
+  }
+  .key_value .label_item .@{container-prefix}-tag {
+      color: white !important; /* 将标签文字颜色设置为白色 */
+  }
+  .modal_flex_delete .@{container-prefix}-modal-title {
+    color: #fff;
+  }
+  .content{
+    background: #171a1f;
+  }
+}

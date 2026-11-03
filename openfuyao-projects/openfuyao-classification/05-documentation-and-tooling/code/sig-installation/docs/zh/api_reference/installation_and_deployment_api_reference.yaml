@@ -1,0 +1,1091 @@
+openapi: 3.0.0
+info:
+  title: 集群生命周期管理API
+  description: 提供集群创建和管理的接口。
+  version: v26.03
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /rest/cluster/v1/configs:
+    get:
+      summary: 获取安装部署配置信息。
+      description: 获取安装部署配置信息。
+      responses:
+        '200':
+          description: 获取安装部署配置信息成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      imageRepo:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            example: "cr.openfuyao.cn"
+                          ip:
+                            type: string
+                            example: "119.3.216.97"
+                          port:
+                            type: string
+                            example: "443"
+                          prefix:
+                            type: string
+                            example: "openfuyao"
+                      httpRepo:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            example: "http.bocloud.k8s"
+                          prefix:
+                            type: string
+                            example: ""
+                      ip:
+                        type: string
+                        example: "192.168.100.10"
+                      kubernetesVersion:
+                        type: string
+                        example: "v1.33.1-of.1"
+                      containerRuntime:
+                        type: string
+                        example: "containerd-v2.1.1-linux-{.arch}.tar.gz"
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters:
+    get:
+      summary: 获取集群列表。
+      description: 展示集群中创建的业务集群列表。
+      responses:
+        '200':
+          description: 获取集群列表成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: 集群名称。
+                              example: isntaller-bke
+                            kubernetesVersion:
+                              type: string
+                              description: 集群K8s版本。
+                              example: v1.28.8
+                            openFuyaoVersion:
+                              type: string
+                              description: 集群openFuyao版本。
+                              example: v25.09.1sp2
+                            status:
+                              type: string
+                              description: 集群健康状态。
+                              example: Healthy
+                            createTime:
+                              type: string
+                              description: 集群创建时间。
+                              example: "2025-03-07 03:53:10"
+                            nodeSum:
+                              type: integer
+                              description: 集群中节点个数。
+                              example: 2
+                            isAmd:
+                              type: boolean
+                              description: CPU架构是否为AMD
+                              example: true
+                            isArm:
+                              type: boolean
+                              description: CPU架构是否为ARM。
+                              example: false
+                            osList:
+                              type: array
+                              items:
+                                type: string
+                              description: 集群OS版本。
+                              example: ["openEuler 22.03 LTS"]
+                            containerRuntime:
+                              type: string
+                              description: 集群运行时种类。
+                              example: containerd
+                            isAdminCluster:
+                              type: boolean
+                              description: 是否为管理集群。后端根据集群规格中是否包含cluster-api，或注解bke.bocloud.com/cluster-api-manager-applied为true计算（覆盖管理集群自纳管场景）。
+                              example: true
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+    post:
+      summary: 创建集群。
+      description: 在OpenFuyao管理面创建业务集群。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cluster:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: bke-cluster
+                    openfuyaoVersion:
+                      type: string
+                      example: v1.0.4
+                    imageRepo:
+                      type: object
+                      properties:
+                        url:
+                          type: string
+                          example: cr.openfuyao.cn
+                        ip:
+                          type: string
+                          example: 10.10.10.10
+                controlPlaneEndpoint:
+                  type: string
+                  example: 192.168.100.10
+                addons:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: openFuyao-cores
+                      params:
+                        type: object
+                        description: addon相关的可配置项字段，不做规范
+                        example:
+                          helmRepo: https://helm.openfuyao.cn/_core
+                nodes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hostname:
+                        type: string
+                        example: master
+                      ip:
+                        type: string
+                        example: 192.168.100.10
+                      port:
+                        type: string
+                        example: 22
+                      username:
+                        type: string
+                        example: root
+                      password:
+                        type: string
+                        example: password
+                      role:
+                        type: array
+                        items:
+                          type: string
+                        example: ["master", "etcd"]
+      responses:
+        '200':
+          description: 成功部署集群。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: "success"
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+    
+  /rest/cluster/v1/clusters/{cluster-name}:
+    get:
+      summary: 获取集群配置信息。
+      description: 获取集群的配置信息，包括集群配置信息与节点配置信息。
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: 集群名称。
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 成功获取集群配置信息。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      clusterName:
+                        type: string
+                        description: 集群名称。
+                        example: "bke-cluster"
+                      clusterStatus:
+                        type: string
+                        description: 集群状态。
+                        example: "Healthy"
+                      createTime:
+                        type: string
+                        description: 集群创建时间。
+                        example: "2025-12-17 09:45:01"
+                      hostname:
+                        type: string
+                        description: 集群控制点地址。
+                        example: "1"
+                      isHA:
+                        type: boolean
+                        description: 是否高可用集群。
+                        example: false
+                      defaultRepo:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            description: 镜像源。
+                            example: "deploy.bocloud.k8s"
+                          prefix:
+                            type: string
+                            description: 路径前缀。
+                            example: ""
+                      httpRepo:
+                        type: object
+                        properties:
+                          domain:
+                            type: string
+                            description: 文件源。
+                            example: "http.bocloud.k8s"
+                          prefix:
+                            type: string
+                            description: 路径前缀。
+                            example: ""
+                      ip:
+                        type: string
+                        description: 引导节点地址。
+                        example: "2"
+                      kubernetesVersion:
+                        type: string
+                        description: 集群K8s版本。
+                        example: "v1.33.1-of.1"
+                      openFuyaoVersion:
+                        type: string
+                        description: 集群openFuyao版本。
+                        example: v25.09.1sp2 
+                      containerRuntime:
+                        type: string
+                        description: containerd文件。
+                        example: "containerd-v2.1.1-linux-{.arch}.tar.gz"
+                      nodes:
+                        type: array
+                        description: 集群节点列表。
+                        items:
+                          type: object
+                          properties:
+                            hostname:
+                              type: string
+                              description: 节点名称。
+                              example: master1
+                            ip:
+                              type: string
+                              description: 节点IP地址。
+                              example: 192.168.100.150
+                            role:
+                              type: array
+                              items:
+                                type: string
+                              example: ["master", "etcd"]
+                            cpu:
+                              type: integer
+                              description: CPU的个数。
+                              example: 8
+                            memory:
+                              type: integer
+                              description: 内存大小。
+                              example: 14
+                            architecture:
+                              type: string
+                              description: CPU架构。
+                              example: arm64
+                            status:
+                              type: string
+                              description: 节点状态。
+                              example: Ready
+                            os:
+                              type: string
+                              description: 节点OS版本。
+                              example: openEuler 22.03 LTS
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+    delete:
+      summary: 删除集群。
+      description: 删除所选择的集群。
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: 集群名称。
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 删除集群成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: delete the cluster successfully.
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/auto-upgrade:
+    post:
+      summary: 集群离线补丁升级准备。
+      description: 触发集群离线补丁升级准备。
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: 集群名称。
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patchDir:
+                  type: string
+                  description: 补丁安装包所在的目录路径。
+                  example: /etc/openFuyao/
+                patchName:
+                  type: string
+                  description: 补丁安装包的名称。
+                  example: patchV1
+      responses:
+        '200':
+          description: 集群离线补丁升级准备成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/scale-down:
+    post:
+      summary: 缩容集群。
+      description: 集群缩容操作。
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: 集群名称。
+          schema:
+            type: string
+      operationId: scaleDownCluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodes:
+                  type: array
+                  items:
+                    type: string
+                  example:
+                    - "node1"
+                    - "node2"
+      responses:
+        '200':
+          description: 集群缩容成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/scale-up:
+    post:
+      summary: 扩容集群。
+      description: 集群扩容操作。
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: 集群名称。
+          schema:
+            type: string
+      operationId: scaleUpCluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nodes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hostname:
+                        type: string
+                        example: master
+                      ip:
+                        type: string
+                        example: 192.168.100.10
+                      port:
+                        type: string
+                        example: 22
+                      username:
+                        type: string
+                        example: root
+                      password:
+                        type: string
+                        example: password
+                      role:
+                        type: array
+                        items:
+                          type: string
+                          description: 节点类型。
+                          example: ["node"]
+      responses:
+        '200':
+          description: 集群扩容成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/upgrade:
+    post:
+      summary: 升级openFuyao集群。
+      description: openFuyao集群升级操作。原Post /rest/cluster/v1/upgrade
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: 集群名称。
+          schema:
+            type: string
+      operationId: upgradeK8sCluster
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: string
+                  example: v25.09.1
+      responses:
+        '200':
+          description: 集群升级成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/clusters/{cluster-name}/upgrade-versions:
+    get:
+      summary: 查询集群可用的升级版本列表。
+      description: 查询集群可用的升级版本列表。原Post /rest/cluster/v1/upgrade-versions
+      parameters:
+        - name: cluster-name
+          in: path
+          required: true
+          description: 集群名称。
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 获取升级版本成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      versions:
+                        type: array
+                        items:
+                          type: string
+                          example: v25.09.1
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/nodes/validate:
+    post:
+      summary: 节点校验。
+      description: 校验集群操作的节点信息。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                namespace:
+                  type: string
+                  example: test
+                nodes:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      hostname:
+                        type: string
+                        example: 'master-1'
+                      ip:
+                        type: string
+                        example: '192.168.100.150'
+                      port:
+                        type: string
+                        example: 22
+                      username:
+                        type: string
+                        example: 'root'
+                      password:
+                        type: string
+                        example: '123456'
+                balanceIp:
+                  type: string
+                  example: '192.168.100.20'
+            examples:
+              Example 1:
+                value:
+                  namespace: test
+                  nodes:
+                    - name: 'master-1'
+                      ip: '192.168.100.150'
+                      port: 22
+                      username: 'root'
+                      password: '123456'
+                  balanceIp: '192.168.100.20'
+      responses:
+        '200':
+          description: 节点校验成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: 节点校验失败。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: 192.168.100.150 ip is not ok
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: remote server busy
+
+  /rest/cluster/v1/patches:
+    post:
+      summary: 上传集群离线升级补丁。
+      operationId: upload
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patchFileName:
+                  type: string
+                  description: patch文件名称。
+                  example: v25.09.yaml
+                patchFileContent:
+                  type: string
+                  description: patch文件内容。
+                  example: "..."
+      responses:
+        '200':
+          description: 文件上传成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /rest/cluster/v1/versions:
+    get:
+      summary: 查询可用的安装版本列表。
+      description: 查询可用的安装版本列表。
+      parameters: []
+      responses:
+        '200':
+          description: 获取安装版本成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      versions:
+                        type: array
+                        items:
+                          type: string
+                        example: ["latest", "v25.09"]
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"
+
+  /ws/cluster/v1/logs:
+    get:
+      summary: 获取集群日志。
+      description: 用于创建中的日志实时展示。
+      responses:
+        '200':
+          description: 查询日志成功。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  message:
+                    type: string
+                    example: get the log of cluster.
+        '400':
+          description: 请求数据异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                  message:
+                    type: string
+                    example: "parameters not found"
+        '500':
+          description: 服务请求异常。
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                  message:
+                    type: string
+                    example: "remote server busy"

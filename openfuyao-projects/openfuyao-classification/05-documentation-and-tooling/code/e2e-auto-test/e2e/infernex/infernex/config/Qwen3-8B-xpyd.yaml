@@ -1,0 +1,134 @@
+# FIT_38/39：prefill/decode env TEST_ENV_VAR=1；FIT_40：inference-backend.env TEST_ENV_VAR_1=1
+
+inference-backend:
+  env:
+    - name: VLLM_USE_V1
+      value: "1"
+    # Ascend 卡通信接口名称
+    - name: GLOO_SOCKET_IFNAME # Gloo 通信接口名称
+      value: "eth0"
+    - name: TP_SOCKET_IFNAME # Tensor Parallel 通信接口名称
+      value: "eth0"
+    - name: HCCL_SOCKET_IFNAME # HCCL 通信接口名称
+      value: "eth0"
+    - name: TEST_ENV_VAR_1
+      value: "1"
+
+  images:
+    inferenceEngine:
+      repository: "quay.io/ascend/vllm-ascend"
+      tag: "v0.18.0"
+    proxyServer:
+      repository: "cr.openfuyao.cn/openfuyao/proxy-server"
+      tag: "latest"
+
+  inferenceDevice: "huawei.com/Ascend910"
+
+  volumeMounts:
+    ascend:
+      enable: true
+
+  volumes:
+    ascend:
+      enable: true
+
+  services:
+  - name: qwen3-8b-2p2d-01
+    enabled: true
+    mode: pd
+    service:
+      port: 8000
+    pdGroupID: "qwen3-8b-2p2d-01"
+    kvTransferConfig:
+      connectorConfig:
+        kv_connector: "MultiConnector"
+        kv_connector_extra_config:
+          connectors:
+            - kv_connector: "MooncakeConnectorV1"
+              kv_buffer_device: "npu"
+              kv_parallel_size: 1
+              kv_connector_extra_config:
+                use_ascend_direct: true
+            - kv_connector: "AscendStoreConnector"
+              kv_buffer_device: "npu"
+              kv_parallel_size: 1
+              kv_connector_extra_config:
+                lookup_rpc_port: "0"
+                backend: "mooncake"
+      mooncake:
+        use_store: true
+        master:
+          rpcPort: 50051
+          servicePort: 30089
+          httpPort: 9003
+        config: |
+          local_hostname: "$POD_IP"
+          metadata_server: "redis://redis-service:6379"
+          master_server_address: "mooncake-master-service:30089"
+          device_name: ""
+          protocol: "ascend"
+          global_segment_size: 42949672960
+          use_ascend_direct: true
+
+    pd:
+      prefill:
+        replicas: 3
+        tensorParallelSize: 1
+        pipelineParallelSize: 1
+        dataParallelSize: 1
+        dataParallelSizeLocal: 1
+        dataParallelRpcPort: 12890
+        env:
+          - name: TEST_ENV_VAR
+            value: "1"
+          - name: HCCL_IF_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        volumeMounts: []
+        volumes: []
+        extraArgs:
+          - --enable-prefix-caching
+          - --max-model-len 10000
+          - --max-num-batched-tokens 40960
+          - --gpu-memory-utilization 0.8
+          - --block-size 128
+          - --prefix-caching-hash-algo sha256_cbor
+          - --enable-prompt-tokens-details
+
+      decode:
+        replicas: 2
+        tensorParallelSize: 1
+        pipelineParallelSize: 1
+        dataParallelSize: 1
+        dataParallelSizeLocal: 1
+        dataParallelRpcPort: 12777
+        env:
+          - name: TEST_ENV_VAR
+            value: "1"
+          - name: HCCL_IF_IP
+            valueFrom:
+              fieldRef:
+                fieldPath: status.podIP
+        volumeMounts: []
+        volumes: []
+        extraArgs:
+          - --no-enable-prefix-caching
+          - --max-model-len 10000
+          - --max-num-batched-tokens 40960
+          - --gpu-memory-utilization 0.8
+          - --block-size 128
+          - --prefix-caching-hash-algo sha256_cbor
+          - --enable-prompt-tokens-details
+
+      proxyServer:
+        enabled: true
+        discoveryInterval: 10
+
+    resources:
+      requests:
+        cpu: "4"
+        memory: "64Gi"
+      limits:
+        cpu: "8"
+        memory: "128Gi"

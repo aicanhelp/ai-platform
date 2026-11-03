@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: nfd
+  name: nfd-worker
+spec:
+  selector:
+    matchLabels:
+      app: nfd-worker
+  template:
+    metadata:
+      labels:
+        app: nfd-worker
+    spec:
+      serviceAccount: nfd-worker
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+        - name: nfd-worker
+          image: gcr.io/k8s-staging-nfd/node-feature-discovery:master
+          imagePullPolicy: Always
+          livenessProbe:
+            grpc:
+              port: 8082
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            grpc:
+              port: 8082
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            failureThreshold: 10
+          command:
+            - "nfd-worker"
+          resources:
+            limits:
+              cpu: 200m
+              memory: 512Mi
+            requests:
+              cpu: 5m
+              memory: 64Mi
+          args:
+            - "-server=nfd-master:8080"
+          ports:
+            - name: metrics
+              containerPort: 8081

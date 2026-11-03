@@ -1,0 +1,5 @@
+## Append samples of your project ##
+resources:
+- clusters-computing-operator_v1alpha1_tenantcluster.yaml
+- clusters-computing-operator_v1alpha1_tenantmanagedcluster.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

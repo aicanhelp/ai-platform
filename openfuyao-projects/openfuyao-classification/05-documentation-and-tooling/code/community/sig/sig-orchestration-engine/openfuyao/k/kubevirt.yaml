@@ -1,0 +1,8 @@
+name: kubevirt
+type: public
+description: 'KubeVirt 是一个用于 Kubernetes 的虚拟机管理插件。其目标是为基于 Kubernetes 的虚拟化解决方案提供一个通用平台。'
+branches:
+  - name: master
+    type: protected
+  - name: of-v1.7.0
+    type: protected

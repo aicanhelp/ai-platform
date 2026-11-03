@@ -1,0 +1,6 @@
+name: bke-console-website
+type: private
+description: 'bke引导节点前端服务'
+branches:
+  - name: master
+    type: protected

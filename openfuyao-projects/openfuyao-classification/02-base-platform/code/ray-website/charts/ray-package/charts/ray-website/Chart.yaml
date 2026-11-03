@@ -1,0 +1,9 @@
+apiVersion: v2
+name: ray-website
+description: >
+  A Helm chart for deploying the Ray Website, 
+  providing a user-friendly interface for configuring, monitoring, and managing Ray workloads.
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-extension"]

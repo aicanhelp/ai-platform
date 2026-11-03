@@ -1,0 +1,126 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: numa-exporter
+  namespace: {{ .Values.namespace.backend }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: numa-exporter
+  namespace: {{ .Values.namespace.backend }}
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - get
+      - list
+      - watch
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: numa-exporter
+  namespace: {{ .Values.namespace.backend }}
+subjects:
+  - kind: ServiceAccount
+    name: numa-exporter
+    namespace: {{ .Values.namespace.backend }}
+roleRef:
+  kind: ClusterRole
+  name: numa-exporter
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: numa-exporter
+  namespace: {{ .Values.namespace.backend }}
+spec:
+  selector:
+    matchLabels:
+      app: numa-exporter
+  template:
+    metadata:
+      labels:
+        app: numa-exporter
+    spec:
+      serviceAccountName: numa-exporter
+      tolerations:
+        - key: "node-role.kubernetes.io/control-plane"
+          effect: "NoSchedule"
+          operator: "Exists"
+      securityContext:
+        fsGroup: 0
+        runAsUser: 0
+        runAsGroup: 0
+      containers:
+        - name: numa-exporter
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          ports:
+            - containerPort: {{ include "extractPort" . }}
+          env:
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          args:
+            - "--web.metrics-path={{ .Values.web.metricsPath }}"
+            - "--web.max-concurrent-scrapes={{ .Values.web.maxConcurrentScrapes }}"
+            - "--web.listen-address={{ .Values.web.listenAddress }}"
+            {{- if .Values.config.httpServerConfig.enableHttps }}
+            - "--web.config.file={{ .Values.web.config.file }}"
+            {{- end }}
+          volumeMounts:
+            - name: varlog
+              mountPath: /var/log/volcano-config-service
+            - name: volcano-config-service-log-config
+              mountPath: /etc/volcano-config-service
+            - name: node-path
+              mountPath: "/sys/devices/system"
+              readOnly: true
+            - name: kubelet-path
+              mountPath: "/var/lib/kubelet"
+              readOnly: true
+            {{- if .Values.config.httpServerConfig.enableHttps }}
+            - name: numa-exporter-tls-config
+              readOnly: true
+              mountPath: {{ .Values.web.config.file }}
+              subPath: tls-config.yaml
+            - name: numa-exporter-secret
+              readOnly: true
+              mountPath: /ssl/tls.key
+              subPath: tls.key
+            - name: numa-exporter-secret
+              readOnly: true
+              mountPath: /ssl/tls.crt
+              subPath: tls.crt
+            {{- end }}
+      volumes:
+        - name: varlog
+          hostPath:
+            path: /var/log/volcano-config-service
+            type: DirectoryOrCreate
+        - name: volcano-config-service-log-config
+          configMap:
+            defaultMode: 0600
+            name: volcano-config-service-log-config
+        - name: node-path
+          hostPath:
+            path: "/sys/devices/system"
+        - name: kubelet-path
+          hostPath:
+            path: "/var/lib/kubelet"
+        {{- if .Values.config.httpServerConfig.enableHttps }}
+        - name: numa-exporter-tls-config
+          configMap:
+            defaultMode: 0600
+            name: numa-exporter-tls-config
+        - name: numa-exporter-secret
+          secret:
+            defaultMode: 0600
+            secretName: numa-exporter-secret
+        {{- end }}

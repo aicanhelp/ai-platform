@@ -1,0 +1,8 @@
+apiVersion: v2
+name: marketplace-service
+description: openFuyao marketplace-service provides an efficient platform for browsing,discovering,
+  and deploying applications and extension components,primarily supporting the management of Helm packages.
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-component"]

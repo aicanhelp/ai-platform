@@ -1,0 +1,17 @@
+# Default values for installer-service.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+images:
+  core:
+    repository: cr.openfuyao.cn/openfuyao/installer-service
+    tag: latest
+    pullPolicy: Always
+
+
+serverHost:
+  localHarbor: "http://local-harbor.openfuyao-system.svc.cluster.local"
+  officialHarbor: "https://cr.openfuyao.cn"
+  prometheus: "http://prometheus-k8s.monitoring.svc.cluster.local:9090"
+  remotePatchPath: "https://raw.gitcode.com/openFuyao/sig-installation/raw/master/manifest/test/"
+

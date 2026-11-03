@@ -1,0 +1,6 @@
+name: bkebook
+type: private
+description: 'bke部署工具使用指导'
+branches:
+  - name: master
+    type: protected

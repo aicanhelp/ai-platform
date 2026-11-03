@@ -1,0 +1,78 @@
+registry:
+  imageAddress: cr.openfuyao.cn/openfuyao/registry:2.8.1
+  architecture:
+    - amd64
+    - arm64
+repos:
+  - architecture: # openfuyao npu operator 扩展组件
+      - amd64
+      - arm64
+    needDownload: true
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao
+        targetRepo: openfuyao
+        images:
+          - name: npu-operator
+            tag:
+              - 1.2.0
+          - name: ascend-docker-runtime
+            tag:
+              - v7.3.0
+          - name: npu-driver-installer
+            tag:
+              - 1.2.0
+          - name: npu-container-toolkit
+            tag:
+              - 1.2.0
+          - name: npu-node-provision
+            tag:
+              - 1.2.0
+          - name: npu-feature-discovery
+            tag:
+              - 1.2.0
+      - sourceRepo: hub.oepkgs.net/openfuyao
+        targetRepo: openfuyao
+        images:
+          - name: busybox
+            tag:
+              - 1.36.1
+      - sourceRepo: hub.oepkgs.net/openfuyao/ascendhub
+        targetRepo: openfuyao/ascendhub
+        images:
+          - name: ascend-operator
+            tag:
+              - v7.3.0
+          - name: ascend-k8sdeviceplugin
+            tag:
+              - v7.3.0
+          - name: noded
+            tag:
+              - v7.3.0
+          - name: vc-controller-manager
+            tag:
+              - v1.9.0-v7.3.0
+          - name: vc-scheduler
+            tag:
+              - v1.9.0-v7.3.0
+          - name: clusterd
+            tag:
+              - v7.3.0
+          - name: resilience-controller
+            tag:
+              - v7.1.RC1
+          - name: npu-exporter
+            tag:
+              - v7.3.0
+      - sourceRepo: hub.oepkgs.net/openfuyao/nfd
+        targetRepo: openfuyao/nfd
+        images:
+          - name: node-feature-discovery
+            tag:
+              - v0.16.4
+rpms:
+debs: []
+files: []
+charts:
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/charts/releases/download/
+    files:
+      - fileName: npu-operator-1.2.0.tgz

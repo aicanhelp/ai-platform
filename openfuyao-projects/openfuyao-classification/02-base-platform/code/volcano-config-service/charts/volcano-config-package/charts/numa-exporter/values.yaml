@@ -1,0 +1,30 @@
+images:
+  core:
+    repository: cr.openfuyao.cn/openfuyao/volcano-config-service
+    pullPolicy: Always
+    busyBox: ""
+
+config:
+  httpServerConfig:
+    enableHttps: false
+    tlsCert: |
+      -----BEGIN CERTIFICATE-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END CERTIFICATE-----
+    tlsKey: |
+      -----BEGIN PRIVATE KEY-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END PRIVATE KEY-----
+
+web:
+  metricsPath: "/metrics"
+  maxConcurrentScrapes: 20
+  listenAddress: ":9201"
+  config:
+    file: ""
+
+namespace:
+  backend: volcano-system
+
+serviceMonitor:
+  enabled: true

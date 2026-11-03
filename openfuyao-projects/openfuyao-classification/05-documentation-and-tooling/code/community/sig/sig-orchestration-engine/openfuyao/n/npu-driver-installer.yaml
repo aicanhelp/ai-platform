@@ -1,0 +1,6 @@
+name: npu-driver-installer
+type: private
+description: '为openFuyao提供容器化部署NPU驱动固件的能力'
+branches:
+  - name: master
+    type: protected

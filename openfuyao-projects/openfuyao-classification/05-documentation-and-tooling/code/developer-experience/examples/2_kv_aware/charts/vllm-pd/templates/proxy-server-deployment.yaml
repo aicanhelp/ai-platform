@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-proxy
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    proxy-service: "true"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      proxy-service: "true"
+      openfuyao.com/model: {{ .Values.modelServer.name | replace "/" "-" | lower }}
+      openfuyao.com/pdRole: leader
+      openfuyao.com/pdGroupID: {{ $.Values.modelServer.disaggregated.groupID }}
+  template:
+    metadata:
+      labels:
+        proxy-service: "true"
+        openfuyao.com/model: {{ .Values.modelServer.name | replace "/" "-" | lower }}
+        openfuyao.com/pdRole: leader
+        openfuyao.com/pdGroupID: {{ $.Values.modelServer.disaggregated.groupID }}
+    spec:
+      serviceAccountName: {{ $.Release.Name }}-proxy-sa
+      nodeSelector:
+        kubernetes.io/hostname: master
+      containers:
+      - name: proxy-server
+        image: {{ $.Values.image.proxy.repository }}:{{ $.Values.image.proxy.tag }}
+        command: ["/bin/bash", "-c"]
+        args:
+          - |
+            python3 k8s_proxy_server_example.py \
+              --host 0.0.0.0 \
+              --prefiller-label "openfuyao.com/pdRole=prefill,openfuyao.com/pdGroupID={{ $.Values.modelServer.disaggregated.groupID }}" \
+              --decoder-label "openfuyao.com/pdRole=decode,openfuyao.com/pdGroupID={{ $.Values.modelServer.disaggregated.groupID }}" \
+              --prefiller-container prefill-engine \
+              --decoder-container decode-engine \
+              --prefiller-port-name prefill-port \
+              --decoder-port-name decode-port \
+              --namespace {{ $.Release.Namespace }} \
+              --port {{ $.Values.modelServer.disaggregated.proxyServer.basePort }}
+              --discovery-interval {{ $.Values.modelServer.disaggregated.proxyServer.discovery.interval }}
+        resources:
+          limits:
+            memory: "2Gi"
+            cpu: "250m"
+          requests:
+            memory: "2Gi"
+            cpu: "250m"
+        ports:
+        - containerPort: {{ $.Values.modelServer.disaggregated.proxyServer.basePort }}
+          name: proxy-port

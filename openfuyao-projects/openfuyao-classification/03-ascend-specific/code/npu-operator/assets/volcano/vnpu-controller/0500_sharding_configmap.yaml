@@ -1,0 +1,8 @@
+# Source: volcano/templates/controllers.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: volcano-sharding-configmap
+  namespace: volcano-system
+data:
+  sharding.yaml: |

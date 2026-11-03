@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: oauth-server-ingress
+  namespace: openfuyao-system
+  annotations:
+    {{- if .Values.config.httpServerConfig.enableHttps }}
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    nginx.ingress.kubernetes.io/proxy-ssl-name: "oauth-server.openfuyao-system.svc.cluster.local"  # 此处修改为对应服务的dns全称
+    nginx.ingress.kubernetes.io/proxy-ssl-protocols: "TLSv1.3"
+    nginx.ingress.kubernetes.io/proxy-ssl-secret: "ingress-nginx/ingress-nginx-tls"
+    nginx.ingress.kubernetes.io/proxy-ssl-verify: "on"
+    nginx.ingress.kubernetes.io/proxy-ssl-verify-depth: "1"
+    {{- else }}
+    nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
+    {{- end }}
+spec:
+  rules:
+    - http:
+        paths:
+          - path: '/oauth2'
+            pathType: Prefix
+            backend:
+              service:
+                name: oauth-server
+                port:
+                  number: {{ .Values.config.httpServerConfig.port }}
+  ingressClassName: nginx

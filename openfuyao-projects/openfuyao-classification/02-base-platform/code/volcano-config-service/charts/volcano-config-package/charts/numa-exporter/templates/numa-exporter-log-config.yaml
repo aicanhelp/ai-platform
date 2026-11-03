@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: volcano-config-service-log-config
+  namespace: {{ .Values.namespace.backend }}
+data:
+  log-config.yaml: |
+    Level: info
+    EncoderType: console
+    Path: /var/log/volcano-config-service
+    FileName: volcano-config-service.log
+    MaxSize: 20
+    MaxBackups: 5
+    MaxAge: 30
+    LocalTime: false
+    Compress: true
+    OutMod: both

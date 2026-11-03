@@ -1,0 +1,20 @@
+# permissions for end users to view bkeclusters.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: bkecluster-viewer-role
+rules:
+- apiGroups:
+  - cluster.bocloud.com
+  resources:
+  - bkeclusters
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - cluster.bocloud.com
+  resources:
+  - bkeclusters/status
+  verbs:
+  - get

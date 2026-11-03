@@ -1,0 +1,467 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+
+.dark_box {
+
+  .@{container-prefix}-select-selector,
+  .@{container-prefix}-picker {
+    border-color: #666666;
+    background-color: #2a2d34;
+  }
+
+  .@{container-prefix}-select-disabled.@{container-prefix}-select:not(.@{container-prefix}-select-customize-input) .@{container-prefix}-select-selector {
+    background: rgb(44, 44, 44) !important;
+    color: #ccc;
+    border: 1px solid rgb(68, 68, 68) !important;
+  }
+
+  .@{container-prefix}-select-arrow,
+  .@{container-prefix}-picker-suffix,
+  .@{container-prefix}-picker-clear {
+    color: #f7f7f7;
+  }
+
+  .@{container-prefix}-input-affix-wrapper {
+    background: #2a2d34ff;
+  }
+
+  .modal_flex_delete {
+    .@{container-prefix}-modal-header {
+      .@{container-prefix}-modal-title {
+        color: #f7f7f7;
+      }
+    }
+
+    .@{container-prefix}-modal-close-x {
+      svg {
+        color: #f7f7f7 !important;
+      }
+    }
+
+    .word_tograry {
+      .word_tograry_alarm {
+        .bread_word_delete {
+          color: #f7f7f7 !important;
+        }
+      }
+    }
+  }
+
+  .@{container-prefix}-table-cell a {
+    color: #4b8bea;
+  }
+
+  .@{container-prefix}-breadcrumb {
+    background-color: #2a2d34ff;
+    color: #F7F7F7;
+    box-shadow: @dark-box-shadow;
+
+    a {
+      color: #89939b !important;
+    }
+
+    li {
+      span {
+        color: #cccccc !important;
+      }
+    }
+  }
+
+  .@{container-prefix}-modal-content {
+    .@{container-prefix}-modal-title {
+      color: #f7f7f7;
+    }
+
+    .@{container-prefix}-modal-close-x svg {
+      color: #f7f7f7;
+    }
+  }
+
+  .@{container-prefix}-modal-root .cancel_btn {
+    border: 1px solid rgb(68, 68, 68);
+    background: #2a2d34ff;
+    color: #f7f7f7;
+  }
+
+  .@{container-prefix}-radio-inner::after {
+    background: #2a2d34ff;
+  }
+
+  .@{container-prefix}-table-column-sorter,
+  .@{container-prefix}-table-filter-trigger {
+    color: #f7f7f7;
+  }
+
+  .@{container-prefix}-input-outlined {
+    background-color: #2a2d34ff;
+    color: #ccc;
+    border-color: rgb(68, 68, 68);
+  }
+
+  .@{container-prefix}-input-outlined::placeholder {
+    color: #666666;
+  }
+
+  .@{container-prefix}-input-disabled {
+    background-color: rgb(44, 44, 44) !important;
+    color: #ccc;
+    border-color: rgb(68, 68, 68) !important;
+  }
+
+  .@{container-prefix}-input-search-button {
+    color: #666666 !important;
+    background-color: @dark-background-color;
+    border-color: rgb(68, 68, 68);
+  }
+
+  .@{container-prefix}-table-tbody {
+    .container-platform-table-row {
+      background: @dark-background-color !important;
+    }
+
+    tr {
+      td {
+        background: @dark-background-color !important;
+      }
+
+    }
+  }
+
+  .@{container-prefix}-tabs-nav {
+    background: #2a2d34ff;
+
+    .@{container-prefix}-tabs-nav-list {
+      background-color: #2a2d34ff;
+      // border: 1px solid #444444;
+    }
+
+    .@{container-prefix}-tabs-tab {
+      .@{container-prefix}-tabs-tab-btn {
+        color: #fff !important;
+      }
+    }
+
+    .@{container-prefix}-tabs-tab-active {
+      .@{container-prefix}-tabs-tab-btn {
+        color: #3f66f5 !important;
+      }
+    }
+  }
+
+  .@{container-prefix}-tabs-content-holder {
+    background-color: #171a1f;
+  }
+
+  .modal_flex_colocation_bottom {
+    .modal_flex_colocation_bottom_box {
+      .modal_flex_colocation_bottom_p {
+        color: #f7f7f7;
+      }
+    }
+  }
+
+  .colocation-website-page {
+    .@{container-prefix}-pagination-options-quick-jumper input {
+      color: #fff !important;
+      background-color: @dark-background-color !important;
+      border: 1px solid #666666;
+    }
+
+    .@{container-prefix}-select:hover .@{container-prefix}-select-selector {
+      background-color: @dark-background-color !important;
+    }
+
+    .@{container-prefix}-pagination-prev {
+      background: @dark-background-color;
+      border: 1px solid #666666;
+    }
+
+    .@{container-prefix}-pagination-prev:hover {
+      button {
+        background: @button-hover-color !important;
+        color: #fff;
+      }
+    }
+
+    .@{container-prefix}-pagination-disabled:hover {
+      button {
+        background: @dark-background-color !important;
+      }
+    }
+
+    .@{container-prefix}-pagination-item {
+      background: @dark-background-color;
+      border: 1px solid #666666;
+
+      a:hover {
+        color: #fff !important;
+      }
+    }
+
+    .@{container-prefix}-pagination-item:hover {
+      background: @button-hover-color !important;
+      color: #fff;
+
+      button {
+        background: @button-hover-color !important;
+        color: #fff;
+      }
+    }
+
+    .@{container-prefix}-pagination-next {
+      background-color: @dark-background-color;
+      border: 1px solid #666666;
+    }
+
+    .@{container-prefix}-pagination-next:hover {
+      background: @button-hover-color !important;
+      color: #fff;
+
+      button {
+        background: @button-hover-color !important;
+      }
+    }
+
+  }
+
+  .back_cancel_btn {
+    background: #2a2d34ff;
+    border: 1px solid #444444ff;
+  }
+
+  .back_cancel_btn:hover {
+    border: 1px solid #2167CF !important;
+    color: #2167CF !important;
+    background: #141414;
+  }
+
+  .cancel_btn {
+    background: #2a2d34ff;
+    border: 1px solid #444444ff;
+    color: #f7f7f7;
+  }
+
+  .cancel_btn:hover {
+    border: 1px solid #2167CF !important;
+    color: #2167CF !important;
+    background: #141414;
+  }
+
+  .hybrid_detail_content {
+    background-color: #171a1f !important;
+
+    .hybrid_detail_content_top {
+      background-color: #2a2d34ff;
+
+      .hybrid_detail_top_node_manage_content {
+        .hybrid_detail_top_node_manage_content_count {
+          .hybrid_detail_top_node_manage_content_count_bottom {
+            .nomarl_span {
+              color: #f7f7f7;
+            }
+          }
+        }
+      }
+    }
+
+    .hybrid_detail_content_box {
+
+      .tooltip_container_height {
+        background-color: #2a2d34ff;
+      }
+
+      .normal_container_height {
+        background-color: #2a2d34ff;
+      }
+
+      .hybrid_detail_content_table {
+        background-color: #2a2d34ff;
+
+        .@{container-prefix}-table-filter-trigger {
+          color: #fff;
+        }
+
+        .@{container-prefix}-table-filter-trigger.active {
+          color: #1668dc
+        }
+      }
+    }
+  }
+
+  .workload_detail_content {
+    background-color: #171a1f !important;
+
+    .workload_detail_content_box {
+      background-color: #2a2d34ff;
+    }
+
+    .cant_showworkload_detail_content_box {
+      background-color: #2a2d34ff;
+    }
+
+    .workload_detail_content_table {
+      background-color: #2a2d34ff;
+      border: 1px solid #2a2d34;
+
+      .@{container-prefix}-table-filter-trigger {
+        color: #fff;
+      }
+
+      .@{container-prefix}-table-filter-trigger.active {
+        color: #1668dc
+      }
+    }
+  }
+
+  .child_content_workload_footer {
+    background-color: #2a2d34ff;
+
+    .workload_btn_footer_text {
+      p {
+        color: #fff;
+      }
+    }
+  }
+
+  .rules_detail_content {
+    background-color: #171a1f !important;
+
+    .rules_detail_content_box {
+      background-color: #2a2d34ff;
+    }
+
+    .normal_rules_detail_content_box {
+      background-color: #2a2d34ff;
+    }
+
+    .rules_detail_content_table {
+      background-color: #2a2d34ff;
+    }
+  }
+
+  .rules_form_detail_content {
+    background-color: #171a1f !important;
+
+    .rules_exact_detail_content_top {
+      background-color: #2a2d34ff;
+    }
+
+    .rules_exact_detail_content_box {
+      background-color: #2a2d34ff;
+
+      .rules_exact_detail_content_box_form {
+        overflow-x: hidden;
+      }
+
+      .rules_exact_detail_content_box_title {
+        color: #F7F7F7;
+      }
+    }
+
+    .rules_exact_detail_content_onlyRead_box {
+      background-color: #2a2d34ff;
+
+      .rules_exact_detail_content_box_form {
+        overflow-x: hidden;
+      }
+    }
+
+    .@{container-prefix}-input {
+      border-color: #666666;
+      background-color: #2a2d34;
+    }
+
+    .@{container-prefix}-input-search-button {
+      border-color: #666666;
+    }
+
+    //form 添加标签按钮
+    .label_icon_color {
+      svg {
+        width: 18px;
+        height: 18px;
+        color: #fff;
+      }
+    }
+  }
+
+  .child_content_label_footer {
+    background-color: #2a2d34ff;
+  }
+
+  .workload_content {
+    background: #171a1f !important;
+  }
+
+  .rules_detail_title {
+    background-color: #2a2d34ff;
+
+    h3 {
+      color: #fff;
+    }
+  }
+
+  .infomation_single {
+    .infomation_single_top_bord {
+      background-color: rgb(68, 68, 68) !important;
+    }
+
+    .infomation_single_bottom {
+      background: linear-gradient(180.00deg, rgb(52, 63, 85) 0.763%, rgb(51, 55, 65) 100%) !important;
+
+      .infomation_single_bottom_text {
+        color: rgb(247, 247, 247) !important;
+      }
+    }
+  }
+  .colocation_overview{
+    .colocation_overview_content_banner{
+      background-image: url(../assets/images/overviewBannerDark.jpg);
+      .colocation_overview_content_banner_desc{
+        color: #f7f7f7;
+      }
+    }
+    .colocation_overview_content{
+      background: #171a1f;
+      .colocation_overview_content_process_all{
+        background: #2a2d34;
+        .colocation_overview_content_process_single{
+          border-bottom: 1px solid #444444;
+          .colocation_overview_content_process_single_rightTop_title{
+            color: #f7f7f7 !important;
+          }
+        }
+      }
+    }
+  }
+  .modal_flex_colocation .modal_config_box .deployment_water_level_expulsion .deployment_content{
+    background: #2a2d34;
+  }
+  .child_content{
+    background: #2a2d34ff;
+  }
+  .modal_flex_colocation .modal_config_box .deployment_scheduling_box .deployment_content{
+    background: #2a2d34ff;
+  }
+  // 监控黑暗模式
+  .monitor_header,.monitor_line_container{
+    background: #2a2d34ff;
+  }
+  .legend_box{
+    background: #1f1f1f !important;
+  }
+  .markdown-body{
+    pre{
+      background: #afb8c133 !important;
+    }
+  }
+}
+

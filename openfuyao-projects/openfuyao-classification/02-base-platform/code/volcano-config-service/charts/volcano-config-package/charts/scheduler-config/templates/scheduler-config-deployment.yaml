@@ -1,0 +1,64 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: scheduler-config
+  namespace: {{ .Values.namespace.backend }}
+---
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: scheduler-config-role
+  namespace: {{ .Values.namespace.backend }}
+rules:
+  - apiGroups:
+      - '*'
+    resources:
+      - '*'
+    verbs:
+      - '*'
+  - nonResourceURLs:
+      - '*'
+    verbs:
+      - '*'
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: scheduler-config
+  namespace: {{ .Values.namespace.backend }}
+subjects:
+  - kind: ServiceAccount
+    name: scheduler-config
+    namespace: {{ .Values.namespace.backend }}
+roleRef:
+  kind: ClusterRole
+  name: scheduler-config-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: scheduler-config
+  namespace: {{ .Values.namespace.backend }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: scheduler-config
+  template:
+    metadata:
+      labels:
+        app: scheduler-config
+    spec:
+      serviceAccountName: scheduler-config
+      containers:
+        - name: scheduler-config
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.web.listenAddress }}
+          env:
+            - name: RUN_MODE
+              value: "DEPLOYMENT"
+            - name: VCS_API_DISABLED
+              value: "{{ ternary "true" "false" .Values.apiDisabled }}"

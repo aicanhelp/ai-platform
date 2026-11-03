@@ -1,0 +1,9 @@
+apiVersion: v2
+name: console-service
+description: >
+  openFuyao console service helm chart. It works as a reverse-proxy for the whole openFuyao cluster and interacts
+  with oauth-server to retrieves the access-token.
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-component"]

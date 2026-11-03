@@ -1,0 +1,56 @@
+label: API参考
+sections:
+  - label: 安装部署API参考
+    href: ./installation_and_deployment_api_reference.yaml
+  - label: 仓库管理API参考
+    href: repository_management_api_reference.yaml
+  - label: 存储API参考
+    href: storage_api_reference.yaml
+  - label: 多集群管理API参考
+    href: multi_cluster_management_api_reference.yaml
+  - label: 告警API参考
+    href: alert_api_reference.yaml
+  - label: 工作负载API参考
+    href: workload_api_reference.yaml
+  - label: 管理API参考
+    href: management_api_reference.yaml
+  - label: 监控API参考
+    href: monitoring_api_reference.yaml
+  - label: 扩展组件管理API参考
+    href: extension_component_management_api_reference.yaml
+  - label: 认证鉴权API参考
+    href: authentication_and_authorization_api_reference.yaml
+  - label: 任务配置API参考
+    href: job_configuration_api_reference.yaml
+  - label: 日志API参考
+    href: log_api_reference.yaml
+  - label: 网络API参考
+    href: network_api_reference.yaml
+  - label: 应用管理API参考
+    href: application_management_api_reference.yaml
+  - label: 应用市场API参考
+    href: application_market_api_reference.yaml
+  - label: 用户管理API参考
+    href: user_management_api_reference.yaml
+  - label: 在离线混部API参考
+    href:
+      upstream: https://gitcode.com/openFuyao/sig-colocation/blob/master/docs/zh/api_reference/colocation_api_reference.yaml
+      path: ./
+  - label: 自定义监控看板API参考
+    href: custom_monitoring_dashboard_api_reference.yaml
+  - label: 自定义资源API参考
+    href: custom_resource_api_reference.yaml
+  - label: NUMA亲和调度API参考
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-numa-affinity/blob/master/docs/zh/api_reference/numa-affinity_api_reference.yaml
+      path: ./
+  - label: openFuyao Ray API参考
+    href: ray_api_reference.yaml
+  - label: RBAC和节点管理API参考
+    href: rbac_and_node_management_api_reference.yaml
+  - label: Web Terminal API参考
+    href: web_terminal_api_reference.yaml 
+  - label: AI推理KVCache索引管理API参考
+    href: 
+      upstream: https://gitcode.com/openFuyao/sig-ai-inference/blob/main/docs/zh/ai_inference_cache_indexer/api_reference/ai_inference_cache-indexer_api_reference.yaml
+      path: ./

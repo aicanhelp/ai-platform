@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: xpu-exporter-svc
+  namespace: xpu
+  labels:
+    app: xpu-exporter-svc
+spec:
+  selector:
+    app: xpu-exporter
+  ports:
+    - name: xpu-exporter-port
+      protocol: TCP
+      port: 8082
+      targetPort: 8082

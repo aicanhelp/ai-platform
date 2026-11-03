@@ -1,0 +1,21 @@
+hermes-router:
+  inferenceExtension:
+    routing:
+      deploymentMode: aggregate
+      profile: prediction
+      npuExporter:
+        exporterNamespace: npu-exporter
+        exporterPodLabelSelector: app=npu-exporter
+        exporterPort: 8082
+        path: /metrics
+        cacheTTL: 500ms
+        scrapeTimeout: 1s
+        staleAfter: 5s
+      prefixCacheFilter:
+        threshold: 0.5
+      requestTracking:
+        persistence:
+          enabled: true
+          flushThreshold: 1
+    prediction:
+      enabled: true

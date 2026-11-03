@@ -1,0 +1,85 @@
+Dockerfile.vllm-mooncake
+outputs/
+.worktrees/
+.vscode/
+.idea/
+.DS_Store
+.venv/
+.cache/
+
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, built with `go test -c`
+*.test
+
+# Output of the go coverage tool
+*.out
+coverage.html
+coverage.txt
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Dependency directories
+vendor/
+
+# Build artifacts
+/bin/
+/dist/
+/epp
+
+# Debug
+debug
+__debug_bin*
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local-only integration tests
+/pkg/epp/framework/plugins/datalayer/npu_integration_test.go
+
+# Local-only tooling sidecar (per-developer skill cache, not for commit)
+/.humanize/
+/Makefile
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+*.egg
+*.whl
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+build/
+htmlcov/
+.coverage
+
+hermes-router-prediction-it.csv
+docs/superpowers/
+.planning/
+.github/
+.claude/
+sidecar/prediction/uv.lock
+sidecar/tokenizer/uv.lock
+charts/**/Chart.lock
+charts/**/charts/*.tgz
+**/tests/
+# Keep the sidecar test suites and their fixtures tracked; the broad
+# **/tests/ rule above otherwise drops new tests and fixtures silently.
+!sidecar/prediction/tests/
+!sidecar/prediction/tests/**
+sidecar/prediction/tests/**/__pycache__/
+!sidecar/tokenizer/tests/
+!sidecar/tokenizer/tests/**
+sidecar/tokenizer/tests/**/__pycache__/

@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: ray-workers-monitor
+  namespace: "{{ .Release.Namespace }}"
+  labels:
+    release: prometheus
+    ray.io/cluster: raycluster-kuberay
+spec:
+  jobLabel: ray-workers
+  namespaceSelector:
+    matchNames:
+      - "{{ .Release.Namespace }}"
+  selector:
+    matchLabels:
+      ray.io/node-type: worker
+  podMetricsEndpoints:
+  - port: metrics

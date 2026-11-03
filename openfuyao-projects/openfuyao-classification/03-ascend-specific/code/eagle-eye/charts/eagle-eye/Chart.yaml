@@ -1,0 +1,27 @@
+apiVersion: v2
+name: eagle-eye
+description: >
+  Exposes near-real-time metrics covering business runtime, system runtime, and hardware health, 
+  serving as inputs for dynamic scaling, routing policy selection, and resilience in inference workloads.
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["artificial-intelligence"]
+dependencies:
+  - name: nats
+    version: 2.12.1
+    condition: enabled
+  - name: hardware-diagnosis
+    version: 0.0.0-latest
+    condition: enabled
+  - name: hardware-monitor
+    version: 0.0.0-latest
+    condition: enabled
+  - name: network-performance-exporter
+    version: 0.0.0-latest
+    condition: enabled
+  - name: kube-prometheus-stack
+    version: 69.3.2
+    condition: enabled
+  - name: tracing
+    version: 0.1.0
+    condition: tracing.enabled

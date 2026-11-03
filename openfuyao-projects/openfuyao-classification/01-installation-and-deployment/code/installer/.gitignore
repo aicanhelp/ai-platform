@@ -1,0 +1,10 @@
+# Editor directories and files
+.idea
+.vscode
+.VSCodeCounter
+
+/local
+
+# Output files
+/targets
+

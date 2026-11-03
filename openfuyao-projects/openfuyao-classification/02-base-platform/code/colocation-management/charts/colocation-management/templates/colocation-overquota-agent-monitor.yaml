@@ -1,0 +1,22 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: colocation-overquota-agent-monitor
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  labels:
+    app.kubernetes.io/name: colocation-overquota-agent
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: colocation-overquota-agent
+  endpoints:
+    - port: {{ .Values.service.agent.name }}
+      path: /metrics
+      interval: 30s
+  namespaceSelector:
+    matchNames:
+    - {{ .Release.Namespace }}

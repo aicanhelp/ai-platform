@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app.kubernetes.io/name: colocation-management
+    app.kubernetes.io/managed-by: kustomize
+  name: colocation-overquota-agent
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: colocation-overquota-agent
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: colocation-overquota-agent
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: "node.openfuyao.com/colocation"
+                    operator: "Exists"
+      serviceAccountName: {{ include "colocation-management.serviceAccountName" . }}
+      containers:
+      - name: main
+        image: {{ .Values.images.agent.repository }}:{{ .Values.images.agent.tag }}
+        imagePullPolicy: {{ .Values.images.agent.pullPolicy }}
+        command:
+        - /colocation-management/colocation-overquota-agent
+        args:
+        - --v={{ .Values.management.agent.config.logLevel }}
+        - '--usage-report-addr=colocation-manager.{{ .Values.namespace | default .Release.Namespace }}.svc.cluster.local:{{ .Values.service.manager.port }}'
+        - '--pprof-addr=:{{ .Values.management.agent.config.pprof.port }}'
+        - --metrics-scrape-period=15s
+        - --reports-upload-period=80s
+        - --exporter-port=8900
+        - --exporter-period=30s
+        - --cgroup-root={{ .Values.management.agent.config.cgroupRoot }}
+        - --cgroup-driver={{ .Values.management.agent.config.cgroupDriver }}
+        - --numa-affinity-enabled={{ .Values.management.agent.config.numaAffinityEnabled }}
+        env:
+        - name: KUBELET_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.hostIP
+        - name: NODE
+          valueFrom:
+            fieldRef:
+              fieldPath: spec.nodeName
+        - name: SVC_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        volumeMounts:
+          - name: sysfs
+            mountPath: /sys/fs
+            readOnly: false
+          - mountPath: /host-run/
+            name: var-run
+            readOnly: true
+        ports:
+        - containerPort: {{ .Values.management.agent.config.pprof.port }}
+          name: pprof
+          protocol: TCP
+        - containerPort: {{ .Values.service.agent.port }}
+          name: metrics
+          protocol: TCP
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 10
+      hostPID: true
+      tolerations:
+      - effect: NoSchedule
+        operator: Exists
+      volumes:
+        - name: sysfs
+          hostPath:
+            path: /sys/fs
+        - name: var-run
+          hostPath:
+            path: /var/run/
+  updateStrategy:
+    rollingUpdate:
+      maxSurge: 0
+      maxUnavailable: 1
+    type: RollingUpdate

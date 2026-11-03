@@ -1,0 +1,6 @@
+name: bke-console-service
+type: private
+description: 'bke引导节点后端服务'
+branches:
+  - name: master
+    type: protected

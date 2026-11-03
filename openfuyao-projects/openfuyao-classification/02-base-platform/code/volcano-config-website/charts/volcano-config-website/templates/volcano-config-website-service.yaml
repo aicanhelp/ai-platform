@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: volcano-config-website
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: volcano-config-website
+spec:
+  {{- if .Values.openFuyao}}
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.service.port }}
+      {{- if .Values.enableOAuth }}
+      targetPort: proxy
+      {{- else }}
+      targetPort: http
+      {{- end }}
+  {{- else}}
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      {{- if .Values.enableOAuth }}
+      targetPort: proxy
+      {{- else }}
+      targetPort: http
+      {{- end }}
+      {{- if eq .Values.service.type  "NodePort" }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end}}
+  {{- end}}
+  selector:
+    app: volcano-config-website
+  sessionAffinity: None

@@ -1,0 +1,7 @@
+{
+  "mindio": {
+    "enable": "true",
+    "url_x86": "https://gitcode.com/Ascend/mind-cluster/releases/download/v7.3.0/Ascend-mindxdl-mindio_7.3.0_linux-x86_64.zip",
+    "url_arm": "https://gitcode.com/Ascend/mind-cluster/releases/download/v7.3.0/Ascend-mindxdl-mindio_7.3.0_linux-aarch64.zip"
+  }
+}

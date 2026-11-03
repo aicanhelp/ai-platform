@@ -1,0 +1,6 @@
+name: logging-operator
+type: private
+description: 'openFuyao日志后端组件，对外提供service服务接口，包括日志的查询筛选、日志采集组源的查询、日志告警规则的查询、日志采集工作的增删改查等。'
+branches:
+  - name: master
+    type: protected

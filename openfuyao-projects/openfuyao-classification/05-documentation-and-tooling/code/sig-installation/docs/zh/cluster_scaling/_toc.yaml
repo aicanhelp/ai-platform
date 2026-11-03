@@ -1,0 +1,14 @@
+label: 集群扩缩容
+sections:
+  - label: 扩容业务集群
+    sections:
+      - label: 通过前台（Web页面）扩容业务集群
+        href: ./service_cluster_scale_up_web.md
+      - label: 通过后台（命令行）扩容业务集群
+        href: ./service_cluster_scale_up_command.md
+  - label: 缩容业务集群
+    sections:
+      - label: 通过前台（Web页面）缩容业务集群
+        href: ./service_cluster_scale_down_web.md
+      - label: 通过后台（命令行）缩容业务集群
+        href: ./service_cluster_scale_down_command.md

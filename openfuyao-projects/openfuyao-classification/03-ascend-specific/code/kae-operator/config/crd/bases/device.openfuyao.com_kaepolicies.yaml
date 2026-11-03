@@ -1,0 +1,382 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.14.0
+  name: kaepolicies.device.openfuyao.com
+spec:
+  group: device.openfuyao.com
+  names:
+    kind: KAEPolicy
+    listKind: KAEPolicyList
+    plural: kaepolicies
+    singular: kaepolicy
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .status.state
+      name: Status
+      type: string
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: string
+    name: v1
+    schema:
+      openAPIV3Schema:
+        description: KAEPolicy is the Schema for the kaepolicies API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: KAEPolicySpec defines the desired state of KAEPolicy
+            properties:
+              daemonSets:
+                description: DaemonSet 定义所有 DaemonSets 的通用配置
+                properties:
+                  annotations:
+                    additionalProperties:
+                      type: string
+                    description: 可选：通用注解配置
+                    type: object
+                  labels:
+                    additionalProperties:
+                      type: string
+                    description: 可选：通用标签配置
+                    type: object
+                  priorityClassName:
+                    type: string
+                  rollingUpdate:
+                    description: 'Optional: Configuration for rolling update of all
+                      DaemonSet pods'
+                    properties:
+                      maxUnavailable:
+                        description: MaxUnavailable 最大不可用 Pod 数
+                        type: string
+                    type: object
+                  tolerations:
+                    description: 可选：通用容忍配置
+                    items:
+                      description: |-
+                        The pod this Toleration is attached to tolerates any taint that matches
+                        the triple <key,value,effect> using the matching operator <operator>.
+                      properties:
+                        effect:
+                          description: |-
+                            Effect indicates the taint effect to match. Empty means match all taint effects.
+                            When specified, allowed values are NoSchedule, PreferNoSchedule and NoExecute.
+                          type: string
+                        key:
+                          description: |-
+                            Key is the taint key that the toleration applies to. Empty means match all taint keys.
+                            If the key is empty, operator must be Exists; this combination means to match all values and all keys.
+                          type: string
+                        operator:
+                          description: |-
+                            Operator represents a key's relationship to the value.
+                            Valid operators are Exists and Equal. Defaults to Equal.
+                            Exists is equivalent to wildcard for value, so that a pod can
+                            tolerate all taints of a particular category.
+                          type: string
+                        tolerationSeconds:
+                          description: |-
+                            TolerationSeconds represents the period of time the toleration (which must be
+                            of effect NoExecute, otherwise this field is ignored) tolerates the taint. By default,
+                            it is not set, which means tolerate the taint forever (do not evict). Zero and
+                            negative values will be treated as 0 (evict immediately) by the system.
+                          format: int64
+                          type: integer
+                        value:
+                          description: |-
+                            Value is the taint value the toleration matches to.
+                            If the operator is Exists, the value should be empty, otherwise just a regular string.
+                          type: string
+                      type: object
+                    type: array
+                  updateStrategy:
+                    default: RollingUpdate
+                    enum:
+                    - RollingUpdate
+                    - OnDelete
+                    type: string
+                type: object
+              devicePlugin:
+                description: DevicePlugin 设备插件配置
+                properties:
+                  args:
+                    description: 'Args 可选: 参数列表'
+                    items:
+                      type: string
+                    type: array
+                  enabledHPRE:
+                    description: EnabledHPRE 是否已启用通过 Operator 部署 KAE hpre 设备插件程序
+                    type: boolean
+                  enabledSEC:
+                    description: EnabledSEC 是否已启用通过 Operator 部署 KAE sec 设备插件程序，此版本暂时只支持
+                      HPRE 设备，此处为预留字段
+                    type: boolean
+                  enabledZIP:
+                    description: EnabledZIP 是否已启用通过 Operator 部署 KAE zip 设备插件程序，此版本暂时只支持
+                      HPRE 设备，此处为预留字段
+                    type: boolean
+                  env:
+                    description: 'Env 可选: 环境变量列表'
+                    items:
+                      description: EnvVar 容器中的环境变量。
+                      properties:
+                        name:
+                          description: Name of the environment variable.
+                          type: string
+                        value:
+                          description: Value of the environment variable.
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                  image:
+                    description: Image KAE Device Plugin image name
+                    pattern: '[a-zA-Z0-9\-]+'
+                    type: string
+                  imagePullPolicy:
+                    description: Image pull policy
+                    type: string
+                  imagePullSecrets:
+                    description: Image pull secrets
+                    items:
+                      type: string
+                    type: array
+                  repository:
+                    description: Repository KAE 设备插件程序镜像仓库
+                    type: string
+                  resources:
+                    description: 'Resources 可选: 定义每个 pod 的资源请求和限制'
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: Limits 可选，描述了允许使用的最大计算资源数量。
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: Requests 可选，描述了所需计算资源的最低数量。
+                        type: object
+                    type: object
+                  version:
+                    description: Version KAE Device Plugin image tag
+                    type: string
+                type: object
+              driver:
+                description: Driver 驱动配置
+                properties:
+                  args:
+                    description: 'Args 可选: 参数列表'
+                    items:
+                      type: string
+                    type: array
+                  enabled:
+                    description: Enabled 是否已启用通过 Operator 部署 KAE 驱动程序
+                    type: boolean
+                  enabledCleanup:
+                    description: EnabledCleanup 表示是否启用了在服务结束时清理驱动的功能。
+                    type: boolean
+                  env:
+                    description: 'Env 可选: 环境变量列表'
+                    items:
+                      description: EnvVar 容器中的环境变量。
+                      properties:
+                        name:
+                          description: Name of the environment variable.
+                          type: string
+                        value:
+                          description: Value of the environment variable.
+                          type: string
+                      required:
+                      - name
+                      type: object
+                    type: array
+                  image:
+                    description: Image image name
+                    pattern: '[a-zA-Z0-9\-]+'
+                    type: string
+                  imagePullPolicy:
+                    description: ImagePullPolicy pull policy
+                    type: string
+                  imagePullSecrets:
+                    description: ImagePullSecrets pull secrets
+                    items:
+                      type: string
+                    type: array
+                  repository:
+                    description: Repository KAE 驱动程序镜像仓库
+                    type: string
+                  resources:
+                    description: 'Resources 可选: 定义每个 pod 的资源请求和限制'
+                    properties:
+                      limits:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: Limits 可选，描述了允许使用的最大计算资源数量。
+                        type: object
+                      requests:
+                        additionalProperties:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        description: Requests 可选，描述了所需计算资源的最低数量。
+                        type: object
+                    type: object
+                  version:
+                    description: Version image tag
+                    type: string
+                type: object
+              operator:
+                description: Operator KAE Operator 规格
+                properties:
+                  enabledHPRE:
+                    description: EnabledHPRE是否使能 HPRE 硬件
+                    type: boolean
+                  enabledSEC:
+                    description: |-
+                      当前设备插件仅实现了 HPRE 设备，此版本暂时只支持 HPRE 设备，此处为预留字段
+                      EnabledSEC 是否使能 SEC 设备
+                    type: boolean
+                  enabledZIP:
+                    description: EnabledZIP 是否使能 ZIP 设备
+                    type: boolean
+                type: object
+              psa:
+                description: PSA  PodSecurityAdmission 配置
+                properties:
+                  enabled:
+                    description: Enabled 是否需要为所有 Pod 启用 PodSecurityAdmission 配置
+                    type: boolean
+                type: object
+            required:
+            - daemonSets
+            - devicePlugin
+            - driver
+            - operator
+            type: object
+          status:
+            description: KAEPolicyStatus defines the observed state of KAEPolicy
+            properties:
+              conditions:
+                description: Conditions 当前状态的条件列表
+                items:
+                  description: "Condition contains details for one aspect of the current
+                    state of this API Resource.\n---\nThis struct is intended for
+                    direct use as an array at the field path .status.conditions.  For
+                    example,\n\n\n\ttype FooStatus struct{\n\t    // Represents the
+                    observations of a foo's current state.\n\t    // Known .status.conditions.type
+                    are: \"Available\", \"Progressing\", and \"Degraded\"\n\t    //
+                    +patchMergeKey=type\n\t    // +patchStrategy=merge\n\t    // +listType=map\n\t
+                    \   // +listMapKey=type\n\t    Conditions []metav1.Condition `json:\"conditions,omitempty\"
+                    patchStrategy:\"merge\" patchMergeKey:\"type\" protobuf:\"bytes,1,rep,name=conditions\"`\n\n\n\t
+                    \   // other fields\n\t}"
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: |-
+                        type of condition in CamelCase or in foo.example.com/CamelCase.
+                        ---
+                        Many .condition.type values are consistent across resources like Available, but because arbitrary conditions can be
+                        useful (see .node.status.conditions), the ability to deconflict is important.
+                        The regex it matches is (dns1123SubdomainFmt/)?(qualifiedNameFmt)
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              namespace:
+                description: Namespace 命名空间
+                type: string
+              state:
+                description: State KAEPolicy 的状态
+                enum:
+                - Ignored
+                - Ready
+                - NotReady
+                - Disabled
+                type: string
+            required:
+            - state
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

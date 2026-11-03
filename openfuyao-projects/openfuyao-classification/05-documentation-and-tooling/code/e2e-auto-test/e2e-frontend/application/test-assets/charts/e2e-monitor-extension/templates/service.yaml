@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: e2e-monitor-extension
+  labels:
+    app: e2e-monitor-extension
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: e2e-monitor-extension
+  ports:
+    - port: {{ .Values.service.httpPort }}
+      targetPort: {{ .Values.service.httpPort }}

@@ -1,0 +1,34 @@
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: nodeselector
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - id: auto-generate-uuid
+      command: ["iptables", "--table", "nat", "--list"]
+      type: Shell
+      # 当该条指令执行失败，并且达到失败重试次数时，为true则运行跳过，默认false
+      backoffIgnore: true
+    - id: custom-command-id
+      command: ["iptables", "--table", "nat", "--list", ">", "/tmp/iptables.rule"]
+      type: Shell
+      # 当该条指令执行失败，并且达到失败重试次数时，为true则运行跳过，默认false
+      backoffIgnore: false
+    - id: write-configmap
+      command:
+        - "configmap:default/iptables:rw:/tmp/iptables.rule"
+      type: Kubernetes
+      # 当该条指令执行失败，并且达到失败重试次数时，为true则运行跳过，默认false
+      backoffIgnore: false
+  # 失败后最大重试次数
+  backoffLimit: 1
+  # 超过此时间后，不在执行。默认600
+  # activeDeadlineSecond: 1000
+  # 运行完成后，超过此清理的时间则清理该任务
+  ttlSecondsAfterFinished: 100
+  # 选定某些节点执行，NodeName需要为空
+  nodeSelector:
+    matchLabels:
+      topology.carina.storage.io/node: dev1-node-5.novalocal

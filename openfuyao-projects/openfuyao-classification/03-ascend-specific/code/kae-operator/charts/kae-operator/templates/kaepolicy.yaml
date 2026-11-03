@@ -1,0 +1,87 @@
+apiVersion: device.openfuyao.com/v1
+kind: KAEPolicy
+metadata:
+  name: kae-policy
+  labels:
+    {{- include "kae-operator.labels" . | nindent 4 }}
+    app.kubernetes.io/component: "kae-operator"
+spec:
+  operator:
+    enabledHPRE: {{ .Values.operator.enabledHPRE }}
+    enabledSEC: {{ .Values.operator.enabledSEC }}
+    enabledZIP: {{ .Values.operator.enabledZIP }}
+  daemonSets:
+    {{- if .Values.daemonSets.labels }}
+    labels: {{ toYaml .Values.daemonSets.labels | nindent 6 }}
+    {{- end }}
+    {{- if .Values.daemonSets.annotations }}
+    annotations: {{ toYaml .Values.daemonSets.annotations | nindent 6 }}
+    {{- end }}
+    {{- if .Values.daemonSets.tolerations }}
+    tolerations: {{ toYaml .Values.daemonSets.tolerations | nindent 6 }}
+    {{- end }}
+    {{- if .Values.daemonSets.priorityClassName }}
+    priorityClassName: {{ .Values.daemonSets.priorityClassName }}
+    {{- end }}
+    {{- if .Values.daemonSets.updateStrategy }}
+    updateStrategy: {{ .Values.daemonSets.updateStrategy }}
+    {{- end }}
+    {{- if .Values.daemonSets.rollingUpdate }}
+    rollingUpdate:
+      maxUnavailable: {{ .Values.daemonSets.rollingUpdate.maxUnavailable | quote }}
+    {{- end }}
+  driver:
+    enabled: {{ .Values.driver.enabled }}
+    enabledCleanup: {{ .Values.driver.enabledCleanup | default false }}
+    {{- if .Values.driver.repository }}
+    repository: {{ .Values.driver.repository }}
+    {{- end }}
+    {{- if .Values.images.driver.repository }}
+    image: {{ .Values.images.driver.repository }}
+    {{- end }}
+    {{- if .Values.images.driver.tag }}
+    version: {{ .Values.images.driver.tag | quote }}
+    {{- end }}
+    {{- if .Values.images.driver.PullPolicy }}
+    imagePullPolicy: {{ .Values.images.driver.PullPolicy }}
+    {{- end }}
+    {{- if .Values.driver.imagePullSecrets }}
+    imagePullSecrets: {{ toYaml .Values.driver.imagePullSecrets | nindent 6 }}
+    {{- end }}
+    {{- if .Values.driver.resources }}
+    resources: {{ toYaml .Values.driver.resources | nindent 6 }}
+    {{- end }}
+    {{- if .Values.driver.env }}
+    env: {{ toYaml .Values.driver.env | nindent 6 }}
+    {{- end }}
+    {{- if .Values.driver.args }}
+    args: {{ toYaml .Values.driver.args | nindent 6 }}
+    {{- end }}
+  devicePlugin:
+    enabledHPRE: {{ .Values.devicePlugin.enabledHPRE }}
+    enabledSEC: {{ .Values.devicePlugin.enabledSEC }}
+    enabledZIP: {{ .Values.devicePlugin.enabledZIP }}
+    {{- if .Values.devicePlugin.repository }}
+    repository: {{ .Values.devicePlugin.repository }}
+    {{- end }}
+    {{- if .Values.images.devicePlugin.repository }}
+    image: {{ .Values.images.devicePlugin.repository }}
+    {{- end }}
+    {{- if .Values.images.devicePlugin.tag }}
+    version: {{ .Values.images.devicePlugin.tag | quote }}
+    {{- end }}
+    {{- if .Values.images.devicePlugin.PullPolicy }}
+    imagePullPolicy: {{ .Values.images.devicePlugin.PullPolicy }}
+    {{- end }}
+    {{- if .Values.devicePlugin.imagePullSecrets }}
+    imagePullSecrets: {{ toYaml .Values.devicePlugin.imagePullSecrets | nindent 6 }}
+    {{- end }}
+    {{- if .Values.devicePlugin.resources }}
+    resources: {{ toYaml .Values.devicePlugin.resources | nindent 6 }}
+    {{- end }}
+    {{- if .Values.devicePlugin.env }}
+    env: {{ toYaml .Values.devicePlugin.env | nindent 6 }}
+    {{- end }}
+    {{- if .Values.devicePlugin.args }}
+    args: {{ toYaml .Values.devicePlugin.args | nindent 6 }}
+    {{- end }}

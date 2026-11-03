@@ -1,0 +1,169 @@
+{
+  "module": {
+    "title": "应用管理",
+    "description": "Helm应用是通过helm chart进行快速部署的应用实例，您可以便捷地进行升级、回退和卸载等操作。",
+    "helmDetail": "Helm详情",
+    "extensionDetail": "详情"
+  },
+  "extension": {
+    "title": "扩展组件管理",
+    "description": "扩展组件应用是通过自定义的前端提供扩展功能，您可以通过helm chart进行快速部署，并能便捷地进行升级、回退、启停前端界面和卸载等操作。"
+  },
+  "list": {
+    "total": "共{{total}}条"
+  },
+  "table": {
+    "name": "应用名称",
+    "extensionName": "扩展组件名称",
+    "status": "状态",
+    "updateTime": "更新时间",
+    "pluginToggle": "启动/停止界面"
+  },
+  "status": {
+    "deployed": "部署成功",
+    "failed": "部署失败",
+    "pending": "部署中",
+    "uninstalling": "卸载中",
+    "unknown": "未知"
+  },
+  "actions": {
+    "upgrade": "升级",
+    "rollback": "回退",
+    "uninstall": "卸载",
+    "pluginToggle": "界面启停",
+    "operation": "操作",
+    "cancel": "取消",
+    "confirm": "确定",
+    "query": "查询",
+    "reset": "重置",
+    "save": "保存"
+  },
+  "detail": {
+    "title": "详情",
+    "tabInfo": "详情",
+    "tabYaml": "YAML",
+    "tabResource": "资源",
+    "tabLog": "日志",
+    "tabEvent": "事件",
+    "tabMonitor": "监控",
+    "basicInfo": "基本信息",
+    "appName": "应用名称：",
+    "namespace": "命名空间：",
+    "status": "状态：",
+    "chartName": "应用模板：",
+    "appVersion": "应用版本：",
+    "chartVersion": "模板版本：",
+    "createTime": "创建时间：",
+    "updateTime": "更新时间："
+  },
+  "upgrade": {
+    "title": "升级",
+    "helmDetail": "Helm详情",
+    "helmUpgrade": "Helm升级",
+    "extensionDetail": "扩展组件详情",
+    "extensionUpgrade": "扩展组件升级",
+    "currentVersionInfo": "当前版本信息",
+    "upgradeInfo": "升级信息",
+    "versionSelect": "版本信息",
+    "versionRequired": "请选择一个版本!",
+    "paramConfig": "参数配置",
+    "valuesYaml": "Values.yaml",
+    "yamlReadWrite": "YAML（读写）",
+    "diff": "变化",
+    "oldConfig": "旧配置文件",
+    "newConfig": "新配置文件",
+    "upgradeInProgress": "升级中"
+  },
+  "rollback": {
+    "title": "应用回退",
+    "chartTemplate": "应用模板",
+    "sequence": "序号",
+    "chart": "chart",
+    "currentVersion": "当前版本"
+  },
+  "modal": {
+    "uninstallTitle": "卸载应用",
+    "uninstallExtensionTitle": "卸载扩展组件",
+    "uninstallWarning": "卸载后将无法恢复，请谨慎操作。",
+    "uninstallConfirm": "确定卸载应用 {{name}} 吗？",
+    "uninstallExtensionConfirm": "确定卸载扩展组件 {{name}} 吗？",
+    "rollbackTitle": "应用回退",
+    "rollbackSuccess": "回退版本成功",
+    "rollbackFailed": "回退版本失败: {{message}}",
+    "uninstallFailed": "卸载失败: {{message}}",
+    "uninstallSuccess": "卸载成功"
+  },
+  "messages": {
+    "upgradeSuccess": "升级成功",
+    "upgradeFailed": "升级失败: {{message}}",
+    "noPermission": "操作失败，当前用户没有操作权限，请联系管理员添加权限!",
+    "fetchVersionFailed": "获取版本信息失败",
+    "fetchYamlFailed": "获取yaml失败",
+    "fetchDataError": "数据获取错误: {{message}}",
+    "notFromMarket": "安装来源非openFuyao应用市场",
+    "notPlatformSource": "无法更新非平台来源应用"
+  },
+  "plugin": {
+    "title": "扩展界面启停",
+    "loading": "扩展组件工作负载加载中……",
+    "notStarted": "扩展组件工作负载未启动，请稍候",
+    "displayNameLabel": "显示名称",
+    "pluginNameLabel": "插件名称",
+    "entrypointLabel": "挂载点",
+    "hint": "扩展组件提供自定义的扩展前端界面。扩展界面启用/停用后，系统将提示您刷新以展示最新的前端界面。请确保信任该扩展组件。",
+    "fetchPartialFailed": "部分插件状态获取失败（{{failed}} 个），列表可能不完整",
+    "updatePartialFailed": "部分插件开关更新失败（{{failed}}/{{total}}），请重试",
+    "noPlugin": "当前扩展组件不包含扩展界面",
+    "deployFailed": "扩展组件部署失败，无法管理界面启停",
+    "extensionUpdated": "扩展组件发生更新，请刷新以展示最新版本的页面。",
+    "clickRefresh": "点击刷新",
+    "uninstallSuccess": "扩展组件{{name}}卸载成功"
+  },
+  "yaml": {
+    "prompt": "values是helm chart中用于存储配置参数的文件",
+    "onlyValues": "只显示Values"
+  },
+  "resource": {
+    "name": "资源名称",
+    "namespace": "命名空间",
+    "type": "类型",
+    "status": "状态",
+    "running": "运行中",
+    "failed": "失败",
+    "creating": "创建中",
+    "releaseStatus": {
+      "current": "运行中",
+      "failed": "失败",
+      "inProgress": "创建中",
+      "terminating": "删除中",
+      "unknown": "未知"
+    }
+  },
+  "log": {
+    "title": "日志",
+    "noLog": "暂无日志",
+    "container": "容器",
+    "export": "导出",
+    "exportSuccess": "导出成功",
+    "noLogToExport": "暂无日志,不可导出"
+  },
+  "event": {
+    "resourceName": "资源名称",
+    "resourceType": "资源类型",
+    "eventLevel": "事件等级",
+    "namespace": "命名空间",
+    "normal": "正常",
+    "warning": "警告",
+    "loadMore": "查看更多",
+    "loading": "加载中...",
+    "resourceNameLabel": "资源名称:",
+    "normalLabel": "正常",
+    "warningLabel": "警告"
+  },
+  "monitor": {
+    "endTime": "结束时间"
+  },
+  "extend": {
+    "startStop": "启动/停止界面"
+  }
+}

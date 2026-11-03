@@ -1,0 +1,6 @@
+name: openfuyao-system-controller
+type: private
+description: '自动化部署openFuyao核心服务'
+branches:
+  - name: master
+    type: protected

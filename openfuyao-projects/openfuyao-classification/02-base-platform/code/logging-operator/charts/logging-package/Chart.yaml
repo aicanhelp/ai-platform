@@ -1,0 +1,17 @@
+apiVersion: v2
+name: logging-package
+description: >
+  openFuyao logging extension that integrates the logging operator,
+  Loki stack, and proxy frontend to deliver a complete logging 
+  solution in Kubernetes clusters.
+type: application
+appVersion: "latest"
+version: 0.0.0-latest
+keywords: ["openfuyao-extension", "log"]
+dependencies:
+  - name: logging-operator
+    version: 0.0.0-latest
+  - name: loki-stack
+    version: 2.10.2
+  - name: proxy-logging
+    version: 0.0.0-latest

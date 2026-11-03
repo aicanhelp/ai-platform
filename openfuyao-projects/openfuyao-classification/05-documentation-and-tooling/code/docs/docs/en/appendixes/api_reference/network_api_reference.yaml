@@ -1,0 +1,1752 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: APIs related to Kubernetes Ingresses, roles, and service accounts.
+  version: v1.24
+servers:
+  - url: /
+
+paths:
+  #
+  # Ingress-related APIs
+  #
+  /api/kubernetes/apis/networking.k8s.io/v1/namespaces/{namespace}/ingresses/{name}:
+    get:
+      tags:
+        - Ingresses
+      summary: Reading a specified Ingress.
+      description: Obtaining the content of a specified Ingress.
+      operationId: readIngress
+      parameters:
+        - name: name
+          in: path
+          description: Ingress name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: limit
+          in: query
+          description: Maximum number of responses returned to the list call.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: page
+          in: query
+          description: Specified page number returned to the list call.
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - apiVersion
+                  - kind
+                  - metadata
+                  - spec
+                properties:
+                  apiVersion:
+                    type: string
+                    default: networking.k8s.io/v1
+                    description: API version.
+                  kind:
+                    type: string
+                    default: Ingress
+                    description: Resource type.
+                  metadata:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Object name.
+                      namespace:
+                        type: string
+                        description: Namespace name.
+                      labels:
+                        type: object
+                        additionalProperties:
+                          type: string
+                        description: Object label.
+                      annotations:
+                        type: object
+                        additionalProperties:
+                          type: string
+                        description: Object annotation.
+                      resourceVersion:
+                        type: string
+                        description: Resource version.
+                      uid:
+                        type: string
+                        description: Unique identifier of the object.
+                      creationTimestamp:
+                        type: string
+                        format: date-time
+                        description: Creation timestamp.
+                  spec:
+                    type: object
+                    description: Ingress specifications.
+                    properties:
+                      ingressClassName:
+                        type: string
+                        description: Ingress class name.
+                      defaultBackend:
+                        type: object
+                        properties:
+                          service:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: Service name.
+                              port:
+                                type: object
+                                properties:
+                                  number:
+                                    type: integer
+                                    format: int32
+                                    description: Port ID.
+                                  name:
+                                    type: string
+                                    description: Port name.
+                          resource:
+                            type: object
+                            properties:
+                              apiGroup:
+                                type: string
+                                description: API group.
+                              kind:
+                                type: string
+                                description: Resource type.
+                              name:
+                                type: string
+                                description: Resource name.
+                      tls:
+                        type: array
+                        description: TLS configuration list.
+                        items:
+                          type: object
+                          properties:
+                            hosts:
+                              type: array
+                              description: Host name list.
+                              items:
+                                type: string
+                            secretName:
+                              type: string
+                              description: Secret name.
+                      rules:
+                        type: array
+                        description: Rule list.
+                        items:
+                          type: object
+                          properties:
+                            host:
+                              type: string
+                              description: Host name.
+                            http:
+                              type: object
+                              properties:
+                                paths:
+                                  type: array
+                                  description: Path list.
+                                  items:
+                                    type: object
+                                    properties:
+                                      path:
+                                        type: string
+                                        description: Path.
+                                      pathType:
+                                        type: string
+                                        description: Path type.
+                                        enum: [Exact, Prefix, ImplementationSpecific]
+                                      backend:
+                                        type: object
+                                        properties:
+                                          service:
+                                            type: object
+                                            properties:
+                                              name:
+                                                type: string
+                                                description: Service name.
+                                              port:
+                                                type: object
+                                                properties:
+                                                  number:
+                                                    type: integer
+                                                    format: int32
+                                                    description: Port ID.
+                                                  name:
+                                                    type: string
+                                                    description: Port name.
+                                          resource:
+                                            type: object
+                                            properties:
+                                              apiGroup:
+                                                type: string
+                                                description: API group.
+                                              kind:
+                                                type: string
+                                                description: Resource type.
+                                              name:
+                                                type: string
+                                                description: Resource name.
+                  status:
+                    type: object
+                    description: Ingress status.
+                    properties:
+                      loadBalancer:
+                        type: object
+                        description: Load balancer status.
+                        properties:
+                          ingress:
+                            type: array
+                            description: Entry list.
+                            items:
+                              type: object
+                              properties:
+                                hostname:
+                                  type: string
+                                  description: Host name.
+                                ip:
+                                  type: string
+                                  description: IP address.
+                                ports:
+                                  type: array
+                                  description: Port list.
+                                  items:
+                                    type: object
+                                    properties:
+                                      port:
+                                        type: integer
+                                        format: int32
+                                        description: Port ID.
+                                      protocol:
+                                        type: string
+                                        description: Protocol.
+                                        enum: [TCP, UDP, SCTP]
+        '401':
+          description: Unauthorized.
+    put:
+      tags:
+        - Ingresses
+      summary: Updating a specified Ingress.
+      description: Updating a specified Ingress.
+      operationId: updateIngress
+      parameters:
+        - name: name
+          in: path
+          description: Ingress name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: fieldSelector
+          in: query
+          description: Selector that restricts the returned objects by field.
+          required: false
+          schema:
+            type: string
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - apiVersion
+                - kind
+                - metadata
+                - spec
+              properties:
+                apiVersion:
+                  type: string
+                  default: networking.k8s.io/v1
+                  description: API version.
+                kind:
+                  type: string
+                  default: Ingress
+                  description: Resource type.
+                metadata:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Object name.
+                    namespace:
+                      type: string
+                      description: Namespace name.
+                    labels:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Object label.
+                    annotations:
+                      type: object
+                      additionalProperties:
+                        type: string
+                      description: Object annotation.
+                spec:
+                  type: object
+                  description: Ingress specifications.
+                  properties:
+                    ingressClassName:
+                      type: string
+                      description: Ingress class name.
+                    rules:
+                      type: array
+                      description: Rule list.
+                      items:
+                        type: object
+                        properties:
+                          host:
+                            type: string
+                            description: Host name.
+                          http:
+                            type: object
+                            properties:
+                              paths:
+                                type: array
+                                description: Path list.
+                                items:
+                                  type: object
+                                  properties:
+                                    path:
+                                      type: string
+                                      description: Path.
+                                    pathType:
+                                      type: string
+                                      description: Path type.
+                                      enum: [Exact, Prefix, ImplementationSpecific]
+                                    backend:
+                                      type: object
+                                      properties:
+                                        service:
+                                          type: object
+                                          properties:
+                                            name:
+                                              type: string
+                                              description: Service name.
+                                            port:
+                                              type: object
+                                              properties:
+                                                number:
+                                                  type: integer
+                                                  format: int32
+                                                  description: Port ID.
+            example:
+              metadata:
+                name: example-ingress
+                namespace: default
+              spec:
+                rules:
+                  - host: example.com
+                    http:
+                      paths:
+                        - path: /
+                          pathType: Prefix
+                          backend:
+                            service:
+                              name: example-service
+                              port:
+                                number: 80
+        required: true
+      responses:
+        '200':
+          description: Success.
+        '201':
+          description: Already created.
+        '401':
+          description: Unauthorized.
+    delete:
+      tags:
+        - Ingresses
+      summary: Deleting a specified Ingress.
+      description: Deleting an Ingress.
+      operationId: deleteIngress
+      parameters:
+        - name: name
+          in: path
+          description: Ingress name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: Duration before the object is deleted, in seconds.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: propagationPolicy
+          in: query
+          description: Determining whether and how to perform garbage collection.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success.
+        '202':
+          description: Accepted.
+        '401':
+          description: Unauthorized.
+    patch:
+      tags:
+        - Ingresses
+      summary: Partially updating a specified Ingress.
+      description: Partially updating a specified Ingress.
+      operationId: patchIngress
+      parameters:
+        - name: name
+          in: path
+          description: Ingress name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: Forcibly applying the request.
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: Operation type, such as add, replace, and remove.
+                    enum: [add, replace, remove]
+                  path:
+                    type: string
+                    description: JSON path to be operated.
+                  value:
+                    type: object
+                    description: New value (mandatory for the add and replace operations).
+            examples:
+              Adding a label:
+                value:
+                  - op: add
+                    path: /metadata/labels
+                    value:
+                      data: value
+              Replacing a label attribute:
+                value:
+                  - op: replace
+                    path: /metadata/labels/env
+                    value: value1
+              Deleting a label attribute:
+                value:
+                  - op: remove
+                    path: /metadata/labels/env
+        required: true
+      responses:
+        '200':
+          description: Success.
+        '201':
+          description: Already updated.
+        '401':
+          description: Unauthorized.
+  
+  /api/kubernetes/apis/networking.k8s.io/v1/namespaces/{namespace}/ingresses:
+    get:
+      tags:
+        - Ingresses
+      summary: Obtaining the Ingress list.
+      description: Obtaining the Ingress list.
+      operationId: listIngresses
+      parameters:
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: Watching changes to the specified resource.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kind:
+                    type: string
+                    example: IngressList
+                  apiVersion:
+                    type: string
+                    example: networking.k8s.io/v1
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - apiVersion
+                        - kind
+                        - metadata
+                        - spec
+                      properties:
+                        apiVersion:
+                          type: string
+                          default: networking.k8s.io/v1
+                          description: API version.
+                        kind:
+                          type: string
+                          default: Ingress
+                          description: Resource type.
+                        metadata:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Object name.
+                            namespace:
+                              type: string
+                              description: Namespace name.
+                        spec:
+                          type: object
+                          description: Ingress specifications.
+                          properties:
+                            rules:
+                              type: array
+                              description: Rule list.
+                              items:
+                                type: object
+                                properties:
+                                  host:
+                                    type: string
+                                    description: Host name.
+        '401':
+          description: Unauthorized.
+    post:
+      tags:
+        - Ingresses
+      summary: Creating an Ingress.
+      description: Creating an Ingress.
+      operationId: createIngress
+      parameters:
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - apiVersion
+                - kind
+                - metadata
+                - spec
+              properties:
+                apiVersion:
+                  type: string
+                  default: networking.k8s.io/v1
+                  description: API version.
+                kind:
+                  type: string
+                  default: Ingress
+                  description: Resource type.
+                metadata:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Object name.
+                    namespace:
+                      type: string
+                      description: Namespace name.
+                spec:
+                  type: object
+                  description: Ingress specifications.
+                  properties:
+                    rules:
+                      type: array
+                      description: Rule list.
+                      items:
+                        type: object
+                        properties:
+                          host:
+                            type: string
+                            description: Host name.
+                          http:
+                            type: object
+                            properties:
+                              paths:
+                                type: array
+                                description: Path list.
+                                items:
+                                  type: object
+                                  properties:
+                                    path:
+                                      type: string
+                                      description: Path.
+                                    pathType:
+                                      type: string
+                                      description: Path type.
+                                      enum: [Exact, Prefix, ImplementationSpecific]
+                                    backend:
+                                      type: object
+                                      properties:
+                                        service:
+                                          type: object
+                                          properties:
+                                            name:
+                                              type: string
+                                              description: Service name.
+                                            port:
+                                              type: object
+                                              properties:
+                                                number:
+                                                  type: integer
+                                                  format: int32
+                                                  description: Port ID.
+            example:
+              metadata:
+                name: example-ingress
+                namespace: default
+              spec:
+                rules:
+                  - host: example.com
+                    http:
+                      paths:
+                        - path: /
+                          pathType: Prefix
+                          backend:
+                            service:
+                              name: example-service
+                              port:
+                                number: 80
+        required: true
+      responses:
+        '200':
+          description: Success.
+        '201':
+          description: Already created.
+        '202':
+          description: Accepted.
+        '401':
+          description: Unauthorized.
+
+  #
+  # Role-related APIs
+  #
+  /api/kubernetes/apis/rbac.authorization.k8s.io/v1/namespaces/{namespace}/roles/{name}:
+    get:
+      tags:
+        - Roles
+      summary: Reading a specified role.
+      description: Obtaining the content of a specified role.
+      operationId: readRole
+      parameters:
+        - name: name
+          in: path
+          description: Role name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - apiVersion
+                  - kind
+                  - metadata
+                  - rules
+                properties:
+                  apiVersion:
+                    type: string
+                    default: rbac.authorization.k8s.io/v1
+                    description: API version.
+                  kind:
+                    type: string
+                    default: Role
+                    description: Resource type.
+                  metadata:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Object name.
+                      namespace:
+                        type: string
+                        description: Namespace name.
+                      labels:
+                        type: object
+                        additionalProperties:
+                          type: string
+                        description: Object label.
+                      annotations:
+                        type: object
+                        additionalProperties:
+                          type: string
+                        description: Object annotation.
+                      resourceVersion:
+                        type: string
+                        description: Resource version.
+                      uid:
+                        type: string
+                        description: Unique identifier of the object.
+                      creationTimestamp:
+                        type: string
+                        format: date-time
+                        description: Creation timestamp.
+                  rules:
+                    type: array
+                    description: Rule list.
+                    items:
+                      type: object
+                      required:
+                        - verbs
+                      properties:
+                        apiGroups:
+                          type: array
+                          description: API group list.
+                          items:
+                            type: string
+                        resources:
+                          type: array
+                          description: Resource list.
+                          items:
+                            type: string
+                        resourceNames:
+                          type: array
+                          description: Resource name list.
+                          items:
+                            type: string
+                        verbs:
+                          type: array
+                          description: Verb list.
+                          items:
+                            type: string
+        '401':
+          description: Unauthorized.
+    put:
+      tags:
+        - Roles
+      summary: Updating a specified role.
+      description: Updating a specified role.
+      operationId: updateRole
+      parameters:
+        - name: name
+          in: path
+          description: Role name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - apiVersion
+                - kind
+                - metadata
+                - rules
+              properties:
+                apiVersion:
+                  type: string
+                  default: rbac.authorization.k8s.io/v1
+                  description: API version.
+                kind:
+                  type: string
+                  default: Role
+                  description: Resource type.
+                metadata:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Object name.
+                    namespace:
+                      type: string
+                      description: Namespace name.
+                rules:
+                  type: array
+                  description: Rule list.
+                  items:
+                    type: object
+                    required:
+                      - verbs
+                    properties:
+                      apiGroups:
+                        type: array
+                        description: API group list.
+                        items:
+                          type: string
+                      resources:
+                        type: array
+                        description: Resource list.
+                        items:
+                          type: string
+                      resourceNames:
+                        type: array
+                        description: Resource name list.
+                        items:
+                          type: string
+                      verbs:
+                        type: array
+                        description: Verb list.
+                        items:
+                          type: string
+            example:
+              metadata:
+                namespace: default
+                name: example-role
+              rules:
+                - apiGroups: [""]
+                  resources: ["pods"]
+                  verbs: ["get", "list", "watch"]
+                - apiGroups: [""]
+                  resources: ["pods/log"]
+                  verbs: ["get"]
+        required: true
+      responses:
+        '200':
+          description: Success.
+        '201':
+          description: Already created.
+        '401':
+          description: Unauthorized.
+    delete:
+      tags:
+        - Roles
+      summary: Deleting a specified role.
+      description: Deleting a role.
+      operationId: deleteRole
+      parameters:
+        - name: name
+          in: path
+          description: Role name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: Duration before the object is deleted, in seconds.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: propagationPolicy
+          in: query
+          description: Determining whether and how to perform garbage collection.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success.
+        '202':
+          description: Accepted.
+        '401':
+          description: Unauthorized.
+    patch:
+      tags:
+        - Roles
+      summary: Partially updating a specified role.
+      description: Partially updating a specified role.
+      operationId: patchRole
+      parameters:
+        - name: name
+          in: path
+          description: Role name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: Forcibly applying the request.
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: Operation type, such as add, replace, and remove.
+                    enum: [add, replace, remove]
+                  path:
+                    type: string
+                    description: JSON path to be operated.
+                  value:
+                    type: object
+                    description: New value (mandatory for the add and replace operations).
+        required: true
+      responses:
+        '200':
+          description: Success.
+        '201':
+          description: Already updated.
+        '401':
+          description: Unauthorized.
+  
+  /api/kubernetes/apis/rbac.authorization.k8s.io/v1/namespaces/{namespace}/roles:
+    get:
+      tags:
+        - Roles
+      summary: Obtaining the role list.
+      description: Obtaining the role list.
+      operationId: listRoles
+      parameters:
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: Watching changes to the specified resource.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kind:
+                    type: string
+                    example: RoleList
+                  apiVersion:
+                    type: string
+                    example: rbac.authorization.k8s.io/v1
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - apiVersion
+                        - kind
+                        - metadata
+                        - rules
+                      properties:
+                        apiVersion:
+                          type: string
+                          default: rbac.authorization.k8s.io/v1
+                          description: API version.
+                        kind:
+                          type: string
+                          default: Role
+                          description: Resource type.
+                        metadata:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Object name.
+                            namespace:
+                              type: string
+                              description: Namespace name.
+                        rules:
+                          type: array
+                          description: Rule list.
+                          items:
+                            type: object
+                            required:
+                              - verbs
+                            properties:
+                              apiGroups:
+                                type: array
+                                description: API group list.
+                                items:
+                                  type: string
+                              resources:
+                                type: array
+                                description: Resource list.
+                                items:
+                                  type: string
+                              verbs:
+                                type: array
+                                description: Verb list.
+                                items:
+                                  type: string
+        '401':
+          description: Unauthorized.
+    post:
+      tags:
+        - Roles
+      summary: Creating a role.
+      description: Creating a role.
+      operationId: createRole
+      parameters:
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - apiVersion
+                - kind
+                - metadata
+                - rules
+              properties:
+                apiVersion:
+                  type: string
+                  default: rbac.authorization.k8s.io/v1
+                  description: API version.
+                kind:
+                  type: string
+                  default: Role
+                  description: Resource type.
+                metadata:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Object name.
+                    namespace:
+                      type: string
+                      description: Namespace name.
+                rules:
+                  type: array
+                  description: Rule list.
+                  items:
+                    type: object
+                    required:
+                      - verbs
+                    properties:
+                      apiGroups:
+                        type: array
+                        description: API group list.
+                        items:
+                          type: string
+                      resources:
+                        type: array
+                        description: Resource list.
+                        items:
+                          type: string
+                      verbs:
+                        type: array
+                        description: Verb list.
+                        items:
+                          type: string
+            example:
+              metadata:
+                namespace: default
+                name: example-role
+              rules:
+                - apiGroups: [""]
+                  resources: ["pods"]
+                  verbs: ["get", "list", "watch"]
+        required: true
+      responses:
+        '200':
+          description: Success.
+        '201':
+          description: Already created.
+        '202':
+          description: Accepted.
+        '401':
+          description: Unauthorized.
+
+  #
+  # Service account-related APIs
+  #
+  /api/kubernetes/api/v1/namespaces/{namespace}/serviceaccounts/{name}:
+    get:
+      tags:
+        - ServiceAccounts
+      summary: Reading a specified service account.
+      description: Obtaining the content of a specified service account.
+      operationId: readServiceAccount
+      parameters:
+        - name: name
+          in: path
+          description: Service account name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - apiVersion
+                  - kind
+                  - metadata
+                properties:
+                  apiVersion:
+                    type: string
+                    default: v1
+                    description: API version.
+                  kind:
+                    type: string
+                    default: ServiceAccount
+                    description: Resource type.
+                  metadata:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Object name.
+                      namespace:
+                        type: string
+                        description: Namespace name.
+                      labels:
+                        type: object
+                        additionalProperties:
+                          type: string
+                        description: Object label.
+                      annotations:
+                        type: object
+                        additionalProperties:
+                          type: string
+                        description: Object annotation.
+                      resourceVersion:
+                        type: string
+                        description: Resource version.
+                      uid:
+                        type: string
+                        description: Unique identifier of the object.
+                      creationTimestamp:
+                        type: string
+                        format: date-time
+                        description: Creation timestamp.
+                  secrets:
+                    type: array
+                    description: Secret reference list.
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Secret name.
+                  imagePullSecrets:
+                    type: array
+                    description: Pulling an image from Secret list.
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                          description: Secret name.
+                  automountServiceAccountToken:
+                    type: boolean
+                    description: Whether to automatically mount the service account token.
+        '401':
+          description: Unauthorized.
+    put:
+      tags:
+        - ServiceAccounts
+      summary: Updating a specified service account.
+      description: Updating a specified service account.
+      operationId: updateServiceAccount
+      parameters:
+        - name: name
+          in: path
+          description: Service account name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - apiVersion
+                - kind
+                - metadata
+              properties:
+                apiVersion:
+                  type: string
+                  default: v1
+                  description: API version.
+                kind:
+                  type: string
+                  default: ServiceAccount
+                  description: Resource type.
+                metadata:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Object name.
+                    namespace:
+                      type: string
+                      description: Namespace name.
+                secrets:
+                  type: array
+                  description: Secret reference list.
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Secret name.
+                imagePullSecrets:
+                  type: array
+                  description: Pulling an image from Secret list.
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Secret name.
+                automountServiceAccountToken:
+                  type: boolean
+                  description: Whether to automatically mount the service account token.
+            example:
+              metadata:
+                name: example-serviceaccount
+                namespace: default
+        required: true
+      responses:
+        '200':
+          description: Success.
+        '201':
+          description: Already created.
+        '401':
+          description: Unauthorized.
+    delete:
+      tags:
+        - ServiceAccounts
+      summary: Deleting a specified service account.
+      description: Deleting a service account.
+      operationId: deleteServiceAccount
+      parameters:
+        - name: name
+          in: path
+          description: Service account name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: gracePeriodSeconds
+          in: query
+          description: Duration before the object is deleted, in seconds.
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: propagationPolicy
+          in: query
+          description: Determining whether and how to perform garbage collection.
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success.
+        '202':
+          description: Accepted.
+        '401':
+          description: Unauthorized.
+    patch:
+      tags:
+        - ServiceAccounts
+      summary: Partially updating a specified service account.
+      description: Partially updating a specified service account.
+      operationId: patchServiceAccount
+      parameters:
+        - name: name
+          in: path
+          description: Service account name.
+          required: true
+          schema:
+            type: string
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+        - name: force
+          in: query
+          description: Forcibly applying the request.
+          required: false
+          schema:
+            type: boolean
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: object
+                required:
+                  - op
+                  - path
+                properties:
+                  op:
+                    type: string
+                    description: Operation type, such as add, replace, and remove.
+                    enum: [add, replace, remove]
+                  path:
+                    type: string
+                    description: JSON path to be operated.
+                  value:
+                    type: object
+                    description: New value (mandatory for the add and replace operations).
+        required: true
+      responses:
+        '200':
+          description: Success.
+        '201':
+          description: Already updated.
+        '401':
+          description: Unauthorized.
+  
+  /api/kubernetes/api/v1/namespaces/{namespace}/serviceaccounts:
+    get:
+      tags:
+        - ServiceAccounts
+      summary: Obtaining the service account list.
+      description: Obtaining the service account list.
+      operationId: listServiceAccounts
+      parameters:
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: labelSelector
+          in: query
+          description: Selector that restricts the returned object list by label.
+          required: false
+          schema:
+            type: string
+        - name: watch
+          in: query
+          description: Watching changes to the specified resource.
+          required: false
+          schema:
+            type: boolean
+      responses:
+        '200':
+          description: Success.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  kind:
+                    type: string
+                    example: ServiceAccountList
+                  apiVersion:
+                    type: string
+                    example: v1
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - apiVersion
+                        - kind
+                        - metadata
+                      properties:
+                        apiVersion:
+                          type: string
+                          default: v1
+                          description: API version.
+                        kind:
+                          type: string
+                          default: ServiceAccount
+                          description: Resource type.
+                        metadata:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              description: Object name.
+                            namespace:
+                              type: string
+                              description: Namespace name.
+                        secrets:
+                          type: array
+                          description: Secret reference list.
+                          items:
+                            type: object
+                            properties:
+                              name:
+                                type: string
+                                description: Secret name.
+        '401':
+          description: Unauthorized.
+    post:
+      tags:
+        - ServiceAccounts
+      summary: Creating a service account.
+      description: Creating a service account.
+      operationId: createServiceAccount
+      parameters:
+        - name: namespace
+          in: path
+          description: Namespace name.
+          required: true
+          schema:
+            type: string
+        - name: pretty
+          in: query
+          description: Pretty print.
+          required: false
+          schema:
+            type: boolean
+        - name: dryRun
+          in: query
+          description: The requested update should not be persisted.
+          required: false
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - apiVersion
+                - kind
+                - metadata
+              properties:
+                apiVersion:
+                  type: string
+                  default: v1
+                  description: API version.
+                kind:
+                  type: string
+                  default: ServiceAccount
+                  description: Resource type.
+                metadata:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      description: Object name.
+                    namespace:
+                      type: string
+                      description: Namespace name.
+                secrets:
+                  type: array
+                  description: Secret reference list.
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Secret name.
+                imagePullSecrets:
+                  type: array
+                  description: Pulling an image from Secret list.
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        description: Secret name.
+                automountServiceAccountToken:
+                  type: boolean
+                  description: Whether to automatically mount the service account token.
+            example:
+              metadata:
+                name: example-serviceaccount
+                namespace: default
+        required: true
+      responses:
+        '200':
+          description: Success.
+        '201':
+          description: Already created.
+        '202':
+          description: Accepted.
+        '401':
+          description: Unauthorized.

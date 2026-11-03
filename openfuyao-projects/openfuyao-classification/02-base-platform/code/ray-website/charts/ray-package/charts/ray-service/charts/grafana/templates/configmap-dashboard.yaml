@@ -1,0 +1,15 @@
+# templates/configmap-dashboards.yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: grafana-dashboards
+  labels:
+    {{- include "grafana.labels" . | nindent 4 }}
+    {{ .Values.sidecar.dashboards.label }}: "{{ .Values.sidecar.dashboards.labelValue }}"
+data:
+  {{- $files := .Files }}
+  {{- range $path, $content := .Files.Glob "dashboards/*.json" }}
+  {{ base $path }}: |-
+{{ $files.Get $path | indent 4 }}
+  {{- end }}
+

@@ -1,0 +1,18 @@
+# The following patch enables a conversion webhook for the CRD
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: bkeclusters.cluster.bocloud.com
+spec:
+  conversion:
+    strategy: Webhook
+    webhook:
+      clientConfig:
+# todo for dev
+#        service:
+#          namespace: system
+#          name: webhook-service
+#          path: /convert
+         url: "https://172.28.8.186:9443/convert"
+      conversionReviewVersions:
+      - v1

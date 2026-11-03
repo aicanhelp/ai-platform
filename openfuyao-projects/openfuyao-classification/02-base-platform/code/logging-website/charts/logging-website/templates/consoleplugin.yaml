@@ -1,0 +1,20 @@
+apiVersion: console.openfuyao.com/v1beta1
+kind: ConsolePlugin
+metadata:
+  name: logging
+spec:
+  pluginName: logging
+  displayName: "日志"
+  subPages:
+    - pageName: logSearch
+      displayName: "日志查询"
+    - pageName: logSet
+      displayName: "日志配置"
+  entrypoint: /container_platform
+  backend:
+    type: Service
+    service:
+      name: {{ .Release.Name }}
+      namespace: {{ .Release.Namespace }}
+      port: {{ .Values.service.httpPort }}
+  enabled: true

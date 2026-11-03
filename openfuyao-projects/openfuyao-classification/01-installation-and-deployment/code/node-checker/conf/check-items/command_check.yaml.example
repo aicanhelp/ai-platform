@@ -1,0 +1,16 @@
+# 后续内容使用command类型的CheckItem检测命令是否存在
+name: command_check
+kind: command
+doc: 模拟检测命令是否存在
+spec:
+  - name: usermod
+    doc: 检查usermod命令是否存在
+    command: which usermod && echo Exist || echo Missing
+    expect: Exist
+    type: regex
+  - name: userdel
+    doc: 检查userdel命令是否存在
+    command: which userdel && echo Exist || echo Missing
+    expect: Exist
+    type: regex
+  

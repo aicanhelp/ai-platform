@@ -1,0 +1,9 @@
+name: weight-dispatcher
+type: public
+description: '加速推理场景中模型权重下载、分发的速度'
+branches:
+  - name: master
+    type: protected
+  - name: feat/node-warm-up
+    type: protected
+    create_from: master

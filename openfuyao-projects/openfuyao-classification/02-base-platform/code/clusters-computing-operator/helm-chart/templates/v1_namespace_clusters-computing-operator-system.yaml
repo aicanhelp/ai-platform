@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    {{- toYaml .Values.global.labels | nindent 4}}
+    app.kubernetes.io/name: clusters-computing-operator
+    control-plane: controller-manager
+  name: clusters-computing-operator-system

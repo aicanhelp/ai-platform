@@ -1,0 +1,119 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: volcano-scheduler
+  namespace: volcano-system
+  labels:
+    app: volcano-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: volcano-scheduler
+  template:
+    metadata:
+      labels:
+        app: volcano-scheduler
+      ##### For Kubernetes versions lower than 1.19, seccomp is used with annotations.
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: runtime/default
+    spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchExpressions:
+                  - key: app
+                    operator: In
+                    values:
+                      - "npu-operator"
+              topologyKey: "kubernetes.io/hostname"
+              namespaceSelector: {}
+      nodeSelector:
+        masterselector: dls-master-node
+      serviceAccount: volcano-scheduler
+      securityContext:
+        fsGroup: 9000
+        seLinuxOptions:
+          level: s0:c123,c456
+        ##### For Kubernetes version 1.19 and above, seccomp is used with securityContext:seccompProfile
+        seccompProfile:
+          type: RuntimeDefault
+      initContainers:
+        - name: init-permission
+          image: "hub.oepkgs.net/openfuyao/busybox:1.36.1"
+          command:
+            - sh
+            - -c
+            - |
+              chown 9000:9000 /var/log/mindx-dl /var/log/mindx-dl/volcano-scheduler
+              chmod 750 /var/log/mindx-dl/volcano-scheduler
+          volumeMounts:
+            - mountPath: /var/log/mindx-dl/volcano-scheduler
+              name: scheduler-config-log
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+      containers:
+        - name: volcano-scheduler
+          image: "hub.oepkgs.net/openfuyao/ascendhub/vc-scheduler:v1.12.0-v26.1.1-openeuler24.03"
+          command: ["/bin/sh"]
+          args: [ "-c", "umask 027; /vc-scheduler
+                            --scheduler-conf=/volcano.scheduler/volcano-scheduler.conf
+                            --plugins-dir=plugins
+                            --logtostderr=true
+                            --leader-elect=false
+                            --enable-healthz=true
+                            --enable-metrics=true
+                            --kube-api-qps=2000
+                            --kube-api-burst=2000
+                            --schedule-period=1s
+                            --percentage-nodes-to-find=100
+                            --node-worker-threads=20
+                            --log_dir=/var/log/mindx-dl/volcano-scheduler
+                            --log_file=/var/log/mindx-dl/volcano-scheduler/volcano-scheduler.log
+                            -v=3 2>&1" ]
+          imagePullPolicy: "Always"
+          resources:
+            requests:
+              memory: 4Gi
+              cpu: 5500m
+            limits:
+              memory: 8Gi
+              cpu: 5500m
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            runAsUser: 9000
+            runAsGroup: 9000
+            capabilities:
+              add:
+              - DAC_OVERRIDE
+              drop:
+              - ALL
+            runAsNonRoot: true
+          volumeMounts:
+            - name: scheduler-config
+              mountPath: /volcano.scheduler
+              readOnly: true
+            - name: scheduler-config-log
+              mountPath: /var/log/mindx-dl/volcano-scheduler
+            - name: klog-sock
+              mountPath: /tmp/klog-socks
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: scheduler-config
+          configMap:
+            defaultMode: 0004
+            name: volcano-scheduler-configmap
+        - name: scheduler-config-log
+          hostPath:
+            path: /var/log/mindx-dl/volcano-scheduler
+        - name: klog-sock
+          hostPath:
+            path: /tmp/klog-socks
+        - name: localtime
+          hostPath:
+            path: /etc/localtime

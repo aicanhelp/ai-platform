@@ -1,0 +1,18 @@
+{{- if .Values.openFuyao}}
+apiVersion: console.openfuyao.com/v1beta1
+kind: ConsolePlugin
+metadata:
+  name: monitoring-dashboard
+spec:
+  pluginName: monitoring-dashboard
+  displayName: "自定义监控看板"
+  entrypoint: /container_platform
+  order: 4
+  backend:
+    type: Service
+    service:
+      name: monitoring-dashboard-website-service
+      namespace: monitoring-dashboard
+      port: 80
+  enabled: true
+{{- end}}

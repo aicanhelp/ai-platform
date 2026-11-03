@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: test-configmap
+  namespace: default
+  labels:
+    app: test-configmap
+  annotations:
+    example.com/created-by: e2e
+data:
+  key1: value1
+  key2: value2

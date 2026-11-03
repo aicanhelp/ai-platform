@@ -1,0 +1,126 @@
+name: sig-Distributed-Framework
+description: 负责openFuyao社区分布式框架集成的能力构建，技术规划及决策。
+descriptionEn: Build the distributed framework integration capability and make technical plans and decisions for the openFuyao community.
+mailing_list: distributed-framework@list.openfuyao.cn
+maintainers:
+  - gitcode_id: foxbit
+    name: QJWang
+    email: qingjunwang@huawei.com
+  - gitcode_id: qinwenzh
+    name: zhengqinwenZZZ
+    email: zhengqinwen4@huawei.com
+  - gitcode_id: regandy
+    name: Gao Bo
+    email: huawei.gaobo@huawei.com
+repositories:
+  - repo:
+      - openfuyao/ray-image-builder
+      - openfuyao/ray-service
+      - openfuyao/ray-website
+      - openfuyao/ray
+    committers:
+      - gitcode_id: javadoors
+        name: ZHANG Chao
+        email: paul.zhang@huawei.com
+      - gitcode_id: foxbit
+        name: QJWang
+        email: qingjunwang@huawei.com
+      - gitcode_id: caibw
+        name: Cai Bowen
+        email: caibw5@chinaunicom.cn
+      - gitcode_id: zhaorenming
+        name: Zhao Renming
+        email: zhaorm22@chinaunicom.cn
+    members:
+      - gitcode_id: zxyyy0119_admin
+        name: Zhu Xueyi
+        email: xueyizhu@huawei.com
+      - gitcode_id: liu114
+        name: Liu Xiaoshuang
+        email: liuxiaoshuang4@huawei.com
+      - gitcode_id: chend838
+        name: Chen Dong
+        email: chendong136@huawei.com
+      - gitcode_id: boyuan-chen
+        name: Chen Boyuan
+        email: boyuan.chen1@huawei.com
+      - gitcode_id: yihaochen_a944
+        name: Chen Yihao
+        email: yihao.chen@huawei.com
+      - gitcode_id: zhilong_chen
+        name: Chen Zhilong
+        email: zhilong.chen@huawei.com
+      - gitcode_id: lunqishen
+        name: Lun Qishen
+        email: lunqishen@huawei.com
+      - gitcode_id: sugarofmycuicui
+        name: Yang Xiaopeng
+        email: yangxiaopeng7@huawei.com
+      - gitcode_id: sugarofmycuicui
+        name: Yang Xiaopeng
+        email: yangxiaopeng7@huawei.com
+      - gitcode_id: liuxianghai1
+        name: Liu Xianghai
+        email: liuxianghai1@huawei.com
+      - gitcode_id: ziv5
+        name: Wu Zehua
+        email: wuzehua2@huawei.com
+      - gitcode_id: ku3agi00
+        name: Xu Shengchun
+        email: xushengchun@huawei.com
+
+  - repo:
+      - openfuyao/sig-distributed-framework
+    committers:
+      - gitcode_id: liu114
+        name: Liu Xiaoshuang
+        email: liuxiaoshuang4@huawei.com
+      - gitcode_id: javadoors
+        name: ZHANG Chao
+        email: paul.zhang@huawei.com
+      - gitcode_id: foxbit
+        name: QJWang
+        email: qingjunwang@huawei.com
+      - gitcode_id: caibw
+        name: Cai Bowen
+        email: caibw5@chinaunicom.cn
+      - gitcode_id: zhaorenming
+        name: Zhao Renming
+        email: zhaorm22@chinaunicom.cn
+    members:
+      - gitcode_id: zxyyy0119_admin
+        name: Zhu Xueyi
+        email: xueyizhu@huawei.com
+      - gitcode_id: liu114
+        name: Liu Xiaoshuang
+        email: liuxiaoshuang4@huawei.com
+      - gitcode_id: chend838
+        name: Chen Dong
+        email: chendong136@huawei.com
+      - gitcode_id: boyuan-chen
+        name: Chen Boyuan
+        email: boyuan.chen1@huawei.com
+      - gitcode_id: yihaochen_a944
+        name: Chen Yihao
+        email: yihao.chen@huawei.com
+      - gitcode_id: zhilong_chen
+        name: Chen Zhilong
+        email: zhilong.chen@huawei.com
+      - gitcode_id: lunqishen
+        name: Lun Qishen
+        email: lunqishen@huawei.com
+      - gitcode_id: sugarofmycuicui
+        name: Yang Xiaopeng
+        email: yangxiaopeng7@huawei.com
+      - gitcode_id: sugarofmycuicui
+        name: Yang Xiaopeng
+        email: yangxiaopeng7@huawei.com
+      - gitcode_id: liuxianghai1
+        name: Liu Xianghai
+        email: liuxianghai1@huawei.com
+      - gitcode_id: ziv5
+        name: Wu Zehua
+        email: wuzehua2@huawei.com
+      - gitcode_id: ku3agi00
+        name: Xu Shengchun
+        email: xushengchun@huawei.com

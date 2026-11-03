@@ -1,0 +1,110 @@
+# FIT_45：1p1d / tp=1，复用外部 Mooncake Master + Redis（create: false）。
+# 两套实例合计 4 张 NPU，避免与默认 2p2d 叠满单节点 8 卡。
+# connectorConfig 必须保留 chart 默认的 MultiConnector：
+# MooncakeConnectorV1 做 PD KV 传输，AscendStoreConnector 做 L3 prefix cache。
+
+eagle-eye:
+  enabled: false
+pd-orchestrator:
+  elastic-scaler:
+    enabled: false
+  resourcescalinggroup:
+    enabled: false
+  tidal:
+    enabled: false
+inference-backend:
+  images:
+    inferenceEngine:
+      repository: "quay.io/ascend/vllm-ascend"
+      tag: "v0.18.0"
+    proxyServer:
+      repository: "cr.openfuyao.cn/openfuyao/proxy-server"
+      tag: latest
+  inferenceDevice: "huawei.com/Ascend910"
+  volumeMounts:
+    ascend:
+      enable: true
+  volumes:
+    ascend:
+      enable: true
+  services:
+  - name: "qwen3-8b-1p1d-ext-mc"
+    enabled: true
+    mode: pd
+    service:
+      port: 8000
+    pdGroupID: "qwen3-8b-1p1d-ext-mc"
+    kvTransferConfig:
+      connectorConfig:
+        kv_connector: MultiConnector
+        kv_connector_extra_config:
+          connectors:
+            - kv_connector: MooncakeConnectorV1
+              kv_buffer_device: npu
+              kv_parallel_size: 1
+              kv_connector_extra_config:
+                use_ascend_direct: true
+            - kv_connector: AscendStoreConnector
+              kv_buffer_device: npu
+              kv_parallel_size: 1
+              kv_connector_extra_config:
+                lookup_rpc_port: "0"
+                backend: mooncake
+      mooncake:
+        use_store: true
+        metadataServer:
+          create: false
+        master:
+          create: false
+          rpcPort: 50051
+          servicePort: 30089
+          httpPort: 9003
+        config: |
+          local_hostname: "$POD_IP"
+          metadata_server: "redis://redis-service.ai-mooncake-ext.svc.cluster.local:6379"
+          master_server_address: "mooncake-master-service.ai-mooncake-ext.svc.cluster.local:30089"
+          device_name: ""
+          protocol: "ascend"
+          global_segment_size: 42949672960
+          use_ascend_direct: true
+    pd:
+      prefill:
+        replicas: 1
+        tensorParallelSize: 1
+        pipelineParallelSize: 1
+        dataParallelSize: 1
+        dataParallelSizeLocal: 1
+        extraArgs:
+          - --enable-prefix-caching
+          - --max-model-len 10000
+          - --max-num-batched-tokens 40960
+          - --gpu-memory-utilization 0.8
+          - --block-size 128
+          - --prefix-caching-hash-algo sha256_cbor
+          - --enable-prompt-tokens-details
+          - --trust-remote-code
+
+      decode:
+        replicas: 1
+        tensorParallelSize: 1
+        pipelineParallelSize: 1
+        dataParallelSize: 1
+        dataParallelSizeLocal: 1
+        extraArgs:
+          - --no-enable-prefix-caching
+          - --max-model-len 10000
+          - --max-num-batched-tokens 40960
+          - --gpu-memory-utilization 0.8
+          - --block-size 128
+          - --trust-remote-code
+
+      proxyServer:
+        enabled: true
+        discoveryInterval: 10
+    resources:
+      requests:
+        cpu: "4"
+        memory: "32Gi"
+      limits:
+        cpu: "8"
+        memory: "64Gi"

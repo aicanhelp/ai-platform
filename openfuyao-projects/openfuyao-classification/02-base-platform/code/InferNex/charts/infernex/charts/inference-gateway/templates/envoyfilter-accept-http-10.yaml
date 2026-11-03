@@ -1,0 +1,38 @@
+{{- if and .Values.enabled .Values.enable_http10 (eq .Values.className "istio") }}
+# Lets HTTP/1.0 (and HTTP/0.9) clients, which omit the Host header, talk to the
+# inference gateway. Envoy rejects such requests by default; accept_http_10 +
+# default_host_for_http_10 make the HTTP connection manager accept them and
+# synthesize a Host (localhost).
+# Refs:
+#   - https://www.envoyproxy.io/docs/envoy/latest/api-v3/config/core/v3/protocol.proto
+#   - https://istio.io/latest/docs/reference/config/networking/envoy-filter/
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: {{ .Values.name | default "inference-gateway" }}-accept-http-10
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "inference-gateway.labels" . | nindent 4 }}
+spec:
+  # Scope the patch to this chart's Gateway-API Gateway (provisioned by istiod).
+  targetRefs:
+    - group: gateway.networking.k8s.io
+      kind: Gateway
+      name: {{ .Values.name | default "inference-gateway" }}
+  configPatches:
+    - applyTo: NETWORK_FILTER
+      match:
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+      patch:
+        operation: MERGE
+        value:
+          name: envoy.filters.network.http_connection_manager
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+            http_protocol_options:
+              accept_http_10: true
+              default_host_for_http_10: localhost
+{{- end }}

@@ -1,0 +1,12 @@
+hermes-router:
+  inferenceExtension:
+    pluginsConfigFile: default-plugins.yaml
+    prediction:
+      enabled: false
+    routing:
+      deploymentMode: aggregate
+      profile: random
+      requestTracking:
+        persistence:
+          enabled: true
+          flushThreshold: 1

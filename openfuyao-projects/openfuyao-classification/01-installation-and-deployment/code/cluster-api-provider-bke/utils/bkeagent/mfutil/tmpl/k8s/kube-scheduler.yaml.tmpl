@@ -1,0 +1,71 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: kube-scheduler
+  namespace: kube-system
+  labels:
+    component: kube-scheduler
+    tier: control-plane
+spec:
+  volumes:
+    {{- if eq .Extra.gpuEnable "true" }}
+    - name: scheduler-policy-config
+      hostPath:
+        path: /etc/kubernetes/scheduler-policy-config.json
+        type: FileOrCreate
+    {{- end }}
+    - name: k8s-certs
+      hostPath:
+        path: {{ .Extra.KubernetesDir }}
+        type: DirectoryOrCreate
+    - name: localtime
+      hostPath:
+        path: /etc/localtime
+  containers:
+    - name: kube-scheduler
+      image: {{ . | imageRepo }}{{ . | imageInfo }}
+      command:
+        - kube-scheduler
+        - --bind-address={{ .HostIP }}
+        - --leader-elect=true
+        - --kubeconfig=/etc/kubernetes/scheduler.conf
+        - --authentication-kubeconfig=/etc/kubernetes/scheduler.conf
+        - --authorization-kubeconfig=/etc/kubernetes/scheduler.conf
+        - --profiling=false
+        # todo 该参数只支持到1.23
+        {{- if eq .Extra.gpuEnable "true" }}
+        - --policy-config-file=/etc/kubernetes/scheduler-policy-config.json
+        - --use-legacy-policy-config=true
+        {{- end }}
+        - --tls-cert-file=/etc/kubernetes/tls-server.crt
+        - --tls-cipher-suites=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256
+        - --tls-private-key-file=/etc/kubernetes/tls-server.key
+        - --v=0
+        {{- range . | extraArgs }}
+        - --{{ . }}
+        {{- end }}
+      resources:
+        requests:
+          cpu: 100m
+      volumeMounts:
+        - name: k8s-certs
+          readOnly: true
+          mountPath: /etc/kubernetes
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        {{- if eq .Extra.gpuEnable "true" }}
+        - name: scheduler-policy-config
+          mountPath: /etc/kubernetes/scheduler-policy-config.json
+          readOnly: true
+        {{- end }}
+      livenessProbe:
+        httpGet:
+          path: /healthz
+          host: {{ .HostIP }}
+          port: 10259
+          scheme: HTTPS
+        initialDelaySeconds: 15
+        timeoutSeconds: 15
+  hostNetwork: true
+  dnsPolicy: ClusterFirstWithHostNet

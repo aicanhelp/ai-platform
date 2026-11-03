@@ -1,0 +1,255 @@
+# ******************************************************************
+# * Copyright (c) 2025 Bocloud Technologies Co., Ltd.
+# * cluster-api-provider-bke is licensed under Mulan PSL v2.
+# * You can use this software according to the terms and conditions of the Mulan PSL v2.
+# * You may obtain a copy of Mulan PSL v2 at:
+# *          http://license.coscl.org.cn/MulanPSL2
+# * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# * See the Mulan PSL v2 for more details.
+# ******************************************************************
+
+REGISTRY ?= registry.cn-hangzhou.aliyuncs.com/bocloud
+
+BKE_REGISTRY ?= 192.168.2.140:5001/kubernetes
+
+DEV_REGISTRY ?= deploy.bocloud.k8s:40443/kubernetes
+
+IMAGE_NAME ?= bke-controller
+VERSION ?= v1.0.0
+RELEASE_TAG = $(VERSION)
+
+RELEASE_DIR = hack/deploy
+
+IMAGE_PULL_POLICY = Always
+
+TIME_STAMP = $(shell date +%Y%m%d%H%M)
+
+# 版本镜像指定镜像仓库
+RELEASE_IMG ?= $(REGISTRY)/$(IMAGE_NAME):$(RELEASE_TAG)
+# 版本开发镜像指定镜像名
+DEV_IMG ?= $(RELEASE_IMG)-$(TIME_STAMP)
+
+# 推送镜像到BKE仓库
+BKE_REGISTRY_IMG ?= $(BKE_REGISTRY)/$(IMAGE_NAME):$(RELEASE_TAG)
+# 推送镜像到本地仓库
+LOCAL_DEV_IMG ?= $(DEV_REGISTRY)/$(IMAGE_NAME):$(RELEASE_TAG)
+
+COMMIT_ID=$(shell git rev-parse HEAD)
+BUILD_TIME=$(shell date +'%Y-%m-%dT%H:%M')
+HOST_ARCH=$(shell go env GOHOSTARCH)
+HOST_OS=$(shell go env GOHOSTOS)
+
+PKG = gopkg.openfuyao.cn/cluster-api-provider-bke
+
+.PHONY: all
+all: build
+
+.PHONY: help
+help: ## Display this help.
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-15s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+.PHONY: setup_dev_env
+setup_dev_env: ## Setup development environment
+	echo "Setup development environment"
+	bash ./hack/scripts/setup_dev_env.sh
+	bash ./hack/scripts/dev-deploy.sh
+
+
+
+.PHONY: deploy
+deploy: ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+	kubectl apply -f ${RELEASE_DIR}/cluster-api-bke.yaml
+
+.PHONY: dev-deploy
+dev-deploy:  ## Deploy controller to the K8s cluster specified in ~/.kube/config.
+	bash ./hack/scripts/dev-deploy.sh
+
+EMPTY :=
+SPACE := $(EMPTY) $(EMPTY)
+COMMA := ,
+PLATFORMS ?=amd64 arm64
+.PHONY: release  # Build a multi-arch docker image
+release: bin release-binaries record-build-info  ## 同时打包arm64，amd64镜像并上传到仓库.使用前先修改 REGISTRY参数
+	echo "Building and pushing image..."
+	@docker buildx build \
+		--push \
+		--progress plain \
+		--platform $(subst $(SPACE),$(COMMA),$(PLATFORMS)) \
+		--build-arg COMMIT_ID=${COMMIT_ID} \
+		--build-arg BUILD_TIME=${BUILD_TIME} \
+		--build-arg VERSION=${VERSION} \
+		-t $(RELEASE_IMG) .
+	$(MAKE) migrate
+	# release external image: $(RELEASE_IMG)
+	# release internal image: $(BKE_REGISTRY_IMG)
+	echo "release image time: $(TIME_STAMP)" >> BUILD_INFO
+	echo "release external image: $(RELEASE_IMG)" >> BUILD_INFO
+	echo "release internal image: $(BKE_REGISTRY_IMG)" >> BUILD_INFO
+
+.PHONY: dev-release # Build a multi-arch docker image
+dev-release: bin release-binaries record-build-info ## 同时打包arm64，amd64镜像并上传到仓库.使用前先修改 REGISTRY参数
+	echo "Building and pushing image..."
+	@go mod vendor
+	@docker buildx build \
+		--push \
+		--progress plain \
+		--platform $(subst $(SPACE),$(COMMA),$(PLATFORMS)) \
+		--build-arg COMMIT_ID=${COMMIT_ID} \
+		--build-arg BUILD_TIME=${BUILD_TIME} \
+		--build-arg VERSION=${VERSION} \
+		-t $(DEV_IMG) .
+	@rm -rf vendor
+	$(MAKE) migrate RELEASE_IMG=$(DEV_IMG) BKE_REGISTRY_IMG=$(BKE_REGISTRY_IMG)-$(TIME_STAMP)
+	# dev release external image: $(DEV_IMG)
+	# dev release internal image: $(BKE_REGISTRY_IMG)-$(TIME_STAMP)
+	echo "dev release image time: $(TIME_STAMP)" >> BUILD_INFO
+	echo "dev release external image: $(DEV_IMG)" >> BUILD_INFO
+	echo "dev release internal image: $(BKE_REGISTRY_IMG)-$(TIME_STAMP)" >> BUILD_INFO
+
+
+.PHONY: record-build-info
+record-build-info:
+	echo "\n" >> BUILD_INFO
+	echo "🤯 Version=${VERSION}" >> BUILD_INFO
+	echo "🤔 GitCommitId=${COMMIT_ID}" >> BUILD_INFO
+	echo "👉 Architecture=${HOST_ARCH}" >> BUILD_INFO
+	echo "⏲ BuildTime=${BUILD_TIME}" >> BUILD_INFO
+
+
+docker-build: # Build a docker image to local registry
+	docker build \
+		-f builder/capbke/Dockerfile \
+		--build-arg COMMIT_ID=${COMMIT_ID} \
+		--build-arg BUILD_TIME=${BUILD_TIME} \
+		--build-arg VERSION=${VERSION} \
+		--build-arg TARGETARCH=${HOST_ARCH} \
+		--build-arg TARGETOS=${HOST_OS} \
+		-t $(LOCAL_DEV_IMG) .
+	docker push $(LOCAL_DEV_IMG)
+
+.PHONY: package
+package: release ## 将仓库镜像保存到本地，输出到/tmp目录。使用前先修改 REGISTRY参数
+	bash ./hack/scripts/package.sh $(REGISTRY)/$(IMAGE_NAME) $(RELEASE_TAG))
+
+.PHONY: release-manifests
+release-manifests:kustomize manifests manifest-modification ## Build the manifests to publish with a release
+	(if [ ! -d "$(RELEASE_DIR)" ]; then mkdir "$(RELEASE_DIR)" ;fi)
+	# Build bke-components.
+	$(KUSTOMIZE) build config/default > $(RELEASE_DIR)/cluster-api-bke.yaml
+
+.PHONY: dev-manifests
+dev-manifests:kustomize manifests manifest-modification ## Build the manifests to publish with a release
+	(if [ ! -d "$(RELEASE_DIR)" ]; then mkdir "$(RELEASE_DIR)"; fi)
+	# Build bke-components.
+	$(KUSTOMIZE) build config/default >$(RELEASE_DIR)/dev.yaml
+
+.PHONY: migrate
+migrate: migrate-image migrate-image-dev
+
+.PHONY: migrate-image
+migrate-image: ## Migrate image to BKE registry
+	@bke registry sync --dest-tls-verify --source $(RELEASE_IMG) --target $(BKE_REGISTRY_IMG) --multi-arch
+
+.PHONY: migrate-image-dev
+migrate-image-dev: ## Migrate image to local registry
+	@bke registry sync --dest-tls-verify --source $(RELEASE_IMG) --target $(LOCAL_DEV_IMG) --multi-arch
+
+.PHONY: manifest-modification
+manifest-modification: # Set the manifest images to the staging/production bucket.
+	#$(MAKE) set-manifest-image \
+#		MANIFEST_IMG=$(REGISTRY)/$(IMAGE_NAME) MANIFEST_TAG=$(RELEASE_TAG) \
+#		TARGET_RESOURCE="./config/default/manager_image_patch.yaml"
+	$(MAKE) set-manifest-pull-policy PULL_POLICY=$(IMAGE_PULL_POLICY) TARGET_RESOURCE="./config/default/manager_pull_policy.yaml"
+
+.PHONY: set-manifest-image
+set-manifest-image:
+	$(info Updating kustomize image patch file for manager resource)
+	sed -i'' -e 's@image: .*@image: '"${MANIFEST_IMG}:$(MANIFEST_TAG)"'@' $(TARGET_RESOURCE)
+
+.PHONY: set-manifest-pull-policy
+set-manifest-pull-policy:
+	$(info Updating kustomize pull policy file for manager resources)
+	sed -i'' -e 's@imagePullPolicy: .*@imagePullPolicy: '"$(IMAGE_PULL_POLICY)"'@' $(TARGET_RESOURCE)
+
+
+
+buildx:
+	@docker run --privileged --rm tonistiigi/binfmt --uninstall qemu-* && \
+	docker run --privileged --rm tonistiigi/binfmt --install all && \
+	docker buildx rm mybuilder && \
+	docker buildx create --use --name mybuilder --driver-opt image=dockerpracticesig/buildkit:master && \
+	docker buildx inspect mybuilder --bootstrap && \
+	docker buildx ls
+
+
+##@ Build
+
+.PHONY: build
+build: ## Build manager binary.
+	CGO_ENABLED=0 GOOS=linux GOARCH=${HOST_ARCH} \
+        go build  \
+		-trimpath \
+        -ldflags="-s -w \
+                  -X ${PKG}/version.GitCommitID=${COMMIT_ID}  \
+                  -X ${PKG}/version.Architecture=${HOST_OS}/${HOST_ARCH} \
+                  -X ${PKG}/version.BuildTime=${BUILD_TIME} \
+                  -X ${PKG}/version.Version=${VERSION}" \
+        -o bin/manager-${HOST_ARCH} ./cmd/capbke
+
+
+.PHONY: release-binaries
+release-binaries: clean
+	$(foreach PLATFORM,$(PLATFORMS), echo -n "$(PLATFORM)..."; make build HOST_ARCH=$(PLATFORM);)
+
+.PHONY: bin
+bin:
+	if [ ! -d bin ]; then mkdir bin; fi
+
+.PHONY: clean
+clean:
+	rm -f bin/manager*
+
+.PHONY: manifests
+manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
+	$(CONTROLLER_GEN) rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+
+.PHONY: generate
+generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
+	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
+
+CONTROLLER_GEN = $(shell pwd)/bin/controller-gen
+.PHONY: controller-gen
+controller-gen: ## Download controller-gen locally if necessary.
+	$(call go-get-tool,$(CONTROLLER_GEN),sigs.k8s.io/controller-tools/cmd/controller-gen@v0.13.0)
+
+KUSTOMIZE = $(shell pwd)/bin/kustomize
+.PHONY: kustomize
+kustomize: ## Download kustomize locally if necessary.
+	$(call go-get-tool,$(KUSTOMIZE),sigs.k8s.io/kustomize/kustomize/v3@v3.8.7)
+
+ENVTEST = $(shell pwd)/bin/setup-envtest
+.PHONY: envtest
+envtest: ## Download envtest-setup locally if necessary.
+	$(call go-get-tool,$(ENVTEST),sigs.k8s.io/controller-runtime/tools/setup-envtest@latest)
+
+# Determine the Go binary installation path
+ifeq (,$(shell go env GOBIN)) #defaults to GOPATH/bin if GOBIN is not set
+GOBIN=$(shell go env GOPATH)/bin
+else
+GOBIN=$(shell go env GOBIN)
+endif
+
+# Define a function to download and install a Go tool if it does not already exist at the specified path.
+PROJECT_DIR := $(shell dirname $(abspath $(lastword $(MAKEFILE_LIST))))
+define go-get-tool # go-get-tool will 'go get' any package $2 and install it to $1.
+@if [ ! -f $(1) ]; then \
+    set -e; \
+    TMP_PATH=$$(mktemp -d); \
+    cd $$TMP_PATH && go mod init temp; \
+    echo "Downloading $(2)" ;\
+    echo project dir $(PROJECT_DIR) ;\
+    GOBIN=$(PROJECT_DIR)/bin go get $(2) ;\
+    rm -rf $$TMP_PATH; \
+fi
+endef

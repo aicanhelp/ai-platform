@@ -1,0 +1,29 @@
+{{- range .Values.services }}
+{{- if .enabled }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  namespace: {{ $.Release.Namespace }}
+  name: {{ include "vllm.instance.serviceName" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) }}
+  labels:
+    {{- include "vllm.service.labels" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) | nindent 4 }}
+spec:
+  type: ClusterIP
+  ports:
+  - port: {{ .service.port | default 8000 }}
+    {{- if eq .mode "pd" }}
+    targetPort: proxy-port
+    {{- else }}
+    targetPort: aggregated-port
+    {{- end }}
+    protocol: TCP
+    name: http-api
+  selector:
+    {{- include "vllm.instance.selectorLabels" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) | nindent 4 }}
+    {{- if eq .mode "pd" }}
+    app.kubernetes.io/component: proxy-server
+    {{- end }}
+{{- end }}
+{{- end }}
+

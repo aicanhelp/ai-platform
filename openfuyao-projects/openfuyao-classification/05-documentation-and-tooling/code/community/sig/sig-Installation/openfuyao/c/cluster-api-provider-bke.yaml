@@ -1,0 +1,21 @@
+name: cluster-api-provider-bke
+type: private
+description: '基于Cluster API管理k8s的provider，同时具有额外的K8s⽣态组件部署功能'
+branches:
+  - name: master
+    type: protected
+  - name: dev1210
+    type: protected
+    create_from: master
+  - name: dev1230
+    type: protected
+    create_from: master
+  - name: feat/upgrade-530
+    type: protected
+    create_from: master
+  - name: feat/kubeOS-930
+    type: protected
+    create_from: master
+  - name: feat/preflight
+    type: protected
+    create_from: master

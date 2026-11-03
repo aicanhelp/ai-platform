@@ -1,0 +1,27 @@
+# permissions for end users to edit containercheckpoints.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/name: colocation-management
+    app.kubernetes.io/managed-by: kustomize
+  name: containercheckpoint-editor-role
+rules:
+- apiGroups:
+  - colocation.openfuyao.com
+  resources:
+  - containercheckpoints
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - colocation.openfuyao.com
+  resources:
+  - containercheckpoints/status
+  verbs:
+  - get

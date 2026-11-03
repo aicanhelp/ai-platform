@@ -1,0 +1,30 @@
+{{- if and .Values.webhooks.enabled .Values.certManager.enabled }}
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: {{ .Values.certManager.issuerName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "infernex-bridge.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: {{ .Values.certManager.certificateName }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app.kubernetes.io/name: {{ include "infernex-bridge.name" . }}
+    app.kubernetes.io/instance: {{ .Release.Name }}
+    app.kubernetes.io/component: certificate
+spec:
+  dnsNames:
+    - webhook-service.{{ .Release.Namespace }}.svc
+    - webhook-service.{{ .Release.Namespace }}.svc.cluster.local
+  issuerRef:
+    kind: Issuer
+    name: {{ .Values.certManager.issuerName }}
+  secretName: {{ .Values.certManager.secretName }}
+{{- end }}

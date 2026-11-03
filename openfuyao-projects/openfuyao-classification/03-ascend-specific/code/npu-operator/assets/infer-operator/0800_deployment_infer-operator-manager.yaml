@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: infer-controller-manager
+  name: infer-operator-manager
+  namespace: mindx-dl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: infer-controller-manager
+  template:
+    metadata:
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: runtime/default
+      labels:
+        app: infer-controller-manager
+    spec:
+      nodeSelector:
+        masterselector: dls-master-node
+      serviceAccountName: infer-operator-manager
+      initContainers:
+      - name: init-log-setup
+        image: FILLED_BY_OPERATOR
+        command:
+        - sh
+        - -c
+        - mkdir -p /var/log/mindx-dl && chmod 755 /var/log/mindx-dl && chown root:root /var/log/mindx-dl && mkdir -p /var/log/mindx-dl/infer-operator
+          && chmod 750 /var/log/mindx-dl/infer-operator
+        securityContext:
+          runAsUser: 0
+          runAsNonRoot: false
+        volumeMounts:
+        - name: infer-operator-log
+          mountPath: /var/log
+      containers:
+      - command:
+        - FILLED_BY_OPERATOR
+        args:
+        - FILLED_BY_OPERATOR
+        image: FILLED_BY_OPERATOR
+        imagePullPolicy: IfNotPresent
+        name: manager
+        resources:
+          limits:
+            cpu: 8000m
+            memory: 8Gi
+          requests:
+            cpu: 8000m
+            memory: 8Gi
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: false
+          capabilities:
+            drop:
+            - All
+        volumeMounts:
+        - name: infer-operator-log
+          mountPath: /var/log/mindx-dl/infer-operator
+          subPath: mindx-dl/infer-operator
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+      volumes:
+      - name: infer-operator-log
+        hostPath:
+          path: /var/log
+          type: Directory
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+      terminationGracePeriodSeconds: 10

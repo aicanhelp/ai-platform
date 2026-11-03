@@ -1,0 +1,47 @@
+Inference Gateway has been installed successfully!
+
+{{- if .Values.enabled }}
+
+=== Installation Summary ===
+
+{{- if .Values.istio }}
+Istio Components:
+  - Namespace: {{ .Values.istio.namespace | default "istio-system" }}
+  - istio-base: installed
+  - istiod: installed
+{{- end }}
+
+Gateway Resource:
+  - Name: {{ .Values.name | default "inference-gateway" }}
+  - Namespace: {{ .Release.Namespace }}
+  - GatewayClassName: {{ .Values.className | default "istio" }}
+
+=== Verify Installation ===
+
+{{- if .Values.istio }}
+1. Check Istio components:
+   kubectl get pods -n {{ .Values.istio.namespace | default "istio-system" }}
+
+2. Check Gateway resource:
+{{- else }}
+1. Check Gateway resource:
+{{- end }}
+   kubectl get gateway {{ .Values.name | default "inference-gateway" }} -n {{ .Release.Namespace }}
+
+{{- if .Values.istio }}
+3. Check Gateway data plane deployment:
+{{- else }}
+2. Check Gateway data plane deployment:
+{{- end }}
+   kubectl get pods -n {{ .Release.Namespace }} -l istio.io/gateway-name={{ .Values.name | default "inference-gateway" }}
+
+=== Next Steps ===
+
+1. Create HTTPRoute resources to route traffic to your inference services
+2. Configure InferencePool and InferenceModel resources for AI/ML workloads
+
+{{- else }}
+
+Inference Gateway is disabled. Set 'enabled: true' to install.
+
+{{- end }}

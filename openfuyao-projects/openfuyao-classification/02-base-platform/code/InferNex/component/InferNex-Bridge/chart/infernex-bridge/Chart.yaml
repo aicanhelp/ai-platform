@@ -1,0 +1,6 @@
+apiVersion: v2
+name: infernex-bridge
+description: InferNex Bridge controller and default InferNexServiceConfig templates
+type: application
+version: 0.0.0-latest
+appVersion: latest

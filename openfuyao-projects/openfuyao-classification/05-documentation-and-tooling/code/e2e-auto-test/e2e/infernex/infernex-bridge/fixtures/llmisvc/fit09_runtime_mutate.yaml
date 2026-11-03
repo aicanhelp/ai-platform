@@ -1,0 +1,28 @@
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceServiceConfig
+metadata:
+  name: __NAME__-config
+  namespace: __E2E_NS__
+spec:
+  model:
+    uri: "file:///tmp/placeholder-model"
+  router:
+    gateway: {}
+    route: {}
+  template:
+    containers:
+      - name: main
+        image: cr.openfuyao.cn/openfuyao/test-engine:v1
+---
+apiVersion: serving.kserve.io/v1alpha1
+kind: LLMInferenceService
+metadata:
+  name: __NAME__
+  namespace: __E2E_NS__
+  labels:
+    infernex.io/runtime: "true"
+spec:
+  model:
+    uri: "file:///tmp/placeholder-model"
+  baseRefs:
+    - name: __NAME__-config

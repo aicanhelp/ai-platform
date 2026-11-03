@@ -961,3 +961,6 @@
 [submodule "agent-projects/cordis"]
 	path = agent-projects/cordis
 	url = https://gh-proxy.org/https://github.com/cordiverse/cordis.git
+[submodule "agent-projects/WeKnora"]
+	path = agent-projects/WeKnora
+	url = https://gh-proxy.org/https://github.com/Tencent/WeKnora.git

@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cluster-system
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: bkeagent-deployer
+  namespace: cluster-system
+  labels:
+    app: bkeagent-deployer
+spec:
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: bkeagent-deployer
+  template:
+    metadata:
+      labels:
+        app: bkeagent-deployer
+    spec:
+      serviceAccountName: default
+      hostNetwork: true
+      tolerations:
+        - operator: Exists
+      containers:
+        - name: deployer
+          image: {{ .repo }}bkeagent-deployer:{{ .tagVersion }}
+          imagePullPolicy: IfNotPresent
+          securityContext:
+            runAsUser: 0
+          env:
+            - name: HOST_BIN_DIR
+              value: /etc/openFuyao/bkeagent/bin
+          volumeMounts:
+            - name: host-bin
+              mountPath: /etc/openFuyao/bkeagent/bin
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - test -x /etc/openFuyao/bkeagent/bin/bkeagent
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
+      volumes:
+        - name: host-bin
+          hostPath:
+            path: /etc/openFuyao/bkeagent/bin
+            type: DirectoryOrCreate

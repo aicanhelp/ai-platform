@@ -1,0 +1,24 @@
+# permissions for end users to edit commands.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: command-editor-role
+rules:
+- apiGroups:
+  - bkeagent.bocloud.com
+  resources:
+  - commands
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - bkeagent.bocloud.com
+  resources:
+  - commands/status
+  verbs:
+  - get

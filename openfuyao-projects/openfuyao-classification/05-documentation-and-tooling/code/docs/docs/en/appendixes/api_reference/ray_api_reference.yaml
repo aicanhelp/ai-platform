@@ -1,0 +1,1730 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: Ray-related APIs.
+  version: 1.0.0
+tags:
+  - name: Overview
+    description: Overview of Ray.
+  - name: RayCluster
+    description: Ray cluster.
+  - name: RayJob
+    description: Ray job.
+  - name: RayService
+    description: Ray service.
+
+
+paths:
+  /rest/v1/overview/all:
+    get:
+      summary: Getting the Ray overview information.
+      description: Getting statistics of Ray clusters, jobs, and services.
+      operationId: getOverview
+      tags:
+        - Overview
+      responses:
+        "200":
+          description: Ray overview information obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: Custom status code.
+                    example: 200
+                  msg:
+                    type: string
+                    description: Message, which returns the status information.
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      rayclusters:
+                        type: integer
+                        description: Number of active Ray clusters.
+                        example: 1
+                      rayjobs:
+                        type: integer
+                        description: Number of active Ray jobs.
+                        example: 0
+                      rayservices:
+                        type: integer
+                        description: Number of active Ray services.
+                        example: 0
+                      total:
+                        type: integer
+                        description: Total number of active Ray clusters.
+                        example: 1
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: Error status code.
+                    example: 500
+                  msg:
+                    type: string
+                    description: Error message.
+                    example: "Internal server error"
+                  data:
+                    type: object
+                    description: Additional information.
+                    example: ""
+
+  /rest/v1/raycluster/create:
+    post:
+      summary: Creating a Ray cluster.
+      description: Creating a Ray cluster by configuration file.
+      operationId: createRayCluster
+      tags:
+        - RayCluster
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File path.
+                createBy:
+                  type: string
+                  description: Information about the creator.
+                isStart:
+                  type: boolean
+                  description: "Whether to start the Ray cluster: Value 'true' indicates creating and starting the Ray cluster while value 'false' indicates only creating the Ray cluster."
+                config:
+                  type: string
+                  description: Configuration information (transferred in text format).
+              required:
+                - createBy
+                - config
+      responses:
+        "200":
+          description: Ray cluster created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+  /rest/v1/raycluster/list:
+    post:
+      summary: Querying the Ray cluster list.
+      description: Querying the list of all Ray clusters.
+      operationId: listRayClusters
+      tags:
+        - RayCluster
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                createBy:
+                  type: string
+                  description: Creator name.
+                  example: ZhangSan
+                rayVersion:
+                  type: string
+                  description: Ray version.
+                  example: "2.9.0"
+                name:
+                  type: string
+                  description: Ray cluster name (fuzzy match supported).
+                  example: autoscaler
+                status:
+                  type: integer
+                  description: "Ray cluster status (0: all, 1: running, 2: stopped, 3: failed)"
+                  example: 1
+      responses:
+        "200":
+          description: Ray cluster list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        nullable: true
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: raycluster-autoscaler-1
+                            namespace:
+                              type: string
+                              example: vcjob
+                            ray_version:
+                              type: string
+                              example: "2.9.0"
+                            create_by:
+                              type: string
+                              example: ZhangSan
+                            cluster_status:
+                              type: string
+                              example: running
+                            create_time:
+                              type: string
+                              format: date-time
+                              example: "2025-02-06 14:36:36"
+                            update_time:
+                              type: string
+                              format: date-time
+                              example: "2025-02-06 14:36:36"
+                      total:
+                        type: integer
+                        example: 1
+
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: Error status code.
+                    example: 500
+                  msg:
+                    type: string
+                    description: Error message.
+                    example: "remote server busy"
+                  data:
+                    type: object
+                    description: Additional information.
+                    example: ""
+
+  /rest/v1/raycluster/get/{namespace}/{raycluster_name}:
+    get:
+      summary: Obtaining the details of the Ray cluster.
+      description: Obtaining the details of the Ray cluster by namespace and name.
+      operationId: getRayCluster
+      tags:
+        - RayCluster
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray cluster.
+        - name: raycluster_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the Ray cluster.
+      responses:
+        "200":
+          description: Ray cluster details obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: raycluster-autoscaler-1
+                      namespace:
+                        type: string
+                        example: vcjob
+                      ray_version:
+                        type: string
+                        example: "2.9.0"
+                      create_by:
+                        type: string
+                        example: ZhangSan
+                      cluster_status:
+                        type: string
+                        example: running
+                      gcs_port:
+                        type: string
+                        example: "32312"
+                      cluster_ip:
+                        type: string
+                        example: "172.17.70.175"
+                      dashboard_port:
+                        type: string
+                        example: "31484"
+                      create_time:
+                        type: string
+                        format: date-time
+                        example: "2025-02-06 14:36:36"
+                      update_time:
+                        type: string
+                        format: date-time
+                        example: "2025-02-06 14:36:36"
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: {}
+                    description: Additional information.
+
+
+        "404":
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 404
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "Not Found"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: {}
+                    description: Additional information.
+
+  /rest/v1/raycluster/delete/{namespace}/{raycluster_name}:
+    delete:
+      summary: Deleting the Ray cluster.
+      description: Deleting the Ray cluster by namespace and name.
+      operationId: deleteRayCluster
+      tags:
+        - RayCluster
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray cluster.
+        - name: raycluster_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the Ray cluster.
+      responses:
+        "200":
+          description: Ray cluster deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "A running resource cannot be deleted!"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: {}
+                    description: Additional information.
+
+
+  /rest/v1/raycluster/stop/{namespace}/{raycluster_name}:
+    post:
+      summary: Stopping the Ray cluster.
+      description: Stopping the Ray cluster by namespace and name.
+      operationId: stopRayCluster
+      tags:
+        - RayCluster
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray cluster.
+        - name: raycluster_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the Ray cluster.
+      responses:
+        "200":
+          description: Ray cluster stopped successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    example: {}
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "operation failed"
+                    description: Error message.
+                  data:
+                    type: object
+                    description: Additional information.
+
+
+  /rest/v1/raycluster/restart/{namespace}/{raycluster_name}:
+    post:
+      summary: Starting the Ray cluster.
+      description: Starting the Ray cluster by namespace and name.
+      operationId: restartRayCluster
+      tags:
+        - RayCluster
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray cluster.
+        - name: raycluster_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the Ray cluster.
+      responses:
+        "200":
+          description: Ray cluster started successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    example: {}
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: Error status code.
+                    example: 500
+                  msg:
+                    type: string
+                    description: Error message.
+                    example: "remote server busy"
+                  data:
+                    type: object
+                    description: Additional information.
+                    example: ""
+
+  /rest/v1/raycluster/list/meta:
+    get:
+      summary: Obtaining the metadata of the Ray cluster list.
+      description: Obtaining metadata such as the status, version, and creator on the list page.
+      operationId: getRayClusterMeta
+      tags:
+        - RayCluster
+      responses:
+        "200":
+          description: Metadata of the Ray cluster list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      createBy:
+                        type: array
+                        items:
+                          type: string
+                        example: ["ZhangSan"]
+                        description: Creator metadata.
+                      rayVersion:
+                        type: array
+                        items:
+                          type: string
+                        example: ["2.9.0"]
+                        description: Ray version metadata.
+                      status:
+                        type: array
+                        items:
+                          type: string
+                        example: ["All", "Running", "Not running", "Creation failed"]
+                        description: Status metadata.
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+  /rest/v1/rayjob/create:
+    post:
+      summary: Creating a Ray job.
+      description: Creating a Ray job by configuration file.
+      operationId: createRayJob
+      tags:
+        - RayJob
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File path.
+                createBy:
+                  type: string
+                  description: Information about the creator.
+                isStart:
+                  type: boolean
+                  description: "Whether to start the Ray cluster: Value 'true' indicates creating and starting the Ray cluster while value 'false' indicates only creating the Ray cluster."
+                config:
+                  type: string
+                  description: Configuration information (transferred in text format).
+              required:
+                - createBy
+                - config
+      responses:
+        "200":
+          description: Ray job created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+  /rest/v1/rayjob/list:
+    post:
+      summary: Querying the Ray job list.
+      description: Querying the list of all Ray jobs.
+      operationId: listRayJobs
+      tags:
+        - RayJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                createBy:
+                  type: string
+                  description: Creator name.
+                name:
+                  type: string
+                  description: Ray job name (fuzzy match supported).
+                status:
+                  type: integer
+                  description: "Ray job status (0: all, 1: running, 2: stopped, 3: failed)"
+      responses:
+        "200":
+          description: Ray job list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            job_id:
+                              type: string
+                              example: job_submission_a0d8291
+                            raycluster_name:
+                              type: string
+                              example: raycluster-autoscaler-1
+                            name:
+                              type: string
+                              example: rayjob-sample
+                            namespace:
+                              type: string
+                              example: default
+                            create_by:
+                              type: string
+                              example: ZhangSan
+                            error_info:
+                              type: string
+                              example: ""
+                            config_detail:
+                              type: string
+                              example: ""
+                            dashboard_address:
+                              type: string
+                              example: 172.17.70.166:8265
+                            cluster_status_zhcn:
+                              type: string
+                              example: Running
+                            ray_head_logs:
+                              type: string
+                              example: ""
+                            create_time:
+                              type: string
+                              format: date-time
+                              example: "2025-02-06 14:36:36"
+                            update_time:
+                              type: string
+                              format: date-time
+                              example: "2025-02-06 14:36:36"
+                      total:
+                        type: integer
+                        example: 1
+
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: Error status code.
+                    example: 500
+                  msg:
+                    type: string
+                    description: Error message.
+                    example: "remote server busy"
+                  data:
+                    type: object
+                    description: Additional information.
+                    example: ""
+
+  /rest/v1/rayjob/get/{namespace}/{rayjob_name}:
+    get:
+      summary: Getting the Ray job.
+      description: Getting the Ray job by namespace and name.
+      operationId: getRayJob
+      tags:
+        - RayJob
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray job.
+        - name: rayjob_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Ray job name.
+      responses:
+        "200":
+          description: Ray job obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            job_id:
+                              type: string
+                              example: job_submission_a0d8291
+                            raycluster_name:
+                              type: string
+                              example: raycluster-autoscaler-1
+                            name:
+                              type: string
+                              example: rayjob-sample
+                            namespace:
+                              type: string
+                              example: default
+                            create_by:
+                              type: string
+                              example: ZhangSan
+                            error_info:
+                              type: string
+                              example: ""
+                            config_detail:
+                              type: string
+                              example: ""
+                            dashboard_address:
+                              type: string
+                              example: 172.17.70.166:8265
+                            cluster_status_zhcn:
+                              type: string
+                              example: Running
+                            ray_head_logs:
+                              type: string
+                              example: ""
+                            create_time:
+                              type: string
+                              format: date-time
+                              example: "2025-02-06 14:36:36"
+                            update_time:
+                              type: string
+                              format: date-time
+                              example: "2025-02-06 14:36:36"
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: {}
+                    description: Additional information.
+
+
+        "404":
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 404
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "Not Found"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: {}
+                    description: Additional information.
+
+  /rest/v1/rayjob/delete/{namespace}/{rayjob_name}:
+    delete:
+      summary: Deleting the Ray job.
+      description: Deleting the Ray job by namespace and name.
+      operationId: deleteRayJob
+      tags:
+        - RayJob
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray job.
+        - name: rayjob_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Ray job name.
+      responses:
+        "200":
+          description: Ray job deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "A running resource cannot be deleted!"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: {}
+                    description: Additional information.
+
+  /rest/v1/rayjob/stop/{namespace}/{rayjob_name}:
+    post:
+      summary: Stopping the Ray job.
+      description: Stopping the Ray job by namespace and name.
+      operationId: stopRayJob
+      tags:
+        - RayJob
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray job.
+        - name: rayjob_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Ray job name.
+      responses:
+        "200":
+          description: Ray job stopped successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    example: {}
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "operation failed"
+                    description: Error message.
+                  data:
+                    type: object
+                    description: Additional information.
+
+  /rest/v1/rayjob/restart/{namespace}/{rayjob_name}:
+    post:
+      summary: Starting the Ray job.
+      description: Starting the Ray job by namespace and name.
+      operationId: restartRayJob
+      tags:
+        - RayJob
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray job.
+        - name: rayjob_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Ray job name.
+      responses:
+        "200":
+          description: Ray job started successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    example: {}
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: Error status code.
+                    example: 500
+                  msg:
+                    type: string
+                    description: Error message.
+                    example: "remote server busy"
+                  data:
+                    type: object
+                    description: Additional information.
+                    example: ""
+
+  /rest/v1/rayjob/list/meta:
+    get:
+      summary: Obtaining the metadata of the Ray job list.
+      description: Obtaining metadata such as the status, version, and creator on the list page.
+      operationId: getRayJobMeta
+      tags:
+        - RayJob
+      responses:
+        "200":
+          description: Metadata of the Ray job list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      createBy:
+                        type: array
+                        items:
+                          type: string
+                        example: ["ZhangSan"]
+                        description: Creator metadata.
+                      status:
+                        type: array
+                        items:
+                          type: string
+                        example: ["All", "Running", "Not running", "Creation failed"]
+                        description: Status metadata.
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+  /rest/v1/rayservice/create:
+    post:
+      summary: Creating a Ray service.
+      description: Creating a Ray service by configuration file.
+      operationId: createRayService
+      tags:
+        - RayService
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: File path.
+                createBy:
+                  type: string
+                  description: Information about the creator.
+                isStart:
+                  type: boolean
+                  description: "Whether to start the Ray cluster: Value 'true' indicates creating and starting the Ray cluster while value 'false' indicates only creating the Ray cluster."
+                config:
+                  type: string
+                  description: Configuration information (transferred in text format).
+              required:
+                - createBy
+                - config
+      responses:
+        "200":
+          description: Ray service created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+  /rest/v1/rayservice/list:
+    post:
+      summary: Querying the Ray service list.
+      description: Querying the list of all Ray services.
+      operationId: listRayServices
+      tags:
+        - RayService
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                createBy:
+                  type: string
+                  description: Creator name.
+                name:
+                  type: string
+                  description: Ray service name (fuzzy match supported).
+                status:
+                  type: integer
+                  description: "Ray service status (0: all, 1: running, 2: stopped, 3: failed)"
+      responses:
+        "200":
+          description: Ray service list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      items:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: rayservice-sample
+                            namespace:
+                              type: string
+                              example: default
+                            create_by:
+                              type: string
+                              example: ZhangSan
+                            error_info:
+                              type: string
+                              example: ""
+                            config_detail:
+                              type: string
+                              example: ""
+                            dashboard_address:
+                              type: string
+                              example: 172.17.70.166:8265
+                            cluster_status_zhcn:
+                              type: string
+                              example: Running
+                            ray_head_logs:
+                              type: string
+                              example: ""
+                            create_time:
+                              type: string
+                              format: date-time
+                              example: "2025-02-06 14:36:36"
+                            update_time:
+                              type: string
+                              format: date-time
+                              example: "2025-02-06 14:36:36"
+                      total:
+                        type: integer
+                        example: 1
+
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: Error status code.
+                    example: 500
+                  msg:
+                    type: string
+                    description: Error message.
+                    example: "remote server busy"
+                  data:
+                    type: object
+                    description: Additional information.
+                    example: ""
+
+  /rest/v1/rayservice/get/{namespace}/{rayservice_name}:
+    get:
+      summary: Getting the Ray service.
+      description: Getting the Ray service by namespace and name.
+      operationId: getRayService
+      tags:
+        - RayService
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray service.
+        - name: rayservice_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Ray service name.
+      responses:
+        "200":
+          description: Ray service obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      name:
+                        type: string
+                        example: rayservice-sample
+                      namespace:
+                        type: string
+                        example: default
+                      create_by:
+                        type: string
+                        example: ZhangSan
+                      error_info:
+                        type: string
+                        example: ""
+                      config_detail:
+                        type: string
+                        example: ""
+                      dashboard_address:
+                        type: string
+                        example: 172.17.70.166:8265
+                      cluster_status_zhcn:
+                        type: string
+                        example: Running
+                      ray_head_logs:
+                        type: string
+                        example: ""
+                      create_time:
+                        type: string
+                        format: date-time
+                        example: "2025-02-06 14:36:36"
+                      update_time:
+                        type: string
+                        format: date-time
+                        example: "2025-02-06 14:36:36"
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: {}
+                    description: Additional information.
+
+
+        "404":
+          description: Resource not found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 404
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "Not Found"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: {}
+                    description: Additional information.
+
+  /rest/v1/rayservice/delete/{namespace}/{rayservice_name}:
+    delete:
+      summary: Deleting the Ray service.
+      description: Deleting the Ray service by namespace and name.
+      operationId: deleteRayService
+      tags:
+        - RayService
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray service.
+        - name: rayservice_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Ray service name.
+      responses:
+        "200":
+          description: Ray service deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "A running resource cannot be deleted!"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: {}
+                    description: Additional information.
+
+
+  /rest/v1/rayservice/stop/{namespace}/{rayservice_name}:
+    post:
+      summary: Stopping the Ray service.
+      description: Stopping the Ray service by namespace and name.
+      operationId: stopRayService
+      tags:
+        - RayService
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray service.
+        - name: rayservice_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Ray service name.
+      responses:
+        "200":
+          description: Ray service stopped successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    example: {}
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 500
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "operation failed"
+                    description: Error message.
+                  data:
+                    type: object
+                    description: Additional information.
+
+  /rest/v1/rayservice/restart/{namespace}/{rayservice_name}:
+    post:
+      summary: Starting the Ray service.
+      description: Starting the Ray service by namespace and name.
+      operationId: restartRayService
+      tags:
+        - RayService
+      parameters:
+        - name: namespace
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Namespace of the Ray service.
+        - name: rayservice_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Ray service name.
+      responses:
+        "200":
+          description: Ray service started successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    example: {}
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.
+
+        "500":
+          description: Internal server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    description: Error status code.
+                    example: 500
+                  msg:
+                    type: string
+                    description: Error message.
+                    example: "remote server busy"
+                  data:
+                    type: object
+                    description: Additional information.
+                    example: ""
+
+  /rest/v1/rayservice/list/meta:
+    get:
+      summary: Obtaining the metadata of the Ray service list.
+      description: Obtaining metadata such as the status, version, and creator on the list page.
+      operationId: getRayServiceMeta
+      tags:
+        - RayService
+      responses:
+        "200":
+          description: Metadata of the Ray service list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 200
+                  msg:
+                    type: string
+                    example: success
+                  data:
+                    type: object
+                    properties:
+                      createBy:
+                        type: array
+                        items:
+                          type: string
+                        example: ["ZhangSan"]
+                        description: Creator metadata.
+                      status:
+                        type: array
+                        items:
+                          type: string
+                        example: ["All", "Running", "Not running", "Creation failed"]
+                        description: Status metadata.
+
+        "400":
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: integer
+                    example: 400
+                    description: Error status code.
+                  msg:
+                    type: string
+                    example: "bad request"
+                    description: Error message.
+                  data:
+                    type: object
+                    example: ""
+                    description: Additional information.

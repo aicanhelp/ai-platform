@@ -1,0 +1,6 @@
+name: community
+type: private
+description: ''
+branches:
+  - name: master
+    type: protected

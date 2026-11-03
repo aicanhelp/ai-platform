@@ -1,0 +1,9 @@
+{{- if eq (include "prometheus.installed" .) "false" }}
+{{- $existingNs := lookup "v1" "Namespace" "" "npu-exporter" }}
+{{- if not $existingNs }}
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: npu-exporter
+{{- end }}
+{{- end }}

@@ -1,0 +1,61 @@
+OPEN SOURCE SOFTWARE NOTICE
+
+The open source software notice for the open source software used in openFuyao is provided in this document. The open source software licenses are granted by the respective right holders. With regard to the respective open source software contained in the openFuyao, the applicable open source software license will prevail all other license agreement, including but not limited to the Mulan PSL v2 License, in case of any conflicts. 
+
+Warranty Disclaimer    
+THE OPEN SOURCE SOFTWARE IN THIS OPENEULER DISTRIBUTION IS PROVIDED ON AN "AS IS" BASIS, WITHOUT ANY WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT, MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. 
+See the applicable licenses for more details.
+
+Copyright Notice and License Texts 
+
+Software: cluster-api
+Copyright notice: Copyright 2021 The Kubernetes authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: carina
+Copyright notice: Copyright @ 2021 bocloud <fushaosong@beyondcent.com>.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: cluster-api
+Copyright notice: Copyright 2020 The Kubernetes authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: cluster-api
+Copyright notice: Copyright 2019 The Kubernetes authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: multicloud-k8s
+Copyright notice: Copyright 2016 The Kubernetes authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: helm
+Copyright notice: Copyright The Helm authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: golib
+Copyright notice: Copyright 2016 The Kubernetes Authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: Kubernetes
+Copyright notice: Copyright 2016-2019 The Kubernetes Authors.
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: btfak/sntp
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: yubo/golib
+
+License: Apache License-2.0（http://www.apache.org/licenses/LICENSE-2.0）
+------------------------------------------------------------------------------------
+Software: vladimirvivien/go-ntp-client
+
+License: MIT License（https://mit-license.org/）

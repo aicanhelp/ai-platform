@@ -1,0 +1,369 @@
+# hugo server --minify --themesDir ... --baseURL=http://0.0.0.0:1313/theme/hugo-book/
+
+baseURL: https://kwok.sigs.k8s.io/
+title: KWOK
+theme: github.com/alex-shpak/hugo-book
+
+# Book configuration
+disablePathToLower: false
+enableGitInfo: true
+disableKinds:
+- taxonomy
+
+permalinks:
+  posts: "/:section/:year/:month/:day/:slug/"
+
+# Needed for mermaid/katex shortcodes
+markup:
+  goldmark:
+    renderer:
+      unsafe: true
+  tableOfContents:
+    startLevel: 1
+
+# Multi-lingual mode config
+# There are different options to translate files
+# See https://gohugo.io/content-management/multilingual/#translation-by-filename
+# And https://gohugo.io/content-management/multilingual/#translation-by-content-directory
+languages:
+  en:
+    languageName: English
+    contentDir: content/en
+    weight: 1
+
+params:
+  # (Optional, default light) Sets color theme: light, dark or auto.
+  # Theme 'auto' switches between dark and light modes based on browser/os preferences
+  BookTheme: "auto"
+
+  # (Optional, default true) Controls table of contents visibility on right side of pages.
+  # Start and end levels can be controlled with markup.tableOfContents setting.
+  # You can also specify this parameter per page in front matter.
+  BookToC: true
+
+  # (Optional, default none) Set the path to a logo for the book. If the logo is
+  # /static/logo.png then the path would be logo.png
+  BookLogo: /favicon.png
+
+  # (Optional, default docs) Specify root page to render child pages as menu.
+  # Page is resoled by .GetPage function: https://gohugo.io/functions/getpage/
+  # For backward compatibility you can set '*' to render all sections to menu. Acts same as '/'
+  BookSection: docs
+
+  # Set source repository location.
+  # Used for 'Last Modified' and 'Edit this page' links.
+  BookRepo: "https://github.com/kubernetes-sigs/kwok"
+
+  # (Optional, default 'commit') Specifies commit portion of the link to the page's last modified
+  # commit hash for 'doc' page type.
+  # Requires 'BookRepo' param.
+  # Value used to construct a URL consisting of BookRepo/BookCommitPath/<commit-hash>
+  # Github uses 'commit', Bitbucket uses 'commits'
+  BookCommitPath: commit
+
+  # Enable "Edit this page" links for 'doc' page type.
+  # Disabled by default. Uncomment to enable. Requires 'BookRepo' param.
+  # Edit path must point to root directory of repo.
+  BookEditPath: edit/main/site
+
+  # Configure the date format used on the pages
+  # - In git information
+  # - In blog posts
+  BookDateFormat: "2006-01-02"
+
+  # (Optional, default true) Enables search function with flexsearch,
+  # Index is built on fly, therefore it might slowdown your website.
+  # Configuration for indexing can be adjusted in i18n folder per language.
+  BookSearch: true
+
+  # (Optional, default true) Enables comments template on pages
+  # By default partals/docs/comments.html includes Disqus template
+  # See https://gohugo.io/content-management/comments/#configure-disqus
+  # Can be overwritten by same param in page frontmatter
+  BookComments: true
+
+  # /!\ This is an experimental feature, might be removed or changed at any time
+  # (Optional, experimental, default false) Enables portable links and link checks in markdown pages.
+  # Portable links meant to work with text editors and let you write markdown without {{< relref >}} shortcode
+  # Theme will print warning if page referenced in markdown does not exists.
+  BookPortableLinks: true
+
+  # /!\ This is an experimental feature, might be removed or changed at any time
+  # (Optional, experimental, default false) Enables service worker that caches visited pages and resources for offline use.
+  BookServiceWorker: true
+
+  # /!\ This is an experimental feature, might be removed or changed at any time
+  # (Optional, experimental, default false) Enables a drop-down menu for translations only if a translation is present.
+  BookTranslatedOnly: false
+
+module:
+  imports:
+  - path: github.com/alex-shpak/hugo-book
+
+menu:
+  before:
+  - identifier: home
+    pageRef: "/"
+
+  main:
+  # User Guide
+  - identifier: user-guide
+    pageRef: "/docs/user"
+    weight: 10
+    params:
+      collapse: never
+  # Design
+  - identifier: design
+    title: Design
+    weight: 20
+  # Contributing
+  - identifier: contributing
+    pageRef: "/docs/contributing"
+    weight: 30
+  # Technical Outcomes
+  - identifier: technical-outcomes
+    title: Technical Outcomes
+  - identifier: technical-outcomes-scheduling
+    pageRef: "/docs/technical-outcomes/scheduling"
+    parent: technical-outcomes
+  - identifier: technical-outcomes-scalability
+    pageRef: "/docs/technical-outcomes/scalability"
+    parent: technical-outcomes
+  - identifier: technical-outcomes-performance
+    pageRef: "/docs/technical-outcomes/performance"
+    parent: technical-outcomes
+
+  # User Guide Children
+  - identifier: all-in-one-image
+    pageRef: "/docs/user/all-in-one-image"
+    weight: 1010
+    parent: user-guide
+  - identifier: github-action
+    pageRef: "/docs/user/github-action"
+    weight: 1015
+    parent: user-guide
+  - identifier: installation
+    pageRef: "/docs/user/installation"
+    weight: 1020
+    parent: user-guide
+  - identifier: kwok-in-cluster
+    pageRef: "/docs/user/kwok-in-cluster"
+    weight: 1030
+    parent: user-guide
+  - identifier: kwok-out-cluster
+    pageRef: "/docs/user/kwok-out-cluster"
+    weight: 1040
+    parent: user-guide
+  - identifier: kwokctl-manage-cluster
+    pageRef: "/docs/user/kwokctl-manage-cluster"
+    weight: 1050
+    parent: user-guide
+  - identifier: manage-nodes-and-pods
+    pageRef: "/docs/user/kwok-manage-nodes-and-pods"
+    weight: 1060
+    parent: user-guide
+
+  - identifier: examples
+    title: Examples
+    parent: user-guide
+  - identifier: kwokctl-advanced
+    title: "`kwokctl` Advanced"
+    weight: 200010
+    parent: examples
+  - identifier: snapshots
+    pageRef: "/docs/user/kwokctl-snapshot"
+    parent: kwokctl-advanced
+  - identifier: auditing
+    pageRef: "/docs/user/kwokctl-auditing"
+    parent: kwokctl-advanced
+  - identifier: authorization
+    pageRef: "/docs/user/kwokctl-authorization"
+    parent: kwokctl-advanced
+  - identifier: admission
+    pageRef: "/docs/user/kwokctl-admission"
+    parent: kwokctl-advanced
+  - identifier: platform-specific-binaries
+    pageRef: "/docs/user/kwokctl-platform-specific-binaries"
+    parent: kwokctl-advanced
+
+  - identifier: kwokctl-integration
+    title: "`kwokctl` Integration"
+    weight: 200020
+    parent: examples
+  - identifier: argo
+    pageRef: "/docs/examples/argo"
+    parent: kwokctl-integration
+  - identifier: linkerd
+    pageRef: "/docs/examples/linkerd"
+    parent: kwokctl-integration
+  - identifier: istio
+    pageRef: "/docs/examples/istio"
+    parent: kwokctl-integration
+  - identifier: metrics-server
+    pageRef: "/docs/examples/metrics-server"
+    parent: kwokctl-integration
+  - identifier: metrics
+    pageRef: "/docs/examples/prometheus"
+    parent: kwokctl-integration
+
+  - identifier: tools
+    title: Tools
+    weight: 200020
+    parent: user-guide
+  - identifier: kwok
+    title: "`kwok` CLI"
+    pageRef: "/docs/generated/kwok"
+    parent: tools
+  - identifier: kwokctl
+    title: "`kwokctl` CLI"
+    pageRef: "/docs/generated/kwokctl"
+    parent: tools
+
+  - identifier: configuration
+    pageRef: "/docs/user/configuration"
+    weight: 200030
+    parent: user-guide
+  - identifier: api-reference
+    pageRef: "/docs/generated/apis"
+    parent: configuration
+  - identifier: stages-configuration
+    pageRef: "/docs/user/stages-configuration"
+    parent: configuration
+
+  - identifier: pod-interaction
+    title: Pod Interaction
+    parent: configuration
+  - identifier: port-forward-configuration
+    pageRef: "/docs/user/port-forward-configuration"
+    parent: pod-interaction
+  - identifier: exec-configuration
+    pageRef: "/docs/user/exec-configuration"
+    parent: pod-interaction
+  - identifier: logs-configuration
+    pageRef: "/docs/user/logs-configuration"
+    parent: pod-interaction
+  - identifier: attach-configuration
+    pageRef: "/docs/user/attach-configuration"
+    parent: pod-interaction
+  - identifier: metrics-configuration
+    pageRef: "/docs/user/metrics-configuration"
+    parent: configuration
+    params:
+      collapse: never
+  - identifier: resource-usage-configuration
+    pageRef: "/docs/user/resource-usage-configuration"
+    parent: metrics-configuration
+
+  - identifier: extensions
+    title: Extensions
+    parent: configuration
+  - identifier: go-template
+    pageRef: "/docs/user/go-template"
+    parent: extensions
+  - identifier: cel-expressions
+    pageRef: "/docs/user/cel-expressions"
+    parent: extensions
+
+  - identifier: known-issues
+    title: Known Issues
+    parent: user-guide
+  - identifier: known-issues-nodes-unexpectedly-deleted
+    pageRef: "/docs/user/known-issues/nodes-unexpectedly-deleted"
+    parent: known-issues
+
+  # Design Children
+  - identifier: introduction
+    pageRef: "/docs/design/introduction"
+    weight: 2010
+    parent: design
+  - identifier: architecture
+    pageRef: "/docs/design/architecture"
+    weight: 2020
+    parent: design
+
+  # Contributing Children
+  - identifier: documentation
+    pageRef: "/docs/contributing/documentation"
+    parent: contributing
+  - identifier: development
+    pageRef: "/docs/contributing/development"
+    parent: contributing
+
+  # Technical Outcome Scheduling Children
+  - identifier: technical-outcomes-scheduling-requests-and-limits
+    title: "Requests and Limits"
+    pageRef: "/docs/technical-outcomes/scheduling/requests-and-limits"
+    parent: technical-outcomes-scheduling
+  - identifier: technical-outcomes-scheduling-node-affinity
+    title: "Node Affinity"
+    pageRef: "/docs/technical-outcomes/scheduling/node-affinity"
+    parent: technical-outcomes-scheduling
+  - identifier: technical-outcomes-scheduling-taints-and-tolerations
+    title: "Taints and Tolerations"
+    pageRef: "/docs/technical-outcomes/scheduling/taints-and-tolerations"
+    parent: technical-outcomes-scheduling
+  - identifier: technical-outcomes-scheduling-limit-range
+    title: "Limit Range"
+    pageRef: "/docs/technical-outcomes/scheduling/limit-range"
+    parent: technical-outcomes-scheduling
+  - identifier: technical-outcomes-scheduling-pod-priority-and-preemption
+    title: "Pod Priority and Preemption"
+    pageRef: "/docs/technical-outcomes/scheduling/pod-priority-and-preemption"
+    parent: technical-outcomes-scheduling
+  - identifier: technical-outcomes-scheduling-pod-topology-spread-constraint
+    title: "Pod Topology Spread Constraint"
+    pageRef: "/docs/technical-outcomes/scheduling/pod-topology-spread-constraint"
+    parent: technical-outcomes-scheduling
+
+  # Technical Outcome Scalability Children
+  - identifier: technical-outcomes-scalability-scale-using-hpa
+    title: "Horizontal Pod Autoscaling"
+    pageRef: "/docs/technical-outcomes/scalability/scale-using-hpa"
+    parent: technical-outcomes-scalability
+  - identifier: technical-outcomes-scalability-scale-using-vpa
+    title: "Vertical Pod Autoscaling"
+    pageRef: "/docs/technical-outcomes/scalability/scale-using-vpa"
+    parent: technical-outcomes-scalability
+  - identifier: technical-outcomes-scalability-scale-using-ca
+    title: "Cluster Autoscaling"
+    pageRef: "/docs/technical-outcomes/scalability/scale-using-ca"
+    parent: technical-outcomes-scalability
+  - identifier: technical-outcomes-scalability-scale-using-karpenter
+    title: "Karpenter Autoscaling"
+    pageRef: "/docs/technical-outcomes/scalability/scale-using-karpenter"
+    parent: technical-outcomes-scalability
+
+  # Technical Outcome Performance Children
+  - identifier: technical-outcomes-performance-etcd
+    title: "Optimizing etcd Performance"
+    pageRef: "/docs/technical-outcomes/performance/etcd"
+    parent: technical-outcomes-performance
+  - identifier: technical-outcomes-performance-control-plane
+    title: "Control Plane Performance Evaluation"
+    pageRef: "/docs/technical-outcomes/performance/control-plane"
+    parent: technical-outcomes-performance
+  - identifier: technical-outcomes-performance-control-plane-single-cluster
+    title: "Single Cluster"
+    pageRef: "/docs/technical-outcomes/performance/control-plane/single-cluster"
+    parent: technical-outcomes-performance-control-plane
+  - identifier: technical-outcomes-performance-control-plane-multi-cluster
+    title: "Multi-Cluster"
+    pageRef: "/docs/technical-outcomes/performance/control-plane/multi-cluster"
+    parent: technical-outcomes-performance-control-plane
+
+  after:
+  - identifier: blog
+    pageRef: "/posts"
+    weight: 10
+  - identifier: adopters
+    title: Adopters
+    pageRef: "/docs/adopters"
+    weight: 20
+  - identifier: roadmap
+    title: Roadmap ↩
+    url: https://github.com/orgs/kubernetes-sigs/projects/21
+    weight: 30
+  - identifier: source-code
+    title: Source Code ↩
+    url: https://github.com/kubernetes-sigs/kwok
+    weight: 40

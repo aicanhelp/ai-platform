@@ -1,0 +1,101 @@
+{
+  "module": {
+    "title": "Custom Resource Definition",
+    "crInstanceTitle": "Custom Resource Instance",
+    "crdDetail": "CRD Detail",
+    "crInstanceDetail": "Instance Detail"
+  },
+  "table": {
+    "name": "Resource Name",
+    "group": "API Group",
+    "version": "Version",
+    "latestVersion": "Latest Version",
+    "scope": "Scope",
+    "status": "Status",
+    "kind": "Kind",
+    "namespace": "Namespace",
+    "createTime": "Created Time",
+    "operation": "Operation",
+    "instanceName": "Instance Name"
+  },
+  "scope": {
+    "cluster": "Cluster",
+    "namespace": "Namespace"
+  },
+  "status": {
+    "normal": "Normal",
+    "abnormal": "Abnormal"
+  },
+  "detail": {
+    "tabInfo": "Details",
+    "tabYaml": "YAML",
+    "tabInstances": "Instances",
+    "basicInfo": "Basic Information",
+    "name": "Resource Name:",
+    "group": "API Group:",
+    "version": "Version:",
+    "scope": "Scope:",
+    "status": "Status:",
+    "createTime": "Created:",
+    "labels": "Labels:",
+    "annotations": "Annotations:",
+    "countZero": "0",
+    "instanceLabel": "Instance"
+  },
+  "actions": {
+    "modify": "Modify",
+    "delete": "Delete",
+    "create": "Create",
+    "createInstance": "Create Instance",
+    "editLabel": "Edit Labels",
+    "editAnnotation": "Edit Annotations",
+    "operation": "Operation",
+    "start": "Start",
+    "stop": "Stop",
+    "restart": "Restart"
+  },
+  "modal": {
+    "deleteTitle": "Delete Custom Resource Definition",
+    "deleteWarning": "Cannot be recovered after deletion, please proceed with caution.",
+    "deleteConfirm": "Are you sure to delete {{name}}?",
+    "deleteInstanceTitle": "Delete Custom Resource Instance",
+    "deleteInstanceWarning": "Cannot be recovered after deletion, please proceed with caution.",
+    "deleteInstanceConfirm": "Are you sure to delete instance {{name}}?"
+  },
+  "messages": {
+    "deleteSuccess": "Deleted successfully!",
+    "createSuccess": "Created successfully!",
+    "createFailed": "Create failed!",
+    "annotationUnchanged": "Annotations were not changed.",
+    "labelUnchanged": "Labels were not changed.",
+    "yamlInvalid": "Invalid YAML format: ",
+    "yamlModifySuccess": "Modified successfully",
+    "yamlModifyFailed": "Modification failed!",
+    "startSuccess": "Started successfully",
+    "startFailed": "Failed to start: ",
+    "stopSuccess": "Stopped successfully",
+    "stopFailed": "Failed to stop: ",
+    "restartSuccess": "Restarted successfully",
+    "restartFailed": "Failed to restart: ",
+    "yamlNotLoaded": "YAML is not loaded yet. Please try again later.",
+    "crdMetaMissing": "CRD metadata (group/version/plural) is not ready. Please refresh and retry."
+  },
+  "statusTable": {
+    "title": "Status Information",
+    "type": "Type",
+    "status": "Status",
+    "updateTime": "Update Time",
+    "reason": "Reason",
+    "message": "Message"
+  },
+  "versionTable": {
+    "title": "Version Information",
+    "name": "Version Name",
+    "served": "Served",
+    "storage": "Storage"
+  },
+  "crInstance": {
+    "name": "Instance Name:",
+    "crd": "CRD Name:"
+  }
+}

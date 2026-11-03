@@ -1,0 +1,20 @@
+# permissions for end users to view bkemachines.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: bkemachine-viewer-role
+rules:
+- apiGroups:
+  - cluster.bocloud.com
+  resources:
+  - bkemachines
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - cluster.bocloud.com
+  resources:
+  - bkemachines/status
+  verbs:
+  - get

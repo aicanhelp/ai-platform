@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ubs-bandwidth-config
+  namespace: ub-network-system
+data:
+  config.yaml: |
+    bandwidths:
+      - priority: 0
+        bandwidth: 20

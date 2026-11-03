@@ -1,0 +1,12 @@
+apiVersion: users.openfuyao.com/v1alpha1
+kind: User
+metadata:
+  name: admin
+spec:
+  Description: |-
+    内置默认平台管理员
+    Built-in default platform administrator
+  EncryptedPassword: clRUWkR6WnZ5MVFNcnF1ZGlJdldOOWc1NlNIQ0g5cmptVjZKc2FoWTFsSkt6cGVJMWt0YXB4N2o0alBJbUY0SnFtS3M5bno1NGY0M1hQcmFDZllhelcxemtjSE03SjdIdXZ3OC9oYmt4Q1k9
+  PlatformRole: platform-admin
+  Username: admin
+  FirstLogin: true

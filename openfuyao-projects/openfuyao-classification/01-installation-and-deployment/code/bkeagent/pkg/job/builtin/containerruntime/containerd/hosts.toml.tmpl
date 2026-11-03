@@ -1,0 +1,30 @@
+{{- if .Server }}server = "{{ .Server }}"
+{{ end -}}
+{{- range .Hosts }}
+[host."{{ .URL }}"]
+  capabilities = [{{ range $index, $cap := .Config.Capabilities }}{{ if $index }}, {{ end }}"{{ $cap }}"{{ end }}]
+  {{- if .Config.SkipVerify }}
+  skip_verify = true
+  {{- end }}
+  {{- if .Config.PlainHTTP }}
+  plain_http = true
+  {{- end }}
+  {{- if .Config.Insecure }}
+  insecure = true
+  {{- end }}
+  {{- if .Config.OverridePath }}
+  override_path = true
+  {{- end }}
+  {{- if .Config.CA }}
+  ca = "{{ .Config.CA }}"
+  {{- end }}
+  {{- if and .Config.ClientCert .Config.ClientKey }}
+  client = ["{{ .Config.ClientCert }}", "{{ .Config.ClientKey }}"]
+  {{- end }}
+  {{- if .Config.Headers }}
+  [host."{{ .URL }}".header]
+    {{- range $key, $values := .Config.Headers }}
+    {{ $key }} = [{{ range $index, $value := $values }}{{ if $index }}, {{ end }}"{{ $value }}"{{ end }}]
+    {{- end }}
+  {{- end }}
+{{ end -}}

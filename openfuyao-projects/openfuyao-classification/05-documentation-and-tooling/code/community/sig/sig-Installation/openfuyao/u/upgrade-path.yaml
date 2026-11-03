@@ -1,0 +1,12 @@
+name: upgrade-path
+type: public
+description: '存放所有版本信息和升级路径，包含paths.yaml文件'
+branches:
+  - name: master
+    type: protected
+  - name: feat/upgrade-530
+    type: protected
+    create_from: master
+  - name: feat/self-upgrade
+    type: protected
+    create_from: master

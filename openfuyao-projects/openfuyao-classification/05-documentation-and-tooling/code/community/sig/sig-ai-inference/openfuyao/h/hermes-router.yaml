@@ -1,0 +1,8 @@
+name: hermes-router
+type: public
+branches:
+  - name: master
+    type: protected
+  - name: feat/prediction-based-scheduling
+    type: protected
+    create_from: master

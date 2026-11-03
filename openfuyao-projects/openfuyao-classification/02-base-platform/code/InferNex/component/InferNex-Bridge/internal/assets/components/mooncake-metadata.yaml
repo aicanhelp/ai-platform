@@ -1,0 +1,24 @@
+servicePort: 6379
+template:
+  spec:
+    # PodSecurity "restricted" profile requirements: redis:8.6.1 bundles a
+    # `redis` user with uid 999 and /data is owned by it, so the container can
+    # run non-root from the start (no chown-then-gosu dance needed).
+    securityContext:
+      runAsNonRoot: true
+      runAsUser: 999
+      runAsGroup: 999
+      fsGroup: 999
+      seccompProfile:
+        type: RuntimeDefault
+    containers:
+      - name: mooncake-metadata
+        image: hub.oepkgs.net/openfuyao/redis:8.6.1
+        imagePullPolicy: IfNotPresent
+        ports:
+          - containerPort: 6379
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+              - ALL

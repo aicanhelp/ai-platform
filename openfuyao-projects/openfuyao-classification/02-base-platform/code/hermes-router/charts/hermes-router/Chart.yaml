@@ -1,0 +1,15 @@
+apiVersion: v2
+name: hermes-router
+description: A Helm chart for deploying Hermes Router with InferencePool and Endpoint Picker (EPP) for intelligent inference request routing
+
+type: application
+
+version: 0.0.0-latest
+
+appVersion: "latest"
+
+dependencies:
+  - name: inference-extension
+    version: 0.0.0-latest
+    repository: "file://../epplib"
+    alias: inferenceExtension

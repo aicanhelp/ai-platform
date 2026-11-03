@@ -1,0 +1,66 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  name: helmchartrepositories.console.openfuyao.com
+spec:
+  group: console.openfuyao.com
+  versions:
+    - name: v1beta1
+      served: true
+      storage: true
+      schema:
+        openAPIV3Schema:
+          type: object
+          properties:
+            apiVersion:
+              type: string
+            kind:
+              type: string
+            metadata:
+              type: object
+            spec:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  description: "displayed name for the helm repository"
+                url:
+                  type: string
+                  description: "URL for the helm repository"
+                basicAuth:
+                  type: object
+                  description: "Optional reference to a secret for basic authentication"
+                  properties:
+                    name:
+                      type: string
+                      description: "Name of the secret for basic authentication"
+                tls:
+                  type: object
+                  description: "Optional reference to a secret for TLS authentication"
+                  properties:
+                    name:
+                      type: string
+                      description: "Name of the secret for TLS authentication"
+                ca:
+                  type: object
+                  description: "Optional reference to a config map containing the CA bundle"
+                  properties:
+                    name:
+                      type: string
+                      description: "Name of the config map containing the CA bundle"
+                insecureSkipTLSVerify:
+                  type: boolean
+                  description: "Skips the validity check for the server's certificate"
+                passCredentialsAll:
+                  type: boolean
+                  description: "Pass credentials to all domains"
+              required:
+                - displayName
+                - url
+  scope: Cluster
+  names:
+    plural: helmchartrepositories
+    singular: helmchartrepository
+    kind: HelmChartRepository
+    shortNames:
+      - hcr

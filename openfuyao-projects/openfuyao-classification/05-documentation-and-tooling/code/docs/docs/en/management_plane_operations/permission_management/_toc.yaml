@@ -1,0 +1,5 @@
+isManual: true
+label: Permission Management
+sections:
+  - label: RBAC Management
+    href: ./rbac_management.md

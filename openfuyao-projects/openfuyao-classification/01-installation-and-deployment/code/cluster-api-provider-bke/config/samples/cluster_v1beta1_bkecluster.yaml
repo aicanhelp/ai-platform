@@ -1,0 +1,6 @@
+apiVersion: cluster.bocloud.com/v1beta1
+kind: BKECluster
+metadata:
+  name: bkecluster-sample
+spec:
+  # TODO(user): Add fields here

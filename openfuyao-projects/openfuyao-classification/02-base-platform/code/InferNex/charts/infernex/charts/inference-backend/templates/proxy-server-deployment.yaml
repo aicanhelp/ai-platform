@@ -1,0 +1,71 @@
+{{- range .Values.services }}
+{{- if and .enabled (eq .mode "pd") (hasKey . "pd") }}
+{{- $proxyCfg := include "vllm.pdProxyServerConfig" (dict "proxyServer" .pd.proxyServer) | fromJson }}
+{{- if $proxyCfg.enabled }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  namespace: {{ $.Release.Namespace }}
+  name: {{ include "vllm.instance.deploymentName" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) }}-proxy
+  labels:
+    {{- include "vllm.instance.labels" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) | nindent 4 }}
+    app.kubernetes.io/component: proxy-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      openfuyao.com/model: {{ include "vllm.modelName.label" (dict "Values" $.Values) }}
+      {{- include "vllm.instance.selectorLabels" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) | nindent 6 }}
+      app.kubernetes.io/component: proxy-server
+      openfuyao.com/pdRole: {{ include "vllm.pdRole.label" (dict "role" "proxy" "Values" $.Values) }}
+      {{- if .pdGroupID }}
+      openfuyao.com/pdGroupID: {{ .pdGroupID }}
+      {{- end }}
+  template:
+    metadata:
+      labels:
+        {{- include "vllm.instance.labels" (dict "service" . "Values" $.Values "Chart" $.Chart "Release" $.Release) | nindent 8 }}
+        app.kubernetes.io/component: proxy-server
+        openfuyao.com/pdRole: {{ include "vllm.pdRole.label" (dict "role" "proxy" "Values" $.Values) }}
+        {{- if .pdGroupID }}
+        openfuyao.com/pdGroupID: {{ .pdGroupID }}
+        {{- end }}
+        openfuyao.com/model: {{ include "vllm.modelName.label" (dict "Values" $.Values) }}
+    spec:
+      serviceAccountName: vllm-proxy-sa
+      {{- if $.Values.global.imagePullSecrets }}
+      imagePullSecrets:
+        {{- $.Values.global.imagePullSecrets | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: proxy-server
+        image: {{ include "vllm.proxy.image" $ | quote }}
+        imagePullPolicy: {{ include "vllm.image.pullPolicy" $ }}
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          python3 k8s_proxy_server_example.py \
+            --host 0.0.0.0 \
+            --prefiller-label "openfuyao.com/pdRole={{ include "vllm.pdRole.label" (dict "role" "prefill" "Values" $.Values) }}{{ if .pdGroupID }},openfuyao.com/pdGroupID={{ .pdGroupID }}{{ end }}" \
+            --decoder-label "openfuyao.com/pdRole={{ include "vllm.pdRole.label" (dict "role" "decode" "Values" $.Values) }}{{ if .pdGroupID }},openfuyao.com/pdGroupID={{ .pdGroupID }}{{ end }}" \
+            --prefiller-container prefill-engine \
+            --decoder-container decode-engine \
+            --prefiller-port-name prefill-port \
+            --decoder-port-name decode-port \
+            --namespace {{ $.Release.Namespace }} \
+            --port 8000 \
+            --discovery-interval {{ $proxyCfg.discoveryInterval }}{{- if not $proxyCfg.accessLog.enabled }} \
+            --disable-access-log{{- else if $proxyCfg.accessLog.excludedEndpoints }} \
+            --disable-access-log-for-endpoints={{ join "," $proxyCfg.accessLog.excludedEndpoints | quote }}{{- end }}
+        ports:
+        - name: proxy-port
+          containerPort: 8000
+        {{- with $proxyCfg.resources }}
+        resources:
+          {{- toYaml . | nindent 10 }}
+        {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+

@@ -1,0 +1,290 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+.dark_box{
+  .@{container-prefix}-select-selector,.@{container-prefix}-picker{
+    background: #2a2d34ff;
+    color: #fff;
+    border: 1px solid rgb(68,68,68);
+  }
+  .@{container-prefix}-select-arrow,.@{container-prefix}-picker-suffix,.@{container-prefix}-picker-clear{
+    color:#f7f7f7;
+  }
+  .@{container-prefix}-input-affix-wrapper{
+    background: #2a2d34ff;
+  }
+  .modal_flex_delete{
+    .@{container-prefix}-modal-header{
+      .@{container-prefix}-modal-title{
+        color: #f7f7f7;
+      }
+    }
+    .@{container-prefix}-modal-close-x{
+      svg{
+        color: #f7f7f7 !important;
+      }
+    }
+    .word_tograry{
+      .word_tograry_alarm{
+        .bread_word_delete{
+          color: #f7f7f7 !important;
+        }
+      }
+    }
+  }
+ .@{container-prefix}-table-cell a{
+  color: #4B8BEA;
+  }
+  .@{container-prefix}-breadcrumb{
+    background-color: #2a2d34ff;
+    color: #F7F7F7;
+    box-shadow: @dark-box-shadow;
+    li{
+      span{
+        color: #F7F7F7;
+      }
+    }
+  }
+  .dashboard_box{
+    background-color: @dark-box-page-color;
+    .dashboard_header{
+      h2{
+        color: #F7F7F7;
+      }
+    }
+    .dashboard_card{
+    .card_item{
+      background: linear-gradient(180deg, rgb(51,55,65) 48.855%, rgb(52,63,85) 94.656%);
+      box-shadow: 0px 0px 10px 0px rgba(51,51,51,0.16);
+      border: 1px solid #444444;
+      .card_header{
+        h4{
+          color: #f7f7f7;
+        }
+      }
+      .card_body{
+        .monitor_component{
+          .word{
+            color: #f7f7f7;
+          }
+        }
+      }
+    }
+  }
+  .dashboard_table{
+    background-color: @dark-box-page-color;
+  }
+  .dashboard_tools{
+    label{
+      border: 1px solid rgb(68, 68, 68);
+      .anticon{
+        color: #fff !important;
+      }
+    }
+  }
+  .dashboard_content{
+    .page{
+      .@{container-prefix}-pagination-total-text{
+        color: #f7f7f7;
+      }
+      .@{container-prefix}-pagination-prev,.@{container-prefix}-pagination-next,.@{container-prefix}-select-selector{
+        background: #2a2d34ff;
+        color: #fff;
+        border: 1px solid rgb(68,68,68);
+      }
+      .@{container-prefix}-select-open .@{container-prefix}-select-selection-item{
+        color: #fff;
+      }
+      .@{container-prefix}-select:hover .@{container-prefix}-select-selector{
+        background-color: transparent !important;
+      }
+    }
+  }
+  }
+  .@{container-prefix}-modal-content{
+    .@{container-prefix}-modal-title{
+      color: #f7f7f7;
+    }
+    .@{container-prefix}-modal-close-x svg{
+      color: #f7f7f7;
+    }
+  }
+  .@{container-prefix}-modal-root .cancel_btn{
+    border: 1px solid rgb(68,68,68);
+    background: #2a2d34ff;
+    color: #f7f7f7;
+  }
+  .child_content{
+    .big_data_dashboard_box{
+      min-height: calc(100vh - 166px);
+      background: @dark-background-color;
+      .big_data_header{
+        h2{
+          color: #f7f7f7;
+        }
+      }
+    }
+    .monitor_component_content{
+      .dount_display_list,.dashboard_display_list,.line_display_list,.area_display_list,.number_display_list{
+        background: #2a2d34ff;
+        .chart_header{
+          p{
+            color: #f7f7f7;
+          }
+        }
+        .display_chartBox {
+          background: #2a2d34ff;
+        }
+      }
+    }
+    .border_group{
+      .addbefore{
+        color: #f7f7f7;
+        background: #2a2d34ff;
+        border-color: #424242;
+      }
+      .reset_btn{
+        background: #2a2d34ff;
+        border-color: #424242;
+      }
+      .monitoring-dashboard-btn-icon{
+        svg{
+        color :#f7f7f7;
+        }
+      }
+    }
+  }
+  .@{container-prefix}-radio-inner::after{
+    background: #2a2d34ff;
+  }
+  .monitor_component_modal .monitor_component_list .chart_component{
+    border-left: 1px solid rgb(68,68,68);
+    .chart_card{
+      border: 1px solid rgb(68,68,68);
+    }
+  }
+  .monitor_com_box{
+    background: #141414;
+      .border_group{
+        .addbefore{
+          color: #f7f7f7;
+          background: #2a2d34ff;
+          border-color: #424242;
+        }
+        .reset_btn{
+          border-color: #424242;
+        }
+    }
+    .preview_box{
+      background: #2a2d34ff;
+    }
+    .select_chart_content{
+      h2{
+        color: #f7f7f7;
+      }
+      .form_aim{
+        background: #2a2d34ff;
+        .aim{
+          color: #f7f7f7;
+        }
+      }
+    }
+    .aim_table_box{
+      .aim_content{
+        background: #2a2d34ff;
+        .aim_header{
+          h2{
+            color: #f7f7f7;
+          }
+          .@{container-prefix}-btn{
+            background: #2a2d34ff;
+          }
+          .flex_filter_group{
+            .equal_icon,.close_icon{
+              color: #f7f7f7;
+              border-color: #424242;
+            }
+          }
+        }
+      }
+    }
+  }
+  .monitor_footer{
+    background-color: #2a2d34ff;
+    .descirption{
+      color:#f7f7f7;
+    }
+    .monitor_cancel_btn{
+      background: #2a2d34ff;
+    }
+  }
+  .@{container-prefix}-table-column-sorter,.@{container-prefix}-table-filter-trigger{
+    color: #f7f7f7;
+  }
+  .@{container-prefix}-table-filter-trigger.active{
+    color: #1668dc;
+  }
+}
+.dark_box{
+.@{container-prefix}-pagination-prev{
+  background: @dark-background-color;
+  border: 1px solid #666666;
+}
+.@{container-prefix}-pagination-prev:hover{
+  button{
+    background: @button-hover-color !important;
+    color: #fff; 
+  }
+}
+.@{container-prefix}-pagination-disabled:hover{
+  button{
+    background: @dark-background-color !important;
+  }
+}
+.@{container-prefix}-pagination-item{
+  background: @dark-background-color;
+  border: 1px solid #666666;
+  a:hover{
+    color: #fff !important;
+  }
+}
+.@{container-prefix}-pagination-item:hover{
+  background: @button-hover-color !important;
+  color: #fff;
+  button{
+    background: @button-hover-color !important;
+    color: #fff;
+  }
+}
+.@{container-prefix}-pagination-next{
+  background-color: @dark-background-color;
+  border: 1px solid #666666;
+}
+.@{container-prefix}-pagination-next:hover{
+  background: @button-hover-color !important;
+  color: #fff;
+  button{
+    background: @button-hover-color !important;
+  }
+}
+}
+
+.dark_box{
+  .aim_word_chart{
+    background: #2a2d34ff !important;
+  }
+  .empty_handle{
+    button{
+      color: #fff;
+      background: #2a2d34ff;
+      border: 1px solid #444444;
+    }
+  }
+}

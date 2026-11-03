@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fit-yaml-prune-legacy
+  namespace: fit-test
+  labels:
+    openfuyao.cn/fit-component: fit-yaml-prune
+    openfuyao.cn/fit-prune: fit-yaml-prune
+data:
+  status: "legacy-v1"

@@ -1,0 +1,20 @@
+label: Cluster Uninstallation
+sections:
+  - label: Cluster Uninstallation Overview
+    href: ./overview.md
+  - label: Uninstall Service Cluster
+    sections:
+      - label: Delete Service Cluster via Frontend (Web)
+        href: ./delete_service_cluster_web.md
+      - label: Delete Service Cluster via Backend (CLI)
+        href: ./delete_service_cluster_command.md
+  - label: Uninstall Management Cluster
+    sections:
+      - label: Delete Management Cluster via Frontend (Web)
+        href: ./delete_management_cluster_web.md
+      - label: Delete Management Cluster via Backend (CLI)
+        href: ./delete_management_cluster_command.md
+  - label: Uninstall Bootstrap Cluster
+    sections:
+      - label: Delete Bootstrap Cluster via Backend (CLI)
+        href: ./delete_bootstrap_cluster_command.md

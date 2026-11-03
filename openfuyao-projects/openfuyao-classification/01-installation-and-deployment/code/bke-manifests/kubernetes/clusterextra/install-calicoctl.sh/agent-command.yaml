@@ -1,0 +1,33 @@
+{{ $scriptDir := "/etc/openFuyao/bkeagent/scripts/" }}
+
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: install-calicoctl
+  namespace: {{.namespace}}
+spec:
+  # 挂起暂不执行，可阻止下个执行的指令
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/install-calicoctl.sh:ro:{{$scriptDir}}install-calicoctl.sh"
+      id: save-install-etcdctl-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}install-calicoctl.sh"
+      id: chmod-install-calicoctl-script
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}install-calicoctl.sh {{.httpRepo}}"
+      id: install-calicoctl
+      type: Shell
+  backoffLimit: 3
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}

@@ -1,0 +1,104 @@
+{
+  "module": {
+    "title": "工作负载",
+    "description": "管理工作负载资源"
+  },
+  "pod": {
+    "title": "Pod",
+    "create": "创建Pod",
+    "name": "Pod名称",
+    "status": "状态",
+    "node": "所在节点",
+    "ip": "Pod IP",
+    "restartCount": "重启次数",
+    "created": "创建时间",
+    "namespace": "命名空间",
+    "workNode": "所属工作节点",
+    "updateTime": "更新时间"
+  },
+  "deployment": {
+    "title": "Deployment",
+    "create": "创建Deployment",
+    "name": "Deployment名称",
+    "status": "状态",
+    "replicas": "副本数",
+    "availableReplicas": "可用副本数",
+    "strategy": "更新策略",
+    "namespace": "命名空间",
+    "instances": "实例（正常/总量）"
+  },
+  "statefulSet": {
+    "title": "StatefulSet",
+    "create": "创建StatefulSet",
+    "name": "StatefulSet名称",
+    "status": "状态",
+    "serviceName": "服务名称",
+    "namespace": "命名空间"
+  },
+  "daemonSet": {
+    "title": "DaemonSet",
+    "create": "创建DaemonSet",
+    "name": "DaemonSet名称",
+    "status": "状态",
+    "namespace": "命名空间"
+  },
+  "job": {
+    "title": "Job",
+    "create": "创建Job",
+    "name": "Job名称",
+    "status": "状态",
+    "completions": "完成数",
+    "duration": "持续时间",
+    "namespace": "命名空间",
+    "executionTime": "执行时间"
+  },
+  "cronJob": {
+    "title": "CronJob",
+    "create": "创建CronJob",
+    "name": "CronJob名称",
+    "status": "状态",
+    "schedule": "调度",
+    "namespace": "命名空间",
+    "concurrencyPolicy": "并发策略"
+  },
+  "container": {
+    "title": "容器",
+    "name": "容器名称",
+    "image": "镜像",
+    "ready": "就绪",
+    "restarts": "重启次数",
+    "resources": "资源限制"
+  },
+  "actions": {
+    "scale": "扩缩容",
+    "rollback": "回滚",
+    "restart": "重启",
+    "terminal": "终端",
+    "logs": "日志",
+    "yaml": "YAML",
+    "events": "事件",
+    "monitor": "监控",
+    "modify": "修改",
+    "editLabel": "修改标签",
+    "editAnnotation": "修改注解",
+    "delete": "删除",
+    "detail": "详情",
+    "deleteConfirm": "删除{{resource}}",
+    "deleteWarning": "删除{{resource}}后将无法恢复，请谨慎操作。",
+    "deleteConfirmMessage": "确定删除{{resource}} {{name}} 吗？",
+    "operation": "操作",
+    "create": "创建"
+  },
+  "status": {
+    "active": "运行中",
+    "updating": "更新中",
+    "failed": "失败",
+    "pending": "等待中",
+    "succeeded": "已完成"
+  },
+  "messages": {
+    "deleteSuccessWithRefresh": "删除成功！请手动刷新",
+    "deleteFailed": "删除失败！",
+    "fetchFailed": "获取资源列表失败"
+  }
+}

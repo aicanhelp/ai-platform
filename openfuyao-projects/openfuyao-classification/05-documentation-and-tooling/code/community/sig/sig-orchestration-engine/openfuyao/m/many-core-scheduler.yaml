@@ -1,0 +1,6 @@
+name: many-core-scheduler
+type: private
+description: '众核调度组件：众核集群中存在集群间资源分配不均匀的情况，部分节点I/O竞争较大、部分节点内存竞争较大。在集群层面采用均衡调度的方式，尽量将同类型业务调度至不同节点上。'
+branches:
+  - name: master
+    type: protected

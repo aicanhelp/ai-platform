@@ -1,0 +1,20 @@
+{
+    "kind" : "Policy",
+    "apiVersion" : "v1",
+    "extenders" : [
+          {
+            "urlPrefix": "http://gpu-admission-svc:3456/scheduler",
+            "filterVerb": "predicates",
+            "enableHttps": false,
+            "nodeCacheCapable": false,
+            "managedResources": [
+              {
+                "name": "bocloud.com/vcuda-core",
+                "ignoredByScheduler": false
+              }
+            ]
+          }
+        ],
+    "hardPodAffinitySymmetricWeight" : 10,
+    "alwaysCheckAllPredicates" : false
+}

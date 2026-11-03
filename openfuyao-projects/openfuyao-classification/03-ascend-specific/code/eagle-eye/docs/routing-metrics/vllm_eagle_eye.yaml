@@ -1,0 +1,130 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vllm-eagle-eye
+  namespace: ai-inference
+  labels:
+    app: vllm-eagle-eye
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: vllm-eagle-eye
+  template:
+    metadata:
+      labels:
+        app: vllm-eagle-eye
+    spec:
+      initContainers:
+      - name: code-extractor
+        image: busybox:latest
+        command: ["sh", "-c", "tar -xzf /input/source_code.tar.gz -C /app"]
+        volumeMounts:
+        - name: source-archive
+          mountPath: /input
+        - name: app-code
+          mountPath: /app
+
+      containers:
+        - name: vllm-leader
+          image: quay.io/ascend/vllm-ascend:v0.10.0rc1
+          env:
+            - name: VLLM_USE_V1
+              value: "1"
+            - name: PYTHONHASHSEED
+              value: "114514"
+            - name: PYTHONPATH
+              value: "/app/src"
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: MODULE_NAME
+              value: "routing-metrics"
+          command:
+            - sh
+            - -c
+            - |
+              export PYTHONPATH=$PYTHONPATH:$(find /usr/local/Ascend -name site-packages | tr '\n' ':')
+              echo "Final PYTHONPATH: $PYTHONPATH"
+
+              # 安装依赖 (nats-py)
+              # 如果集群无法联网，需要提前把 whl 包也打进 tar.gz 里，然后 pip install /app/packages/*.whl
+              echo "Installing dependencies..."
+              pip install -r /app/requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+
+              echo "Starting Custom vLLM..."
+              python3 /app/src/routing_metrics/vllm/main.py
+          resources:
+            limits:
+              cpu: 24
+              memory: 64G
+              huawei.com/Ascend910: "1"
+            requests:
+              cpu: 24
+              memory: 64G
+              huawei.com/Ascend910: "1"
+          ports:
+            - name: http-api
+              containerPort: 8000
+          volumeMounts:
+            # 挂载解压后的代码目录
+            - name: app-code
+              mountPath: /app
+            - name: shm
+              mountPath: /dev/shm
+            - name: dcmi
+              mountPath: /usr/local/dcmi
+            - name: npusmi
+              mountPath: /usr/local/bin/npu-smi
+            - name: lib64
+              mountPath: /usr/local/Ascend/driver/lib64
+            - name: version
+              mountPath: /usr/local/Ascend/driver/version.info
+            - name: installinfo
+              mountPath: /etc/ascend_install.info
+            - name: rootcache
+              mountPath: /root/.cache
+            - name: log-routing-metrics
+              mountPath: /var/log/routing-metrics
+      volumes:
+      # 共享的代码目录 (EmptyDir)
+      - name: app-code
+        emptyDir: {}
+      # 来源 ConfigMap (Tarball)
+      - name: source-archive
+        configMap:
+          name: vllm-source-code
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: "24Gi"
+      - name: dcmi
+        hostPath:
+          path: /usr/local/dcmi
+      - name: npusmi
+        hostPath:
+          path: /usr/local/bin/npu-smi
+          type: File
+      - name: lib64
+        hostPath:
+          path: /usr/local/Ascend/driver/lib64
+      - name: version
+        hostPath:
+          path: /usr/local/Ascend/driver/version.info
+          type: File
+      - name: installinfo
+        hostPath:
+          path: /etc/ascend_install.info
+          type: File
+      - name: rootcache
+        hostPath:
+          path: /home/llm_cache
+      - name: log-routing-metrics
+        hostPath:
+          path: /var/log/routing-metrics
+          type: DirectoryOrCreate

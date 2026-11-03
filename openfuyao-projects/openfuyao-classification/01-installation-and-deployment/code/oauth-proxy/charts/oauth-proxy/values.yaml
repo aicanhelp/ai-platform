@@ -1,0 +1,43 @@
+# Default values for logging.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: "cr.openfuyao.cn/openfuyao/logging-website"
+  pullPolicy: Always
+  tag: "latest"
+
+service:
+  type: ClusterIP
+  port: 8080
+
+extensionName: logging
+
+oauthProxy:
+  image:
+    repository: "cr.openfuyao.cn/openfuyao/oauth-proxy"
+    pullPolicy: Always
+    tag: "latest"
+    digest: "sha256:c675e8b607468acaaad87d9628a7102d8a41922ec660c75b2dda1039f8a9c451"
+  client:
+    id: ""
+    secret: ""
+  tls:
+    # 需要用户自行生成证书并填入
+    tlsCrt: |
+      -----BEGIN CERTIFICATE-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END CERTIFICATE-----
+    # 需要用户自行生成证书密钥并填入
+    tlsKey: |
+      -----BEGIN PRIVATE KEY-----
+      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -----END PRIVATE KEY-----
+
+  service:
+    port: 443
+    containerPort: 9093
+  urls:
+    host: "/"
+    loginURI: "/oauth2/oauth/authorize"
+    redeemURI: "/oauth2/oauth/token"

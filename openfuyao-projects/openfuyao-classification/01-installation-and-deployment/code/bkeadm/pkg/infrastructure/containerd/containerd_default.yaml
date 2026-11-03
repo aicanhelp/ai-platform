@@ -1,0 +1,94 @@
+apiVersion: bke.bocloud.com/v1beta1
+kind: ContainerdConfig
+metadata:
+  name: bke-containerd
+  namespace: bke-containerd
+spec:
+  configType: combined
+  description: "Built-in default containerd configuration"
+
+  service:
+    execStart: "/usr/bin/containerd --config /etc/containerd/config.toml"
+    killMode: "process"
+    restart: "always"
+    restartSec: "5s"
+    slice: "system.slice"
+    startLimitInterval: "10s"
+    startLimitBurst: 5
+    timeoutStopSec: "90s"
+    logging:
+      standardOutput: "journal"
+      standardError: "journal"
+
+  main:
+    root: "/var/lib/containerd"
+    state: "/run/containerd"
+    sandboxImage: "{{.sandbox}}"
+    metricsAddress: "127.0.0.1:1338"
+    configPath: "/etc/containerd/certs.d"
+
+  registry:
+    configPath: "/etc/containerd/certs.d"
+    configs:
+#      "my.harbor.com":  # 镜像仓域名
+#        capabilities: ["pull", "resolve"]
+#        host: my.harbor.com
+#        skipVerify: false
+#        plainHTTP: false
+#        tls:
+#          caFile: /etc/openFuyao/ca.crt   # 证书路径
+#          insecureSkipVerify: false
+
+      {{- if eq .offline "true" }}
+      "docker.io":
+        host: "deploy.bocloud.k8s:40443"
+        skipVerify: true
+        capabilities: ["pull", "resolve", "push"]
+
+      "registry.k8s.io":
+        host: "deploy.bocloud.k8s:40443"
+        skipVerify: true
+        capabilities: ["pull", "resolve", "push"]
+
+      "deploy.bocloud.k8s:40443":
+        host: "deploy.bocloud.k8s:40443"
+        skipVerify: true
+        capabilities: [ "pull", "resolve", "push" ]
+
+      "k8s.gcr.io":
+        host: "deploy.bocloud.k8s:40443"
+        skipVerify: true
+        capabilities: [ "pull", "resolve", "push" ]
+
+      "ghcr.io":
+        host: "deploy.bocloud.k8s:40443"
+        skipVerify: true
+        capabilities: [ "pull", "resolve", "push" ]
+
+      "quay.io":
+        host: "deploy.bocloud.k8s:40443"
+        skipVerify: true
+        capabilities: [ "pull", "resolve", "push" ]
+
+      "gcr.io":
+        host: "deploy.bocloud.k8s:40443"
+        skipVerify: true
+        capabilities: [ "pull", "resolve", "push" ]
+
+      "cr.openfuyao.cn":
+        host: "deploy.bocloud.k8s:40443"
+        skipVerify: true
+        capabilities: [ "pull", "resolve", "push" ]
+
+      "hub.oepkgs.net":
+        host: "deploy.bocloud.k8s:40443"
+        skipVerify: true
+        capabilities: [ "pull", "resolve", "push" ]
+      {{- end }}
+
+  script:
+    content: |
+      #!/bin/bash
+      mkdir -p /tmp/log
+      echo "Executing containerd setup script" > /tmp/log/test_containerd.log
+    interpreter: "/bin/bash"

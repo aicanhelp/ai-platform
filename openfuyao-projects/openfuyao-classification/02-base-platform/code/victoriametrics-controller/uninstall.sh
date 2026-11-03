@@ -1,0 +1,28 @@
+#!/bin/bash
+###############################################################
+# Copyright (c) 2025 Huawei Technologies Co., Ltd.
+# installer is licensed under Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#          http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+# EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+# MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+# See the Mulan PSL v2 for more details.
+###############################################################
+
+source ./log.sh
+
+info_log "Start uninstalling victoriametrics"
+
+helm uninstall vm -n vmks
+
+kubectl delete pods --all -n vmks
+
+# 删除 vmks 命名空间下的所有 PVC
+kubectl delete pvc --all -n vmks
+
+# 删除相关的 PV（会自动删除）
+kubectl get pv | grep -E "vmagent|vmselect|vmstorage|vmsingle" | awk '{print $1}' | xargs kubectl delete pv
+
+info_log "Successfully uninstalled victoriametrics"

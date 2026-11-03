@@ -1,0 +1,6 @@
+name: victoriametrics-controller
+type: public
+description: 'victoriametrics-controller用于在k8s集群上快速部署、卸载VictoriaMetrics监控栈。'
+branches:
+  - name: master
+    type: protected

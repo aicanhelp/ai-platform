@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "grafana.fullname" . }}-dashboards
+  labels:
+    {{- include "grafana.labels" . | nindent 4 }}
+data:
+  # 示例：Kubernetes 集群监控仪表盘（JSON 格式）
+  kubernetes-cluster.json: |-
+    {
+      "title": "Kubernetes Cluster Monitoring",
+      "uid": "k8s-cluster",
+      "panels": [...]  # 仪表盘 JSON 内容（可从 Grafana 官网导出）
+    }
+

@@ -1,0 +1,637 @@
+openapi: 3.0.0
+info:
+  title:
+  description: 提供Kubernetes在离线混部资源管理和监控相关API接口。
+  version: 1.0.0
+servers:
+  - url: /rest/colocation/v1
+    description: 在离线混部与监控主API端点。
+
+paths:
+  /colocation-configs:
+    get:
+      tags: [在离线混部]
+      summary: 获取混部全部配置接口（扩展）。
+      description: 获取集群中混部统计信息，包括混部节点数量和混部Pod数量统计信息，新增各节点特性支持状态展示。
+      responses:
+        '200':
+          description: 返回结果成功。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColocationConfigResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 200
+                    message: "ok"
+                    data:
+                      nodeInfo:
+                        - uid: "463bc3a6-945a-4ef2-8b2d-fbe8438864d6"
+                          name: "fuyao-master"
+                          addresses: ["192.168.100.89"]
+                          osImage: "openEuler 22.03 LTS"
+                          status: "active"
+                          isColocated: true
+                          featureSupport:
+                            cpuPreemption: "OK"
+                            memoryPreemption: "OK"
+                            quotaTurbo: "OK"
+                            dynMemory: "OK"
+                            dynCache: "硬件不支持RDT特性"
+                            psiDetection: "OK"
+                      rubikConfig:
+                        eviction:
+                          enable: true
+                          cpuevict:
+                            threshold: 60
+                          memoryevict:
+                            threshold: 80
+                        quotaTurbo:
+                          enable: true
+                          highWaterMark: 50
+                          alarmWaterMark: 100
+                        dynMemory:
+                          enable: true
+                        dynCache:
+                          enable: false
+                          l3Percent:
+                            low: 20
+                            mid: 30
+                            high: 50
+                          memBandPercent:
+                            low: 10
+                            mid: 30
+                            high: 50
+                        psi:
+                          enable: true
+                          resource: ["cpu", "memory"]
+                          avg10Threshold: 5.0
+                      volcanoSchedulerConfig:
+                        usagePlugin:
+                          enable: false
+                          usageThreshold:
+                            enable: false
+
+        '500':
+          description: 服务器内部错误。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+    post:
+      tags: [在离线混部]
+      summary: 修改混部调度、混部特性配置接口。
+      description: 全量式更新修改混部调度、更新混部特性配置：驱逐配置接口、CPU弹性限流、内存异步回收、访存带宽限制、PSI干扰检测。
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ColocationConfigRequest'
+            examples:
+              configExample:
+                value:
+                  nodeInfo:
+                    - uid: "463bc3a6-945a-4ef2-8b2d-fbe8438864d6"
+                      name: "fuyao-master"
+                      addresses: ["192.168.100.89"]
+                      osImage: "openEuler 22.03 LTS"
+                      isColocated: true
+                  rubikConfig:
+                    eviction:
+                      enable: true
+                      cpuevict:
+                        threshold: 60
+                      memoryevict:
+                        threshold: 60
+                    quotaTurbo:
+                      enable: true
+                      highWaterMark: 70
+                      alarmWaterMark: 80
+                    dynMemory:
+                      enable: true
+                    dynCache:
+                      enable: true
+                      l3Percent:
+                        low: 15
+                        mid: 35
+                        high: 50
+                      memBandPercent:
+                        low: 15
+                        mid: 35
+                        high: 50
+                    psi:
+                      enable: true
+                      resource: ["cpu", "memory"]
+                      avg10Threshold: 3.0
+                  volcanoSchedulerConfig:
+                    usagePlugin:
+                      enable: true
+                      usageThreshold:
+                        enable: true
+                        cpu: 80
+                        memory: 80
+      responses:
+        '200':
+          description: 修改混部配置成功。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColocationConfigResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 200
+                    message: "ok"
+                    data:
+                      nodeInfo:
+                        - uid: "463bc3a6-945a-4ef2-8b2d-fbe8438864d6"
+                          name: "fuyao-master"
+                          addresses: ["192.168.100.89"]
+                          osImage: "openEuler 22.03 LTS"
+                          status: "active"
+                          isColocated: true
+                      rubikConfig:
+                        eviction:
+                          enable: true
+                          cpuevict:
+                            threshold: 60
+                          memoryevict:
+                            threshold: 60
+                        quotaTurbo:
+                          enable: true
+                          highWaterMark: 70
+                          alarmWaterMark: 80
+                        dynMemory:
+                          enable: true
+                        dynCache:
+                          enable: true
+                          l3Percent:
+                            low: 15
+                            mid: 35
+                            high: 50
+                          memBandPercent:
+                            low: 15
+                            mid: 35
+                            high: 50
+                        psi:
+                          enable: true
+                          resource: ["cpu", "memory"]
+                          avg10Threshold: 3.0
+                      volcanoSchedulerConfig:
+                        usagePlugin:
+                          enable: true
+                          usageThreshold:
+                            enable: true
+                            cpu: 80
+                            memory: 80
+        '500':
+          description: 服务器内部错误。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /colocation-nodes/{name}:
+    patch:
+      tags: [在离线混部]
+      summary: 修改混部节点开启接口。
+      description: 通过指定节点名称和目标混部标签状态来修改单个节点的混部标签。
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 节点名称。
+        - name: colocation-status
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: ["true", "false"]
+          description: “true/false，是否开启混部”。
+      responses:
+        '200':
+          description: 查询混部Pod信息成功。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NodeStatusResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 0
+                    message: "ok"
+                    data:
+                      id: "fuyao-worker"
+                      colocation-status: "true"
+        '500':
+          description: 服务器内部错误，切换混部/超卖节点失败。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /colocation-status:
+    get:
+      tags: [混部监控]
+      summary: 获取全量混部节点、混部负载。
+      description: 获取集群中所有混部节点的详细信息，包括节点状态、混部负载情况等。
+      responses:
+        '200':
+          description: 查询全量混部节点、混部负载信息成功。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ColocationStatusResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 0
+                    message: "ok"
+                    data:
+                      totalNodeCount: 3
+                      colocationNodeCount: 0
+                      nonColocationNodeCount: 3
+                      podCount:
+                        normalCount: 64
+                        hlsCount: 0
+                        lsCount: 1
+                        beCount: 4
+        '500':
+          description: 服务器内部错误。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /colocation-metrics/cluster:
+    get:
+      tags: [混部监控]
+      summary: 获取集群混部监控折线图。
+      description: 获取集群混部监控数据的折线图信息。
+      responses:
+        '200':
+          description: 查询成功。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 0
+                    message: "ok"
+                    data:
+                      - status: "success"
+                        metricName: "cluster_cpu_total"
+                        data:
+                          resultType: "matrix"
+                          result:
+                            - metric:
+                                instance: ""
+                              values:
+                                - [1748525912, "16"]
+                                - [1748525972, "16"]
+                                - [1748526032, "16"]
+        '500':
+          description: 服务器内部错误。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /colocation-metrics/nodes/{node}:
+    get:
+      tags: [混部监控]
+      summary: 获取节点混部监控折线图。
+      description: 获取指定节点的混部监控折线图数据。
+      parameters:
+        - name: node
+          in: path
+          required: true
+          schema:
+            type: string
+          description: 选择的node。
+          example: "fuyao-master|fuyao-worker"
+      responses:
+        '200':
+          description: 查询成功。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MetricsResponse'
+              examples:
+                successResponse:
+                  value:
+                    code: 0
+                    message: "ok"
+                    data:
+                      - status: "success"
+                        metricName: "node_cpu_total"
+                        data:
+                          resultType: "matrix"
+                          result:
+                            - metric:
+                                instance: "fuyao-master"
+                              values:
+                                - [1748523927, "4"]
+                                - [1748523987, "4"]
+                            - metric:
+                                instance: "fuyao-worker"
+                              values:
+                                - [1748523927, "8"]
+                                - [1748523987, "8"]
+        '500':
+          description: 服务器内部错误。
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  schemas:
+    ColocationConfigRequest:
+      type: object
+      properties:
+        nodeInfo:
+          type: array
+          items:
+            $ref: '#/components/schemas/NodeInfo'
+          description: 节点信息列表。
+        rubikConfig:
+          $ref: '#/components/schemas/RubikConfig'
+        volcanoSchedulerConfig:
+          $ref: '#/components/schemas/VolcanoSchedulerConfig'
+
+    ColocationConfigResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 200
+          description: 自定义状态码。
+        message:
+          type: string
+          example: "ok"
+          description: 消息，展示返回基础状态。
+        data:
+          type: object
+          properties:
+            nodeInfo:
+              type: array
+              items:
+                $ref: '#/components/schemas/NodeInfo'
+              description: 节点信息列表。
+            rubikConfig:
+              $ref: '#/components/schemas/RubikConfig'
+            volcanoSchedulerConfig:
+              $ref: '#/components/schemas/VolcanoSchedulerConfig'
+
+    NodeStatusResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          description: 自定义状态码。
+        message:
+          type: string
+          example: "ok"
+          description: 消息，展示返回基础状态。
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+              description: 节点名称。
+            colocation-status:
+              type: string
+              description: 节点是否开启混部。
+
+    NodeInfo:
+      type: object
+      properties:
+        uid:
+          type: string
+          description: 节点资源UID。
+        name:
+          type: string
+          description: 节点名称。
+        addresses:
+          type: array
+          items:
+            type: string
+          description: 节点IP地址。
+        osImage:
+          type: string
+          description: 节点操作系统版本信息。
+        status:
+          type: string
+          description: 节点状态，可选值：active/inactive/unknown
+        isColocated:
+          type: boolean
+          description: 是否是混部节点。
+        featureSupport:
+          type: object
+          description: 特性支持状态。值为"OK"表示支持，否则为不支持的具体原因。
+          properties:
+            cpuPreemption:
+              type: string
+              description: CPU抢占（混部基础能力）支持状态。
+            memoryPreemption:
+              type: string
+              description: 内存抢占（混部基础能力）支持状态。
+            quotaTurbo:
+              type: string
+              description: CPU弹性限流支持状态。
+            dynMemory:
+              type: string
+              description: 内存异步回收支持状态。
+            dynCache:
+              type: string
+              description: 访存带宽限制支持状态。
+            psiDetection:
+              type: string
+              description: PSI干扰检测支持状态。
+
+    RubikConfig:
+      type: object
+      properties:
+        eviction:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: 是否开启rubik水位线驱逐功能。
+            cpuevict:
+              type: object
+              properties:
+                threshold:
+                  type: integer
+                  description: cpu水位线驱逐值（0-100）。
+            memoryevict:
+              type: object
+              properties:
+                threshold:
+                  type: integer
+                  description: memory水位线驱逐值（0-100）。
+        quotaTurbo:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: 是否启用CPU弹性限流。
+            highWaterMark:
+              type: integer
+              description: 负载高水位线（0-100）。
+            alarmWaterMark:
+              type: integer
+              description: 负载警戒水位线（0-100）。
+        dynMemory:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: 是否启用内存异步回收。
+        dynCache:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: 是否启用访存带宽限制。
+            l3Percent:
+              type: object
+              properties:
+                low:
+                  type: integer
+                mid:
+                  type: integer
+                high:
+                  type: integer
+            memBandPercent:
+              type: object
+              properties:
+                low:
+                  type: integer
+                mid:
+                  type: integer
+                high:
+                  type: integer
+        psi:
+          type: object
+          properties:
+            enable:
+              type: boolean
+              description: 是否启用PSI干扰检测。
+            resource:
+              type: array
+              items:
+                type: string
+              description: 检测资源类型，可选值：["cpu","memory","io"]。
+            avg10Threshold:
+              type: number
+              description: 10秒平均压制百分比阈值（5.0-100.0）。
+
+    ColocationStatusResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          description: 状态码。
+        message:
+          type: string
+          example: "ok"
+          description: 状态信息。
+        data:
+          type: object
+          properties:
+            totalNodeCount:
+              type: integer
+              description: 总节点数。
+            colocationNodeCount:
+              type: integer
+              description: 混部节点数。
+            nonColocationNodeCount:
+              type: integer
+              description: 非混部节点数。
+            podCount:
+              type: object
+              properties:
+                normalCount:
+                  type: integer
+                  description: 普通Pod数量。
+                hlsCount:
+                  type: integer
+                  description: 高优先级Pod数量。
+                lsCount:
+                  type: integer
+                  description: 低优先级Pod数量。
+                beCount:
+                  type: integer
+                  description: 后台Pod数量。
+
+    MetricsResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 0
+          description: 状态码。
+        message:
+          type: string
+          example: "ok"
+          description: 状态信息。
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+                description: 请求状态。
+              metricName:
+                type: string
+                description: 指标名称。
+              data:
+                type: object
+                properties:
+                  resultType:
+                    type: string
+                    description: 结果类型。
+                  result:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        metric:
+                          type: object
+                          properties:
+                            instance:
+                              type: string
+                              description: 节点名称。
+                        values:
+                          type: array
+                          items:
+                            type: array
+                            items:
+                              oneOf:
+                                - type: integer
+                                - type: string
+                            description: 时间戳和指标值对。
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          example: 500
+          description: 错误状态码。
+        message:
+          type: string
+          example: "Internal Server Error"
+          description: 错误信息。

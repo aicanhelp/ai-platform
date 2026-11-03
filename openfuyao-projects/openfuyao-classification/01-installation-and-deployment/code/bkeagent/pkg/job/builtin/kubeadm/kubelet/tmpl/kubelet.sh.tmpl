@@ -1,0 +1,134 @@
+#!/bin/bash
+CONTAINER_NAME="{{ .containerName }}"
+
+remove_kubelet(){
+    runtime=$1
+    if [ "$runtime" == "docker" ];then
+      docker rm -f kubelet &> /dev/null
+    else
+      nerdctl -n k8s.io rm -f kubelet &> /dev/null
+    fi
+}
+
+stop_kubelet(){
+    runtime=$1
+    if [ "$runtime" == "docker" ];then
+      docker stop kubelet &> /dev/null
+    else
+      nerdctl -n k8s.io stop kubelet &> /dev/null
+    fi
+}
+
+echo_usage(){
+  cat <<EOF
+USAGE: bash kubelet.sh COMMAND [args].
+EXAMPLE: bash kubelet.sh -a start -r docker
+COMMAND:
+  -a          action. could be "start", "stop", "remove", "status", "restart"
+  -r          runtime. could be "docker", "containerd"
+EOF
+}
+
+start_kubelet_with_containerd(){
+  runtime="containerd"
+  remove_kubelet "containerd"
+  out=$({{ .containerdCommand }} 2>&1 >/dev/null)
+  if [ $? -ne 0 ]; then
+      echo -e "use nerdctl start kubelet container failed"
+      echo -e "$out"
+      exit 1
+  fi
+}
+
+start_kubelet_with_docker(){
+    runtime="docker"
+    remove_kubelet $runtime
+    out=$({{ .dockerCommand }} 2>&1 >/dev/null)
+    if [ $? -ne 0 ]; then
+        echo -e "use docker start kubelet container failed"
+        echo -e "$out"
+        exit 1
+    fi
+}
+
+start_kubelet(){
+  runtime=$1
+  if [ "$runtime" == "docker" ]; then
+    start_kubelet_with_docker
+  else
+    start_kubelet_with_containerd
+  fi
+}
+
+restart_kubelet(){
+    runtime=$1
+    remove_kubelet $runtime
+    start_kubelet $runtime
+}
+
+status_kubelet(){
+    runtime=$1
+    if [ "$runtime" == "docker" ]; then
+      state=$(docker ps -a | grep "${CONTAINER_NAME}" | egrep "Up [About]|[0-9]{1,}")
+      if [[ ${state} == "" ]];then
+          echo -e "\nError: ${CONTAINER_NAME} failed to start...\n"
+          exit 1
+      fi
+      echo -e "\n${CONTAINER_NAME} is up"
+    else
+      if [ $(nerdctl -n k8s.io ps -a | grep "${CONTAINER_NAME}"|grep -i up | wc -l) == "1" ]; then
+          echo -e "\n${CONTAINER_NAME} is up"
+      else
+          echo -e "\nError: ${CONTAINER_NAME} failed to start...\n"
+          exit 1
+      fi
+    fi
+}
+
+echo
+while getopts "a:r:h" opt
+do
+  case "$opt" in
+    a)
+        if [ "$OPTARG" != "start" ] && [ "$OPTARG" != "stop" ] && [ "$OPTARG" != "remove" ] && [ "$OPTARG" != "status" ] &&  [ "$OPTARG" != "restart" ]; then
+          echo "unexpected argments: $OPTARG"
+          echo "expect start or restart or stop or remove or status"
+          exit 1
+        fi
+        ACTION=$OPTARG
+        ;;
+    r)
+        echo $OPTARG
+        if [ "$OPTARG" != "docker" ] && [ "$OPTARG" != "containerd" ];then
+          echo "unexpected argments: $OPTARG"
+          echo "expect docker or containerd"
+          exit 1
+        fi
+        RUNTIME=$OPTARG
+        ;;
+    h)
+        echo_usage
+        ;;
+  esac
+done
+case "$ACTION" in
+    (start)
+        start_kubelet $RUNTIME
+        ;;
+    (stop)
+        stop_kubelet $RUNTIME
+        ;;
+    (remove)
+        remove_kubelet $RUNTIME
+        ;;
+    (status)
+        status_kubelet $RUNTIME
+        ;;
+    (restart)
+        restart_kubelet $RUNTIME
+        ;;
+    (*)
+        exit 1
+        ;;
+esac
+

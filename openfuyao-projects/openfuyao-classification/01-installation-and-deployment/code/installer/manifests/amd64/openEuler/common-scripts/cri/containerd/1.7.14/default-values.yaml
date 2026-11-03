@@ -1,0 +1,18 @@
+apiVersion: openfuyao.io/v1beta1
+kind: params
+metadata:
+  name: containerd-params
+spec:
+  params:
+    - name: registry
+      value: harbor.openfuyao.com/openfuyao
+      type: string
+      describe: "containerd config镜像地址"
+    - name: rootPath
+      value: /var/lib/containerd
+      type: string
+      describe: "containerd数据存放路径"
+    - name: statePath
+      value: /run/containerd
+      type: string
+      describe: "containerd运行状态存放路径"

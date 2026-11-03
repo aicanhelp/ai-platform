@@ -1,0 +1,36 @@
+apiVersion: v2
+name: infernex
+description: The end-to-end deployment package for openFuyao AI inference service framework.
+type: application
+
+# This is the chart version. This version number should be incremented each time you make changes
+# to the chart and its templates, including the app version.
+# Versions are expected to follow Semantic Versioning (https://semver.org/)
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["artificial-intelligence"]
+
+dependencies:
+  - name: inference-gateway-crds
+    version: 0.0.0-latest
+    condition: inferenceGateway.enabled
+  - name: inference-gateway
+    alias: inferenceGateway
+    version: 0.0.0-latest
+    condition: inferenceGateway.enabled
+  - name: inference-backend
+    version: 0.0.0-latest
+  - name: hermes-router
+    version: 0.0.0-latest
+    repository: "oci://cr.openfuyao.cn/charts"
+    condition: hermes-router.enabled
+  - name: cache-indexer
+    version: 0.0.0-latest
+    repository: "oci://cr.openfuyao.cn/charts"
+    condition: cache-indexer.enabled
+  - name: eagle-eye
+    version: 0.0.0-latest
+    repository: "oci://cr.openfuyao.cn/charts"
+  - name: pd-orchestrator
+    version: 0.0.0-latest
+    repository: "oci://cr.openfuyao.cn/charts"

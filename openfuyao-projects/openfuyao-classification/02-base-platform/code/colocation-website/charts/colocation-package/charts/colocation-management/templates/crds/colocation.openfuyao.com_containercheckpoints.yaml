@@ -1,0 +1,118 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.1
+  name: containercheckpoints.colocation.openfuyao.com
+spec:
+  group: colocation.openfuyao.com
+  names:
+    kind: ContainerCheckpoint
+    listKind: ContainerCheckpointList
+    plural: containercheckpoints
+    singular: containercheckpoint
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: ContainerCheckpoint is the Schema for the containercheckpoints
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ContainerCheckpointSpec defines the desired state of ContainerCheckpoint
+            properties:
+              Namespace:
+                description: Namespace of the checkpointed pod.
+                type: string
+              containerName:
+                description: Name of the checkpointed container.
+                type: string
+              podName:
+                description: Name of the checkpointed pod.
+                type: string
+            type: object
+          status:
+            description: ContainerCheckpointStatus defines the observed state of ContainerCheckpoint
+            properties:
+              cpuHistogram:
+                description: Checkpoint of histogram for consumption of CPU.
+                properties:
+                  bucketWeights:
+                    description: Map from bucket index to bucket weight.
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                  referenceTimestamp:
+                    description: Reference timestamp for samples collected within
+                      this histogram.
+                    format: date-time
+                    nullable: true
+                    type: string
+                  totalWeight:
+                    description: Sum of samples to be used as denominator for weights
+                      from BucketWeights.
+                    type: number
+                type: object
+              firstSampleStart:
+                description: Timestamp of the fist sample from the histograms.
+                format: date-time
+                nullable: true
+                type: string
+              lastSampleStart:
+                description: Timestamp of the last sample from the histograms.
+                format: date-time
+                nullable: true
+                type: string
+              lastUpdateTime:
+                description: The time when the status was last refreshed.
+                format: date-time
+                nullable: true
+                type: string
+              memoryHistogram:
+                description: Checkpoint of histogram for consumption of memory.
+                properties:
+                  bucketWeights:
+                    description: Map from bucket index to bucket weight.
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                  referenceTimestamp:
+                    description: Reference timestamp for samples collected within
+                      this histogram.
+                    format: date-time
+                    nullable: true
+                    type: string
+                  totalWeight:
+                    description: Sum of samples to be used as denominator for weights
+                      from BucketWeights.
+                    type: number
+                type: object
+              totalSamplesCount:
+                description: Total number of samples in the histograms.
+                type: integer
+              version:
+                description: Version of the format of the stored data.
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

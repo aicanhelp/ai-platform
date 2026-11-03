@@ -1,0 +1,57 @@
+// Copyright (c) 2024 Huawei Technologies Co., Ltd.
+// openFuyao is licensed under Mulan PSL v2.
+// You can use this software according to the terms and conditions of the Mulan PSL v2.
+// You may obtain a copy of Mulan PSL v2 at:
+//         http://license.coscl.org.cn/MulanPSL2
+// THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+// EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+// MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+// See the Mulan PSL v2 for more details.
+
+syntax = "proto3";
+
+package hermes.prediction.v1;
+
+option go_package = "hermes-router/api/prediction/v1;predictionv1";
+
+message PredictInput {
+  int32 input_id = 1;
+  string pod_type = 2;
+  int32 input_token_length = 3;
+  double prefix_cache_score = 4;
+  int32 num_request_waiting = 5;
+  int32 num_request_running = 6;
+  double kv_cache_usage = 7;
+  int32 inflight_tokens = 8;
+  double hbm_utilization = 9;
+  double ai_core_utilization = 10;
+  double bandwidth_utilization = 11;
+  string server_ip = 12;
+}
+
+message PredictOutput {
+  int32 input_id = 1;
+  string server_ip = 2;
+  double predicted_ttft_millis = 3;
+  double predicted_tpot_millis = 4;
+}
+
+message PredictRequest {
+  string target_model = 1;
+  repeated PredictInput inputs = 2;
+}
+
+message ResponseMetadata {
+  string target_model = 1;
+  string model_version = 2;
+  int32 omitted_inputs = 3;
+}
+
+message PredictResponse {
+  repeated PredictOutput outputs = 1;
+  ResponseMetadata metadata = 2;
+}
+
+service PredictionService {
+  rpc Predict(PredictRequest) returns (PredictResponse);
+}

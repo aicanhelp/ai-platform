@@ -1,0 +1,32 @@
+{{ $scriptDir := "/etc/openFuyao/bkeagent/scripts/" }}
+
+apiVersion: bkeagent.bocloud.com/v1beta1
+kind: Command
+metadata:
+  name: install-helm
+  namespace: {{.namespace}}
+spec:
+  suspend: false
+  commands:
+    - backoffDelay: 3
+      command:
+        - "configmap:cluster-system/install-helm.sh:ro:{{$scriptDir}}install-helm.sh"
+      id: save-install-helm-script
+      type: Kubernetes
+    - backoffDelay: 3
+      command:
+        - "chmod +x {{$scriptDir}}install-helm.sh"
+      id: chmod-install-helm
+      type: Shell
+    - backoffDelay: 10
+      command:
+        - "{{$scriptDir}}install-helm.sh {{.httpRepo}}"
+      id: install-helm
+      type: Shell
+  backoffLimit: 3
+  nodeSelector:
+    matchLabels:
+    {{- $ips := split .nodesIps "," }}
+    {{- range $ips }}
+      {{ . }}: {{ . }}
+    {{- end }}

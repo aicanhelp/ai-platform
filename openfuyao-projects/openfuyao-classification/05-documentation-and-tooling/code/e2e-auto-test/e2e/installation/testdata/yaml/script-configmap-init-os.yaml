@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: init-os.sh
+  namespace: user-system
+  labels:
+    bke.preprocess.script: "true"
+data:
+  init-os.sh: |
+    #!/bin/sh
+    set -e
+    echo "Pre-Script: init-os.sh"
+    echo "NODE_IP: ${NODE_IP}"
+    echo "HTTP_REPO: ${HTTP_REPO}"
+    MARKER_DIR="/tmp/prescript-markers"
+    mkdir -p ${MARKER_DIR}
+    echo "NODE_IP=${NODE_IP}" > ${MARKER_DIR}/init-os.env
+    echo "HTTP_REPO=${HTTP_REPO}" >> ${MARKER_DIR}/init-os.env
+    echo "EXECUTED_AT=$(date +%s)" >> ${MARKER_DIR}/init-os.env
+    touch ${MARKER_DIR}/init-os.done
+    echo "init-os.sh completed successfully"

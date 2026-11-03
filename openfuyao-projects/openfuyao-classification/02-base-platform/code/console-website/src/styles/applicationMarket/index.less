@@ -1,0 +1,737 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN 'AS IS' BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+@import '@/styles/applicationMarket/dark.less';
+
+#video {
+  cursor: auto;
+  position: absolute;
+  z-index: 1;
+  height: 240px;
+  object-fit: cover;
+  width: 100%;
+  object-position: center;
+
+  source {
+    min-width: 100%;
+    min-height: 100%;
+    width: 100%;
+  }
+}
+
+.banner {
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  position: relative;
+  width: 100%;
+  height: 240px;
+  background-image: url('@/assets/images/banner.gif');
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+.banner_text {
+  font-size: 36px;
+  font-weight: bold;
+  height: 100%;
+}
+
+.banner_content {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  position: relative;
+  left: 50%;
+  width: 42%;
+  margin-bottom: 10px;
+}
+
+.application_item {
+  display: flex;
+  border-radius: 6px;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+  border: 1px solid #cccc;
+  padding: 20px;
+  background-color: #fff;
+  cursor: pointer;
+  min-height: 200px;
+}
+
+.application_item:hover {
+  box-shadow: 0 3px 10px rgba(51, 51, 51, 0.20);
+}
+
+.application_item_header {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.application_item_logo {
+  width: 48px;
+  height: 48px;
+
+  img {
+    max-height: 48px;
+    max-width: 48px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+  }
+}
+
+.application_item_title {
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.application_item_text {
+  color: #89939b;
+  font-size: 14px;
+}
+
+.extension_label {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.application_list {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 26px 40px 0 48px;
+}
+
+.turbo {
+  display: flex;
+  padding: 2px 12px;
+  height: 24px;
+  color: #f5595b;
+  background-color: #fff2f0ff;
+  border-radius: 14px;
+  border: 1px solid #dcdcdcff;
+  justify-content: center;
+  align-items: center;
+}
+
+.helm_icon {
+  display: flex;
+  align-items: center;
+  padding: 2px 12px;
+  height: 24px;
+  border-radius: 14px;
+  border: 1px solid #dcdcdcff;
+  background-color: #89939b;
+}
+
+.extension {
+  display: flex;
+  padding: 2px 12px;
+  height: 24px;
+  color: #365ac4;
+  background-color: #f2f6ffff;
+  border-radius: 14px;
+  border: 1px solid #dcdcdcff;
+  justify-content: center;
+  align-items: center;
+}
+
+.application_type {
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+  width: 200px;
+  padding: 27px 0 0 64px;
+}
+
+.application_type_item {
+  display: flex;
+  flex-direction: column;
+  width: 150px;
+  gap: 16px;
+}
+
+.application_type_title {
+  color: #89939b;
+}
+
+.pod_search {
+  display: flex;
+  justify-content: space-between;
+  padding: 27px 40px 0 48px;
+}
+
+.ware_house_search {
+  display: flex;
+  justify-content: space-between;
+  padding: 32px 32px 20px 32px;
+}
+
+/* 自定义复选框样式 */
+.custom-checkbox .ant-checkbox-wrapper {
+  border-radius: 50%;
+  /* 将边框半径设置为 50%，使复选框呈圆形 */
+}
+
+/* 复选框内部的选中状态样式 */
+.custom-checkbox .ant-checkbox-inner {
+  border-radius: 50%;
+  /* 将内部边框半径设置为 50%，使内部图标呈圆形 */
+}
+
+.detail_container {
+  margin: 20px 32px 20px;
+}
+
+.application_breadcrumb {
+  .container-platform-breadcrumb {
+    background-color: #fff;
+    padding: 15px 32px;
+  }
+}
+
+// .container-platform-tabs-nav {
+//   background-color: #fff !important;
+// }
+.details_header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fff;
+  padding: 32px;
+  border-bottom: 1px solid #ccc;
+
+  .details_header_content {
+    width: 90%;
+  }
+}
+
+.tips_color {
+  color: #89939b;
+}
+
+.details_content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  column-gap: 16px;
+  background-color: #fff;
+  padding: 16px 64px 32px 64px;
+}
+
+.installation_information {
+  background-color: #fff;
+  padding: 32px;
+}
+
+.installation_information_title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 32px;
+}
+
+.deploy_footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  background-color: #fff;
+  box-shadow: 0px -3px 6px rgba(51, 51, 51, 0.1);
+  position: absolute;
+  bottom: 0;
+  margin: 0 32px;
+  height: 72px;
+  width: calc(100% - 291px);
+}
+
+.upload_container {
+  display: flex;
+  // justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 120px;
+  gap: 10px;
+  border: 1px solid #ccc;
+  margin-top: 32px;
+  padding: 0 24px;
+
+  .container-platform-upload-list-item-name {
+    text-overflow: ellipsis;
+    /* 当文本溢出时显示省略号 */
+    overflow: hidden;
+    /* 隐藏溢出的文本 */
+    white-space: nowrap;
+    /* 禁止文本换行 */
+    width: 265px !important;
+  }
+}
+
+.package_details_header {
+  display: flex;
+  height: auto;
+  background-color: #fff;
+  width: 100%;
+  gap: 12px;
+  padding: 20px 32px;
+  margin-bottom: 18px;
+}
+
+.version_management {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  margin: 0 32px;
+  padding: 22px 0;
+}
+
+.container-platform-checkbox+span {
+  width: 140px;
+  row-gap: 16px;
+}
+
+.container-platform-checkbox-group {
+  row-gap: 16px;
+}
+
+.one_deploy_title {
+  font-size: 14px;
+  color: #333;
+  padding: 16px 0;
+}
+
+.one_deploy_container {
+  width: 100%;
+  max-width: 1200px;
+  background-color: @page-background-color;
+  margin: 0 auto;
+}
+
+.one_deploy_box {
+  margin: 20px 32px;
+  padding: 32px 30px;
+  background-color: @page-container-color;
+
+  .code_mirror_box {
+    min-height: 640px;
+    max-height: 640px;
+  }
+}
+
+.btn_container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 30px;
+  gap: 16px
+}
+
+.border_radious_0 {
+  border-radius: 0px;
+}
+
+.md_p p {
+  display: flex;
+  align-items: center;
+  background: #f7f7f7ff;
+  border-radius: 2px;
+  padding: 10px 8px;
+  margin: 0 32px;
+  overflow: hidden;
+  /* 添加溢出隐藏样式 */
+  text-overflow: clip;
+  /* 不显示省略号，超出部分自动换行 */
+}
+
+.btn_disabled {
+  pointer-events: none;
+  /* 阻止鼠标事件 */
+  color: #f7f7f7;
+  /* 修改文字颜色 */
+  cursor: not-allowed;
+  /* 修改鼠标样式 */
+  /* 其他样式，根据需要添加 */
+}
+
+.img_icon {
+  width: 96px !important;
+  height: 96px !important;
+}
+
+.application_description {
+  // text-overflow: ellipsis;
+  // /* 当文本溢出时显示省略号 */
+  // overflow: hidden;
+  // /* 隐藏溢出的文本 */
+  // white-space: nowrap;
+  // max-width: 200px;
+  max-width: 97%;
+  word-break: break-all;
+}
+
+.clamp_3 {
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.word_break {
+  white-space: normal;
+  word-wrap: break-word;
+  word-break: break-all;
+}
+
+.application_details_content {
+  padding: 32px 32px 16px 32px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr)
+}
+
+.market_new_container {
+  background-color: #fff !important;
+  height: calc(100vh - 100px);
+}
+
+.market_recommend {
+  width: 62.5%;
+  margin: 0 auto;
+  padding-top: 48px;
+}
+
+.market_block {
+  width: 1200px;
+  margin: 0 auto;
+}
+
+.market_recommend_item {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: 21px;
+  row-gap: 20px;
+}
+
+.market_recommend_title {
+  margin-bottom: 12px;
+  font-size: 16px;
+  color: #333;
+  font-weight: bold;
+}
+
+.recommend_source {
+  padding: 0 60px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.recommend_source_title {
+  display: flex;
+  justify-content: center;
+  font-size: 20px;
+  color: #333;
+  text-align: center;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+.recommend_source_description {
+  width: 220px;
+  text-align: center;
+  color: #89939b;
+}
+
+.recommend_source_category_container {
+  height: 172px;
+  padding: 24px 0;
+
+  .recommend_source_category {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    border-radius: 4px;
+    width: 62.5%;
+    margin: 0 auto;
+    column-gap: 10px;
+    row-gap: 10px;
+
+    .category_label {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+      height: 56px;
+      border-radius: 4px;
+      padding: 10px;
+      transition: background-color 0.25s, box-shadow 0.25s;
+
+      .category_icon {
+        display: flex;
+        align-content: center;
+        margin-right: 10px;
+      }
+
+      .category_text {
+        font-size: 16px;
+        color: #333
+      }
+    }
+
+    .category_label:hover {
+      background-color: #fff;
+      box-shadow: 0 0 6px 0 #00000028;
+
+      .container_text {
+        color: #333;
+      }
+    }
+  }
+}
+
+.market_accelerate {
+  width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 12px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 215px;
+  border: 1px solid #dcdcdcff;
+  border-radius: 4px;
+  margin-bottom: 48px;
+}
+
+.customizationAbility {
+  width: 1200px;
+  margin: 0 auto;
+  margin-bottom: 46px;
+}
+
+.turbo_certificate {
+  width: 100%;
+  height: 376px;
+  //border: 1px solid #ccc;
+  background: url('@/assets/images/marketFooter.png') no-repeat;
+  background-size: 100% 100%;
+  padding-top: 48px;
+  margin-top: 48px;
+  z-index: -1;
+
+  .turbo_title {
+    display: flex;
+    justify-content: center;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 20px;
+  }
+
+  .turbo_body {
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 1.4%;
+    width: 84.3%;
+    margin-bottom: 20px;
+
+    .turbo_bgc {
+      background-size: 100% 100%;
+      height: 185px;
+      width: 49.3%;
+      padding: 36px 48px;
+      transition: color 0.25s ease;
+      position: relative;
+
+      .turbo_bgc_back,
+      .turbo_bgc_back_hover {
+        width: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        transition: opacity 0.25s ease;
+        z-index: 0;
+      }
+
+      .turbo_bgc_back {
+        opacity: 1;
+      }
+
+      .turbo_bgc_back_hover {
+        opacity: 0;
+      }
+
+      .turbo_bgc_clip {
+        width: 100%;
+        height: 100%;
+        overflow-y: hidden;
+        position: relative;
+
+        .turbo_bgc_frame {
+          position: absolute;
+          top: 0;
+          transition: top 0.5s ease;
+
+          .turbo_bgc_icon {
+            height: 64px;
+            width: 64px;
+            margin-left: -7px;
+            margin-bottom: 20px;
+          }
+
+          .turbo_bgc_title {
+            font-size: 20px;
+            line-height: 20px;
+            font-weight: bold;
+            margin-bottom: 16px;
+          }
+
+          .turbo_bgc_text {
+            font-size: 14px;
+          }
+        }
+      }
+    }
+
+    .turbo_bgc:hover {
+      color: #fff;
+    }
+
+    .turbo_bgc:hover .turbo_bgc_frame {
+      top: -84px;
+    }
+
+    .turbo_bgc:hover .turbo_bgc_back {
+      opacity: 0;
+    }
+
+    .turbo_bgc:hover .turbo_bgc_back_hover {
+      opacity: 1;
+    }
+  }
+
+  .turbo_trip {
+    padding: 7px 40px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+    text-align: center;
+    color: #89939b;
+    width: 270px;
+    margin: 0 auto;
+  }
+}
+
+// 适配
+@media screen and (min-width: 1280px) and (max-width: 1440px) {
+  .banner {
+    background-image: url('@/assets/images/banner1280.gif') !important;
+  }
+  .banner_text {
+    font-size: 28px !important;
+  }
+  .market_recommend_item{
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .recommend_source_category_container{
+    height: 240px !important;
+  }
+  .recommend_source_category {
+    grid-template-columns: repeat(4, 1fr) !important;
+    .category_text{
+      font-size: 12px !important;
+    }
+  }
+  .turbo_bgc_clip{
+    position: relative;
+    top: -20px !important;
+    .turbo_bgc_icon{
+      margin-bottom: 10px !important;
+      img{
+        height: 48px !important;
+        width: 48px !important;
+        margin-left: 12px !important;
+      }
+    }
+    .turbo_bgc_title{
+      font-size: 16px !important;
+    }
+    .turbo_bgc_text{
+      font-size: 12px !important;
+    }
+  }
+  .turbo_bgc:hover .turbo_bgc_frame {
+    top: -74px !important;
+  }
+  .turbo_body{
+    margin-bottom: 0px !important;
+  }
+  .application_list{
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+}
+// 适配
+@media screen and (min-width: 1441px) and (max-width: 1680px) {
+  .banner {
+    background-image: url('@/assets/images/banner1440.gif') !important;
+  }
+  .banner_text {
+    font-size: 32px !important;
+  }
+  .market_recommend_item{
+    grid-template-columns: repeat(3, 1fr) !important;
+  }
+  .recommend_source_category_container{
+    height: 240px !important;
+  }
+  .recommend_source_category {
+    grid-template-columns: repeat(4, 1fr) !important;
+    .category_text{
+      font-size: 14px !important;
+    }
+  }
+  .turbo_bgc_clip{
+    position: relative;
+    top: -20px !important;
+  }
+  .turbo_body{
+    margin-bottom: 0px !important;
+  }
+  .application_list{
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+}
+// 适配
+@media screen and (min-width: 1681px) and (max-width: 1920px) {
+  .banner {
+    background-image: url('@/assets/images/banner1680.gif') !important;
+  }
+  .banner_text {
+    font-size: 36px !important;
+  }
+  .market_recommend_item{
+    grid-template-columns: repeat(4, 1fr) !important;
+  }
+  .turbo_body{
+    margin-bottom: 40px !important;
+  }
+}
+// 适配
+@media screen and (min-width: 1921px){
+  .banner {
+    background-image: url('@/assets/images/banner1920.gif') !important;
+  }
+  .banner_text {
+    font-size: 36px !important;
+  }
+}

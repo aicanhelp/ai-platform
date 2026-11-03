@@ -1,0 +1,15 @@
+{{- if .Values.config.httpServerConfig.enableHttps }}
+apiVersion: v1
+data:
+  ca.crt: |
+    {{ b64enc .Values.config.httpServerConfig.rootCA }}
+  tls.crt: |
+    {{ b64enc .Values.config.httpServerConfig.tlsCert }}
+  tls.key: |
+    {{ b64enc .Values.config.httpServerConfig.tlsKey }}
+kind: Secret
+type: Opaque
+metadata:
+  name: oauth-server-tls
+  namespace: openfuyao-system
+{{- end }}

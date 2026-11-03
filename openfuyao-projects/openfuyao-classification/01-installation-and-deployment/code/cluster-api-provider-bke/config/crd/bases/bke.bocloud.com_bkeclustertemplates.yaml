@@ -1,0 +1,801 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.19.0
+  labels:
+    cluster.x-k8s.io/provider: infrastructure-bke
+    cluster.x-k8s.io/v1beta1: v1beta1
+  name: bkeclustertemplates.bke.bocloud.com
+spec:
+  group: bke.bocloud.com
+  names:
+    kind: BKEClusterTemplate
+    listKind: BKEClusterTemplateList
+    plural: bkeclustertemplates
+    singular: bkeclustertemplate
+  scope: Namespaced
+  versions:
+  - name: v1beta1
+    schema:
+      openAPIV3Schema:
+        description: BKEClusterTemplate is the Schema for the bkeclustertemplates
+          API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: |-
+              EDIT THIS FILE!  THIS IS SCAFFOLDING FOR YOU TO OWN!
+              NOTE: json tags are required.  Any new fields you add must have json tags for the fields to be serialized.
+              BKEClusterTemplateSpec defines the desired state of BKEClusterTemplate
+            properties:
+              template:
+                properties:
+                  metadata:
+                    description: |-
+                      Standard object's metadata.
+                      More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#metadata
+                    properties:
+                      annotations:
+                        additionalProperties:
+                          type: string
+                        description: |-
+                          Annotations is an unstructured key value map stored with a resource that may be
+                          set by external tools to store and retrieve arbitrary metadata. They are not
+                          queryable and should be preserved when modifying objects.
+                          More info: http://kubernetes.io/docs/user-guide/annotations
+                        type: object
+                      labels:
+                        additionalProperties:
+                          type: string
+                        description: |-
+                          Map of string keys and values that can be used to organize and categorize
+                          (scope and select) objects. May match selectors of replication controllers
+                          and services.
+                          More info: http://kubernetes.io/docs/user-guide/labels
+                        type: object
+                    type: object
+                  spec:
+                    description: BKEClusterSpec defines the desired state of BKECluster
+                    properties:
+                      KubeletConfigRef:
+                        description: KubeletConfigRef references a KubeletConfig to
+                          use for kubelet configuration
+                        properties:
+                          name:
+                            type: string
+                          namespace:
+                            type: string
+                        type: object
+                      clusterConfig:
+                        description: ClusterConfig defines the cluster config
+                        properties:
+                          addons:
+                            description: Addons defines the addons that the target
+                              cluster will install after deployment
+                            items:
+                              properties:
+                                block:
+                                  default: false
+                                  description: Block defines fully wait for the Product
+                                    to be deployed successfully
+                                  type: boolean
+                                name:
+                                  type: string
+                                namespace:
+                                  description: |-
+                                    Namespace defines the namespace of the chart
+                                    If empty, use the default configuration of chart
+                                  type: string
+                                param:
+                                  additionalProperties:
+                                    type: string
+                                  type: object
+                                releaseName:
+                                  description: |-
+                                    ReleaseName defines the release name of the chart
+                                    If empty, defaults to the product name
+                                  type: string
+                                timeout:
+                                  description: |-
+                                    Timeout defines the timeout for the Product to be deployed\removed\upgraded successfully
+                                    If empty, defaults to 300 seconds
+                                  type: integer
+                                type:
+                                  description: |-
+                                    Type defines the product type, such as "chart", "yaml"
+                                    If empty, defaults to "yaml"
+                                  enum:
+                                  - yaml
+                                  - chart
+                                  type: string
+                                valuesConfigMapRef:
+                                  description: |-
+                                    ValuesConfigMapRef references a ConfigMap containing the values.yaml for the chart
+                                    If empty, use the default configuration of chart
+                                  properties:
+                                    name:
+                                      description: Name of the ValuesConfigMapRef
+                                        resource
+                                      type: string
+                                    namespace:
+                                      description: |-
+                                        Namespace of the ValuesConfigMapRef resource
+                                        If empty, defaults to the same namespace as the Cluster resource
+                                      type: string
+                                    valuesKey:
+                                      description: |-
+                                        ValuesKey is the key name that stores the values.yaml in the ConfigMap
+                                        If empty, defaults to "values.yaml"
+                                      type: string
+                                  required:
+                                  - name
+                                  type: object
+                                version:
+                                  type: string
+                              required:
+                              - name
+                              type: object
+                            type: array
+                          cluster:
+                            description: Cluster defines the configuration of the
+                              target cluster
+                            properties:
+                              agentHealthPort:
+                                description: AgentHealthPort defines the agent health
+                                  port
+                                type: string
+                              apiServer:
+                                description: APIServer contains additional settings
+                                  for the API server component
+                                properties:
+                                  certSANs:
+                                    description: CertSANs sets extra Subject Alternative
+                                      Names for the API Server signing certificate
+                                    items:
+                                      type: string
+                                    type: array
+                                  extraArgs:
+                                    additionalProperties:
+                                      type: string
+                                    description: ExtraArgs specifies additional command
+                                      line flags to pass to the control plane component
+                                    type: object
+                                  extraVolumes:
+                                    description: ExtraVolumes specifies additional
+                                      host volumes to mount to the control plane component
+                                    items:
+                                      description: HostPathMount describes volumes
+                                        that are mounted from the host into pods
+                                      properties:
+                                        hostPath:
+                                          description: HostPath specifies the path
+                                            on the host that will be mounted into
+                                            the pod
+                                          type: string
+                                        mountPath:
+                                          description: MountPath specifies the path
+                                            inside the pod where the hostPath will
+                                            be mounted
+                                          type: string
+                                        name:
+                                          description: Name specifies the name of
+                                            the volume within the pod template
+                                          type: string
+                                        pathType:
+                                          description: PathType specifies the type
+                                            of the HostPath
+                                          type: string
+                                        readOnly:
+                                          description: ReadOnly specifies whether
+                                            the volume should be mounted as read-only
+                                          type: boolean
+                                      type: object
+                                    type: array
+                                  host:
+                                    description: Host sets the Host for the API server
+                                      to advertise.
+                                    type: string
+                                  port:
+                                    description: Port sets the secure port for the
+                                      API Server to bind to. Defaults to 6443.
+                                    format: int32
+                                    type: integer
+                                type: object
+                              certificatesDir:
+                                description: CertificatesDir defines the directory
+                                  path for storing or locating all required certificates.
+                                type: string
+                              chartRepo:
+                                description: ChartRepo defines the global chart repository
+                                  of the deployment target cluster
+                                properties:
+                                  authSecretRef:
+                                    description: AuthSecretRef defines the secret
+                                      name, namespace and other information for authentication
+                                    properties:
+                                      name:
+                                        description: Name of the AuthSecretRef resource
+                                        type: string
+                                      namespace:
+                                        description: |-
+                                          Namespace of the AuthSecretRef resource
+                                          If empty, defaults to the same namespace as the Cluster resource
+                                        type: string
+                                      passwordKey:
+                                        description: |-
+                                          PasswordKey is the key name that stores the password in the secret
+                                          If empty, defaults to "password"
+                                        type: string
+                                      usernameKey:
+                                        description: |-
+                                          UsernameKey is the key name that stores the username in the secret
+                                          If empty, defaults to "username"
+                                        type: string
+                                    required:
+                                    - name
+                                    type: object
+                                  domain:
+                                    description: Domain defines the Repo domain name
+                                    type: string
+                                  insecureSkipTLSVerify:
+                                    description: |-
+                                      InsecureSkipTLSVerify defines whether to skip TLS verification when connecting to the repo
+                                      If empty, defaults to false
+                                    type: boolean
+                                  ip:
+                                    description: Ip defines the Repo ip
+                                    type: string
+                                  port:
+                                    description: Port defines the number of port to
+                                      connect to the Repo
+                                    type: string
+                                  prefix:
+                                    description: Prefix defines the kubernetes image
+                                      address
+                                    type: string
+                                  tlsSecretRef:
+                                    description: TlsSecretRef defines the secret name,
+                                      namespace and other information for TLS certificates
+                                    properties:
+                                      caKey:
+                                        description: |-
+                                          CaKey is the key name that stores the ca.crt in the secret
+                                          If empty, defaults to "ca.crt"
+                                        type: string
+                                      certKey:
+                                        description: |-
+                                          CertKey is the key name that stores the cert.crt in the secret
+                                          If empty, defaults to "cert.crt"
+                                        type: string
+                                      keyKey:
+                                        description: |-
+                                          KeyKey is the key name that stores the key.key in the secret
+                                          If empty, defaults to "key.key"
+                                        type: string
+                                      name:
+                                        description: Name of the TlsSecretRef resource
+                                        type: string
+                                      namespace:
+                                        description: |-
+                                          Namespace of the TlsSecretRef resource
+                                          If empty, defaults to the same namespace as the Cluster resource
+                                        type: string
+                                    required:
+                                    - name
+                                    type: object
+                                type: object
+                              containerRuntime:
+                                description: ContainerRuntime defines the container
+                                  runtime of the target cluster
+                                properties:
+                                  cri:
+                                    description: CRI defines the name of the runtime
+                                    enum:
+                                    - docker
+                                    - containerd
+                                    type: string
+                                  param:
+                                    additionalProperties:
+                                      type: string
+                                    description: Param defines the param of the runtime
+                                    type: object
+                                  runtime:
+                                    description: Runtime defines the lower runtime
+                                      of the runtime
+                                    enum:
+                                    - runc
+                                    - richrunc
+                                    - kata
+                                    type: string
+                                type: object
+                              containerdConfigRef:
+                                description: |-
+                                  ContainerdConfigRef references a ContainerdConfig custom resource for advanced containerd configuration
+                                  If specified, this will override the default containerd configuration
+                                properties:
+                                  name:
+                                    description: Name of the ContainerdConfig resource
+                                    type: string
+                                  namespace:
+                                    description: |-
+                                      Namespace of the ContainerdConfig resource
+                                      If empty, defaults to the same namespace as the Cluster resource
+                                    type: string
+                                required:
+                                - name
+                                type: object
+                              containerdVersion:
+                                type: string
+                              controllerManager:
+                                description: ControllerManager contains additional
+                                  settings for the controller manager component
+                                properties:
+                                  extraArgs:
+                                    additionalProperties:
+                                      type: string
+                                    description: ExtraArgs specifies additional command
+                                      line flags to pass to the control plane component
+                                    type: object
+                                  extraVolumes:
+                                    description: ExtraVolumes specifies additional
+                                      host volumes to mount to the control plane component
+                                    items:
+                                      description: HostPathMount describes volumes
+                                        that are mounted from the host into pods
+                                      properties:
+                                        hostPath:
+                                          description: HostPath specifies the path
+                                            on the host that will be mounted into
+                                            the pod
+                                          type: string
+                                        mountPath:
+                                          description: MountPath specifies the path
+                                            inside the pod where the hostPath will
+                                            be mounted
+                                          type: string
+                                        name:
+                                          description: Name specifies the name of
+                                            the volume within the pod template
+                                          type: string
+                                        pathType:
+                                          description: PathType specifies the type
+                                            of the HostPath
+                                          type: string
+                                        readOnly:
+                                          description: ReadOnly specifies whether
+                                            the volume should be mounted as read-only
+                                          type: boolean
+                                      type: object
+                                    type: array
+                                type: object
+                              etcd:
+                                description: Etcd contains configuration for etcd
+                                properties:
+                                  dataDir:
+                                    description: |-
+                                      DataDir specifies the directory path where etcd will store its data.
+                                      If not specified, defaults to "/var/lib/openFuyao/etcd".
+                                    type: string
+                                  extraArgs:
+                                    additionalProperties:
+                                      type: string
+                                    description: ExtraArgs specifies additional command
+                                      line flags to pass to the control plane component
+                                    type: object
+                                  extraVolumes:
+                                    description: ExtraVolumes specifies additional
+                                      host volumes to mount to the control plane component
+                                    items:
+                                      description: HostPathMount describes volumes
+                                        that are mounted from the host into pods
+                                      properties:
+                                        hostPath:
+                                          description: HostPath specifies the path
+                                            on the host that will be mounted into
+                                            the pod
+                                          type: string
+                                        mountPath:
+                                          description: MountPath specifies the path
+                                            inside the pod where the hostPath will
+                                            be mounted
+                                          type: string
+                                        name:
+                                          description: Name specifies the name of
+                                            the volume within the pod template
+                                          type: string
+                                        pathType:
+                                          description: PathType specifies the type
+                                            of the HostPath
+                                          type: string
+                                        readOnly:
+                                          description: ReadOnly specifies whether
+                                            the volume should be mounted as read-only
+                                          type: boolean
+                                      type: object
+                                    type: array
+                                  peerCertSANs:
+                                    description: PeerCertSANs defines additional Subject
+                                      Alternative Names (SANs) for the etcd peer-to-peer
+                                      communication certificate.
+                                    items:
+                                      type: string
+                                    type: array
+                                  serverCertSANs:
+                                    description: ServerCertSANs defines additional
+                                      Subject Alternative Names (SANs) for the etcd
+                                      server certificate.
+                                    items:
+                                      type: string
+                                    type: array
+                                type: object
+                              etcdVersion:
+                                description: EtcdVersion defines the Etcd version
+                                  of the target cluster
+                                type: string
+                              httpRepo:
+                                description: |-
+                                  HTTPRepo defines the HTTP repository to use when deploying
+                                  rpm / deb / http server
+                                properties:
+                                  authSecretRef:
+                                    description: AuthSecretRef defines the secret
+                                      name, namespace and other information for authentication
+                                    properties:
+                                      name:
+                                        description: Name of the AuthSecretRef resource
+                                        type: string
+                                      namespace:
+                                        description: |-
+                                          Namespace of the AuthSecretRef resource
+                                          If empty, defaults to the same namespace as the Cluster resource
+                                        type: string
+                                      passwordKey:
+                                        description: |-
+                                          PasswordKey is the key name that stores the password in the secret
+                                          If empty, defaults to "password"
+                                        type: string
+                                      usernameKey:
+                                        description: |-
+                                          UsernameKey is the key name that stores the username in the secret
+                                          If empty, defaults to "username"
+                                        type: string
+                                    required:
+                                    - name
+                                    type: object
+                                  domain:
+                                    description: Domain defines the Repo domain name
+                                    type: string
+                                  insecureSkipTLSVerify:
+                                    description: |-
+                                      InsecureSkipTLSVerify defines whether to skip TLS verification when connecting to the repo
+                                      If empty, defaults to false
+                                    type: boolean
+                                  ip:
+                                    description: Ip defines the Repo ip
+                                    type: string
+                                  port:
+                                    description: Port defines the number of port to
+                                      connect to the Repo
+                                    type: string
+                                  prefix:
+                                    description: Prefix defines the kubernetes image
+                                      address
+                                    type: string
+                                  tlsSecretRef:
+                                    description: TlsSecretRef defines the secret name,
+                                      namespace and other information for TLS certificates
+                                    properties:
+                                      caKey:
+                                        description: |-
+                                          CaKey is the key name that stores the ca.crt in the secret
+                                          If empty, defaults to "ca.crt"
+                                        type: string
+                                      certKey:
+                                        description: |-
+                                          CertKey is the key name that stores the cert.crt in the secret
+                                          If empty, defaults to "cert.crt"
+                                        type: string
+                                      keyKey:
+                                        description: |-
+                                          KeyKey is the key name that stores the key.key in the secret
+                                          If empty, defaults to "key.key"
+                                        type: string
+                                      name:
+                                        description: Name of the TlsSecretRef resource
+                                        type: string
+                                      namespace:
+                                        description: |-
+                                          Namespace of the TlsSecretRef resource
+                                          If empty, defaults to the same namespace as the Cluster resource
+                                        type: string
+                                    required:
+                                    - name
+                                    type: object
+                                type: object
+                              imageRepo:
+                                description: ImageRepo defines the global image repository
+                                  of the deployment target cluster
+                                properties:
+                                  authSecretRef:
+                                    description: AuthSecretRef defines the secret
+                                      name, namespace and other information for authentication
+                                    properties:
+                                      name:
+                                        description: Name of the AuthSecretRef resource
+                                        type: string
+                                      namespace:
+                                        description: |-
+                                          Namespace of the AuthSecretRef resource
+                                          If empty, defaults to the same namespace as the Cluster resource
+                                        type: string
+                                      passwordKey:
+                                        description: |-
+                                          PasswordKey is the key name that stores the password in the secret
+                                          If empty, defaults to "password"
+                                        type: string
+                                      usernameKey:
+                                        description: |-
+                                          UsernameKey is the key name that stores the username in the secret
+                                          If empty, defaults to "username"
+                                        type: string
+                                    required:
+                                    - name
+                                    type: object
+                                  domain:
+                                    description: Domain defines the Repo domain name
+                                    type: string
+                                  insecureSkipTLSVerify:
+                                    description: |-
+                                      InsecureSkipTLSVerify defines whether to skip TLS verification when connecting to the repo
+                                      If empty, defaults to false
+                                    type: boolean
+                                  ip:
+                                    description: Ip defines the Repo ip
+                                    type: string
+                                  port:
+                                    description: Port defines the number of port to
+                                      connect to the Repo
+                                    type: string
+                                  prefix:
+                                    description: Prefix defines the kubernetes image
+                                      address
+                                    type: string
+                                  tlsSecretRef:
+                                    description: TlsSecretRef defines the secret name,
+                                      namespace and other information for TLS certificates
+                                    properties:
+                                      caKey:
+                                        description: |-
+                                          CaKey is the key name that stores the ca.crt in the secret
+                                          If empty, defaults to "ca.crt"
+                                        type: string
+                                      certKey:
+                                        description: |-
+                                          CertKey is the key name that stores the cert.crt in the secret
+                                          If empty, defaults to "cert.crt"
+                                        type: string
+                                      keyKey:
+                                        description: |-
+                                          KeyKey is the key name that stores the key.key in the secret
+                                          If empty, defaults to "key.key"
+                                        type: string
+                                      name:
+                                        description: Name of the TlsSecretRef resource
+                                        type: string
+                                      namespace:
+                                        description: |-
+                                          Namespace of the TlsSecretRef resource
+                                          If empty, defaults to the same namespace as the Cluster resource
+                                        type: string
+                                    required:
+                                    - name
+                                    type: object
+                                type: object
+                              kubelet:
+                                description: Kubelet define kubelet configuration
+                                  for all nodes in the target cluster
+                                properties:
+                                  extraArgs:
+                                    additionalProperties:
+                                      type: string
+                                    description: ExtraArgs specifies additional command
+                                      line flags to pass to the control plane component
+                                    type: object
+                                  extraVolumes:
+                                    description: ExtraVolumes specifies additional
+                                      host volumes to mount to the control plane component
+                                    items:
+                                      description: HostPathMount describes volumes
+                                        that are mounted from the host into pods
+                                      properties:
+                                        hostPath:
+                                          description: HostPath specifies the path
+                                            on the host that will be mounted into
+                                            the pod
+                                          type: string
+                                        mountPath:
+                                          description: MountPath specifies the path
+                                            inside the pod where the hostPath will
+                                            be mounted
+                                          type: string
+                                        name:
+                                          description: Name specifies the name of
+                                            the volume within the pod template
+                                          type: string
+                                        pathType:
+                                          description: PathType specifies the type
+                                            of the HostPath
+                                          type: string
+                                        readOnly:
+                                          description: ReadOnly specifies whether
+                                            the volume should be mounted as read-only
+                                          type: boolean
+                                      type: object
+                                    type: array
+                                  manifestsDir:
+                                    description: ManifestsDir is the directory where
+                                      kubelet will store manifests
+                                    type: string
+                                type: object
+                              kubernetesVersion:
+                                description: |-
+                                  KubernetesVersion defines the Kubernetes version of the target cluster
+                                  support up to v1.25.6 in bke
+                                type: string
+                              labels:
+                                description: Global node labels
+                                items:
+                                  description: Label represents a key-value pair used
+                                    for setting labels on Kubernetes nodes
+                                  properties:
+                                    key:
+                                      type: string
+                                    value:
+                                      type: string
+                                  type: object
+                                type: array
+                              networking:
+                                description: Networking defines the configuration
+                                  of target cluster network
+                                properties:
+                                  dnsDomain:
+                                    description: |-
+                                      DNSDomain specifies the DNS domain suffix for Kubernetes services.
+                                      If not specified, defaults to "cluster.local".
+                                    type: string
+                                  podSubnet:
+                                    description: PodSubnet specifies the CIDR block
+                                      for Pod IP addresses.
+                                    type: string
+                                  serviceSubnet:
+                                    description: |-
+                                      ServiceSubnet specifies the CIDR block for Kubernetes services.
+                                      If not specified, defaults to "10.96.0.0/12".
+                                    type: string
+                                type: object
+                              ntpServer:
+                                description: NTPServer defines the ntp server information
+                                  used for time synchronization
+                                type: string
+                              openFuyaoVersion:
+                                type: string
+                              scheduler:
+                                description: Scheduler contains additional settings
+                                  for the scheduler component
+                                properties:
+                                  extraArgs:
+                                    additionalProperties:
+                                      type: string
+                                    description: ExtraArgs specifies additional command
+                                      line flags to pass to the control plane component
+                                    type: object
+                                  extraVolumes:
+                                    description: ExtraVolumes specifies additional
+                                      host volumes to mount to the control plane component
+                                    items:
+                                      description: HostPathMount describes volumes
+                                        that are mounted from the host into pods
+                                      properties:
+                                        hostPath:
+                                          description: HostPath specifies the path
+                                            on the host that will be mounted into
+                                            the pod
+                                          type: string
+                                        mountPath:
+                                          description: MountPath specifies the path
+                                            inside the pod where the hostPath will
+                                            be mounted
+                                          type: string
+                                        name:
+                                          description: Name specifies the name of
+                                            the volume within the pod template
+                                          type: string
+                                        pathType:
+                                          description: PathType specifies the type
+                                            of the HostPath
+                                          type: string
+                                        readOnly:
+                                          description: ReadOnly specifies whether
+                                            the volume should be mounted as read-only
+                                          type: boolean
+                                      type: object
+                                    type: array
+                                type: object
+                              loadBalanceType:
+                                default: ha
+                                description: |-
+                                  LoadBalanceType defines how worker nodes access kube-apiserver.
+                                  "ha": keepalived + haproxy + VIP (default); "nginx": per-worker local nginx static pod.
+                                enum:
+                                - ha
+                                - nginx
+                                type: string
+                              nginxProxyVersion:
+                                description: |-
+                                  NginxProxyVersion defines the nginx-proxy image tag used in nginx load balance mode.
+                                  Only effective when loadBalanceType is "nginx".
+                                type: string
+                            required:
+                            - ntpServer
+                            type: object
+                          customExtra:
+                            additionalProperties:
+                              type: string
+                            description: CustomArgs defines the custom args
+                            type: object
+                        type: object
+                      controlPlaneEndpoint:
+                        description: ControlPlaneEndpoint represents the endpoint
+                          used to communicate with the control plane.
+                        properties:
+                          host:
+                            description: Host sets the Host for the API server to
+                              advertise.
+                            type: string
+                          port:
+                            description: Port sets the secure port for the API Server
+                              to bind to. Defaults to 6443.
+                            format: int32
+                            type: integer
+                        type: object
+                      dryRun:
+                        description: DryRun is used to dry run the BKECluster, it
+                          also dries run the BKECluster's machines.
+                        type: boolean
+                      pause:
+                        description: Pause is used to pause reconciliation of the
+                          BKECluster, it also pauses the BKECluster's machines.
+                        type: boolean
+                      reset:
+                        description: Reset is used to reset the BKECluster, it also
+                          resets the BKECluster's machines, include cluster-api Cluster
+                          Machine etc.
+                        type: boolean
+                    type: object
+                required:
+                - spec
+                type: object
+            required:
+            - template
+            type: object
+        type: object
+    served: true
+    storage: true

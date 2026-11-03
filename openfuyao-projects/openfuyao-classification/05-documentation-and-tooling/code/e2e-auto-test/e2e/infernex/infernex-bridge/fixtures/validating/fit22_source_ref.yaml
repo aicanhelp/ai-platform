@@ -1,0 +1,10 @@
+apiVersion: infernex.infernex.io/v1alpha1
+kind: InferNexService
+metadata:
+  name: fit22-source-ref
+  namespace: __E2E_NS__
+spec:
+  sourceRef:
+    apiVersion: serving.kserve.io/v1alpha1
+    kind: LLMInferenceService
+    name: fit22-llmisvc

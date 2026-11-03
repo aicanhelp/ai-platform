@@ -1,0 +1,19 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/name: clusterrolebinding
+    app.kubernetes.io/instance: manager-rolebinding
+    app.kubernetes.io/component: rbac
+    app.kubernetes.io/created-by: multicluster-service
+    app.kubernetes.io/part-of: multicluster-service
+    app.kubernetes.io/managed-by: kustomize
+  name: multicluster-service-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: multicluster-service-clusterrole
+subjects:
+- kind: ServiceAccount
+  name: multicluster-service
+  namespace: karmada-system

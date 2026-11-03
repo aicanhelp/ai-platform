@@ -1,0 +1,54 @@
+openapi: 3.0.0
+info:
+  title: 
+  description: 提供打开容器和集群交互界面的API文档。
+  version: 1.0.0
+paths:
+  /rest/webterminal/v1/namespace/{namespace}/pod/{podname}/container/{containername}/terminal:
+    get:
+      summary: 打开容器交互界面。
+      description: 通过调用后端接口打开了与容器交互的命令行界面。
+      parameters:
+        - name: namespace
+          in: path
+          description: 容器命名空间。
+          required: true
+          schema:
+            type: string
+        - name: podname
+          in: path
+          description: 容器所在Pod名称。
+          required: true
+          schema:
+            type: string
+        - name: containername
+          in: path
+          description: 容器名称。
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 访问成功。
+        '403':
+          description: 用户没有权限。
+        '500':
+          description: 服务请求异常。
+  /rest/webterminal/v1/user/{username}/terminal:
+    get:
+      summary: 打开集群交互界面。
+      description: 通过调用后端接口打开了与集群交互的命令行界面。
+      parameters:
+        - name: username
+          in: path
+          description: 用户名称。
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 访问成功。
+        '403':
+          description: 用户没有权限。
+        '500':
+          description: 服务请求异常。

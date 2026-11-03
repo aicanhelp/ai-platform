@@ -1,0 +1,21 @@
+# in container
+volumeMounts:
+  - name: "ssh-config"
+    mountPath: "/root/.ssh"
+  - name: "cert-config"
+    mountPath: "/etc/ssl/certs"
+  - name: "fuyao-config"
+    mountPath: "/opt/fuyao"
+  - name: "tenant-cluster-admin-config"
+    mountPath: "/root/config/"
+  - name: "create-cluster-config"
+    mountPath: "/root/cluster/config"
+
+# in host
+volumes:
+  - name: "ssh-config"
+    hostPath: "/root/.ssh"
+  - name: "cert-config"
+    hostPath: "/etc/ssl/certs"
+  - name: "fuyao-config"
+    hostPath: "/opt/fuyao"

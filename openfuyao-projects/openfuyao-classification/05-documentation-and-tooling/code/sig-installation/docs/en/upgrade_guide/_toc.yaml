@@ -1,0 +1,10 @@
+label: Upgrade Guide
+sections:
+  - label: Before You Upgrade
+    href: ./before_you_upgrade.md
+  - label: Upgrade Guide from v26.03 to v26.06
+    href: ./upgrade_guide_from_v26.03_to_v26.06.md
+  - label: Frontend Declarative Upgrade Guide
+    href: ./frontend_declarative_upgrade_guide.md
+  - label: Backend Declarative Upgrade Guide
+    href: ./backend_declarative_upgrade_guide.md

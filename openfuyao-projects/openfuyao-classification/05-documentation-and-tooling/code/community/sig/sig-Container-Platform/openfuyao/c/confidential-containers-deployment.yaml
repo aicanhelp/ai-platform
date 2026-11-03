@@ -1,0 +1,6 @@
+name: confidential-containers-deployment
+type: public
+description: '该项目旨在简化机密计算环境的搭建流程，提供了基于国产TEE的机密容器构建与部署脚本，支持在OpenFuyao平台的K8s集群中快速部署，并配套相关文档。'
+branches:
+  - name: master
+    type: protected

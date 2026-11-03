@@ -1,0 +1,27 @@
+name: sig-numa-affinity
+description: 面向性能敏感型业务，提供基于硬件拓扑感知的集群级和节点级资源调度和资源分配能力增强，显著提升集群作业性能。
+descriptionEn: Provide cluster- and node-level resource scheduling and allocation capabilities based on hardware topology awareness for performance-sensitive services, significantly improving cluster job performance.
+mailing_list: numa-affinity@list.openfuyao.cn
+maintainers:
+  - gitcode_id: foxbit
+    name: QJWang
+    email: qingjunwang@huawei.com
+  - gitcode_id: regandy
+    name: Gao Bo
+    email: huawei.gaobo@huawei.comv
+repositories:
+  - repo:
+      - openfuyao/volcano-config-service
+      - openfuyao/volcano-config-website
+      - openfuyao/sig-numa-affinity
+    committers:
+      - gitcode_id: yzw0323
+        name: Yan Zhiwei
+        email: yanzw22@chinaunicom.cn
+      - gitcode_id: piamposer-li
+        name: Li Hangyu
+        email: lihangyu6@huawei.com
+    members:
+      - gitcode_id: zhouyongzheng
+        name: Zhou Yongzheng
+        email: zhouyongzheng@huawei.com

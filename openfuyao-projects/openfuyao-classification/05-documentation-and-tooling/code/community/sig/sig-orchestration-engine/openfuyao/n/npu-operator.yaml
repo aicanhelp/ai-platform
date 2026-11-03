@@ -1,0 +1,9 @@
+name: npu-operator
+type: private
+description: '为openFuyao实现NPU资源管理、工作负载的优化调度、训推任务的容器化支持，使能AI作业以容器形式部署并运行在NPU设备上'
+branches:
+  - name: master
+    type: protected
+  - name: dev-0622
+    type: protected
+    created_from: master

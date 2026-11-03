@@ -1,0 +1,32 @@
+registry:
+  imageAddress: cr.openfuyao.cn/openfuyao/registry:2.8.1
+  architecture:
+    - arm64
+repos:
+  - architecture: # openfuyao ai-inference-integration 扩展组件
+      - arm64
+    needDownload: true # ai-inference-integration 扩展组件所需镜像是否下载开关，false-关闭不下载，true-开启下载
+    subImages:
+      - sourceRepo: cr.openfuyao.cn/openfuyao
+        targetRepo: openfuyao
+        images:
+          - name: hermes-router
+            tag:
+              - 0.15.0
+          - name: ascend/vllm-ascend
+            tag:
+              - v0.10.0rc1 # vllm-ascend v0.10.0rc1 官方镜像
+          - name: vllm-ascend
+            tag:
+              - 0.10.0-rc1.of.1 # vllm-ascend v0.10.0rc1 openFuyao开发镜像
+          - name: cache-indexer
+            tag:
+              - 0.15.0
+
+rpms:
+debs: []
+files: []
+charts:
+  - address: https://openfuyao.obs.cn-north-4.myhuaweicloud.com/charts/releases/download/
+    files:
+      - fileName: ai-inference-integration-0.20.0.tgz

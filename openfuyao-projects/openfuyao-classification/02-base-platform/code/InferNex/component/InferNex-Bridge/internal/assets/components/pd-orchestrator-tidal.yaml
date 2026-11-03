@@ -1,0 +1,7 @@
+template:
+  spec:
+    serviceAccountName: tidal-sa
+    containers:
+      - name: tidal
+        image: cr.openfuyao.cn/openfuyao/tidal:latest
+        imagePullPolicy: IfNotPresent

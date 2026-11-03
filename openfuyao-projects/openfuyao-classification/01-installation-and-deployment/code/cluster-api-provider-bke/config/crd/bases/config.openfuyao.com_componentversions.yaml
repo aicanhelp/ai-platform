@@ -1,0 +1,466 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.20.0
+  name: componentversions.config.openfuyao.com
+spec:
+  group: config.openfuyao.com
+  names:
+    kind: ComponentVersion
+    listKind: ComponentVersionList
+    plural: componentversions
+    singular: componentversion
+  scope: Namespaced
+  versions:
+  - name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: ComponentVersion is the Schema for the componentversions API
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ComponentVersionSpec defines the desired state of ComponentVersion
+            properties:
+              compatibility:
+                description: CompatibilitySpec defines compatibility constraints
+                properties:
+                  constraints:
+                    items:
+                      description: Constraint defines a single compatibility constraint
+                      properties:
+                        component:
+                          type: string
+                        rule:
+                          type: string
+                      required:
+                      - component
+                      - rule
+                      type: object
+                    type: array
+                type: object
+              dependencies:
+                items:
+                  description: Dependency defines a dependency on another component
+                  properties:
+                    name:
+                      type: string
+                    phase:
+                      type: string
+                  required:
+                  - name
+                  type: object
+                type: array
+              helm:
+                description: |-
+                  Helm configures Helm chart install/upgrade behavior when Type=helm.
+                  Nil keeps legacy behavior for existing ComponentVersion objects.
+                properties:
+                  chart:
+                    description: Chart identifies the chart in the configured chart repository.
+                    properties:
+                      name:
+                        description: Name is the chart name. Empty defaults to the component name.
+                        type: string
+                      version:
+                        description: Version is the chart version. Empty defaults to the component version.
+                        type: string
+                    type: object
+                  healthCheck:
+                    description: HealthCheck runs after a successful Helm install/upgrade when Enabled is true.
+                    properties:
+                      checks:
+                        description: Checks is the ordered list of probes; all must pass.
+                        items:
+                          description: |-
+                            HealthCheckItemSpec is one health probe. Type selects which nested config is used;
+                            the other nested fields should be nil.
+                          properties:
+                            custom:
+                              description: Custom is used when Type=Custom.
+                              properties:
+                                command:
+                                  description: Command is executed via /bin/sh -c (e.g. "curl -s http://.../healthz").
+                                  type: string
+                              required:
+                              - command
+                              type: object
+                            endpointReady:
+                              description: EndpointReady is used when Type=EndpointReady.
+                              properties:
+                                namespace:
+                                  description: Namespace of the Service.
+                                  type: string
+                                port:
+                                  description: Port optionally restricts readiness to a specific port.
+                                  format: int32
+                                  type: integer
+                                serviceName:
+                                  description: ServiceName is the Endpoints/Service name.
+                                  type: string
+                              required:
+                              - namespace
+                              - serviceName
+                              type: object
+                            podReady:
+                              description: PodReady is used when Type=PodReady.
+                              properties:
+                                labelSelector:
+                                  description: LabelSelector is a Kubernetes label selector string (e.g. "k8s-app=kube-dns").
+                                  type: string
+                                minReady:
+                                  description: MinReady is the minimum Ready pod count; 0 means all listed pods must be Ready.
+                                  format: int32
+                                  type: integer
+                                namespace:
+                                  description: Namespace of pods to list.
+                                  type: string
+                              required:
+                              - labelSelector
+                              - namespace
+                              type: object
+                            type:
+                              description: Type is PodReady / EndpointReady / Custom.
+                              enum:
+                              - PodReady
+                              - EndpointReady
+                              - Custom
+                              type: string
+                          required:
+                          - type
+                          type: object
+                        type: array
+                      enabled:
+                        description: Enabled controls whether health checks run after Apply.
+                        type: boolean
+                      interval:
+                        description: Interval is the poll period between attempts (Go duration string, e.g. "2s").
+                        type: string
+                      timeout:
+                        description: Timeout bounds the overall retry window (Go duration string, e.g. "5m").
+                        type: string
+                    required:
+                    - enabled
+                    type: object
+                  namespace:
+                    description: Namespace is the Helm release namespace. Empty defaults to the execution namespace.
+                    type: string
+                  releaseName:
+                    description: ReleaseName is the Helm release name. Empty defaults to the component name.
+                    type: string
+                  strategy:
+                    description: Strategy maps selected options to Helm SDK install/upgrade actions.
+                    properties:
+                      atomic:
+                        description: Atomic maps to Helm --atomic. It only enables Helm's built-in atomic behavior.
+                        type: boolean
+                      createNamespace:
+                        description: CreateNamespace maps to Helm install --create-namespace.
+                        type: boolean
+                      mode:
+                        description: Mode optionally forces Install or Upgrade. Empty means auto by release existence.
+                        enum:
+                        - Install
+                        - Upgrade
+                        type: string
+                      timeout:
+                        description: Timeout is a Go duration string, e.g. "10m". Empty uses Helm defaults.
+                        type: string
+                      wait:
+                        description: Wait maps to Helm --wait.
+                        type: boolean
+                      waitForJobs:
+                        description: WaitForJobs maps to Helm --wait-for-jobs.
+                        type: boolean
+                    type: object
+                  values:
+                    description: Values is inline Helm values. It has higher priority than ValuesFiles.
+                    type: object
+                    x-kubernetes-preserve-unknown-fields: true
+                  valuesFiles:
+                    description: ValuesFiles are release-image files placed next to component.yaml, usually values.yaml.
+                    items:
+                      type: string
+                    type: array
+                required:
+                - chart
+                type: object
+              inline:
+                description: InlineSpec defines the inline handler configuration
+                properties:
+                  handler:
+                    type: string
+                  version:
+                    type: string
+                required:
+                - handler
+                - version
+                type: object
+              name:
+                type: string
+              resources:
+                items:
+                  description: ResourceSpec defines a Kubernetes resource to be applied
+                  properties:
+                    apiVersion:
+                      type: string
+                    data:
+                      additionalProperties:
+                        type: string
+                      type: object
+                    kind:
+                      type: string
+                    labels:
+                      additionalProperties:
+                        type: string
+                      type: object
+                    manifest:
+                      type: string
+                    name:
+                      type: string
+                    namespace:
+                      type: string
+                    stringData:
+                      additionalProperties:
+                        type: string
+                      type: object
+                  required:
+                  - apiVersion
+                  - kind
+                  - name
+                  type: object
+                type: array
+              subComponents:
+                items:
+                  description: SubComponent defines a sub-component reference
+                  properties:
+                    name:
+                      type: string
+                    version:
+                      type: string
+                  required:
+                  - name
+                  - version
+                  type: object
+                type: array
+              type:
+                description: ComponentType defines the type of component installation
+                type: string
+              upgradeStrategy:
+                description: UpgradeStrategySpec defines the upgrade strategy for
+                  the component
+                properties:
+                  batchSize:
+                    type: integer
+                  failurePolicy:
+                    type: string
+                  mode:
+                    type: string
+                  timeout:
+                    type: string
+                type: object
+              version:
+                type: string
+              yaml:
+                description: |-
+                  YAML configures yaml/manifest component install behavior when Type=yaml.
+                  Nil keeps legacy behavior for existing ComponentVersion objects.
+                properties:
+                  applyStrategy:
+                    description: ApplyStrategy selects ServerSideApply (default),
+                      Replace, or CreateOnly.
+                    enum:
+                    - ServerSideApply
+                    - Replace
+                    - CreateOnly
+                    type: string
+                  healthCheck:
+                    description: HealthCheck runs after successful Apply when Enabled
+                      is true.
+                    properties:
+                      checks:
+                        description: Checks is the ordered list of probes; all must
+                          pass.
+                        items:
+                          description: |-
+                            HealthCheckItemSpec is one health probe. Type selects which nested config is used;
+                            the other nested fields should be nil.
+                          properties:
+                            custom:
+                              description: Custom is used when Type=Custom.
+                              properties:
+                                command:
+                                  description: Command is executed via /bin/sh -c
+                                    (e.g. "curl -s http://.../healthz").
+                                  type: string
+                              required:
+                              - command
+                              type: object
+                            endpointReady:
+                              description: EndpointReady is used when Type=EndpointReady.
+                              properties:
+                                namespace:
+                                  description: Namespace of the Service.
+                                  type: string
+                                port:
+                                  description: Port optionally restricts readiness
+                                    to a specific port.
+                                  format: int32
+                                  type: integer
+                                serviceName:
+                                  description: ServiceName is the Endpoints/Service
+                                    name.
+                                  type: string
+                              required:
+                              - namespace
+                              - serviceName
+                              type: object
+                            podReady:
+                              description: PodReady is used when Type=PodReady.
+                              properties:
+                                labelSelector:
+                                  description: LabelSelector is a Kubernetes label
+                                    selector string (e.g. "k8s-app=kube-dns").
+                                  type: string
+                                minReady:
+                                  description: MinReady is the minimum Ready pod count;
+                                    0 means all listed pods must be Ready.
+                                  format: int32
+                                  type: integer
+                                namespace:
+                                  description: Namespace of pods to list.
+                                  type: string
+                              required:
+                              - labelSelector
+                              - namespace
+                              type: object
+                            type:
+                              description: Type is PodReady / EndpointReady / Custom.
+                              enum:
+                              - PodReady
+                              - EndpointReady
+                              - Custom
+                              type: string
+                          required:
+                          - type
+                          type: object
+                        type: array
+                      enabled:
+                        description: Enabled controls whether health checks run after
+                          Apply.
+                        type: boolean
+                      interval:
+                        description: Interval is the poll period between attempts
+                          (Go duration string, e.g. "2s").
+                        type: string
+                      timeout:
+                        description: Timeout bounds the overall retry window (Go duration
+                          string, e.g. "5m").
+                        type: string
+                    required:
+                    - enabled
+                    type: object
+                  namespace:
+                    description: Namespace is the optional target namespace for deployment
+                      and prune listing.
+                    type: string
+                  prune:
+                    description: Prune enables pruning resources that match PruneLabelSelector
+                      but are absent from the current manifests.
+                    type: boolean
+                  pruneLabelSelector:
+                    additionalProperties:
+                      type: string
+                    description: PruneLabelSelector is required when Prune is true;
+                      used to list prune candidates in the cluster.
+                    type: object
+                type: object
+            required:
+            - name
+            - type
+            - version
+            type: object
+          status:
+            description: ComponentVersionStatus defines the observed state of ComponentVersion
+            properties:
+              conditions:
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              phase:
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

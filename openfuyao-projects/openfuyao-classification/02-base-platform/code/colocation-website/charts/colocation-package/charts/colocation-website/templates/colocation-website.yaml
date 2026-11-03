@@ -1,0 +1,167 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: colocation-website
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  labels:
+    app: colocation-website
+spec:
+  selector:
+    matchLabels:
+      app: colocation-website
+  template:
+    metadata:
+      labels:
+        app: colocation-website
+    spec:
+      {{- if .Values.enableOAuth }}
+      serviceAccountName: colocation
+      {{- end }}
+      containers:
+        {{- if .Values.enableOAuth }}
+        # 加入oauth-proxy镜像
+        - name: oauth-proxy
+          image: '{{ list . "oauthProxy" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.oauthProxy.containerPort }}
+              name: proxy
+          args:
+            - --https-address=
+            - '--http-address=:{{ .Values.oauthProxy.containerPort }}'
+            - --email-domain=*
+            - --provider=openfuyao
+            - --client-id={{ .Values.oauthProxy.client.id }}
+            - --client-secret={{ .Values.oauthProxy.client.secret }}
+            - '--upstream=http://localhost:{{ .Values.service.containerPort }}'
+            - '--openfuyao-delegate-urls={"/":{"resource": "services/proxy", "group": ""}}'
+            - --redirect-url={{ .Values.oauthProxy.urls.host }}
+            - --login-url={{ .Values.oauthProxy.urls.loginURI }}
+            - --redeem-url={{ .Values.oauthProxy.urls.redeemURI }}
+            - --root-prefix={{ .Values.oauthProxy.urls.rootPrefix }}
+            - --cookie-httponly
+        {{- end }}
+        - name: colocation-website
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.containerPort }}
+              protocol: TCP
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: false
+            - name: ca
+              mountPath: /etc/nginx/cert/ca.crt
+              subPath: ca.crt
+      volumes:
+        - name: nginx-config
+          configMap: 
+            name: colocation-nginx
+            defaultMode: 0600
+            items:
+              - key: nginx.conf
+                path: nginx.conf
+        - name: ca
+          configMap: 
+            name: ca
+            defaultMode: 0600
+            items:
+              - key: ca.crt
+                path: ca.crt
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: colocation-website
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+  labels:
+    app: colocation-website
+spec:
+  type: {{ if .Values.openFuyao }}{{ .Values.service.type }}{{ else }}NodePort{{ end }}
+  ports:
+    - name: http
+      port: {{ .Values.service.port }}
+      protocol: TCP
+      {{- if .Values.enableOAuth }}
+      targetPort: proxy
+      {{- else }}
+      targetPort: {{ .Values.service.containerPort }}
+      {{- end }}
+      {{- if or (eq .Values.service.type "NodePort") (not .Values.openFuyao) }}
+      nodePort: {{ .Values.service.nodePort }}
+      {{- end }}
+  selector:
+    app: colocation-website
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: colocation
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: colocation-webhook-auth
+  {{- if .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+  {{- else }}
+  namespace: {{ .Release.Namespace }}
+  {{- end }}
+subjects:
+  - kind: ServiceAccount
+    name: colocation
+    {{- if .Values.namespace }}
+    namespace: {{ .Values.namespace }}
+    {{- else }}
+    namespace: {{ .Release.Namespace }}
+    {{- end }}
+roleRef:
+  kind: ClusterRole
+  name: webhook-auth
+  apiGroup: rbac.authorization.k8s.io
+---
+{{- if .Values.openFuyao }}
+apiVersion: console.openfuyao.com/v1beta1
+kind: ConsolePlugin
+metadata:
+  name: colocation
+spec:
+  pluginName: colocation
+  displayName: "在离线混部"
+  entrypoint: /container_platform
+  subPages:
+    - pageName: ColocationOverview
+      displayName: 概览
+    - pageName: ColocationConfiguration
+      displayName: 混部策略配置
+    - pageName: ColocationMonitor
+      displayName: 混部监控
+  backend:
+    type: Service
+    service:
+      name: colocation-website
+      {{- if .Values.namespace }}
+      namespace: {{ .Values.namespace }}
+      {{- else }}
+      namespace: {{ .Release.Namespace }}
+      {{- end }}
+      port: {{ .Values.service.port }}
+  enabled: true
+  {{- end }}

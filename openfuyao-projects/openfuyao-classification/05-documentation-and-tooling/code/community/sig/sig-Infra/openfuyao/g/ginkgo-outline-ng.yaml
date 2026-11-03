@@ -1,0 +1,6 @@
+name: ginkgo-outline-ng
+type: private
+description: 'Enhanced `ginkgo outline` which supports package pattern, label filter and more'
+branches:
+  - name: main
+    type: protected

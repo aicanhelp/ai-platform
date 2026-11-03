@@ -1,0 +1,213 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.9.0
+  creationTimestamp: null
+  name: commands.bkeagent.bocloud.com
+spec:
+  group: bkeagent.bocloud.com
+  names:
+    kind: Command
+    listKind: CommandList
+    plural: commands
+    shortNames:
+      - cmd
+    singular: command
+  scope: Namespaced
+  versions:
+    - additionalPrinterColumns:
+        - jsonPath: .spec.nodeName
+          name: NODENAME
+          type: string
+        - jsonPath: .spec.suspend
+          name: SUSPEND
+          type: boolean
+        - jsonPath: .spec.backoffLimit
+          name: BACKOFFLIMIT
+          type: integer
+        - jsonPath: .spec.ttlSecondsAfterFinished
+          name: TTLSECONDSAFTERFINISHED
+          type: integer
+      name: v1beta1
+      schema:
+        openAPIV3Schema:
+          description: Command is the Schema for the commands API
+          properties:
+            apiVersion:
+              description: 'APIVersion defines the versioned schema of this representation
+              of an object. Servers should convert recognized schemas to the latest
+              internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              type: string
+            kind:
+              description: 'Kind is a string value representing the REST resource this
+              object represents. Servers may infer this from the endpoint the client
+              submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              type: string
+            metadata:
+              type: object
+            spec:
+              description: CommandSpec defines the desired state of Command
+              properties:
+                activeDeadlineSecond:
+                  description: 超过此时间后，不在执行。默认600 当该任务暂停后，重新启动时将重新计时
+                  type: integer
+                backoffLimit:
+                  description: 当某个命令执行失败时， 最大重试次数
+                  type: integer
+                commands:
+                  description: 这里的指令会按照数组顺序执行，如果上个不成功则下个不会执行，除非设置了失败跳过 对于指令书写错误的直接标识失败
+                  items:
+                    properties:
+                      backoffDelay:
+                        description: 命令执行失败时， 重试间隔时间 默认为0
+                        type: integer
+                      backoffIgnore:
+                        description: 当该条指令执行失败，并且达到失败重试次数时，为true则运行跳过，默认false
+                        type: boolean
+                      command:
+                        description: '这里要根据命令类型进行不同的指令解析 Type: BuiltIn，是Agent内置实现指令，比如节点Ipv4开启等，
+                        示例[]string{ipv4, dockerStorageCapacity},将检查ipv4转发是否开启， docker目录/var/lib/docker是否大于300G
+                        Type: Shell，这个是要Agent执行具体的指令 示例[]string{"iptables", "--table",
+                        "nat", "--list", ">", "/tmp/iptables.rule"},获取iptables规则并写入文件
+                        Type: Kubernetes，这个是要获取K8s中资源或者执行里边的指令 固定格式: [configmap|secret]:ns/name:ro:/tmp/secret.json
+                        只支持[configmap|secret], ns/name标识唯一资源，只有[ro|rx|rw]三个值标识[configmap|secret]资源是[只读|执行|写入]
+                        最后一个为宿主机目录，当rx时最后一个为任意值 示例[]string{"secret:ns/name:ro:/tmp/secret.json"}
+                        获取secret/ns/name资源并写入/tmp/secret.json文件 示例[]string{"configmap:ns/name:rx:shell"}
+                        获取configmap/ns/name中的资源，在agent以shell方式执行 示例[]string{"configmap:ns/name:rw:/tmp/iptables.rule"}
+                        读取/tmp/iptables.rule中的内容并写入configmap/ns/name'
+                        items:
+                          type: string
+                        type: array
+                      id:
+                        description: 每条指令都必须有唯一的ID
+                        type: string
+                      type:
+                        description: 指令类型
+                        type: string
+                    required:
+                      - command
+                      - id
+                      - type
+                    type: object
+                  type: array
+                nodeName:
+                  description: 命令执行节点
+                  type: string
+                nodeSelector:
+                  description: 选定某些节点执行，NodeName需要为空
+                  properties:
+                    matchExpressions:
+                      description: matchExpressions is a list of label selector requirements.
+                        The requirements are ANDed.
+                      items:
+                        description: A label selector requirement is a selector that
+                          contains values, a key, and an operator that relates the key
+                          and values.
+                        properties:
+                          key:
+                            description: key is the label key that the selector applies
+                              to.
+                            type: string
+                          operator:
+                            description: operator represents a key's relationship to
+                              a set of values. Valid operators are In, NotIn, Exists
+                              and DoesNotExist.
+                            type: string
+                          values:
+                            description: values is an array of string values. If the
+                              operator is In or NotIn, the values array must be non-empty.
+                              If the operator is Exists or DoesNotExist, the values
+                              array must be empty. This array is replaced during a strategic
+                              merge patch.
+                            items:
+                              type: string
+                            type: array
+                        required:
+                          - key
+                          - operator
+                        type: object
+                      type: array
+                    matchLabels:
+                      additionalProperties:
+                        type: string
+                      description: matchLabels is a map of {key,value} pairs. A single
+                        {key,value} in the matchLabels map is equivalent to an element
+                        of matchExpressions, whose key field is "key", the operator
+                        is "In", and the values array contains only "value". The requirements
+                        are ANDed.
+                      type: object
+                  type: object
+                suspend:
+                  description: 挂起暂不执行，可阻止下个执行的指令
+                  type: boolean
+                ttlSecondsAfterFinished:
+                  description: 运行完成后，超过此清理的时间则清理该任务,不设置不删除
+                  type: integer
+              type: object
+            status:
+              additionalProperties:
+                description: CommandStatus defines the observed state of Command
+                properties:
+                  completionTime:
+                    description: Represents time when the job was completed. It is not
+                      guaranteed to be set in happens-before order across separate operations.
+                      It is represented in RFC3339 form and is in UTC. The completion
+                      time is only set when the job finishes successfully.
+                    format: date-time
+                    type: string
+                  conditions:
+                    items:
+                      properties:
+                        count:
+                          description: 执行次数
+                          type: integer
+                        id:
+                          description: 每条指令都必须有唯一的ID
+                          type: string
+                        lastStartTime:
+                          format: date-time
+                          type: string
+                        phase:
+                          description: 该命令所在阶段
+                          type: string
+                        status:
+                          description: 该命令执行的结果
+                          type: string
+                        stdErr:
+                          items:
+                            type: string
+                          type: array
+                        stdOut:
+                          items:
+                            type: string
+                          type: array
+                      required:
+                        - id
+                      type: object
+                    type: array
+                  failed:
+                    description: The number of pods which reached phase Failed.
+                    type: integer
+                  lastStartTime:
+                    description: 这个时间在两处更新，一处该CRD刚刚要被处理时，由agent来更新 当该任务暂停后，在磁被启动的时候要cluster-api-provider-metal来同时更新此字段
+                      spec.activeDeadlineSecond 依据此字段做判断
+                    format: date-time
+                    type: string
+                  phase:
+                    description: 执行阶段
+                    type: string
+                  status:
+                    description: 执行结果
+                    type: string
+                  succeeded:
+                    description: The number of pods which reached phase Succeeded.
+                    type: integer
+                type: object
+              type: object
+          type: object
+      served: true
+      storage: true
+      subresources:
+        status: {}

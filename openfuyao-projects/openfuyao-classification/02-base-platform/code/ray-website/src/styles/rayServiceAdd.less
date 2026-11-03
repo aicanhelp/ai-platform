@@ -1,0 +1,131 @@
+@import '@/styles/common.less';
+.rayServiceAdd{
+    .@{container-prefix}-radio-group{
+      margin: 20px 32px;
+    }
+  .@{container-prefix}-radio-button-wrapper{
+    width: 171px;
+    height: 32px;
+    text-align: center;
+    line-height: 32px;
+  }
+  .@{container-prefix}-radio-button-wrapper-checked{
+    .@{container-prefix}-radio-button-checked{
+      background: #3f66f5;
+    }
+    span{
+      color: #fff;
+    }
+  }
+  .tool_word_group {
+    margin-right: 24px;
+    font-size: 14px;
+    line-height: 22px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    svg {
+      height: 18px !important;
+      width: 18px !important;
+      margin-right: 3px;
+    }
+    span {
+      color: #3f66f5;
+    }
+  }
+  .tool_word_group:last-child {
+    margin-right: 0;
+  }
+  .rayAddFormContent{
+    width: 100%;
+    .@{container-prefix}-form{
+      width: 100%;
+      .rayAddForm_info{
+        min-height: 167px;
+        margin: 0 32px;
+        background: #fff;
+        padding: 32px;
+        margin-bottom: 20px;
+        .rayAddForm_info_title{
+          font-size: 16px;
+          color: #333;
+          font-weight: bold;
+          margin-bottom: 19px;
+        }
+        .rayAddForm_info_horizontal{
+          display: flex;
+          justify-content: space-between;
+          .@{container-prefix}-form-item{
+            width: 48%;
+          }
+          .@{container-prefix}-radio-group{
+            margin: 0 !important;
+          }
+        }
+        .cm-editor{
+          border: 1px solid rgba(206, 204, 204, 0.9);
+        }
+      }
+      .rayAddForm_serveConfig{
+        min-height: 172px;
+      }
+      .volumesContent{
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 8px;
+        p{
+          width: 49%;
+          color: #666;
+        }
+      }
+      .rayAddForm_images{
+        display: flex;
+        justify-content: space-between;
+        .@{container-prefix}-form-item{
+          width: 49%;
+        }
+      }
+      .rayAddForm_head{
+        font-size: 16px;
+        color: #333;
+        margin-bottom: 20px;
+      }
+      .rayAddForm_head_bold{
+        font-weight: bold;
+      }
+      .rayAddForm_head_environment_title{
+        margin: 20px 0 10px 0;
+        color: #666;
+      }
+      .rayAddForm_head_environment{
+        color: #3f66f5;
+        cursor: pointer;
+      }
+      .list_equal{
+        margin: 0 30px;
+      }
+      .split_line{
+        border-bottom: 1px solid rgba(137,147,155,0.2);
+      }
+      .rayAddForm_work_add_button{
+        width: 100%;
+        color: #3f66f5;
+      }
+    }
+  }
+  .rayAddForm{                                  
+    width: 100%;
+    .ml{
+      margin-left: 16px;
+    }
+    .rayAddFormButtons{
+      height: 72px;
+      padding: 20px 32px;
+      display: flex;
+      justify-content: flex-end;
+      background: #fff;
+      box-shadow: 0px 0px 10px 0px rgba(51,51,51,0.16);
+    }
+  }
+}                       

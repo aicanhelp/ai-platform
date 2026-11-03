@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "cache-indexer.fullname" . }}-config
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "cache-indexer.labels" . | nindent 4 }}
+data:
+  config.yaml: |
+    http:
+      addr: {{ printf ":%v" .Values.service.targetPort | quote }}
+      shutdownTimeout: {{ .Values.http.shutdownTimeout | quote }}
+      readHeaderTimeout: {{ .Values.http.readHeaderTimeout | quote }}
+      readTimeout: {{ .Values.http.readTimeout | quote }}
+      writeTimeout: {{ .Values.http.writeTimeout | quote }}
+      idleTimeout: {{ .Values.http.idleTimeout | quote }}
+      maxHeaderBytes: {{ .Values.http.maxHeaderBytes | int }}
+      maxHitRateBodyBytes: {{ .Values.http.maxHitRateBodyBytes | int64 }}
+    log:
+      level: {{ .Values.log.level | quote }}
+    blockKey:
+      pythonHashSeed: {{ .Values.blockKey.pythonHashSeed | quote }}
+      prefixCachingHashAlgo: {{ .Values.blockKey.prefixCachingHashAlgo | quote }}
+      useIntBlockHashes: {{ .Values.blockKey.useIntBlockHashes }}
+    discovery:
+      refreshInterval: {{ .Values.discovery.refreshInterval | quote }}
+      segmentsFetchTimeout: {{ .Values.discovery.segmentsFetchTimeout | quote }}
+      labels:
+        engineKey: {{ .Values.discovery.labels.engineKey | quote }}
+        engineValue: {{ .Values.discovery.labels.engineValue | quote }}
+        pdRoleKey: {{ .Values.discovery.labels.pdRoleKey | quote }}
+        pdRoleValue:
+{{ toYaml .Values.discovery.labels.pdRoleValue | indent 10 }}
+        kvManagerKey: {{ .Values.discovery.labels.kvManagerKey | quote }}
+        kvManagerValue: {{ .Values.discovery.labels.kvManagerValue | quote }}
+      vllm:
+        zmqPortName: {{ .Values.discovery.vllm.zmqPortName | quote }}
+      mooncakeMaster:
+        httpPortName: {{ .Values.discovery.mooncakeMaster.httpPortName | quote }}
+        rpcPortName: {{ .Values.discovery.mooncakeMaster.rpcPortName | quote }}
+        httpPort: {{ .Values.discovery.mooncakeMaster.httpPort | int }}
+        rpcPort: {{ .Values.discovery.mooncakeMaster.rpcPort | int }}
+    ingest:
+      l1:
+        backoffInitial: {{ .Values.ingest.l1.backoffInitial | quote }}
+        backoffMax: {{ .Values.ingest.l1.backoffMax | quote }}
+      l3:
+        scheme: {{ .Values.ingest.l3.scheme | quote }}
+        pollInterval: {{ .Values.ingest.l3.pollInterval | quote }}
+        httpTimeout: {{ .Values.ingest.l3.httpTimeout | quote }}

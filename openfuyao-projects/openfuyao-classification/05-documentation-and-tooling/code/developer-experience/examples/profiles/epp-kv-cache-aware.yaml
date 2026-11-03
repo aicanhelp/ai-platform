@@ -1,0 +1,23 @@
+inferencepool:
+  inferenceExtension:
+    pluginsConfigFile: "epp-aggregate-kv-cache-aware.yaml"
+    pluginsCustomConfig:
+      epp-aggregate-kv-cache-aware.yaml: |
+        apiVersion: inference.networking.x-k8s.io/v1alpha1
+        kind: EndpointPickerConfig
+        plugins:
+        - type: scorer-aggregate-kv-cache-aware
+          parameters:
+            kvCacheHitNotRateWeight: 1.0
+            xpuCacheUsageWeight: 1.0
+            waitingRequestWeight: 1.0
+            kvCacheManagerIP: cache-indexer-service
+            kvCacheManagerPort: 8080
+            kvCacheManagerPath: /match_sort
+            kvCacheManagerTimeout: 5000000000
+        - type: picker-min-random
+        schedulingProfiles:
+        - name: default
+          plugins:
+          - pluginRef: scorer-aggregate-kv-cache-aware
+          - pluginRef: picker-min-random

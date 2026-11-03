@@ -1,0 +1,90 @@
+{
+  "module": {
+    "title": "Nodes",
+    "description": "Manage cluster node resources",
+    "detail": "Node Details"
+  },
+  "list": {
+    "total": "Total {{total}} items"
+  },
+  "table": {
+    "name": "Node Name",
+    "ip": "IP Address",
+    "type": "Type",
+    "status": "Status",
+    "isBusy": "Busy",
+    "os": "Operating System"
+  },
+  "header": {
+    "abnormalNode": "Abnormal Nodes/Total Nodes",
+    "manageNode": "Master Nodes",
+    "workerNode": "Worker Nodes"
+  },
+  "type": {
+    "manageNode": "Master Nodes",
+    "workerNode": "Worker Nodes"
+  },
+  "status": {
+    "normal": "Normal",
+    "abnormal": "Abnormal",
+    "unknown": "Unknown"
+  },
+  "busyStatus": {
+    "yes": "Yes",
+    "no": "No"
+  },
+  "info": {
+    "basicInfo": "Basic Information",
+    "healthStatus": "Health Status",
+    "resourceQuota": "Resource Quota Details",
+    "labels": "Labels:",
+    "annotations": "Annotations:",
+    "countZero": "0 items"
+  },
+  "fields": {
+    "nodeName": "Node Name:",
+    "nodeSpec": "Node Specification:",
+    "nodeStatus": "Node Status:",
+    "nodeIpAddress": "Node IP Address:",
+    "os": "Operating System:",
+    "nodeId": "Node ID:",
+    "createdAt": "Created At:",
+    "isBusy": "Busy:"
+  },
+  "health": {
+    "networkAvailability": "Network Availability",
+    "memoryPressure": "Memory Pressure",
+    "diskPressure": "Disk Pressure",
+    "acceptPods": "Accept Pods",
+    "healthy": "Healthy",
+    "abnormal": "Abnormal",
+    "diskPressureStatus": "Disk Pressure"
+  },
+  "resource": {
+    "cpu": "CPU",
+    "memory": "Memory",
+    "pods": "Pods",
+    "usage": "Usage",
+    "max": "Maximum"
+  },
+  "pod": {
+    "createdAt": "Created At:",
+    "podIpAddress": "Pod IP Address",
+    "cpuCore": "CPU(core)",
+    "memoryMB": "Memory(MB)",
+    "containerName": "Container Name",
+    "image": "Image",
+    "status": "Status",
+    "port": "Port"
+  },
+  "detail": {
+    "tabDetail": "Details",
+    "tabPod": "Pod"
+  },
+  "messages": {
+    "fetchPodResourceFailed": "Failed to fetch Pod CPU & Memory!"
+  },
+  "unit": {
+    "cores": " cores"
+  }
+}

@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dra-profile-config
+  namespace: FILLED_BY_OPERATOR
+  labels:
+    name: npu-dra-kubeletplugin
+data:
+  dra.config: |
+    softShareMounts:
+      - hostPath: /opt/xpu/lib/libvruntime.so
+        containerPath: /opt/xpu/lib/libvruntime.so
+        options:
+          - rw
+          - rbind
+      - hostPath: /opt/xpu/lib/ld.so.preload
+        containerPath: /etc/ld.so.preload
+        options:
+          - rw
+          - rbind
+      - hostPath: /opt/xpu/bin/enpu-monitor
+        containerPath: /opt/enpu/vcann-rt/tools/enpu-monitor
+        options:
+          - rw
+          - rbind
+      - hostPath: /opt/xpu/bin/systemd-detect-virt
+        containerPath: /usr/bin/systemd-detect-virt
+        options:
+          - rw
+          - rbind
+    nodes:
+      k8s-master:
+        - physicalId: 0
+          vnpuMode: full
+        - physicalId: 1
+          vnpuMode: full
+        - physicalId: 2
+          vnpuMode: hard
+        - physicalId: 3
+          vnpuMode: soft
+          schedulingPolicy: elastic

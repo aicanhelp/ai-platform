@@ -1,0 +1,24 @@
+replicaCount: 1
+
+images:
+  core:
+    repository: cr.openfuyao.cn/openfuyao/multi-cluster-website
+    pullPolicy: Always
+    tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+namespace: default
+
+service:
+  type: NodePort 
+  port: 8080
+  nodePort: 30884
+
+# specify backend only when the backend is available
+backend: "http://multicluster-service.default.svc:9022"
+
+# set the field to mount the plugin to openFuyao web portal
+openFuyao: true

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: controller-manager
+  namespace: system
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsNonRoot: false
+      containers:
+        - image: deploy.bocloud.k8s:5000/kubernetes/bke-controller:v1.0.0
+          name: manager
+          securityContext:
+            allowPrivilegeEscalation: true
+          resources:
+            limits:
+              cpu: 500m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 200Mi
+      initContainers:
+        - name: manifests
+          image: deploy.bocloud.k8s:5000/kubernetes/addons:latest
+          imagePullPolicy: Always
+          command:
+            - /bin/sh
+            - -c
+            - cp -r . /manifests
+          volumeMounts:
+            - mountPath: /manifests
+              name: manifests
+

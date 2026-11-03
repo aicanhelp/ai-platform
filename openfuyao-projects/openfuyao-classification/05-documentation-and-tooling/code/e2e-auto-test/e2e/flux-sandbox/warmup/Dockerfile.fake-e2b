@@ -1,0 +1,20 @@
+# Copyright (c) 2026 Huawei Technologies Co., Ltd.
+# openFuyao is licensed under Mulan PSL v2.
+# You can use this software according to the terms and conditions of the Mulan PSL v2.
+# You may obtain a copy of Mulan PSL v2 at:
+#     http://license.coscl.org.cn/MulanPSL2
+# THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OR
+# CONDITIONS OF ANY KIND, EITHER EXPRESS OR IMPLIED.
+# See the Mulan PSL v2 for more details.
+
+FROM golang:1.24 AS builder
+WORKDIR /workspace
+COPY go.mod go.sum ./
+RUN go mod download
+COPY flux-sandbox/warmup/fakee2b ./flux-sandbox/warmup/fakee2b
+RUN CGO_ENABLED=0 go build -o /fake-e2b ./flux-sandbox/warmup/fakee2b
+
+FROM alpine:3.20
+COPY --from=builder /fake-e2b /usr/local/bin/fake-e2b
+EXPOSE 8080
+ENTRYPOINT ["/usr/local/bin/fake-e2b"]

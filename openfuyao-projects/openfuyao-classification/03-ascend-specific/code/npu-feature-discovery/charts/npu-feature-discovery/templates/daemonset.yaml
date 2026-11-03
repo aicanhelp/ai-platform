@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: npu-feature-discovery
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: npu-feature-discovery
+    app.kubernetes.io/part-of: ascend-npu
+spec:
+  selector:
+    matchLabels:
+      app: npu-feature-discovery
+      app.kubernetes.io/part-of: ascend-npu
+  template:
+    metadata:
+      labels:
+        app: npu-feature-discovery
+        app.kubernetes.io/part-of: ascend-npu
+    spec:
+      hostPID: true
+      hostNetwork: true
+      priorityClassName: system-node-critical
+      serviceAccountName: npu-feature-discovery
+      containers:
+        - name: npu-feature-discovery
+          image: '{{ list . "core" | include "helpers.image.name" }}'
+          imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+          securityContext:
+            privileged: true
+          env:
+            - name: GFD_SLEEP_INTERVAL
+              value: 60s
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+          volumeMounts:
+            - name: host-time
+              mountPath: /etc/localtime
+              readOnly: true
+      volumes:
+        - name: host-time
+          hostPath:
+            path: /etc/localtime
+            type: ""

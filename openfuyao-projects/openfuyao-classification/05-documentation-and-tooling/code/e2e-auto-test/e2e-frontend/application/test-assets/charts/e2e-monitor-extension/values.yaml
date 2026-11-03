@@ -1,0 +1,21 @@
+replicaCount: 1
+image:
+  repository: busybox
+  tag: "1.36"
+service:
+  httpPort: 80
+  type: ClusterIP
+pullPolicy: IfNotPresent
+plugin:
+  pluginName: e2e-monitor-extension
+  displayName: "E2E 监控扩展"
+  entrypoint: /container_platform
+  subPages:
+    - pageName: overview
+      displayName: "概览"
+    - pageName: settings
+      displayName: "设置"
+  enabled: true
+backend:
+  namespace: default
+  port: 80

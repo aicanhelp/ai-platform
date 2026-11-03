@@ -1,0 +1,103 @@
+/* Copyright (c) 2024 Huawei Technologies Co., Ltd.
+openFuyao is licensed under Mulan PSL v2.
+You can use this software according to the terms and conditions of the Mulan PSL v2.
+You may obtain a copy of Mulan PSL v2 at:
+         http://license.coscl.org.cn/MulanPSL2
+THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+See the Mulan PSL v2 for more details. */
+@import '@/styles/common.less';
+.chart_container{
+  width: 100%;
+  padding: 30px 20px;
+  background-color: @page-container-color;
+  .chart_container_header{
+    display: flex;
+    flex-direction: row;
+    align-items:center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 10px;
+    p{
+      font-size: 16px;
+      color: #333333;
+      line-height: 24px;
+    }
+    svg{
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+    .data_area_icon{
+      height: 16px;
+      width: 16px;
+      color: #89939B;
+      margin-left: 7px;
+    }
+  }
+  .inner_container{
+    width: 100%;
+    overflow-x: auto;
+    background-color: @page-container-color;
+  }
+  .inner_sub_container{
+    width: 1100px !important;
+    margin-top:10px;
+    padding-bottom: 20px;
+  }
+  .monitor_tooltip div{
+    font-size: 14px;
+    line-height: 24px;
+  }
+}
+.screen_modal{
+  width: 1200px !important;
+.screen_box{
+  .screen_header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    .screen_icon_right{
+      svg{
+        width: 18px;
+        height: 18px;
+      }
+      span:nth-child(1){
+        margin-right: 50px;
+      }
+    }
+  }
+}
+}
+.legend_group{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  .legend_color{
+    margin-right: 12px;
+    height: 4px;
+    width: 16px;
+  }
+  .legend_text{
+    font-size: 14px;
+    color: #333333;
+  }
+}
+.data_area_icon{
+  width: 16px;
+  height: 16px;
+  color: #89939B;
+  vertical-align: baseline;
+  margin-left:7px;
+}
+.tooltip_box{
+  max-width: 470px;
+  padding: 12px 15px 12px 10px;
+  font-size: 14px;
+}
+.@{container-prefix}-tooltip-inner{
+  background: #333333 !important;
+  opacity: 0.85;
+}

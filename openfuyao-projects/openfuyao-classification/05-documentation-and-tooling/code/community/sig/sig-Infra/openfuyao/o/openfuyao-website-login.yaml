@@ -1,0 +1,6 @@
+name: openfuyao-website-login
+type: private
+description: ''
+branches:
+  - name: master
+    type: protected

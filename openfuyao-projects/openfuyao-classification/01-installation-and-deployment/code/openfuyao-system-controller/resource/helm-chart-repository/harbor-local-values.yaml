@@ -1,0 +1,138 @@
+expose:
+  type: clusterIP
+  tls:
+    enabled: true
+    certSource: secret
+    secret:
+      secretName: harbor-local-tls
+  clusterIP:
+    name: local-harbor
+    ports:
+      httpPort: 80
+      httpsPort: 443
+internalTLS:
+  enabled: false
+persistence:
+  enabled: true
+  resourcePolicy:
+  persistentVolumeClaim:
+    registry:
+      existingClaim: harbor-registry-pvc
+      storageClass:
+      subPath:
+      accessMode: ReadWriteOnce
+      size: 10Gi
+    chartmuseum:
+      existingClaim: harbor-chartmuseum-pvc
+      storageClass:
+      subPath:
+      accessMode: ReadWriteOnce
+      size: 10Gi
+    jobservice:
+      jobLog:
+        existingClaim: harbor-jobservice-pvc
+        storageClass:
+        subPath:
+        accessMode: ReadWriteOnce
+        size: 10Gi
+    database:
+      existingClaim: harbor-database-pvc
+      storageClass:
+      subPath:
+      accessMode: ReadWriteOnce
+      size: 10Gi
+    redis:
+      existingClaim: harbor-redis-pvc
+      storageClass:
+      subPath:
+      accessMode: ReadWriteOnce
+      size: 10Gi
+harborAdminPassword:
+externalURL: http://fuyao.local-harbor.domain
+imagePullPolicy: Always
+trivy:
+  enabled: false
+notary:
+  enabled: false
+nginx:
+  nodeSelector:
+    fuyao-harbor-local-install-node:
+      "{NODE_NAME}"
+  tolerations:
+    - operator: "Exists"
+  image:
+    repository: cr.openfuyao.cn/openfuyao/harbor/nginx-photon
+    tag: v2.7.0
+portal:
+  nodeSelector:
+    fuyao-harbor-local-install-node:
+      "{NODE_NAME}"
+  image:
+    repository: cr.openfuyao.cn/openfuyao/harbor/harbor-portal
+    tag: v2.7.0
+  tolerations:
+    - operator: "Exists"
+core:
+  nodeSelector:
+    fuyao-harbor-local-install-node:
+      "{NODE_NAME}"
+  image:
+    repository: cr.openfuyao.cn/openfuyao/harbor/harbor-core
+    tag: v2.7.0
+  tolerations:
+    - operator: "Exists"
+jobservice:
+  image:
+    repository: cr.openfuyao.cn/openfuyao/harbor/harbor-jobservice
+    tag: v2.7.0
+  nodeSelector:
+    fuyao-harbor-local-install-node:
+      "{NODE_NAME}"
+  tolerations:
+    - operator: "Exists"
+registry:
+  credentials:
+    password:
+  registry:
+    image:
+      repository: cr.openfuyao.cn/openfuyao/harbor/registry-photon
+      tag: v2.7.0
+  nodeSelector:
+    fuyao-harbor-local-install-node:
+      "{NODE_NAME}"
+  controller:
+    image:
+      repository: cr.openfuyao.cn/openfuyao/harbor/harbor-registryctl
+      tag: v2.7.0
+  tolerations:
+    - operator: "Exists"
+chartmuseum:
+  image:
+    repository: cr.openfuyao.cn/openfuyao/harbor/chartmuseum-photon
+    tag: v2.7.0
+  nodeSelector:
+    fuyao-harbor-local-install-node:
+      "{NODE_NAME}"
+  tolerations:
+    - operator: "Exists"
+database:
+  internal:
+    password:
+    image:
+      repository: cr.openfuyao.cn/openfuyao/harbor/harbor-db
+      tag: v2.7.0
+    nodeSelector:
+      fuyao-harbor-local-install-node:
+        "{NODE_NAME}"
+    tolerations:
+      - operator: "Exists"
+redis:
+  internal:
+    image:
+      repository: cr.openfuyao.cn/openfuyao/harbor/redis-photon
+      tag: v2.7.0
+    nodeSelector:
+      fuyao-harbor-local-install-node:
+        "{NODE_NAME}"
+    tolerations:
+      - operator: "Exists"

@@ -1,0 +1,255 @@
+# hardening-rules.yaml — K8s CIS/STIG 安全加固规则清单（数据驱动）
+# 6 组规则，每条含 id/source/type/target-or-manifest/参数/期望值/风险/来源
+# type 取值：file-perm | file-owner | manifest-arg | kubelet-field | runtime-detect | audit-policy-check
+# risk: low | medium | high
+# manual: true 表示高危项，工具会检测运行环境自动决定：安全则改，不安全则跳过并醒目提醒
+# action: add（新增 flag）| replace（替换 flag 值）| remove（删除 flag）
+# prereq: 前置条件（证书存在性等），不满足则标记 skipped/manual
+# sync_probe: true 表示改该 flag 时同步改 livenessProbe.host（D6）
+# target/manifest 中的 <runtime:xxx> 表示运行时检测替换
+
+groups:
+  - id: g1_manifest_perms
+    name: 静态 Pod manifest 文件权限
+    wait_recreate: false
+    rules:
+      - id: cis-1.1.1
+        source: CIS 1.1.1
+        type: file-perm
+        target: /etc/kubernetes/manifests/kube-apiserver.yaml
+        expected: "600"
+        risk: low
+      - id: cis-1.1.3
+        source: CIS 1.1.3
+        type: file-perm
+        target: /etc/kubernetes/manifests/kube-controller-manager.yaml
+        expected: "600"
+        risk: low
+      - id: cis-1.1.5
+        source: CIS 1.1.5
+        type: file-perm
+        target: /etc/kubernetes/manifests/kube-scheduler.yaml
+        expected: "600"
+        risk: low
+      - id: cis-1.1.7
+        source: CIS 1.1.7
+        type: file-perm
+        target: /etc/kubernetes/manifests/etcd.yaml
+        expected: "600"
+        risk: low
+
+  - id: g2_apiserver
+    name: kube-apiserver 参数
+    wait_recreate: true
+    rules:
+      - id: cis-1.2.5
+        source: CIS 1.2.5
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-apiserver.yaml
+        flag: --kubelet-certificate-authority
+        value: /etc/kubernetes/pki/ca.crt
+        action: add
+        prereq: file_exists:/etc/kubernetes/pki/ca.crt
+        risk: medium
+      - id: cis-1.2.14
+        source: CIS 1.2.14
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-apiserver.yaml
+        flag: --enable-admission-plugins
+        value: "NodeRestriction"
+        action: add-or-merge   # 若已存在 admission-plugins，追加 NodeRestriction；否则新增
+        risk: medium
+      - id: cis-1.2.30
+        source: CIS 1.2.30
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-apiserver.yaml
+        flag: --service-account-extend-token-expiration
+        value: "false"
+        action: add
+        risk: low
+      - id: stig-sv242378
+        source: STIG SV-242378
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-apiserver.yaml
+        flag: --tls-min-version
+        value: VersionTLS12
+        action: add
+        risk: low
+      - id: stig-sv242418
+        source: STIG SV-242418
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-apiserver.yaml
+        flag: --tls-cipher-suites
+        value: "TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256,TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384,TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384"
+        action: replace
+        risk: low
+      - id: stig-sv242438
+        source: STIG SV-242438
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-apiserver.yaml
+        flag: --request-timeout
+        value: "1m"
+        action: add
+        risk: low
+      - id: stig-sv242403
+        source: STIG SV-242403
+        type: audit-policy-check
+        target: /etc/kubernetes/audit-policy.yaml
+        expected: "has-rules"
+        risk: low
+        note: "仅校验 audit-policy.yaml 存在且含 rules，不强制改（实际集群已含 RequestResponse 策略）"
+
+  - id: g3_controller_manager
+    name: kube-controller-manager 参数
+    wait_recreate: true
+    rules:
+      - id: cis-1.3.7
+        source: CIS 1.3.7 + STIG SV-242385
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-controller-manager.yaml
+        flag: --bind-address
+        value: "127.0.0.1"
+        action: replace
+        sync_probe: true        # D6: 同步改 livenessProbe.host
+        risk: high
+      - id: stig-sv242376
+        source: STIG SV-242376
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-controller-manager.yaml
+        flag: --tls-min-version
+        value: VersionTLS12
+        action: add
+        risk: low
+
+  - id: g4_scheduler
+    name: kube-scheduler 参数
+    wait_recreate: true
+    rules:
+      - id: cis-1.4.2
+        source: CIS 1.4.2 + STIG SV-242384
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-scheduler.yaml
+        flag: --bind-address
+        value: "127.0.0.1"
+        action: replace
+        sync_probe: true        # D6
+        risk: high
+      - id: stig-sv242377
+        source: STIG SV-242377
+        type: manifest-arg
+        manifest: /etc/kubernetes/manifests/kube-scheduler.yaml
+        flag: --tls-min-version
+        value: VersionTLS12
+        action: add
+        risk: low
+
+  - id: g5_etcd
+    name: etcd 参数与数据目录
+    wait_recreate: true
+    rules:
+      - id: cis-1.1.11
+        source: CIS 1.1.11
+        type: file-perm
+        target: "<runtime:etcd_datadir>"
+        expected: "700"
+        risk: low
+      - id: cis-1.1.12
+        source: CIS 1.1.12
+        type: file-owner
+        target: "<runtime:etcd_datadir>"
+        expected: "etcd:etcd"
+        risk: high
+        manual: true            # 智能检测: etcd 以 etcd 用户运行才改，root 运行则跳过
+      - id: stig-sv242379
+        source: STIG SV-242379
+        type: manifest-arg
+        manifest: "<runtime:etcd_manifest>"
+        flag: --auto-tls
+        value: "false"
+        action: add
+        risk: low
+      - id: stig-sv242380
+        source: STIG SV-242380
+        type: manifest-arg
+        manifest: "<runtime:etcd_manifest>"
+        flag: --peer-auto-tls
+        value: "false"
+        action: add
+        risk: low
+      - id: stig-sv242445
+        source: STIG SV-242445
+        type: file-owner
+        target: "<runtime:etcd_datadir_files>"
+        expected: "etcd:etcd"
+        risk: high
+        manual: true            # 智能检测: 同 cis-1.1.12
+      - id: stig-sv242459
+        source: STIG SV-242459
+        type: file-perm
+        target: "<runtime:etcd_datadir_files>"
+        expected: "600"
+        risk: low
+        note: "STIG 要求 644 或更严格；本工具采用 600 更严格（仅 etcd 进程访问）"
+
+  - id: g6_kubelet
+    name: kubelet 配置与文件权限
+    wait_recreate: false
+    restart_kubelet: true
+    rules:
+      - id: stig-sv242404
+        source: STIG SV-242404
+        type: runtime-detect
+        flag: --hostname-override
+        risk: high
+        manual: true            # 智能检测: 检测到在用则跳过，未用则可安全删除
+      - id: stig-sv242406
+        source: STIG SV-242406
+        type: file-owner
+        target: "<runtime:kubelet_config>"
+        expected: "root:root"
+        risk: low
+      - id: stig-sv242420
+        source: STIG SV-242420
+        type: kubelet-field
+        field: authentication.x509.clientCAFile
+        value: /etc/kubernetes/pki/ca.crt
+        risk: low
+        note: "实际集群已正确设置，detect 后若已合规则 skipped"
+      - id: stig-sv242449
+        source: STIG SV-242449
+        type: file-perm
+        target: /etc/kubernetes/pki/ca.crt
+        expected: "644"
+        risk: low
+      - id: stig-sv242450
+        source: STIG SV-242450
+        type: file-owner
+        target: /etc/kubernetes/pki/ca.crt
+        expected: "root:root"
+        risk: low
+      - id: stig-sv242424
+        source: STIG SV-242424
+        type: kubelet-field
+        field: tlsPrivateKeyFile
+        value: "<runtime:kubelet_key>"
+        risk: medium
+        prereq: file_exists:<runtime:kubelet_key>
+      - id: stig-sv242425
+        source: STIG SV-242425
+        type: kubelet-field
+        field: tlsCertFile
+        value: "<runtime:kubelet_cert>"
+        risk: medium
+        prereq: file_exists:<runtime:kubelet_cert>
+      - id: stig-sv242434
+        source: STIG SV-242434
+        type: kubelet-field
+        field: protectKernelDefaults
+        value: "true"
+        risk: low
+      - id: stig-sv245541
+        source: STIG SV-245541
+        type: kubelet-field
+        field: streamingConnectionIdleTimeout
+        value: "5m"
+        risk: low

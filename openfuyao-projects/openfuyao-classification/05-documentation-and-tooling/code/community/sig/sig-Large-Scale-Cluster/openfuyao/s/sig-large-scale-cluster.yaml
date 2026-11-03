@@ -1,0 +1,6 @@
+name: sig-large-scale-cluster
+type: private
+description: 'sig-Large-Scale-Cluster职能仓库，用于存放大规模集群相关的文档、讨论等。'
+branches:
+  - name: master
+    type: protected

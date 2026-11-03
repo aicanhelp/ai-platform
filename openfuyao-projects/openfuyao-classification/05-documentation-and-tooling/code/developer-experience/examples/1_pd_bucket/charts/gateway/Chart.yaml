@@ -1,0 +1,8 @@
+apiVersion: v2
+name: gateway
+description: Helm chart for deploying Inference Gateway (Istio) resources
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+
+

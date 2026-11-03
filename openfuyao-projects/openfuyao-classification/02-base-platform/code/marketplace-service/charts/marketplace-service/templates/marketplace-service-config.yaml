@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: marketplace-service-config
+  namespace: openfuyao-system
+  annotations:
+    usage: svc name and host for built-in harbor
+    user-modify: forbidden
+data:
+  local-harbor-display-name: "local"
+  local-harbor-host: {{.Values.serverHost.localHarbor}}
+  local-harbor-project: "/chartrepo/library"
+  official-harbor-display-name: "openFuyao"
+  official-harbor-host: {{.Values.serverHost.officialHarbor}}
+  official-harbor-project: "/chartrepo/openfuyao-catalog"
+  official-harbor-tags-URL: "/v2/openfuyao-catalog-tags"
+  marketplace-scenes: |
+    - compute-power-engine-plugin
+    - artificial-intelligence
+    - computing
+    - database
+    - developer-tool
+    - CI/CD
+    - monitor
+    - log
+    - network
+    - observability
+    - security
+    - storage
+    - big-data
+  insecure-skip-verify: "{{ .Values.config.insecureSkipVerify }}"
+  chart-limit: "{{.Values.localHarbor.chartLimit}}"
+  server-name: ""

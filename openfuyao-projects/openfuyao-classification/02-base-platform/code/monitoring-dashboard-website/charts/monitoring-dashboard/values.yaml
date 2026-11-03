@@ -1,0 +1,29 @@
+oauthProxy:
+  containerPort: 9093
+  client:
+    id: "oauth-proxy"
+    secret: "SECRETTS"
+  urls:
+    host: "/"
+    loginURI: "/oauth2/oauth/authorize"
+    redeemURI: "/oauth2/oauth/token"
+    rootPrefix: "/monitoring-dashboard"
+
+enableOAuth: true
+service:
+  port: 80
+  types: NodePort
+  nodePort: 30999
+  containerPort: 8080
+
+openFuyao: true
+
+images:
+  core:
+    repository: "cr.openfuyao.cn/openfuyao/oauth-proxy"
+    pullPolicy: Always
+    tag: "latest"
+  web:
+    repository: cr.openfuyao.cn/openfuyao/monitoring-dashboard-website
+    pullPolicy: Always
+    tag: latest

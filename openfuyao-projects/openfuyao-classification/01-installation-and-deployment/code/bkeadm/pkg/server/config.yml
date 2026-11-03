@@ -1,0 +1,25 @@
+version: 0.1
+log:
+  fields:
+    service: registry
+storage:
+  delete:
+    enabled: true
+  cache:
+    blobdescriptor: inmemory
+  filesystem:
+    rootdirectory: /var/lib/registry
+#http:
+#  addr: 0.0.0.0:5000
+#  headers:
+#    X-Content-Type-Options: [nosniff]
+http:
+  addr: 0.0.0.0:443
+  tls:
+    certificate: /etc/docker/registry/deploy.bocloud.k8s.crt
+    key: /etc/docker/registry/deploy.bocloud.k8s.key
+health:
+  storagedriver:
+    enabled: true
+    interval: 10s
+    threshold: 3

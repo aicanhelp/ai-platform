@@ -1,0 +1,692 @@
+openapi: 3.0.0
+info:
+  title: 
+  version: 1.0.0
+paths:
+  /dashboards:
+    post:
+      summary: Creating a single dashboard resource.
+      description: Creating a custom dashboard resource.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  description: Dashboard name.
+                creator:
+                  type: string
+                  description: Dashboard creator.
+              required:
+                - displayName
+                - creator
+            example:
+              displayName: "Dashboard A"
+              creator: "admin"
+      responses:
+        '200':
+          description: Dashboard resource created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+                  data:
+                    type: object
+                    properties:
+                      dashboardID:
+                        type: string
+                        description: Dashboard ID in the format of {UTC}-{UUID}. The UTC format is yyyy-mm-dd-hh-mm-ss-UUID, and the UUID uses the standard format.
+                      displayName:
+                        type: string
+                        description: Dashboard name.
+                      creator:
+                        type: string
+                        description: Dashboard creator.
+                      totalWidgets:
+                        type: integer
+                        description: Total number of widgets contained in the dashboard.
+                      widgets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            dashboardID:
+                              type: string
+                              description: ID of the dashboard to which the widget belongs.
+                            displayName:
+                              type: string
+                              description: Widget name.
+                            widgetType:
+                              type: string
+                              description: Widget graph type.
+                            dataSource:
+                              type: string
+                              description: Widget data source.
+                            instances:
+                              type: array
+                              items:
+                                type: string
+                              description: List of instances to be displayed in the widget.
+                            graphType:
+                              type: object
+                              properties:
+                                graphType:
+                                  type: integer
+                                  description: Widget graph type, which is the same as the value of widgetType.
+                                instancesMax:
+                                  type: integer
+                                  description: Maximum number of monitoring instances that can be contained in the graph type.
+                                boardMin:
+                                  type: integer
+                                  description: Minimum value of dashboard data, integer, mandatory when widgetType is set to Dashboard.
+                                boardMax:
+                                  type: integer
+                                  description: Maximum value of dashboard data, integer, mandatory when widgetType is set to Dashboard.
+                      lastUpdateTime:
+                        type: string
+                        description: Last update time of the dashboard (creation/modification), provided in UTC format.
+        '401':
+          description: The client request body is invalid.
+        '402':
+          description: The client request contains invalid parameters.
+        '403':
+          description: The display name of the dashboard already exists.
+        '507':
+          description: Failed to create the dashboard resource.
+    get:
+      summary: Obtaining the dashboard list.
+      description: Obtaining all dashboard resources in the current cluster.
+      responses:
+        '200':
+          description: Dashboard resource list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        dashboardID:
+                          type: string
+                          description: Dashboard ID.
+                        displayName:
+                          type: string
+                          description: Dashboard name.
+                        creator:
+                          type: string
+                          description: Dashboard creator.
+                        totalwidgets:
+                          type: integer
+                          description: Total number of widgets contained in the dashboard.
+        '509':
+          description: Failed to obtain the dashboard resource list.
+  /dashboards/{dashboardID}:
+    get:
+      summary: Obtaining a single dashboard resource.
+      description: Obtaining a dashboard resource in the current cluster by dashboard ID.
+      parameters:
+        - name: dashboardID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: ID of the dashboard to be obtained, in the format of {UTC}-{UUID}.
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Start time of the query (inclusive), in UTC format.
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: string
+            description: End time of the query (inclusive), in UTC format.
+        - name: step
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: Sampling interval for query, in seconds.
+      responses:
+        '200':
+          description: Dashboard resource obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+                  data:
+                    type: object
+                    properties:
+                      dashboardID:
+                        type: string
+                        description: Dashboard ID in the format of {UTC}-{UUID}. The UTC format is yyyy-mm-dd-hh-mm-ss-UUID, and the UUID uses the standard format.
+                      displayName:
+                        type: string
+                        description: Dashboard name.
+                      creator:
+                        type: string
+                        description: Dashboard creator.
+                      totalWidgets:
+                        type: integer
+                        description: Total number of widgets contained in the dashboard.
+                      widgets:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            dashboardID:
+                              type: string
+                              description: ID of the dashboard to which the widget belongs.
+                            displayName:
+                              type: string
+                              description: Widget name.
+                            widgetType:
+                              type: string
+                              description: Widget graph type.
+                            dataSource:
+                              type: string
+                              description: Widget data source.
+                            instances:
+                              type: array
+                              items:
+                                type: string
+                              description: List of instances to be displayed in the widget.
+                            graphType:
+                              type: object
+                              properties:
+                                graphType:
+                                  type: integer
+                                  description: Widget graph type, which is the same as the value of widgetType.
+                                instancesMax:
+                                  type: integer
+                                  description: Maximum number of monitoring instances that can be contained in the graph type.
+                                boardMin:
+                                  type: integer
+                                  description: Minimum value of dashboard data, integer, mandatory when widgetType is set to Dashboard.
+                                boardMax:
+                                  type: integer
+                                  description: Maximum value of dashboard data, integer, mandatory when widgetType is set to Dashboard.
+                      lastUpdateTime:
+                        type: string
+                        description: Last update time of the dashboard (creation/modification), provided in UTC format.
+        '402':
+          description: The client request contains invalid parameters.
+        '508':
+          description: Failed to obtain the dashboard resource.
+    patch:
+      summary: Modifying a single dashboard resource.
+      description: Modifying certain attributes of a dashboard resource by dashboard ID.
+      parameters:
+        - name: dashboardID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Dashboard ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  description: Dashboard name.
+              required:
+                - displayName
+            example:
+              displayName: "Dashboard B"
+      responses:
+        '200':
+          description: Dashboard resource modified successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+        '401':
+          description: The client request body is invalid.
+        '402':
+          description: The client request contains invalid parameters.
+        '403':
+          description: The display name of the dashboard already exists.
+        '510':
+          description: Failed to modify the dashboard resource.
+    delete:
+      summary: Deleting a single dashboard resource.
+      description: Deleting a dashboard resource by dashboard ID.
+      parameters:
+        - name: dashboardID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: ID of the dashboard to be obtained, in the format of {UTC}-{UUID}. The UTC format is yyyy-mm-dd-hh-mm-ss-UUID, and the UUID uses the standard format.
+      responses:
+        '200':
+          description: Dashboard resource deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+        '402':
+          description: The client request contains invalid parameters.
+        '511':
+          description: Failed to delete the dashboard resource.
+  /widgets:
+    post:
+      summary: Creating a single widget resource.
+      description: Creating a single widget resource for a dashboard by dashboard ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dashboardID:
+                  type: string
+                  description: ID of the dashboard to which the widget belongs, in the format of {UTC}-{UUID}. The UTC format is yyyy-mm-dd-hh-mm-ss-UUID, and the UUID uses the standard format.
+                displayName:
+                  type: string
+                  description: Widget name.
+                widgetType:
+                  type: string
+                  description: Widget graph type. 0 indicates a line chart, 1 indicates a stacked area chart, 2 indicates a number chart, 3 indicates a dashboard, 4 indicates a donut chart, and 5 indicates a bar chart.
+                dataSource:
+                  type: string
+                  description: Widget data source.
+                instances:
+                  type: array
+                  items:
+                    type: string
+                  description: List of instances to be displayed in the widget. The metrics content needs to be converted from JSON to string format.
+                boardMin:
+                  type: string
+                  description: Minimum value of dashboard data, string, mandatory when widgetType is set to Dashboard.
+                boardMax:
+                  type: string
+                  description: Maximum value of dashboard data, string, mandatory when widgetType is set to Dashboard.
+              required:
+                - dashboardID
+                - displayName
+                - widgetType
+                - dataSource
+                - instances
+            example:
+              dashboardID: "2024-09-03-02-56-59-fec79262-xxxx-4836-xxxx-1832434bb7c2"
+              displayName: "A bar chart"
+              widgetType: "0"
+              dataSource: "http://promethus"
+              instances:
+                - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.100.10:10250\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+                - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.100.10:10250\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics/aaa\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+              boardMin: "0"
+              boardMax: "20"
+      responses:
+        '200':
+          description: Widget resource created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+                  data:
+                    type: object
+                    properties:
+                      dashboardID:
+                        type: string
+                        description: ID of the dashboard to which the widget belongs.
+                      displayName:
+                        type: string
+                        description: Widget name.
+                      widgetType:
+                        type: string
+                        description: Widget graph type.
+                      dataSource:
+                        type: string
+                        description: Widget data source.
+                      instances:
+                        type: array
+                        items:
+                          type: string
+                        description: List of instances to be displayed in the widget.
+                      graphType:
+                        type: object
+                        properties:
+                          graphType:
+                            type: integer
+                            description: Widget graph type, which is the same as the value of widgetType.
+                          instancesMax:
+                            type: integer
+                            description: Maximum number of monitoring instances that can be contained in the graph type.
+                          boardMin:
+                            type: integer
+                            description: Minimum value of dashboard data, integer, mandatory when widgetType is set to Dashboard.
+                          boardMax:
+                            type: integer
+                            description: Maximum value of dashboard data, integer, mandatory when widgetType is set to Dashboard.
+        '401':
+          description: The client request body is invalid.
+        '402':
+          description: The client request contains invalid parameters.
+        '501':
+          description: Failed to create the widget resource.
+  /widgets/{widgetID}:
+    patch:
+      summary: Modifying a single widget resource.
+      description: Modifying a widget resource by widget ID.
+      parameters:
+        - name: widgetID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Widget ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                displayName:
+                  type: string
+                  description: Widget name.
+                widgetType:
+                  type: string
+                  description: Widget graph type. 0 indicates a line chart, 1 indicates a stacked area chart, 2 indicates a number chart, 3 indicates a dashboard, 4 indicates a donut chart, and 5 indicates a bar chart.
+                dataSource:
+                  type: string
+                  description: Widget data source.
+                instances:
+                  type: array
+                  items:
+                    type: string
+                  description: List of instances to be displayed in the widget.
+                boardMin:
+                  type: string
+                  description: Minimum value of dashboard data, integer, mandatory when widgetType is set to Dashboard.
+                boardMax:
+                  type: string
+                  description: Maximum value of dashboard data, integer, mandatory when widgetType is set to Dashboard.
+              required:
+                - displayName
+                - widgetType
+                - dataSource
+                - instances
+            example:
+              displayName: "A bar chart"
+              widgetType: "0"
+              dataSource: "http://prometheus:8080"
+              instances:
+                - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.100.10:10250\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+                - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.100.10:10250\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics/aaa\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+              boardMin: "0"
+              boardMax: "20"
+      responses:
+        '200':
+          description: Widget resource modified successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+        '401':
+          description: The client request body is invalid.
+        '402':
+          description: The client request contains invalid parameters.
+        '502':
+          description: Failed to modify the widget resource.
+    delete:
+      summary: Deleting a single widget resource.
+      description: Deleting a widget resource by widget ID.
+      parameters:
+        - name: widgetID
+          in: path
+          required: true
+          schema:
+            type: string
+            description: ID of the widget resource to be deleted, in the format of {UTC}-{UUID}. The UTC format is yyyy-mm-dd-hh-mm-ss-UUID, and the UUID uses the standard format.
+      responses:
+        '200':
+          description: Widget resource deleted successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+        '402':
+          description: The client request contains invalid parameters.
+        '503':
+          description: Failed to delete the widget resource.
+  /widgets/indicators:
+    get:
+      summary: Obtaining the indicator name list.
+      description: Obtaining the name list of all indicators contained in the data source (dataSource) when creating or modifying a widget.
+      parameters:
+        - name: dataSource
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Data source URI.
+      responses:
+        '200':
+          description: Indicator name list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+                  data:
+                    type: array
+                    items:
+                      type: string
+                    description: Returned indicator name list.
+        '402':
+          description: The client request contains invalid parameters.
+        '504':
+          description: Failed to obtain the indicator name list.
+  /widgets/indicators/{displayName}:
+    get:
+      summary: Obtaining the instance list by indicator name.
+      description: Obtaining all instances contained in the indicator by data source (dataSource) and indicator name (displayName) when creating or modifying a widget.
+      parameters:
+        - name: dataSource
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Data source URI.
+        - name: displayName
+          in: path
+          required: true
+          schema:
+            type: string
+            description: Indicator name. An indicator contains multiple instances.
+      responses:
+        '200':
+          description: Instance list obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+                  data:
+                    type: object
+                    properties:
+                      displayName:
+                        type: string
+                        description: Indicator name. An indicator contains multiple instances.
+                      instances:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            metric:
+                              type: object
+                              description: A metric contains multiple label key-value pairs, and is the unique identifier of the monitored object.
+                            values:
+                              type: array
+                              description: Array of (timestamp,value), indicating the sampling result in the time series.
+                              items:
+                                type: array
+                                items:
+                                  oneOf:
+                                    - type: integer
+                                    - type: string
+        '402':
+          description: The client request contains invalid parameters.
+        '505':
+          description: Failed to obtain the instance list.
+  /widgets/indicators/instances:
+    post:
+      summary: Obtaining the data of each instance in the instance list.
+      description: Obtaining the indicator data list by data source (dataSource), time range ([start,end]), sampling interval (step), and the selected instance list (instances) when creating or modifying a widget.
+      parameters:
+        - name: dataSource
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Data source URI.
+        - name: start
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: Start time of the query (inclusive), in UTC format.
+        - name: end
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: End time of the query (inclusive), in UTC format.
+        - name: step
+          in: query
+          required: true
+          schema:
+            type: integer
+            description: Sampling interval for query, in seconds.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                type: string
+              description: List of indicator instances selected by the user. The instances are converted into JSON strings.
+            example:
+              - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.xxx.xx:port\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+              - "{\"__name__\":\"kubelet_http_requests_total\",\"endpoint\":\"https-metrics\",\"instance\":\"192.168.xxx.xx:port\",\"job\":\"kubelet\",\"long_running\":\"false\",\"method\":\"GET\",\"metrics_path\":\"/metrics/aaa\",\"namespace\":\"kube-system\",\"node\":\"test2-xxx\",\"path\":\"metrics\",\"server_type\":\"readwrite\",\"service\":\"kubelet\"}"
+      responses:
+        '200':
+          description: Instance data obtained successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: string
+                    description: Status code.
+                  msg:
+                    type: string
+                    description: Response message.
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        metric:
+                          type: object
+                          description: A metric contains multiple label key-value pairs, and is the unique identifier of the monitored object.
+                        values:
+                          type: array
+                          description: Array of (timestamp,value), indicating the sampling result in the time series.
+                          items:
+                            type: array
+                            items:
+                              oneOf:
+                                - type: integer
+                                - type: string
+        '401':
+          description: The client request body is invalid.
+        '402':
+          description: The client request contains invalid parameters.
+        '506':
+          description: Failed to obtain instance data.

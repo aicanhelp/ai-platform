@@ -1,0 +1,57 @@
+.log{
+  margin: 20px 32px;
+  background: #fff;
+  .log_top{
+    padding: 32px 21.5px 17px;
+    display: flex;
+    justify-content: space-between;
+    .log_top_title{
+      color: #333;
+      font-size: 16px;
+      font-weight: bold;
+    }
+    .log_top_copy{
+      color: #3f66f5;
+      cursor: pointer;
+    }
+  }
+  .log_contents{
+    padding: 0 32px 32px;
+    min-height: 400px;
+    .log_content{
+      padding: 0 32px;
+      min-height: 400px;
+      background: #f7f7f7;
+      border: 1px solid #dcdcdc;
+      .log_content_single{
+        margin-top: 14px;
+        display: flex;
+         .log_content_single_line{
+          flex:  0 0 3px;
+          margin-top: 4px;
+          height: 16px;
+          width: 3px;
+          background: #3f66f5;
+         }
+         .log_content_single_arrow{
+           color: #89939b;
+           margin: 4px 4px 12px 0;
+         }
+         .log_content_single_log{
+           color: #333;
+           white-space: nowrap;
+           overflow: hidden;
+           text-overflow: ellipsis;
+         }
+         .log_content_single_log_select{
+           white-space: wrap;
+           overflow: auto;
+           text-overflow: '';
+        }
+      }
+      .log_content_nolog{
+        margin-top: 12px;
+      }
+    }
+  }
+}

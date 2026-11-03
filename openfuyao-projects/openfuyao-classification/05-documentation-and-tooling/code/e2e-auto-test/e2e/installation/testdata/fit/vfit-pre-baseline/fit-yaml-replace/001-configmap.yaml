@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: fit-yaml-replace
+  namespace: fit-test
+  labels:
+    openfuyao.cn/fit-component: fit-yaml-replace
+data:
+  version: "v1"
+  color: "blue"

@@ -1,0 +1,74 @@
+[Unit]
+Description=Kubernetes Kubelet
+Documentation=https://github.com/kubernetes/kubernetes
+After=containerd.service
+
+[Service]
+{{- if .KubeletService.ExecStart }}
+ExecStart={{ .KubeletService.ExecStart }}
+{{- end }}
+
+{{- if .KubeletService.Restart }}
+Restart={{ .KubeletService.Restart }}
+{{- end }}
+
+{{- if .KubeletService.StartLimitInterval }}
+StartLimitInterval={{ .KubeletService.StartLimitInterval }}
+{{- end }}
+
+{{- if .KubeletService.RestartSec }}
+RestartSec={{ .KubeletService.RestartSec }}
+{{- end }}
+
+{{- range .KubeletService.ExecStartPre }}
+ExecStartPre={{ . }}
+{{- end }}
+
+{{- if .KubeletService.StartLimitBurst }}
+StartLimitBurst={{ .KubeletService.StartLimitBurst }}
+{{- end }}
+
+{{- if .KubeletService.KillMode }}
+KillMode={{ .KubeletService.KillMode }}
+{{- end }}
+
+{{- if .KubeletService.StandardOutput }}
+StandardOutput={{ .KubeletService.StandardOutput }}
+{{- end }}
+
+{{- if .KubeletService.StandardError }}
+StandardError={{ .KubeletService.StandardError }}
+{{- end }}
+
+{{- if .KubeletService.SyslogIdentifier }}
+SyslogIdentifier={{ .KubeletService.SyslogIdentifier }}
+{{- end }}
+
+{{- if .KubeletService.WorkingDirectory }}
+WorkingDirectory={{ .KubeletService.WorkingDirectory }}
+{{- end }}
+
+{{- if .KubeletService.User }}
+User={{ .KubeletService.User }}
+{{- end }}
+
+{{- if .KubeletService.Group }}
+Group={{ .KubeletService.Group }}
+{{- end }}
+
+{{- range .KubeletService.Environment }}
+Environment="{{ . }}"
+{{- end }}
+
+{{- range .KubeletService.EnvironmentFile }}
+EnvironmentFile={{ . }}
+{{- end }}
+
+{{- if .KubeletService.CustomExtra }}
+{{- range $key, $value := .KubeletService.CustomExtra }}
+{{ $key }}={{ $value }}
+{{- end }}
+{{- end }}
+
+[Install]
+WantedBy=multi-user.target

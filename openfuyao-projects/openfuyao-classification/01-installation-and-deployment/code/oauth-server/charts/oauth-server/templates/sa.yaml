@@ -1,0 +1,101 @@
+kind: ServiceAccount
+apiVersion: v1
+metadata:
+  name: oauth-server
+  namespace: openfuyao-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: oauth-code-token-role
+  namespace: oauth-code-token
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: oauth-code-token-rolebinding
+  namespace: oauth-code-token
+subjects:
+  - kind: ServiceAccount
+    name: oauth-server
+    namespace: openfuyao-system
+roleRef:
+  kind: Role
+  name: oauth-code-token-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: jwt-cookie-read-role
+  namespace: openfuyao-system
+rules:
+  - apiGroups: [""]
+    resources: ["secrets"]
+    resourceNames: ["oauth-server-tls", "oauth-jwt-cookie-secret", "oauth-client-secrets"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: jwt-cookie-read-rolebinding
+  namespace: openfuyao-system
+subjects:
+  - kind: ServiceAccount
+    name: oauth-server
+    namespace: openfuyao-system
+roleRef:
+  kind: Role
+  name: jwt-cookie-read-role
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: webhook-auth
+rules:
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+  - apiGroups: ["authorization.k8s.io"]
+    resources: ["subjectaccessreviews"]
+    verbs: ["create"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: oauth-server-webhook-auth
+subjects:
+  - kind: ServiceAccount
+    name: oauth-server
+    namespace: openfuyao-system
+roleRef:
+  kind: ClusterRole
+  name: webhook-auth
+  apiGroup: rbac.authorization.k8s.io
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: manipulate-user
+rules:
+  - apiGroups: ["users.openfuyao.com"]
+    resources: ["users"]
+    verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: oauth-server-manipulate-user
+subjects:
+  - kind: ServiceAccount
+    name: oauth-server
+    namespace: openfuyao-system
+roleRef:
+  kind: ClusterRole
+  name: manipulate-user
+  apiGroup: rbac.authorization.k8s.io

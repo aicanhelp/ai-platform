@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: multicluster-service
+  namespace: {{ .Values.namespace }}
+  labels:
+    control-plane: multicluster-service
+spec:
+  selector:
+    matchLabels:
+      control-plane: multicluster-service
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        control-plane: multicluster-service
+    spec:
+      securityContext:
+        runAsUser: 65532
+        runAsGroup: 65532
+        fsGroup: 0
+      initContainers:
+      - name: init-permission
+        image: {{ .Values.thirdPartyImages.busyBox.repository }}:{{ .Values.thirdPartyImages.busyBox.tag }}
+        imagePullPolicy: IfNotPresent
+        command: ["sh", "-c", "chmod -R 700 /var/log/multicluster-service && chown -R 65532:65532 /var/log/multicluster-service"]
+        volumeMounts:
+        - name: multicluster-log
+          mountPath: /var/log/multicluster-service
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0      
+      containers:
+      - name: mcs-controller
+        image: '{{ list . "core" | include "helpers.image.name" }}'
+        imagePullPolicy: {{ .Values.images.core.pullPolicy }}
+        env:
+          - name: SERVICE_PORT
+            value: {{ .Values.service.ports.http.targetPort | quote }}
+        resources:
+          requests:
+            cpu: "{{ .Values.resources.requests.cpu }}"
+            memory: "{{ .Values.resources.requests.memory }}"
+          limits:
+            cpu: "{{ .Values.resources.limits.cpu }}"
+            memory: "{{ .Values.resources.limits.memory }}" 
+        volumeMounts:
+        - name: karmadakubeconfig-volume
+          mountPath: /etc/karmada
+        - name: multicluster-log
+          mountPath: /var/log/multicluster-service
+        - name: kubeconfig
+          mountPath: /root/.kube/
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0      
+        ports:
+          - containerPort: {{ .Values.service.ports.http.targetPort }}
+            protocol: TCP
+            name: http
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8081
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /readyz
+            port: 8081
+          initialDelaySeconds: 5
+          periodSeconds: 10
+      volumes:
+      - name: karmadakubeconfig-volume
+        secret:
+          secretName: karmada-kubeconfig
+      - name: multicluster-log
+        hostPath:
+          path: /var/log/multicluster-service
+          type: DirectoryOrCreate
+      - name: kubeconfig
+        hostPath: 
+          path: /root/.kube/
+          type: Directory
+      serviceAccountName: multicluster-service
+      terminationGracePeriodSeconds: 10

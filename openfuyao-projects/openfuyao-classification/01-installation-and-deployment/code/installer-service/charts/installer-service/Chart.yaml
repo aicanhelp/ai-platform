@@ -1,0 +1,10 @@
+apiVersion: v2
+name: installer-service
+description: >
+  A Helm chart for openFuyao installer service. The installer is used to provide a visual interface 
+  that allows users to perform installation and deployment operations on business clusters, 
+  including creating, deleting, scaling up, scaling down, and upgrading clusters on the management cluster.
+type: application
+version: 0.0.0-latest
+appVersion: latest
+keywords: ["openfuyao-component"]

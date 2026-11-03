@@ -1,0 +1,52 @@
+name: sig-Colocation
+description:  负责openFuyao社区在离线混部和资源超卖解决方案的设计开发和维护。
+descriptionEn: Design, develop, and maintain the colocation and resource oversold solutions for the openFuyao community.
+mailing_list: colocation@list.openfuyao.cn
+maintainers:
+  - gitcode_id: piamposer-li
+    name: Li Hangyu
+    email: lihangyu6@huawei.com
+  - gitcode_id: zhangjianjinok
+    name: Zhang Jianjin
+    email: zhangjj3339@chinaunicom.cn
+  - gitcode_id: Gu0YuXianG
+    name: Guo Yuxiang
+    email: guoyx87@chinaunicom.cn
+  - gitcode_id: ewon
+    name: Zhou Guang
+    email: zhouguanginfo@jd.com
+  - gitcode_id: regandy
+    name: Gao Bo
+    email: huawei.gaobo@huawei.com
+repositories:
+  - repo:
+      - openfuyao/sig-colocation
+      - openfuyao/colocation-website
+      - openfuyao/colocation-service
+      - openfuyao/colocation-management
+    committers:
+      - gitcode_id: javadoors
+        name: ZHANG Chao
+        email: paul.zhang@huawei.com
+      - gitcode_id: foxbit
+        name: QJWang
+        email: qingjunwang@huawei.com
+      - gitcode_id: wangqi45857189
+        name: Wang Qi
+        email: 1099046071@qq.com
+      - gitcode_id: zhaorenming
+        name: Zhao Renming
+        email: zhaorm22@chinaunicom.cn
+      - gitcode_id: tietouli
+        name: Li Xiaofeng
+        email: lixf311@chinaunicom.cn
+      - gitcode_id: caibw
+        name: Cai Bowen
+        email: caibw5@chinaunicom.cn
+      - gitcode_id: yzw0323
+        name: Yan Zhiwei
+        email: yanzw22@chinaunicom.cn
+    members:
+      - gitcode_id: lishuai_hw
+        name: Li Shuai
+        email: lishuai123@huawei.com

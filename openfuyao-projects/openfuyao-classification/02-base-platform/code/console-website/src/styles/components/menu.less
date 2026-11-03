@@ -1,0 +1,222 @@
+@import '@/styles/common.less';
+
+.container_nav_bar {
+  .@{container-prefix}-menu {
+    background-color: @page-container-color;
+    font-size: 14px;
+
+    // 一级按钮，不可展开
+    .@{container-prefix}-menu-item {
+      width: 212px;
+      margin: 0;
+      height: 48px;
+      color: #666;
+    }
+
+    // 一级按钮，可展开
+    .@{container-prefix}-menu-submenu {
+      width: 220px;
+      margin: 0;
+      min-height: 48px;
+
+      .@{container-prefix}-menu-submenu-title {
+        height: 100%;
+        margin: 0;
+        color: #666;
+      }
+    }
+
+    // 二级按钮
+    .@{container-prefix}-menu-sub {
+      .@{container-prefix}-menu-item {
+        width: 204px;
+        margin: 0 16px 0 8px;
+        height: 48px;
+        padding-left: 64px ! important;
+      }
+
+      .@{container-prefix}-menu-item-selected {
+        background-color: #ebf1ff;
+      }
+    }
+
+    // 折叠箭头颜色（未选中）
+    .@{container-prefix}-menu-submenu-arrow {
+      color: rgb(137, 147, 155);
+    }
+
+    // 一级按钮（不可展开）文本颜色（选中）
+    .@{container-prefix}-menu-item-selected {
+      background-color: #ebf1ff;
+
+      .@{container-prefix}-menu-title-content {
+        color: #3f66f5;
+      }
+    }
+
+    // 一级按钮（可展开）文本颜色（选中）
+    .@{container-prefix}-menu-submenu-selected {
+      .@{container-prefix}-menu-title-content {
+        color: #3f66f5;
+      }
+
+      // 二级按钮文本颜色（未选中）
+      .@{container-prefix}-menu-sub {
+        .@{container-prefix}-menu-item {
+          .@{container-prefix}-menu-title-content {
+            color: #666;
+          }
+        }
+
+        // 二级按钮文本颜色（选中）
+        .@{container-prefix}-menu-item-selected {
+          .@{container-prefix}-menu-title-content {
+            color: #3f66f5;
+          }
+        }
+      }
+
+      // 折叠箭头颜色（选中）
+      .@{container-prefix}-menu-submenu-arrow {
+        color: #3f66f5;
+      }
+    }
+
+    .@{container-prefix}-menu-item-group-title {
+      margin: 0 8px;
+      padding-left: 24px;
+      border-top: 1px solid #dcdcdc;
+      color: #333333;
+      font-size: 14px;
+      line-height: 24px;
+      font-weight: 700;
+      margin-left: 5px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    .menu-icon {
+      width: 20px;
+      height: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+      line-height: 0;
+
+      img {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .collapse_arrow {
+    z-index: 999;
+    position: fixed;
+    cursor: pointer;
+    bottom: 32px;
+    border-radius: 50%;
+    left: 200px;
+    background: @page-container-color;
+    transition: left 0.25s ease;
+
+    span {
+      padding: 10px;
+      border-radius: 50%;
+      border: 1px solid #dcdcdcff;
+
+      svg {
+        color: #89939B;
+      }
+    }
+
+  }
+}
+
+.dark_box {
+  .container_nav_bar {
+    .@{container-prefix}-menu {
+      .@{container-prefix}-menu-title-content {
+        color: #ccc;
+
+        a {
+          color: #ccc;
+        }
+      }
+
+      .@{container-prefix}-menu-item-group-title {
+        color: #f7f7f7 !important;
+        border-top: 1px solid #444444;
+      }
+
+      .@{container-prefix}-menu-submenu-selected {
+        .@{container-prefix}-menu-submenu-title {
+          .@{container-prefix}-menu-title-content {
+            color: #fff !important;
+          }
+        }
+      }
+
+      .@{container-prefix}-menu-submenu-selected .@{container-prefix}-menu-submenu-arrow {
+        color: #fff;
+      }
+    }
+  }
+}
+
+.container_nav_bar:not(.collapse_self_bar) {
+  .@{container-prefix}-menu-item {
+    padding-left: 32px ! important;
+  }
+
+  .@{container-prefix}-menu-submenu-title {
+    padding: 4px 0 4px 32px ! important;
+  }
+}
+
+.collapse_self_bar {
+  .@{container-prefix}-menu {
+    width: 72px;
+
+    .@{container-prefix}-menu-item-group-title {
+      height: 0;
+      padding: 0 !important;
+    }
+  }
+
+  .@{container-prefix}-menu-item {
+    width: 64px ! important;
+    padding-left: 24px ! important;
+  }
+
+  .@{container-prefix}-menu-submenu {
+    width: 72px ! important;
+
+    .@{container-prefix}-menu-submenu-title {
+      padding: 4px 0 4px 24px ! important;
+    }
+  }
+
+  .collapse_arrow {
+    left: 52px;
+  }
+}
+
+@media screen and (max-width: 1279px) {
+  .@{container-prefix}-menu {
+    width: 72px;
+
+    .@{container-prefix}-menu-item-icon {
+      vertical-align: -0.5em !important;
+    }
+  }
+
+  .container_nav_bar {
+    .collapse_arrow {
+      cursor: not-allowed;
+      left: 52px;
+      transition: none;
+    }
+  }
+}

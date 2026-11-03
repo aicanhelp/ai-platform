@@ -1,0 +1,16 @@
+inferenceExtension:
+  pluginsConfigFile: default-plugins.yaml
+  routing:
+    deploymentMode: aggregate
+    profile: kv-cache-aware
+    tokenizer:
+      model: Qwen/Qwen3-8B
+      socketPath: /tmp/tokenizer/tokenizer-uds.socket
+    cacheIndexer:
+      address: http://cache-indexer-service:8080
+      blockSize: 128
+    kvCacheAware:
+      kvCacheNotHitRateWeight: 1.0
+      xpuCacheUsageWeight: 1.0
+      waitingRequestWeight: 1.0
+      inflightWeight: 1.0

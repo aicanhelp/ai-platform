@@ -1,0 +1,128 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  labels:
+    app: minio
+  name: minio-pv
+spec:
+  accessModes:
+    - ReadWriteMany
+  capacity:
+    storage: 5Gi
+  csi:
+    driver: nfs.csi.k8s.io
+    volumeAttributes:
+      server: {{.nfsServer}}
+      share: {{.nfsRootDir}}minio
+    volumeHandle: minio-id
+  mountOptions:
+    - nfsvers={{.nfsVersion}}
+    - nolock
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: nfs-csi
+  volumeMode: Filesystem
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: minio-pvc
+  namespace: kube-system
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  selector:
+    matchLabels:
+      app: minio
+  storageClassName: nfs-csi
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: minio
+  name: minio
+  namespace: kube-system
+spec:
+  ports:
+    - name: api
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
+      nodePort: 30900
+    - name: dashboard
+      port: 9001
+      protocol: TCP
+      targetPort: 9001
+      nodePort: 30901
+  type: NodePort
+  selector:
+    app: minio
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: minio
+  name: minio
+  namespace: kube-system
+spec:
+  selector:
+    matchLabels:
+      app: minio
+  template:
+    metadata:
+      labels:
+        app: minio
+    spec:
+      nodeSelector:
+        machine-48: "true"
+      containers:
+        - args:
+            - server
+            - /data
+            - --console-address
+            - :9001
+          env:
+            - name: MINIO_ROOT_USER
+              value: minio
+            - name: MINIO_ROOT_PASSWORD
+              value: minio123
+          image: {{ .repo }}minio:RELEASE.2023-04-20T17-56-55Z
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - mkdir
+                  - -p
+                  - /data/mlpipeline
+          livenessProbe:
+            httpGet:
+              path: /minio/health/live
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          name: main
+          ports:
+            - containerPort: 9000
+              name: api
+            - containerPort: 9001
+              name: dashboard
+          readinessProbe:
+            httpGet:
+              path: /minio/health/ready
+              port: 9000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: minio-pvc

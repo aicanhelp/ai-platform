@@ -1,0 +1,9 @@
+name: bkeagent
+type: private
+description: '运⾏在各个节点的⼆进制⽂件，托管于systemd，负责监听kube-apiserver crd资源从⽽操作宿主机'
+branches:
+  - name: master
+    type: protected
+  - name: dev1210
+    type: protected
+    create_from: master

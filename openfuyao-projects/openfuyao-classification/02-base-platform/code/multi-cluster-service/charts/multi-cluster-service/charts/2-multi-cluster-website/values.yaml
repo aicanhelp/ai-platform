@@ -1,0 +1,25 @@
+replicaCount: 1
+
+images:
+  core:
+    repository: cr.openfuyao.cn/openfuyao/multi-cluster-website
+    pullPolicy: Always
+    tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+namespace: karmada-system
+
+service:
+  type: ClusterIP
+  port: 8080
+  backendPort: 9022
+  nodePort: 30884
+
+# specify backend only when the backend is available
+backend: "http://multicluster-service.karmada-system.svc"
+
+# set the field to mount the plugin to openFuyao web portal
+openFuyao: true 

@@ -1,0 +1,21 @@
+# Source: volcano/templates/controllers.yaml
+kind: Service
+apiVersion: v1
+metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "8081"
+    prometheus.io/scrape: "true"
+  name: volcano-controllers-service
+  namespace: volcano-system
+  labels:
+    app: volcano-controller
+spec:
+  ports:
+    - port: 8081
+      protocol: TCP
+      targetPort: 8081
+      name: "metrics"
+  selector:
+    app: volcano-controller
+  type: ClusterIP
