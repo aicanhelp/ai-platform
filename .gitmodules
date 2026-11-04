@@ -964,3 +964,6 @@
 [submodule "agent-projects/WeKnora"]
 	path = agent-projects/WeKnora
 	url = https://gh-proxy.org/https://github.com/Tencent/WeKnora.git
+[submodule "agent-projects/lobehub"]
+	path = agent-projects/lobehub
+	url = https://gh-proxy.org/https://github.com/lobehub/lobehub.git
