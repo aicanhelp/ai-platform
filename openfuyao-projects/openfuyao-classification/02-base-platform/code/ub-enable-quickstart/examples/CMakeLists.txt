@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 3.10)
-project(examples)
-
-include_directories(include)
-
-add_subdirectory(flink_statebackend_require_more_memory)
-add_subdirectory(spark_broadcastjoin_by_shared_memory)

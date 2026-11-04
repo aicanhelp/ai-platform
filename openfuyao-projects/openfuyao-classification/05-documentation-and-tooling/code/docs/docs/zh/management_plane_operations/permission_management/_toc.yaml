@@ -1,5 +1,0 @@
-isManual: true
-label: 权限管理
-sections:
-  - label: RBAC管理
-    href: ./rbac_management.md

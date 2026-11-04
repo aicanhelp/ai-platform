@@ -1,6 +1,0 @@
-name: sig-ub-enable
-type: private
-description: 'sig-ub-enable职能仓库，用于存放UB使能相关的文档、讨论等。'
-branches:
-  - name: master
-    type: protected

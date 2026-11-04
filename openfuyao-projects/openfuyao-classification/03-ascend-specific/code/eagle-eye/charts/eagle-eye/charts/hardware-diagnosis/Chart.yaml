@@ -1,7 +1,0 @@
-apiVersion: v1
-name: hardware-diagnosis
-description: |
-  hardware-diagnosis is a component dedicated to diagnosing the health and performance issues of hardware components in the system, specifically focusing on NPU and GPU devices. It analyzes device status, memory usage, error logs, and performance metrics to identify potential failures or irregularities. The module provides diagnostic results and recommendations for maintenance, helping to troubleshoot hardware-related problems and ensure system reliability.
-version: 0.0.0-latest
-appVersion: latest
-keywords: ["artificial-intelligence"]

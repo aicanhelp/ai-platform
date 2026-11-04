@@ -1,7 +1,0 @@
-apiVersion: v2
-name: cache-indexer
-description: cache-indexer maintains a global view of L1 / L3 KVCache and serves /kv-cache/hit-rate to the routing plane.
-type: application
-version: 0.0.0-latest
-appVersion: "latest"
-keywords: ["artificial-intelligence"]

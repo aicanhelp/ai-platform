@@ -1,5 +1,0 @@
-apiVersion: v1
-kind: ServiceAccount
-metadata:
-  name: ascend-device-plugin-sa
-  namespace: kube-system

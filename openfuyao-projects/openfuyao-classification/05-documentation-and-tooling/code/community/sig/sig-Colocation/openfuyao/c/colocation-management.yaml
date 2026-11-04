@@ -1,9 +1,0 @@
-name: colocation-management
-type: private
-description: 'openFuyao在离线混部管理组件，部署时分为manager和agent两部分，负责整个混部可超卖资源的计算、同步与上报，同时负责部署、管理节点上的混部引擎'
-branches:
-  - name: master
-    type: protected
-  - name: feat/dev-630
-    type: protected
-    create_from: master

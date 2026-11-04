@@ -1,6 +1,0 @@
-name: caas-tool
-type: private
-description: '主要用于归档容器编排领域相关的公共工具'
-branches:
-  - name: master
-    type: protected

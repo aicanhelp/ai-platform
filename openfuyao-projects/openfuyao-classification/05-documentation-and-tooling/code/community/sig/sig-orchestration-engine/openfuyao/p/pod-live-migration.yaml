@@ -1,8 +1,0 @@
-name: pod-live-migration
-type: private
-description: '容器热迁移功能实现，包含controller和agent'
-branches:
-  - name: master
-    type: protected
-  - name: dev
-    type: protected

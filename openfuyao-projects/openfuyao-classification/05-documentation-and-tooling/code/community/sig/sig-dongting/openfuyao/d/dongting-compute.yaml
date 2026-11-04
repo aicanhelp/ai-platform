@@ -1,6 +1,0 @@
-name: dongting-compute
-type: private
-description: '计算模块的库。'
-branches:
-  - name: master
-    type: protected

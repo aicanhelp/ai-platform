@@ -1,9 +1,0 @@
-name: ub-network-device-plugin
-type: private
-description: 'UB网络设备插件'
-branches:
-  - name: master
-    type: protected
-  - name: br_noncom_container_20260228
-    type: protected
-    create_from: master

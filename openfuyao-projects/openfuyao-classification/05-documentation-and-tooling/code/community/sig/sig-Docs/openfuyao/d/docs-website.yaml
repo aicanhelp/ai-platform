@@ -1,6 +1,0 @@
-name: docs-website
-type: public
-description: 'openFuyao文档前端代码仓。'
-branches:
-  - name: master
-    type: protected

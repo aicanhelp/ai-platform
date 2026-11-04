@@ -1,6 +1,0 @@
-name: web-terminal-service
-type: private
-description: 'openFuyao平台的CLI可交互界面，支持进入集群和容器的操作'
-branches:
-  - name: master
-    type: protected

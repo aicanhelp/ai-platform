@@ -1,6 +1,0 @@
-name: kubeone
-type: private
-description: '轻量级的容器编排底座，将kubernetes几容器编排核心组件合并在一个进程中运行，减少运行底噪，在资源有限的嵌入式、边缘、小型化等场景下提供容器编排能力'
-branches:
-  - name: master
-    type: protected

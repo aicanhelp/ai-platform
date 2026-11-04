@@ -1,6 +1,0 @@
-name: npu-container-toolkit
-type: private
-description: '为openFuyao提供容器化部署ascend docker runtime的能力'
-branches:
-  - name: master
-    type: protected

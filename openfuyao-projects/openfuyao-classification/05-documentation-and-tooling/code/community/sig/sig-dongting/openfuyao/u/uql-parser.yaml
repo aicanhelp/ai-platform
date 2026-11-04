@@ -1,6 +1,0 @@
-name: uql-parser
-type: private
-description: '语法解析器'
-branches:
-  - name: master
-    type: protected

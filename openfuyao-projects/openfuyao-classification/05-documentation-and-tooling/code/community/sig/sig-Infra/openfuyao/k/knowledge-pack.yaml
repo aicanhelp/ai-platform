@@ -1,6 +1,0 @@
-name: knowledge-pack
-type: private
-description: '为各个sig组构建领域知识库,从而生成更可靠的设计、代码和评审结论'
-branches:
-  - name: master
-    type: protected

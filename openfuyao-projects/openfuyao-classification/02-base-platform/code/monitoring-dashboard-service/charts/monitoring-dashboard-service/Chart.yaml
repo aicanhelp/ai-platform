@@ -1,6 +1,0 @@
-apiVersion: v2
-name: monitoring-dashboard-service
-description: Monitoring Dashboards provide real-time visualizations of system metrics, allowing users to track key performance indicators (KPIs) tailored to their specific needs. Users can configure widgets, charts, and alerts to monitor infrastructure, applications, and custom metrics from integrated data sources.
-version: 0.0.0-latest
-appVersion: latest
-keywords: ["openfuyao-extension","monitor"]

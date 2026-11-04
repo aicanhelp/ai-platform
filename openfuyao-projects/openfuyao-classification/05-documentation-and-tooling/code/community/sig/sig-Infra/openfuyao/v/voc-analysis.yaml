@@ -1,6 +1,0 @@
-name: voc-analysis
-type: private
-description: 'voc分析'
-branches:
-  - name: master
-    type: protected

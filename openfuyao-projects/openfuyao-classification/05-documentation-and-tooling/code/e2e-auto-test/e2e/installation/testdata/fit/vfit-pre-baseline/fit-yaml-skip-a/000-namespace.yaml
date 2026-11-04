@@ -1,6 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: fit-test
-  labels:
-    openfuyao.cn/fit-suite: "true"

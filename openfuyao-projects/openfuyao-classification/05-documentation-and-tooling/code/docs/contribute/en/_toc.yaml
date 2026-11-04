@@ -1,8 +1,0 @@
-label: Documentation Development Guide
-sections:
-  - label: Quick Start
-    href: ./quick_start.md
-  - label: Document Organization Structure
-    href: ./document_organization_structure.md
-  - label: Writing Specifications and PR Checks
-    href: ./writing_specifications_and_pr_checks.md

@@ -1,9 +1,0 @@
-name: node-feature-discovery
-type: private
-description: '在 Kubernetes 集群中检测节点硬件特性和系统配置，并将这些信息以标签的形式暴露给调度器使用，以便调度器能够根据节点的特性和配置来优化工作负载的调度决策。'
-branches:
-  - name: master
-    type: protected
-  - name: dev-0622
-    type: protected
-    created_from: master

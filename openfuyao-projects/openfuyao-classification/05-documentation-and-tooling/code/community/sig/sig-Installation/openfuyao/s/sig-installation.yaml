@@ -1,9 +1,0 @@
-name: sig-installation
-type: private
-description: 'sig-installation职能仓库，用于存放sig-installation相关的文档'
-branches:
-  - name: master
-    type: protected
-  - name: feat/upgrade-530
-    type: protected
-    create_from: master

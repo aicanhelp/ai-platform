@@ -1,6 +1,0 @@
-name: olc-python
-type: public
-description: 'olc-python 是一个高性能的过载控制库，为 python 应用提供限流和过载保护能力'
-branches:
-  - name: master
-    type: protected

@@ -1,8 +1,0 @@
-{
-  "name": "runc",
-  "version": "1.1.12",
-  "required": true,
-  "hide": false,
-  "bootstrap-node": "all",
-  "dependencies": []
-}

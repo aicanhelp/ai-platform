@@ -1,6 +1,0 @@
-name: ray
-type: private
-description: 'openFuyao社区版本Ray。'
-branches:
-  - name: master
-    type: protected

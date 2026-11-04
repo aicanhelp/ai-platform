@@ -1,6 +1,0 @@
-name: openfuyao-powers
-type: public
-description: 'openFuyao-powers 为 openFuyao 社区提供 AI 辅助研发能力集，覆盖需求分析、方案设计、编码开发与集成测试等 openFuyao 社区软件研发全流程，并辅以 GitCode 平台迭代工作流 Skill。支持 Claude Code、Codex、OpenCode 等主流 AI 辅助开发工具。'
-branches:
-  - name: master
-    type: protected

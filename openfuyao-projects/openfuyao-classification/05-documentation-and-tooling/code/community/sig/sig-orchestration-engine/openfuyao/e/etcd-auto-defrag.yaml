@@ -1,6 +1,0 @@
-name: etcd-auto-defrag
-type: private
-description: 'etcd碎片整理增强'
-branches:
-  - name: master
-    type: protected

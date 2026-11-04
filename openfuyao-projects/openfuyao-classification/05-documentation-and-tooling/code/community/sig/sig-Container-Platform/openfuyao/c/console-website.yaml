@@ -1,9 +1,0 @@
-name: console-website
-type: public
-description: Console-Website 是 openFuyao 的前端管理面，为应用管理、资源管理、告警监控等 openFuyao 核心功能提供前端用户界面。
-branches:
-  - name: master
-    type: protected
-  - name: dev-i18n
-    type: protected
-    create_from: master

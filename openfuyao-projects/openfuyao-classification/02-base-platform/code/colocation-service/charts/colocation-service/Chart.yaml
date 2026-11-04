@@ -1,9 +1,0 @@
-apiVersion: v2
-name: colocation-service
-description: >
-  A Helm chart for openFuyao colocation service. It works based Rubik to enbale colocation 
-  service.
-type: application
-version: 0.0.0-latest
-appVersion: latest
-keywords: ["openfuyao-extension", "computing"]

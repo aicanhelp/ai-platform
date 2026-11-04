@@ -1,8 +1,0 @@
-label: AI Inference Elastic Scaling System
-sections:
-  - label: AI Inference Elastic Scaling
-    href: ./ai_inference_elastic_scaling/user_guide/ai_inference_elastic_scaling.md
-  - label: ResourceScalingGroup - Resource Group Scaling
-    href: ./ai_inference_resourcescalinggroup/user_guide/ai_inference_resourcescalinggroup.md
-  - label: AI Inference Tidal Algorithm
-    href: ./ai_inference_tidal_algorithm/user_guide/ai_inference_tidal_algorithm.md

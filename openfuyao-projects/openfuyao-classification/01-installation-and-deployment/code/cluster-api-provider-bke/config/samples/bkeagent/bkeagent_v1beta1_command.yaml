@@ -1,3 +1,0 @@
-apiVersion: bkeagent.bocloud.com/v1beta1
-kind: Command
-metadata:

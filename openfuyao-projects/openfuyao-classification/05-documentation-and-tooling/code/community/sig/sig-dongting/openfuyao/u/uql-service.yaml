@@ -1,6 +1,0 @@
-name: uql-service
-type: private
-description: '查询服务端'
-branches:
-  - name: master
-    type: protected

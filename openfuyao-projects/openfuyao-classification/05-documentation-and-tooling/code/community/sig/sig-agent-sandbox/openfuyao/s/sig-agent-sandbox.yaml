@@ -1,6 +1,0 @@
-name: sig-agent-sandbox
-type: public
-description: 'sig-ub-enable职能仓库，用于存放Agent沙箱相关的文档、讨论等。'
-branches:
-  - name: master
-    type: protected

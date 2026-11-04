@@ -1,6 +1,0 @@
-name: ub-enable-quickstart
-type: private
-description: 'UB使能快速开始样例Demo'
-branches:
-  - name: master
-    type: protected

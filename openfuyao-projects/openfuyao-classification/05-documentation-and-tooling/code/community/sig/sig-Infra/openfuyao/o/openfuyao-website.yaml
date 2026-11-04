@@ -1,6 +1,0 @@
-name: openfuyao-website
-type: private
-description: ''
-branches:
-  - name: master
-    type: protected

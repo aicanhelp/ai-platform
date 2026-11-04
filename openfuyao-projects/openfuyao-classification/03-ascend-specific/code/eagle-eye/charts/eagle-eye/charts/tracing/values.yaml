@@ -1,7 +1,0 @@
-enabled: true
-
-jaeger:
-  query:
-    service:
-      type: NodePort
-      nodePort: 30686

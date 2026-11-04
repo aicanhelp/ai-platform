@@ -1,8 +1,0 @@
-name: sig-ai-native-workload-orchestration
-description: 面向AI-native作业混部场景，提供高性能作业编排、多样化算力资源调度弹性扩缩、管理调度能力；高性能释放集群算力
-descriptionEn:
-mailing_list: ai-native-workload-orchestration@list.openfuyao.cn
-maintainers:
-  - gitcode_id: zxyyy0119_admin
-    name: Zhu Xueyi
-    email: xueyizhu@huawei.com

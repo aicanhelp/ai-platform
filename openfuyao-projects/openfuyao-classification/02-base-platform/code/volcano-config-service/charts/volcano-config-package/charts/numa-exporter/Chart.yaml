@@ -1,6 +1,0 @@
-apiVersion: v2	
-name: numa-exporter	
-description: A Helm chart for openFuyao numa exporter	
-type: application	
-version: 0.0.0-latest	
-appVersion: latest

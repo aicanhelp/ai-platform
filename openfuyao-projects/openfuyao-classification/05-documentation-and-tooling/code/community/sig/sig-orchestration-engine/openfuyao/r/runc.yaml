@@ -1,9 +1,0 @@
-name: runc
-type: private
-description: '命令行工具，用于根据OCI规范创建和运行容器。'
-branches:
-  - name: master
-    type: protected
-  - name: of-v1.1.10
-    type: protected
-    create_from: master

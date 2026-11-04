@@ -1,9 +1,0 @@
-apiVersion: v2
-name: monitoring-service
-description: >
-  A Helm chart for the OpenFuyao monitoring service. It interacts with Prometheus to offer built-in queries 
-  for commonly used metrics and provides functionalities to view monitoring targets and alerting rules.
-type: application
-version: 0.0.0-latest
-appVersion: latest
-keywords: ["openfuyao-component"]

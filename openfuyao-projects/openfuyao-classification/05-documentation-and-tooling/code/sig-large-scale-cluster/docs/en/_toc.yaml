@@ -1,6 +1,0 @@
-label: Ultra-Large-Scale Cluster
-sections:
-  - label: User Guide
-    href: ./user_guide/_toc.yaml
-  - label: Best Practices
-    href: ./best_practice/_toc.yaml

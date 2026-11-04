@@ -1,6 +1,0 @@
-name: opensandbox
-type: private
-description: 'opensandbox代码仓'
-branches:
-  - name: master
-    type: protected

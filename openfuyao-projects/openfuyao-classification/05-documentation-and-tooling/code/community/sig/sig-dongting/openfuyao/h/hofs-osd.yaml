@@ -1,6 +1,0 @@
-name: hofs-osd
-type: private
-description: 'OSD模块的库。'
-branches:
-  - name: master
-    type: protected

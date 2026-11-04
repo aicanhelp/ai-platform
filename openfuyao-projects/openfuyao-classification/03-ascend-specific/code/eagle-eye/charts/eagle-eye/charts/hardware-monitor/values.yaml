@@ -1,4 +1,0 @@
-images:
-  core:
-    repository: cr.openfuyao.cn/openfuyao/eagle-eye-hardware-monitor
-    tag: "latest"

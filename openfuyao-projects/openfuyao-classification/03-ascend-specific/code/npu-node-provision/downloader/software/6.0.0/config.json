@@ -1,7 +1,0 @@
-{
-  "mindio": {
-    "enable": "true",
-    "url_x86": "https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/MindX/MindX%206.0.0/Ascend-mindxdl-mindio_6.0.0_linux-x86_64.zip",
-    "url_arm": "https://ascend-repo.obs.cn-east-2.myhuaweicloud.com/MindX/MindX%206.0.0/Ascend-mindxdl-mindio_6.0.0_linux-aarch64.zip"
-  }
-}

@@ -1,6 +1,0 @@
-name: serverlessdb-operator
-type: public
-description: 'Serverlessdb实例预热池管理和实例生命周期管理组件'
-branches:
-  - name: master
-    type: protected

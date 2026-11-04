@@ -1,6 +1,0 @@
-name: user-management-operator
-type: public
-description: 'openFuyao容器平台中用户管理组件，为容器平台提供了一整套灵活的用户和角色管理功能。该系统支持用户的增删改查以及角色的分配，查看与解除绑定等'
-branches:
-  - name: master
-    type: protected

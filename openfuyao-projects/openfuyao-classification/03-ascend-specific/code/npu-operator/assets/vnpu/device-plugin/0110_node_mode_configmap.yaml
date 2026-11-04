@@ -1,8 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: vnpu.node-mode.config
-  namespace: xpu
-data:
-  node-mode.config.yaml: |-
-    nodeConfigs: []

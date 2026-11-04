@@ -1,6 +1,0 @@
-name: clusters-computing-operator
-type: private
-description: '超大规模集群多集群自动部署工具'
-branches:
-  - name: master
-    type: protected

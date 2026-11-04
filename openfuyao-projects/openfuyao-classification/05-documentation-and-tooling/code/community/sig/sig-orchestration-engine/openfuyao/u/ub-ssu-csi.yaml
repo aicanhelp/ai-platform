@@ -1,6 +1,0 @@
-name: ub-ssu-csi
-type: public
-description: 'UB SSU存储的Kubernetes CSI 驱动'
-branches:
-  - name: master
-    type: protected

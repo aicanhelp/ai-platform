@@ -1,6 +1,0 @@
-name: hofs-proxy
-type: private
-description: '代理模块'
-branches:
-  - name: master
-    type: protected

@@ -1,9 +1,0 @@
-name: kernel_version_check
-kind: command
-doc: 模拟检查内核版本是否符合系统运行部署所需
-spec:
-  - name: kernel_version
-    command: uname -r | grep -oP "^[0-9]+\.[0-9]+\.[0-9]+"
-    expect: '[4.19.90,)'
-    type: version-range
-    doc: 使用"uname -r"命令获取内核版本，检查是否在4.19.90以上

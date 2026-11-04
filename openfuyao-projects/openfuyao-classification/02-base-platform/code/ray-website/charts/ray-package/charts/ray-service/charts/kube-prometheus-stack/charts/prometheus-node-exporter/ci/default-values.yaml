@@ -1,3 +1,0 @@
-{{- if eq (include "prometheus.installed" .) "false" }}
-## Default values test case
-{{- end }}

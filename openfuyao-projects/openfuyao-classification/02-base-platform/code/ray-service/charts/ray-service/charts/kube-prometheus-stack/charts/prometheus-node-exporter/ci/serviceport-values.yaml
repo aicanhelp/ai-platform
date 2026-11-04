@@ -1,5 +1,0 @@
-{{- if eq (include "prometheus.installed" .) "false" }}
----
-service:
-  servicePort: 80
-{{- end }}

@@ -1,6 +1,0 @@
-name: sig-colocation
-type: private
-description: '混部sig组仓库，内含混部sig的规范、成员信息、社区会议信息、文档信息等'
-branches:
-  - name: master
-    type: protected

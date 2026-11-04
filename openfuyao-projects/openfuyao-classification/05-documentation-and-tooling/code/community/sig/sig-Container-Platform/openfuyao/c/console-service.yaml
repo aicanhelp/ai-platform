@@ -1,9 +1,0 @@
-name: console-service
-type: public
-description: console-service是一个基于kubernetes，用于集群管理的服务。
-branches:
-  - name: master
-    type: protected
-  - name: dev1210
-    type: protected
-    create_from: master

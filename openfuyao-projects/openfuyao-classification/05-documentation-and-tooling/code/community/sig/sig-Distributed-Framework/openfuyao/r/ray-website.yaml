@@ -1,6 +1,0 @@
-name: ray-website
-type: private
-description: 'ray-service扩展组件前端。'
-branches:
-  - name: master
-    type: protected

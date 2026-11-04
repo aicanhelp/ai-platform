@@ -1,8 +1,0 @@
-apiVersion: v2
-name: proxy-logging
-description: >
-  Front end for openfuyao logging extension with oauth-proxy. This is an example chart illustrating how to use
-  oauth-proxy in your own extension application. We take the frontend of logging-extension as an example.
-type: application
-version: 0.0.0-latest
-appVersion: "latest"

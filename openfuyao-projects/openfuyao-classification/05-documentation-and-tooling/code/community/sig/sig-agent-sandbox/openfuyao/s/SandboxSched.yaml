@@ -1,6 +1,0 @@
-name: SandboxSched
-type: public
-description: '高性能沙箱调度引擎。'
-branches:
-  - name: master
-    type: protected

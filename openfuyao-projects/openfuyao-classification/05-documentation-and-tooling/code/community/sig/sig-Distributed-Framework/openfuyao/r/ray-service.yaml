@@ -1,6 +1,0 @@
-name: ray-service
-type: private
-description: 'openFuyao扩展组件，提供Ray集群及作业的管理能力，减少运维成本;同时提供集群可观测、故障定位、最佳实践等增强能力，实现云原生解决算力使能解决方案.'
-branches:
-  - name: master
-    type: protected

@@ -1,9 +1,0 @@
-name: ubs-openstack-enable
-type: private
-description: ''
-branches:
-  - name: master
-    type: protected
-  - name: br_UnifiedBus
-    type: protected
-    create_from: master

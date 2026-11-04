@@ -1,8 +1,0 @@
-# Source: volcano/templates/controllers.yaml
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: volcano-controller-configmap
-  namespace: volcano-system
-data:
-  volcano-controller.conf: |

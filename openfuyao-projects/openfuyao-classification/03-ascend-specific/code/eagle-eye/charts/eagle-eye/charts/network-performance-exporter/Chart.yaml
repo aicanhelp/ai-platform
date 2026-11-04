@@ -1,6 +1,0 @@
-apiVersion: v2
-name: network-performance-exporter
-description: A Helm chart for network performance exporter
-version: 0.0.0-latest
-appVersion: latest
-keywords: ["artificial-intelligence"]

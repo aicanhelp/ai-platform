@@ -1,6 +1,0 @@
-apiVersion: v2
-name: ub-network-bandwidth-operator
-description: A Helm chart for UB Network Bandwidth Operator
-type: application
-version: 0.0.0-latest
-appVersion: "latest"

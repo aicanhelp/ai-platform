@@ -1,6 +1,0 @@
-name: kwok
-type: private
-description: '轻量级的Kubernetes模拟工具，在开源kwok基础上增加list-watch功能'
-branches:
-  - name: master
-    type: protected

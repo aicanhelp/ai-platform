@@ -1,2 +1,0 @@
-label: 修改statefulset实现PVC扩容
-href: ./pvc_expansion_through_statefulset_modification.md

@@ -1,6 +1,0 @@
-apiVersion: v2	
-name: scheduler-config	
-description: A Helm chart for openFuyao scheduler config	
-type: application	
-version: 0.0.0-latest	
-appVersion: latest

@@ -1,8 +1,0 @@
-apiVersion: v2
-name: logging-operator
-description: >
-  A Helm chart for openFuyao logging backend system. It works with Loki to enbale log filtering, 
-  configuration management, and the ability to view alerting rules.
-type: application
-version: 0.0.0-latest
-appVersion: latest

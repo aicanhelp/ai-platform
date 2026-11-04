@@ -1,6 +1,0 @@
-name: hofs-client
-type: private
-description: '客户端模块'
-branches:
-  - name: master
-    type: protected

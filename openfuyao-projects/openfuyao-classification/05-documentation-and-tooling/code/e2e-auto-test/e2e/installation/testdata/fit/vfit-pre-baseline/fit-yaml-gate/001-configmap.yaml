@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: fit-yaml-gate
-  namespace: fit-test
-  labels:
-    openfuyao.cn/fit-component: fit-yaml-gate
-data:
-  version: "v1"

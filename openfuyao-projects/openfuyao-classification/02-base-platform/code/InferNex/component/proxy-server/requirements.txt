@@ -1,4 +1,0 @@
-kubernetes==35.0.0
-httpx==0.28.1
-fastapi==0.133.0
-uvicorn==0.41.0

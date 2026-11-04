@@ -1,9 +1,0 @@
-name: elastic-scaler
-type: public
-description: '提供通用决策框架、潮汐调度算法、RBG扩缩调度的能力'
-branches:
-  - name: master
-    type: protected
-  - name: feat/ctx-metrics
-    type: protected
-    create_from: master

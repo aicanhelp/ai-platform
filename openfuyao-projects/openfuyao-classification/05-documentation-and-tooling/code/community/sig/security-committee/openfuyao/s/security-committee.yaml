@@ -1,6 +1,0 @@
-name: security-committee
-type: public
-description: 'Security-Committee的管理仓库，介绍openFuyao安全委员会的职责、组织构成和运作方式，以及负责的相关流程。'
-branches:
-  - name: main
-    type: protected

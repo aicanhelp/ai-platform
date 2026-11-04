@@ -1,6 +1,0 @@
-name: flux-sandbox
-type: private
-description: 'flux-sandbox代码仓'
-branches:
-  - name: master
-    type: protected

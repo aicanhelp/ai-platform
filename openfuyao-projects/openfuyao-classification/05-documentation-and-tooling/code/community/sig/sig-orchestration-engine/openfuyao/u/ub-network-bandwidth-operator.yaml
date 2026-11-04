@@ -1,9 +1,0 @@
-name: ub-network-bandwidth-operator
-type: private
-description: 'UB网络带宽设置'
-branches:
-  - name: master
-    type: protected
-  - name: br_noncom_container_20260228
-    type: protected
-    create_from: master

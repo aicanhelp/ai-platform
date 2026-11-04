@@ -1,6 +1,0 @@
-name: release-management
-type: public
-description: 'Release Management Sig的管理仓'
-branches:
-  - name: main
-    type: protected

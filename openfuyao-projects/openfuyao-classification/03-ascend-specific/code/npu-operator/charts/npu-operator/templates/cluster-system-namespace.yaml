@@ -1,8 +1,0 @@
-{{- if not (lookup "v1" "Namespace" "" "cluster-system") }}
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: cluster-system
-  annotations:
-    helm.sh/resource-policy: keep
-{{- end }}

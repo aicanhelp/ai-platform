@@ -1,8 +1,0 @@
-{
-  "name": "yq",
-  "version": "4.43.1",
-  "required": true,
-  "hide": false,
-  "bootstrap-node": "masters",
-  "dependencies": []
-}

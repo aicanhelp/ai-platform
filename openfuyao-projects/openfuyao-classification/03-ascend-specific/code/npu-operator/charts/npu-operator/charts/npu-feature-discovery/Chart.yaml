@@ -1,6 +1,0 @@
-apiVersion: v2
-name: npu-feature-discovery
-description: A Helm chart for npu-feature-discovery on Kubernetes
-type: application
-version: 0.0.0-latest
-appVersion: latest

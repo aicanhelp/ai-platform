@@ -1,6 +1,0 @@
-name: uql-core
-type: private
-description: '语法校验、优化、调度'
-branches:
-  - name: master
-    type: protected

@@ -1,6 +1,0 @@
-name: sig-numa-affinity
-type: public
-description: '面向性能敏感型业务，提供基于硬件拓扑感知的集群级和节点级资源调度和资源分配能力增强，显著提升集群作业性能'
-branches:
-  - name: master
-    type: protected

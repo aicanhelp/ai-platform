@@ -1,6 +1,0 @@
-name: oauth-server
-type: public
-description: 'openFuyao容器平台中内置的认证服务器，负责校验平台用户登陆密码，生成授权码与token。支持用户登录、退出登录、首次登录强制修改用户密码，修改用户密码等功能'
-branches:
-  - name: master
-    type: protected

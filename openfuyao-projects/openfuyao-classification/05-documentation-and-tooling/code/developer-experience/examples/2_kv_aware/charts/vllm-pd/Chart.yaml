@@ -1,6 +1,0 @@
-apiVersion: v2
-name: vllm-pd
-description: The vllm-pd deploys vllm prefill and decode engines with Mooncake and Ascend.
-version: 0.0.0-latest
-appVersion: latest
-keywords: ["artificial-intelligence"]

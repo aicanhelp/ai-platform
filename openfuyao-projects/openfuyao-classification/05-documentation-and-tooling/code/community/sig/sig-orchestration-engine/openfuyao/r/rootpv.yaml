@@ -1,6 +1,0 @@
-name: rootpv
-type: public
-description: '提供容器根目录可写层持久化能力。'
-branches:
-  - name: master
-    type: protected

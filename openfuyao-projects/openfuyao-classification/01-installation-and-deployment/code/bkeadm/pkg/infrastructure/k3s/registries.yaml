@@ -1,8 +1,0 @@
-mirrors:
-  {{.repo}}:
-    endpoint:
-      - "https://{{.repo}}"
-configs:
-  "{{.repo}}":
-    tls:
-      insecure_skip_verify: true

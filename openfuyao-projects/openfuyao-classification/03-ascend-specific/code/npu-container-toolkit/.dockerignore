@@ -1,8 +1,0 @@
-/target
-*.bak
-
-build
-.gitignore
-.rustfmt.toml
-LICENSE
-OAT.xml
